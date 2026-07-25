@@ -10,11 +10,11 @@ When reporting a bug, include a short description of the issue, the steps to rep
 
 ## Local Development Setup
 
-1. Install Node.js and npm.
-2. From the `study-web-fe` folder, install dependencies with `npm install`.
-3. Start the development server with `npm run dev`.
-4. Run `npm run build` before submitting changes to confirm the project compiles.
-5. Run `npm run lint` to check code quality before opening a pull request.
+1. Install Node.js and pnpm.
+2. From the `study-web-fe` folder, install dependencies with `pnpm install`.
+3. Start the development server with `pnpm dev`.
+4. Run `pnpm build` before submitting changes to confirm the project compiles.
+5. Run `pnpm lint` to check code quality before opening a pull request.
 
 ## Git Workflow and Commit Format
 
@@ -38,7 +38,7 @@ Follow the existing TypeScript and React patterns in the project.
 
 Use clear, descriptive names, keep components small, and prefer reusable code in the appropriate folder.
 
-Format code consistently before committing, and make sure linting passes with `npm run lint`.
+Format code consistently before committing, and make sure linting passes with `pnpm lint`.
 
 For any UI or behavior change, verify the app with `npm run build` and test the affected flow manually in the browser.
 

@@ -48,5 +48,6 @@ Before finishing, verify the change with the relevant project command, usually `
 Read only the `agent-docs` file that is relevant to the work you are doing.
 
 - `agent-docs/code_conventions.md` - Coding rules, naming preferences, component patterns, and implementation constraints. Read this before making shared code changes, refactors, or new patterns.
+- `agent-docs/testing.md` - Testing guide with Vitest setup, writing tests, running tests, and best practices. Read this before writing or modifying tests.
 
 If more files are added under `agent-docs`, add one short line for each file here so the next agent can quickly decide what to open and what to skip.
