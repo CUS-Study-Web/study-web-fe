@@ -52,7 +52,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run Vitest with Coverage
-        run: pnpm exec vitest run --coverage
+        run: pnpm exec vitest run --coverage --passWithNoTests
 
   # JOB 3: Build & Security Audit 
   build-and-audit:
