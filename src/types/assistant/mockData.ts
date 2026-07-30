@@ -1,5 +1,3 @@
-import type { AsstCourse } from './AsstCourse';
-import type { AsstSubject } from './AsstSubject';
 import type { AsstLecture } from './AsstLecture';
 import type { AsstExercise } from './AsstExercise';
 import type { AsstCourseExam } from './AsstCourseExam';
@@ -7,8 +5,6 @@ import type { AsstLesson } from './AsstLesson';
 import type { AsstStatCard } from './AsstStatCard';
 import type { AsstActivity } from './AsstActivity';
 import type { AsstDocument } from './AsstDocument';
-import type { AsstCourseForm } from './AsstCourseForm';
-import type { AsstLessonForm } from './AsstLessonForm';
 
 export const ASST_STAT_CARDS: AsstStatCard[] = [
   {
