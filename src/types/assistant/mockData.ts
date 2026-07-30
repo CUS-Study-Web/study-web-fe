@@ -1,66 +1,76 @@
-import type {
-  AsstLecture,
-  AsstExercise,
-  AsstCourseExam,
-  AsstLesson,
-  AsstStatCard,
-  AsstActivity,
-  AsstDocument,
-} from './models';
+import type { AsstCourse } from './AsstCourse';
+import type { AsstSubject } from './AsstSubject';
+import type { AsstLecture } from './AsstLecture';
+import type { AsstExercise } from './AsstExercise';
+import type { AsstCourseExam } from './AsstCourseExam';
+import type { AsstLesson } from './AsstLesson';
+import type { AsstStatCard } from './AsstStatCard';
+import type { AsstActivity } from './AsstActivity';
+import type { AsstDocument } from './AsstDocument';
+import type { AsstCourseForm } from './AsstCourseForm';
+import type { AsstLessonForm } from './AsstLessonForm';
 
 export const ASST_STAT_CARDS: AsstStatCard[] = [
   {
+    id: 1,
     label: "Tổng học viên",
     value: "1.284",
     delta: "+32 tuần này",
     icon: "👥",
     color: "#2C5A31",
-    bg: "#DCE9DE"
+    background: "#DCE9DE"
   },
   {
+    id: 2,
     label: "Bài tập đã đăng",
     value: "36",
     delta: "+4 tuần này",
     icon: "📎",
     color: "#2F6FAE",
-    bg: "#DDEAF8"
+    background: "#DDEAF8"
   },
   {
+    id: 3,
     label: "Đề thi đã tạo",
     value: "47",
     delta: "+5 tuần này",
     icon: "📝",
     color: "#B7791F",
-    bg: "#FBF0DC"
+    background: "#FBF0DC"
   },
 ];
 
 export const ASST_RECENT_ACTIVITIES: AsstActivity[] = [
   {
+    id: 1,
     type: "exam",
     text: "Đề thi Toán nâng cao 2024 - Đề 12 đã được tải lên",
     time: "5 phút trước",
     icon: "📝"
   },
   {
+    id: 2,
     type: "student",
     text: "Học viên Nguyễn Văn A đã đăng ký khóa V-ACT",
     time: "10 phút trước",
     icon: "👨‍🎓"
   },
   {
+    id: 3,
     type: "course",
     text: "Khóa học V-SAT đã được cập nhật nội dung",
     time: "30 phút trước",
     icon: "📚"
   },
   {
+    id: 4,
     type: "exam",
     text: "Đề thi thử THPT Quốc Gia môn Hóa đã được phê duyệt",
     time: "1 giờ trước",
     icon: "📝"
   },
   {
+    id: 5,
     type: "student",
     text: "Học viên Trần Thị B đã hoàn thành bài tập Toán",
     time: "2 giờ trước",

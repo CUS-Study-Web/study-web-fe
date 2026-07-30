@@ -1,5 +1,5 @@
 import React from 'react';
-import { ASST_RECENT_ACTIVITIES } from './dashboardData';
+import { ASST_RECENT_ACTIVITIES } from '../../../types/assistant/mockData';
 
 const RecentActivity: React.FC = () => {
   return (
