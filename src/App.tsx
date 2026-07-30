@@ -1,5 +1,7 @@
+import AdminDashboard from './pages/admin/AdminDashboard'
+
 function App() {
-  return null
+  return <AdminDashboard />
 }
 
 export default App
