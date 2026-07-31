@@ -24,12 +24,7 @@ const Dashboard = () => {
         {ASST_STAT_CARDS.map((card) => (
           <StatCard
             key={card.id}
-            label={card.label}
-            value={card.value}
-            delta={card.delta}
-            icon={card.icon}
-            color={card.color}
-            background={card.background}
+            {...card}
           />
         ))}
       </div>
