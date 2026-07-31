@@ -1,5 +1,5 @@
 const IconBox = ({ children, bg }: { children: React.ReactNode, bg: string }) => (
-    <div style={{ width: 48, height: 48, borderRadius: 14, background: bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div className="w-[48px] h-[48px] rounded-[14px] flex items-center justify-center" style={{ background: bg }}>
         {children}
     </div>
 );

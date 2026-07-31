@@ -19,16 +19,18 @@ const StatsCard = ({
 }: StatsCardProps) => {
   const isUp = trend >= 0
   return (
-    <div className="stats-card">
-      <div className="stats-card__header">
+    <div className="bg-[var(--surface-card)] rounded-[18px] px-[24px] py-[26px] shadow-[var(--shadow-clay-sm)] border border-[rgba(220,233,222,0.5)]">
+      <div className="flex items-start justify-between mb-[14px]">
         {icon}
-        <span className={`stats-card__trend stats-card__trend--${isUp ? 'up' : 'down'}`}>
+        <span className={`stats-trend stats-trend--${isUp ? 'up' : 'down'}`}>
           {isUp ? '▲' : '▼'} {Math.abs(trend)}%
         </span>
       </div>
-      <div className="stats-card__value" style={{ color }}>{value.toLocaleString('vi-VN')}</div>
-      <div className="stats-card__label">{label}</div>
-      <div className="stats-card__sublabel">{sublabel}</div>
+      <div className="font-bold text-[32px] leading-none mb-[4px] [font-family:var(--font-heading)] [font-weight:800]" style={{ color }}>
+        {value.toLocaleString('vi-VN')}
+      </div>
+      <div className="[font-family:var(--font-heading)] font-bold text-[14px] text-[#1b1f1c]">{label}</div>
+      <div className="[font-family:var(--font-body)] text-[12px] text-[#a0aaa2] mt-[2px]">{sublabel}</div>
     </div>
   )
 }
