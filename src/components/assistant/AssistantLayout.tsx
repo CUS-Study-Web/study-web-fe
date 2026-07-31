@@ -16,32 +16,32 @@ export default function AssistantLayout({ children, onLogout }: AssistantLayoutP
   const pageTitle = currentMenu?.label || 'Trợ giảng';
 
   return (
-    <div className="flex min-h-screen bg-[#F0F4F1]">
+    <div className="flex min-h-screen bg-[var(--surface-app)]">
       <AsstSidebar sideOpen={sideOpen} setSideOpen={setSideOpen} onLogout={onLogout} />
 
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0">
         {/* Top Bar */}
-        <header className="sticky top-0 z-40 h-[64px] bg-[#f4f7f4f2] backdrop-blur-[12px] border-b border-[#D4DCD5] px-[28px] flex items-center justify-between">
+        <header className="sticky top-0 z-40 h-16 bg-[var(--surface-500)] backdrop-blur-[12px] border-b border-[var(--border-default)] px-7 flex items-center justify-between">
           <div>
-            <div className="font-['Be_Vietnam_Pro'] font-[700] text-[17px] text-[#1B1F1C] m-0">
+            <div className="font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-lg)] leading-[var(--lh-body-lg)] text-[var(--text-primary)] m-0">
               {pageTitle}
             </div>
-            <div className="font-['Noto_Sans'] font-[400] text-[12px] text-[#6B746D] m-0 mt-0.5">
+            <div className="font-[family-name:var(--font-body)] font-normal text-[length:var(--text-caption)] leading-[var(--lh-caption)] text-[var(--text-secondary)] m-0 mt-0.5">
               Hệ thống quản lý nội dung CUS
             </div>
           </div>
 
-          <div className="flex items-center gap-[10px]">
+          <div className="flex items-center gap-2.5">
             <div className="text-right">
-              <div className="font-['Be_Vietnam_Pro'] font-[600] text-[14px] text-[#1B1F1C]">
+              <div className="font-[family-name:var(--font-heading)] font-semibold text-[length:var(--text-body-sm)] leading-[var(--lh-body-sm)] text-[var(--text-primary)]">
                 Trợ giảng CUS
               </div>
-              <div className="font-['Noto_Sans'] font-[400] text-[13px] text-[#6B746D]">
+              <div className="font-[family-name:var(--font-body)] font-normal text-[length:var(--text-caption)] leading-[var(--lh-caption)] text-[var(--text-secondary)]">
                 assistant@gmail.com
               </div>
             </div>
-            <div className="w-[38px] h-[38px] rounded-full bg-gradient-to-br from-[#2C5A31] to-[#5A9E62] border-2 border-[#DCE9DE] flex items-center justify-center shrink-0">
+            <div className="w-9.5 h-9.5 rounded-full bg-gradient-to-br from-[var(--brand-500)] to-[var(--success-400)] border-2 border-[var(--brand-soft-500)] flex items-center justify-center shrink-0">
               <svg
                 width="24"
                 height="24"
@@ -60,7 +60,7 @@ export default function AssistantLayout({ children, onLogout }: AssistantLayoutP
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 flex flex-col min-w-0 p-[28px] overflow-y-auto">
+        <main className="flex-1 flex flex-col min-w-0 p-7 overflow-y-auto">
           {children}
         </main>
       </div>
