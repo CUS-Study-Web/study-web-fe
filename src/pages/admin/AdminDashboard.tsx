@@ -67,7 +67,7 @@ const AdminDashboard = () => {
           <div className="flex flex-col">
             {ACTIVITY_LOG.map((a, i) => (
               <div
-                key={i}
+                key={`${a.text} - ${a.time}`}
                 className={`flex items-center gap-[16px] py-[13px] ${i < ACTIVITY_LOG.length - 1 ? ' activity-row-bordered' : ''}`}>
                 <div className="w-[8px] h-[8px] rounded-full bg-[var(--brand-500)] shrink-0" />
                 <span className="[font-family:var(--font-body)] text-[13.5px] text-[#1b1f1c] flex-1">{a.text}</span>
