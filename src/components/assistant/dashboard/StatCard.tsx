@@ -14,7 +14,7 @@ const StatCard = ({
   icon,
   color,
   background,
-}) => {
+}: StatCardProps) => {
   return (
     <div className="bg-[var(--surface-card)] border border-[var(--border-default)] rounded-[var(--radius-lg)] py-5.5 px-5 shadow-[0_1px_6px_rgba(0,0,0,0.06)] flex flex-col justify-between">
       <div className="flex justify-between items-start mb-3.5">
