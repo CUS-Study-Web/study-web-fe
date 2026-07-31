@@ -1,5 +1,7 @@
+import Home from "./pages/guest/Home";
+
 function App() {
-  return null
+  return <Home />;
 }
 
-export default App
+export default App;
