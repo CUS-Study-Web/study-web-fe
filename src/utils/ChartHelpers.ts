@@ -3,6 +3,7 @@ import { type ChartOptions, type ChartData, type ChartType } from 'chart.js'
 function GenerateOptions<T extends ChartType = ChartType>(titleText: string): ChartOptions<T> {
   return {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {  position: 'top' },
       title: {

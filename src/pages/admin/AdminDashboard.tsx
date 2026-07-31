@@ -44,15 +44,15 @@ const AdminDashboard = () => {
 
         {/* Charts row */}
         <div className="grid grid-cols-3 gap-[20px] mb-[28px]">
-          <div className="surface-card p-[22px_24px]">
+          <div className="surface-card p-[22px_24px] relative h-[280px] w-full">
             <Bar options={GenerateOptions('Đăng nhập trong tuần (7 ngày gần nhất)')} 
                 data={GenerateData(DAYS_IN_WEEK, 'Số lần đăng nhập', WEEKLY_LOGINS, '#2C5A31')} />
           </div>
-          <div className="surface-card p-[22px_24px]">
+          <div className="surface-card p-[22px_24px] relative h-[280px] w-full">
             <Line options={GenerateOptions('Đăng ký theo tháng (Tháng 1-7/2025)')}
                 data={GenerateData(MONTHS_TO_7, 'Số lượt đăng ký', MONTHLY_REGS, '#2F6FAE')}/>
           </div>
-          <div className="surface-card p-[22px_24px]">
+          <div className="surface-card p-[22px_24px] relative h-[280px] w-full">
             <Bar options={GenerateOptions('Truy cập web theo tháng (Tháng 1-7/2025)')} 
                 data={GenerateData(MONTHS, 'Số lượt truy cập', MONTHLY_WEB_TRAFFIC, '#2F6FAE')} />
           </div>
