@@ -1,10 +1,8 @@
-import React from 'react';
-
 interface QuickActionsProps {
   navigate: (path: string) => void;
 }
 
-const QuickActions: React.FC<QuickActionsProps> = ({ navigate }) => {
+const QuickActions = ({ navigate }: QuickActionsProps) => {
   return (
     <div className="bg-[var(--surface-card)] border border-[var(--border-default)] rounded-[var(--radius-lg)] p-5.5 shadow-[0_1px_6px_rgba(0,0,0,0.06)]">
       <div className="font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body)] text-[var(--text-primary)] mb-4.5">

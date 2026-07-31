@@ -1,10 +1,12 @@
-import type { AsstLecture } from './AsstLecture';
-import type { AsstExercise } from './AsstExercise';
-import type { AsstCourseExam } from './AsstCourseExam';
-import type { AsstLesson } from './AsstLesson';
-import type { AsstStatCard } from './AsstStatCard';
-import type { AsstActivity } from './AsstActivity';
-import type { AsstDocument } from './AsstDocument';
+import type {
+  AsstLecture,
+  AsstExercise,
+  AsstCourseExam,
+  AsstLesson,
+  AsstStatCard,
+  AsstActivity,
+  AsstDocument
+} from './models';
 
 export const ASST_STAT_CARDS: AsstStatCard[] = [
   {

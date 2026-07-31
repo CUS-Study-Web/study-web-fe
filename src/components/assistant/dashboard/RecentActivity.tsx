@@ -1,7 +1,6 @@
-import React from 'react';
 import { ASST_RECENT_ACTIVITIES } from '../../../types/assistant/mockData';
 
-const RecentActivity: React.FC = () => {
+const RecentActivity = () => {
   return (
     <div className="bg-[var(--surface-card)] border border-[var(--border-default)] rounded-[var(--radius-lg)] p-5.5 shadow-[0_1px_6px_rgba(0,0,0,0.06)] w-full">
       <div className="font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body)] text-[var(--text-primary)] mb-4">

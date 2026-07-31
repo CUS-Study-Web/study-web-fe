@@ -1,11 +1,10 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatCard from '../../components/assistant/dashboard/StatCard';
 import QuickActions from '../../components/assistant/dashboard/QuickActions';
 import RecentActivity from '../../components/assistant/dashboard/RecentActivity';
 import { ASST_STAT_CARDS } from '../../types/assistant/mockData';
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   const navigate = useNavigate();
 
   return (

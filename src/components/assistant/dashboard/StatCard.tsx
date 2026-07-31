@@ -1,5 +1,3 @@
-import React from 'react';
-
 export interface StatCardProps {
   label: string;
   value: string;
@@ -9,7 +7,7 @@ export interface StatCardProps {
   background: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({
+const StatCard = ({
   label,
   value,
   delta,
