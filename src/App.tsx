@@ -7,6 +7,9 @@ import CoursesPage from "./pages/guest/CoursesPage";
 import TrialExamPage from "./pages/guest/TrialExamPage";
 import DocumentsPage from "./pages/guest/DocumentsPage";
 import AboutPage from "./pages/guest/AboutPage";
+import LoginPage from "./pages/guest/LoginPage";
+import RegisterPage from "./pages/guest/RegisterPage";
+import VipPage from "./pages/guest/VipPage";
 
 function AppLayout() {
   const location = useLocation();
@@ -36,7 +39,12 @@ function App() {
           <Route path="/trial" element={<TrialExamPage />} />
           <Route path="/documents" element={<DocumentsPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/vip" element={<VipPage />} />
         </Route>
+
+        {/* Full-screen Auth Pages */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </BrowserRouter>
   );

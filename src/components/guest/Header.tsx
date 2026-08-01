@@ -55,17 +55,20 @@ export default function Header() {
 
         {/* Actions - Desktop & Tablet */}
         <div className="hidden md:flex items-center gap-3">
-          <button
-            className="px-5 py-2.5 text-sm font-extrabold bg-[#f4f7f4] hover:bg-[#e6efe8] border border-[#d2dcd4] !text-[#333a35] rounded-[16px] active:scale-95 transition-all duration-150 shadow-xs cursor-pointer"
+          <Link
+            to="/login"
+            className="px-5 py-2.5 text-sm font-extrabold bg-[#f4f7f4] hover:bg-[#e6efe8] border border-[#d2dcd4] !text-[#333a35] rounded-[16px] active:scale-95 transition-all duration-150 shadow-xs cursor-pointer inline-flex items-center justify-center"
           >
             Đăng nhập
-          </button>
-          <button
-            className="px-5 py-2.5 text-sm font-extrabold bg-[#28522d] hover:bg-[#1e4022] !text-white rounded-[16px] shadow-md shadow-[#28522d]/20 active:scale-95 transition-all duration-150 cursor-pointer"
+          </Link>
+          <Link
+            to="/register"
+            className="px-5 py-2.5 text-sm font-extrabold bg-[#28522d] hover:bg-[#1e4022] !text-white rounded-[16px] shadow-md shadow-[#28522d]/20 active:scale-95 transition-all duration-150 cursor-pointer inline-flex items-center justify-center"
           >
             Đăng ký
-          </button>
-          <button
+          </Link>
+          <Link
+            to="/vip"
             className="flex items-center gap-2 px-5 py-2.5 text-sm font-extrabold bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] rounded-[16px] shadow-md shadow-[#e6a800]/30 active:scale-95 transition-all duration-150 cursor-pointer"
           >
             {/* Crown Icon */}
@@ -76,7 +79,7 @@ export default function Header() {
               <path d="M2 22h20v-2H2v2zm1-3h18l-2-9-5 4-2-6-2 6-5-4-2 9z" />
             </svg>
             Tài khoản VIP
-          </button>
+          </Link>
         </div>
 
         {/* Hamburger Menu - Mobile */}
