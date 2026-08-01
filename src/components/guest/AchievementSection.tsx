@@ -43,7 +43,7 @@ export default function AchievementSection() {
               onClick={() => setActiveTab(prog)}
               className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${
                 activeTab === prog 
-                  ? "bg-[var(--warning-400)] text-[var(--text-primary-500)] shadow-md" 
+                  ? "bg-[#FFC107] text-[var(--text-primary-800)] shadow-md" 
                   : "bg-transparent border border-[var(--border-300)] text-[var(--text-secondary-500)] hover:bg-[var(--surface-600)]"
               }`}
             >
@@ -52,8 +52,8 @@ export default function AchievementSection() {
           ))}
         </div>
 
-        {/* Highlight Section */}
-        <div className="flex flex-col lg:flex-row gap-6">
+        {/* Top Highlight Section */}
+        <div className="flex flex-col lg:flex-row gap-6 mb-6">
           
           {/* Left Hero Student Card */}
           <div className="w-full lg:w-1/3 bg-[var(--neutral-0)] rounded-[32px] p-8 shadow-sm border border-[var(--border-300)] flex flex-col items-center justify-center text-center">
@@ -83,59 +83,54 @@ export default function AchievementSection() {
           </div>
 
           {/* Right Details */}
-          <div className="w-full lg:w-2/3 flex flex-col gap-6">
-            
-            {/* Score Card */}
-            <div className="bg-[var(--neutral-0)] rounded-[32px] p-8 shadow-sm border border-[var(--border-300)]">
-              <div className="flex items-center gap-4 mb-6">
-                <h3 className="text-xl font-bold text-[var(--text-primary-500)]">{students[0].name}</h3>
-                <span className="text-sm text-[var(--text-secondary-400)]">{students[0].school} · {students[0].title}</span>
-              </div>
-              
-              <div className="mb-4">
-                <span className="text-[10px] font-bold text-[var(--text-secondary-400)] uppercase tracking-wider">ĐIỂM THÀNH PHẦN</span>
-              </div>
-              
-              <div className="space-y-3 mb-8">
-                {students[0].scores?.map((score, idx) => (
-                  <div key={idx} className="flex justify-between items-center text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[var(--brand-base-600)]"></div>
-                      <span className="text-[var(--text-secondary-500)] font-medium">{score.label}</span>
-                    </div>
-                    <span className="font-extrabold text-[var(--text-primary-500)]">{score.value}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="bg-[var(--brand-base-700)] rounded-2xl p-6 flex items-center justify-between text-[var(--neutral-0)]">
-                <div>
-                  <div className="text-[10px] font-bold text-[var(--brand-soft-300)] uppercase tracking-widest mb-1">TỔNG ĐIỂM</div>
-                  <div className="text-4xl font-extrabold tracking-tight text-[var(--warning-400)]">{students[0].total}</div>
-                </div>
-                <div className="w-12 h-12 rounded-full bg-[var(--brand-base-600)] flex items-center justify-center">
-                  <svg className="w-6 h-6 text-[var(--warning-400)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
-                </div>
-              </div>
+          <div className="w-full lg:w-2/3 bg-[var(--neutral-0)] rounded-[32px] p-8 shadow-sm border border-[var(--border-300)]">
+            <div className="flex items-center gap-4 mb-6">
+              <h3 className="text-xl font-bold text-[var(--text-primary-500)]">{students[0].school} · {students[0].title}</h3>
             </div>
-
-            {/* Other Students Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {students.slice(0).map((student, idx) => (
-                <div key={student.id} className={`p-4 rounded-2xl flex items-center gap-4 cursor-pointer transition-all ${idx === 0 ? "bg-[var(--brand-base-700)] text-[var(--neutral-0)] shadow-md" : "bg-[var(--neutral-0)] border border-[var(--border-300)] hover:bg-[var(--surface-600)]"}`}>
-                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-transparent">
-                    <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
+            
+            <div className="mb-4">
+              <span className="text-[10px] font-bold text-[var(--text-secondary-400)] uppercase tracking-wider">ĐIỂM THÀNH PHẦN</span>
+            </div>
+            
+            <div className="space-y-3 mb-8">
+              {students[0].scores?.map((score, idx) => (
+                <div key={idx} className="flex justify-between items-center text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--brand-base-600)]"></div>
+                    <span className="text-[var(--text-secondary-500)] font-medium">{score.label}</span>
                   </div>
-                  <div>
-                    <h4 className={`text-sm font-bold ${idx === 0 ? "text-[var(--neutral-0)]" : "text-[var(--text-primary-500)]"}`}>{student.name}</h4>
-                    <p className={`text-xs ${idx === 0 ? "text-[var(--brand-soft-300)]" : "text-[var(--text-secondary-400)]"}`}>{student.title}</p>
-                  </div>
+                  <span className="font-extrabold text-[var(--text-primary-500)]">{score.value}</span>
                 </div>
               ))}
             </div>
 
+            <div className="bg-[var(--brand-base-700)] rounded-2xl p-6 flex items-center justify-between text-[var(--neutral-0)]">
+              <div>
+                <div className="text-[10px] font-bold text-[#ffffff] opacity-80 uppercase tracking-widest mb-1">TỔNG ĐIỂM</div>
+                <div className="text-4xl font-extrabold tracking-tight text-[#FFC107]">{students[0].total}</div>
+              </div>
+              <div className="w-12 h-12 rounded-full bg-[var(--brand-base-600)] flex items-center justify-center border border-[var(--brand-base-500)]">
+                <svg className="w-6 h-6 text-[#FFC107]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* Bottom Students Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {students.map((student, idx) => (
+            <div key={student.id} className={`p-4 rounded-2xl flex items-center gap-4 cursor-pointer transition-all ${idx === 0 ? "bg-[var(--brand-base-700)] shadow-md" : "bg-[var(--neutral-0)] border border-[var(--border-300)] hover:bg-[var(--surface-600)]"}`}>
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-transparent">
+                <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
+              </div>
+              <div>
+                <h4 className={`text-sm font-bold ${idx === 0 ? "text-[#ffffff]" : "text-[var(--text-primary-500)]"}`}>{student.name}</h4>
+                <p className={`text-xs ${idx === 0 ? "text-[#ffffff] opacity-90" : "text-[var(--text-secondary-400)]"}`}>{student.title}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   );

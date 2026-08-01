@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PageHero from "../../components/guest/PageHero";
 import ExamCard from "../../components/guest/ExamCard";
 
@@ -16,6 +17,28 @@ const examData = [
 ];
 
 export default function TrialExamPage() {
+  const [selectedCategory, setSelectedCategory] = useState("Tất cả");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredExams = examData.filter((exam) => {
+    const matchesCategory =
+      selectedCategory === "Tất cả" ||
+      exam.subject.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+      (selectedCategory === "Toán" && exam.subject === "TOÁN") ||
+      (selectedCategory === "Vật lý" && exam.subject === "VẬT LÝ") ||
+      (selectedCategory === "Hóa học" && exam.subject === "HÓA HỌC") ||
+      (selectedCategory === "Tiếng Anh" && exam.subject === "TIẾNG ANH") ||
+      (selectedCategory === "Ngữ văn" && exam.subject === "NGỮ VĂN") ||
+      (selectedCategory === "Sinh học" && exam.subject === "SINH HỌC");
+
+    const matchesSearch =
+      searchQuery.trim() === "" ||
+      exam.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      exam.subject.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesCategory && matchesSearch;
+  });
+
   return (
     <div className="pb-20">
       <PageHero
@@ -23,41 +46,56 @@ export default function TrialExamPage() {
         title="Thi thử"
         description="Hơn 200 đề thi thử được cập nhật liên tục. Một số đề thi yêu cầu tài khoản VIP."
       >
-        <div className="max-w-2xl relative">
+        <div className="max-w-2xl relative mt-4">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <svg className="h-5 w-5 text-[var(--brand-base-200)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-5 w-5 text-[#a0b8a3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
           <input
             type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Tìm kiếm đề thi..."
-            className="w-full bg-[var(--brand-base-600)] border border-[var(--brand-base-500)] rounded-xl py-3.5 pl-12 pr-4 text-[var(--neutral-0)] placeholder-[var(--brand-base-200)] focus:outline-none focus:border-[var(--brand-soft-400)] focus:ring-1 focus:ring-[var(--brand-soft-400)] transition"
+            className="w-full bg-[#28522d] border border-[#3c6d42] rounded-xl py-3.5 pl-12 pr-4 !text-white placeholder-[#beccbf] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition text-sm font-medium"
           />
         </div>
       </PageHero>
 
-      <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 xl:px-20 mt-8">
-        <div className="flex flex-wrap gap-3 mb-10 border-b border-[var(--border-300)] pb-6">
-          {categories.map((cat, idx) => (
-            <button
-              key={cat}
-              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all shadow-xs ${
-                idx === 0
-                  ? "bg-[var(--brand-base-600)] text-[var(--neutral-0)] border border-[var(--brand-base-600)]"
-                  : "bg-[var(--neutral-0)] text-[var(--text-secondary-500)] border border-[var(--border-300)] hover:bg-[var(--surface-600)] hover:text-[var(--text-primary-500)]"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+      <section className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-8 xl:px-10 mt-8">
+        {/* Category filter pills */}
+        <div className="flex flex-wrap gap-3 mb-10 border-b border-[#e2e8e3] pb-6">
+          {categories.map((cat) => {
+            const isActive = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-xs cursor-pointer active:scale-95 ${
+                  isActive
+                    ? "bg-[#28522d] !text-white border border-[#28522d] shadow-sm"
+                    : "bg-white text-[#333a35] border border-[#d2dcd4] hover:bg-[#edf4ee] hover:text-[#28522d]"
+                }`}
+              >
+                {cat}
+              </button>
+            );
+          })}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {examData.map((exam) => (
-            <ExamCard key={exam.id} {...exam} />
-          ))}
-        </div>
+        {/* Exams Grid */}
+        {filteredExams.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+            {filteredExams.map((exam) => (
+              <ExamCard key={exam.id} {...exam} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 text-[#5c635e]">
+            <p className="text-lg font-bold">Không tìm thấy đề thi phù hợp.</p>
+            <p className="text-sm mt-1">Vui lòng thử chọn môn học khác hoặc xóa từ khóa tìm kiếm.</p>
+          </div>
+        )}
       </section>
     </div>
   );
