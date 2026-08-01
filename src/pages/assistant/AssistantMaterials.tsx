@@ -184,7 +184,7 @@ export default function AssistantMaterials() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((doc, i) => (
+              {filtered.map((doc) => (
                 <tr key={doc.id} className="hover:bg-[var(--brand-soft-50)] transition-colors duration-140 border-t border-[var(--surface-muted)]">
                   <td className="py-3.5 px-5">
                     <span className="font-[family-name:var(--font-body)] font-semibold text-[13px] text-[var(--text-primary)]">
