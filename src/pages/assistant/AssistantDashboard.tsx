@@ -20,7 +20,7 @@ const AssistantDashboard = () => {
       </div>
 
       {/* Stat Cards Grid */}
-      <div className="grid grid-cols-3 gap-4.5 mb-7">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-7 md:mb-10 lg:mb-14">
         {ASST_STAT_CARDS.map((card) => (
           <AssistantStatCard
             key={card.id}
@@ -30,7 +30,7 @@ const AssistantDashboard = () => {
       </div>
 
       {/* Bottom Grid */}
-      <div className="grid grid-cols-[1fr_360px] gap-5">
+      <div className="flex flex-col lg:grid lg:grid-cols-[1fr_360px] gap-5 md:gap-6 lg:gap-8">
         <AssistantQuickActions navigate={navigate} />
         <AssistantRecentActivity />
       </div>

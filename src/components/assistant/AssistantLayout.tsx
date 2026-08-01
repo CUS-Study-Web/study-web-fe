@@ -22,7 +22,7 @@ export default function AssistantLayout({ children, onLogout }: AssistantLayoutP
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0">
         {/* Top Bar */}
-        <header className="sticky top-0 z-40 h-16 bg-[var(--surface-500)] backdrop-blur-[12px] border-b border-[var(--border-default)] px-7 flex items-center justify-between">
+        <header className="sticky top-0 z-40 h-16 bg-white/90 backdrop-blur-[12px] border-b border-[var(--border-default)] px-4 md:px-6 lg:px-8 flex items-center justify-between">
           <div>
             <div className="font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-lg)] leading-[var(--lh-body-lg)] text-[var(--text-primary)] m-0">
               {pageTitle}
@@ -60,7 +60,7 @@ export default function AssistantLayout({ children, onLogout }: AssistantLayoutP
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 flex flex-col min-w-0 p-7 overflow-y-auto">
+        <main className="flex-1 flex flex-col min-w-0 px-4 md:px-6 lg:px-8 py-6 md:py-8 lg:py-10 overflow-y-auto">
           {children}
         </main>
       </div>

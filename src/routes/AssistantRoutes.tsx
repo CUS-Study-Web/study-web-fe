@@ -9,7 +9,7 @@ export default function AssistantRoutes() {
   return (
     <AssistantLayout>
       <Routes>
-        <Route path="/" element={<Navigate to="/asst/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/assistant/dashboard" replace />} />
         <Route path="dashboard" element={<AssistantDashboard />} />
         <Route path="courses" element={<AssistantCourses />} />
         <Route path="exams" element={<AssistantExams />} />
