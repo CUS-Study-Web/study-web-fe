@@ -1,4 +1,7 @@
+import { Link } from "react-router-dom";
+
 interface CourseCardProps {
+  id?: string;
   title: string;
   tag: string;
   subtitle: string;
@@ -7,9 +10,11 @@ interface CourseCardProps {
   btnColor: string;
 }
 
-export default function CourseCard({ title, tag, subtitle, desc, img, btnColor }: CourseCardProps) {
+export default function CourseCard({ id, title, tag, subtitle, desc, img, btnColor }: CourseCardProps) {
+  const courseSlug = id || title.toLowerCase();
+
   return (
-    <div className="bg-white rounded-[24px] overflow-hidden shadow-lg border border-[#e2e8e3] flex flex-col group hover:shadow-xl transition-all duration-300">
+    <div className="bg-white rounded-[24px] overflow-hidden shadow-lg border border-[var(--border-300)] flex flex-col group hover:shadow-xl transition-all duration-300">
       {/* Top Image Section */}
       <div className="relative h-56 w-full">
         <img src={img} alt={title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -33,12 +38,15 @@ export default function CourseCard({ title, tag, subtitle, desc, img, btnColor }
 
       {/* Bottom Info Section */}
       <div className="p-6 flex flex-col flex-grow justify-between gap-6">
-        <p className="text-[14px] !text-[#333a35] leading-relaxed line-clamp-4 min-h-[80px] font-medium">
+        <p className="text-[14px] !text-[var(--text-secondary-600)] leading-relaxed line-clamp-4 min-h-[80px] font-medium">
           {desc}
         </p>
-        <button className={`w-full py-3.5 ${btnColor} !text-white font-extrabold rounded-[14px] shadow-md hover:shadow-lg active:scale-95 transition-all text-base flex items-center justify-center gap-2 cursor-pointer`}>
+        <Link
+          to={`/courses/${courseSlug}`}
+          className={`w-full py-3.5 ${btnColor} !text-white font-extrabold rounded-[14px] shadow-md hover:shadow-lg active:scale-95 transition-all text-base flex items-center justify-center gap-2 cursor-pointer`}
+        >
           Vào khóa học <span className="text-lg font-bold">→</span>
-        </button>
+        </Link>
       </div>
     </div>
   );

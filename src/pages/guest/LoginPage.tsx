@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -91,30 +90,30 @@ export default function LoginPage() {
       </div>
 
       {/* Right Column - Form Container (Left Aligned Cluster) */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-16 bg-[#f8faf8]">
+      <div className="w-full md:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-16 bg-[var(--surface-300)]">
         <div className="w-full max-w-[400px] flex flex-col items-start text-left">
           {/* Logo Badge - Aligned Left */}
-          <div className="w-12 h-12 rounded-[14px] bg-[#28522d] flex items-center justify-center text-white shadow-xs mb-6 self-start">
+          <div className="w-12 h-12 rounded-[14px] bg-[var(--brand-base-600)] flex items-center justify-center text-white shadow-xs mb-6 self-start">
             <svg className="w-7 h-7 fill-current text-white" viewBox="0 0 24 24">
               <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5zm0 17.5c-4.14 0-7.5-3.36-7.5-7.5s3.36-7.5 7.5-7.5 7.5 3.36 7.5 7.5-3.36 7.5-7.5 7.5zm-3-8l2.5 2.5 5.5-5.5 1.5 1.5-7 7-4-4 1.5-1.5z" />
             </svg>
           </div>
 
           <h2
-            className="text-3xl font-black !text-[#1f1f1c] mb-2 text-left w-full"
+            className="text-3xl font-black !text-[var(--text-primary-500)] mb-2 text-left w-full"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             Đăng nhập
           </h2>
 
-          <p className="text-sm font-medium text-[#79807a] mb-8 text-left w-full">
+          <p className="text-sm font-medium text-[var(--text-secondary-300)] mb-8 text-left w-full">
             Nhập thông tin tài khoản để tiếp tục học tập.
           </p>
 
           <form onSubmit={handleSubmit} className="w-full space-y-5 text-left">
             {/* Email Field */}
             <div>
-              <label className="block text-xs font-extrabold text-[#333a35] mb-2">
+              <label className="block text-xs font-extrabold text-[var(--text-secondary-600)] mb-2">
                 Email <span className="text-[#ef4444]">*</span>
               </label>
               <input
@@ -123,17 +122,17 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="student / assistant / admin @gmail.com"
-                className="w-full bg-white border border-[#d2dcd4] rounded-[14px] py-3.5 px-4 text-sm text-[#1f1f1c] placeholder-[#9ca59e] focus:border-[#28522d] focus:ring-1 focus:ring-[#28522d] outline-none shadow-xs transition font-medium"
+                className="w-full bg-[var(--neutral-0)] border border-[var(--border-500)] rounded-[14px] py-3.5 px-4 text-sm text-[var(--text-primary-500)] placeholder-[#9ca59e] focus:border-[var(--brand-base-600)] focus:ring-1 focus:ring-[var(--brand-base-600)] outline-none shadow-xs transition font-medium"
               />
             </div>
 
             {/* Password Field */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-extrabold text-[#333a35]">
+                <label className="text-xs font-extrabold text-[var(--text-secondary-600)]">
                   Mật khẩu <span className="text-[#ef4444]">*</span>
                 </label>
-                <a href="#forgot" className="text-xs font-bold !text-[#28522d] underline hover:text-[#1e4022]">
+                <a href="#forgot" className="text-xs font-bold !text-[var(--brand-base-600)] underline hover:text-[var(--brand-base-700)]">
                   Quên mật khẩu?
                 </a>
               </div>
@@ -143,23 +142,23 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-white border border-[#d2dcd4] rounded-[14px] py-3.5 px-4 text-sm text-[#1f1f1c] placeholder-[#9ca59e] focus:border-[#28522d] focus:ring-1 focus:ring-[#28522d] outline-none shadow-xs transition font-medium"
+                className="w-full bg-[var(--neutral-0)] border border-[var(--border-500)] rounded-[14px] py-3.5 px-4 text-sm text-[var(--text-primary-500)] placeholder-[#9ca59e] focus:border-[var(--brand-base-600)] focus:ring-1 focus:ring-[var(--brand-base-600)] outline-none shadow-xs transition font-medium"
               />
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3.5 bg-[#28522d] hover:bg-[#1e4022] !text-white font-extrabold rounded-[14px] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-base cursor-pointer mt-2 text-center"
+              className="w-full py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[14px] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-base cursor-pointer mt-2 text-center"
             >
               Đăng nhập
             </button>
           </form>
 
           {/* Footer toggle link - Left Aligned */}
-          <p className="text-sm font-medium text-[#79807a] text-left w-full mt-6">
+          <p className="text-sm font-medium text-[var(--text-secondary-300)] text-left w-full mt-6">
             Chưa có tài khoản?{" "}
-            <Link to="/register" className="font-bold !text-[#28522d] underline hover:text-[#1e4022]">
+            <Link to="/register" className="font-bold !text-[var(--brand-base-600)] underline hover:text-[var(--brand-base-700)]">
               Đăng ký
             </Link>
           </p>

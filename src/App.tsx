@@ -10,6 +10,7 @@ import AboutPage from "./pages/guest/AboutPage";
 import LoginPage from "./pages/guest/LoginPage";
 import RegisterPage from "./pages/guest/RegisterPage";
 import VipPage from "./pages/guest/VipPage";
+import CourseDetailPage from "./pages/guest/CourseDetailPage";
 
 function AppLayout() {
   const location = useLocation();
@@ -36,6 +37,7 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/:courseId" element={<CourseDetailPage />} />
           <Route path="/trial" element={<TrialExamPage />} />
           <Route path="/documents" element={<DocumentsPage />} />
           <Route path="/about" element={<AboutPage />} />

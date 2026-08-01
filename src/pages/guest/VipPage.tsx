@@ -71,7 +71,7 @@ export default function VipPage() {
                 className="text-4xl font-black !text-white"
                 style={{ fontFamily: "var(--font-heading)" }}
               >
-                199.000 đ
+                80.000 đ
               </h2>
               <span className="text-sm font-medium text-[#beccbf]">/tháng</span>
             </div>
@@ -120,7 +120,7 @@ export default function VipPage() {
             </div>
             <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[#e2e8e3] flex items-start gap-2">
               <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
-              <span>Giới hạn 3 đề, không xem được lời giải chi tiết</span>
+              <span>Giới hạn một số đề, không xem được đáp án chi tiết</span>
             </div>
             <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
               <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
@@ -143,22 +143,7 @@ export default function VipPage() {
             </div>
           </div>
 
-          {/* Row 3: Bài giảng record */}
-          <div className="grid grid-cols-12 border-b border-[#e2e8e3] text-xs md:text-sm">
-            <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[#e2e8e3] flex items-center">
-              Bài giảng record
-            </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[#e2e8e3] flex items-start gap-2">
-              <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
-              <span>Không được xem</span>
-            </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
-              <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
-              <span>Được xem toàn bộ</span>
-            </div>
-          </div>
-
-          {/* Row 4: Phòng thi thực chiến */}
+          {/* Row 3: Phòng thi thực chiến */}
           <div className="grid grid-cols-12 border-b border-[#e2e8e3] text-xs md:text-sm">
             <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[#e2e8e3] flex items-center">
               Phòng thi thực chiến
@@ -173,7 +158,7 @@ export default function VipPage() {
             </div>
           </div>
 
-          {/* Row 5: Tài liệu thi thử */}
+          {/* Row 4: Tài liệu thi thử (Đặc biệt) */}
           <div className="grid grid-cols-12 border-b border-[#e2e8e3] text-xs md:text-sm">
             <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[#e2e8e3] flex items-center">
               Tài liệu thi thử
@@ -184,11 +169,16 @@ export default function VipPage() {
             </div>
             <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
               <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
-              <span>Tài liệu thi thử được cập nhật theo thời gian học của khóa học chính thức tại CUS</span>
+              <div>
+                <span className="inline-block bg-[#fef3c7] text-[#b45309] border border-[#fde68a] text-[10px] font-extrabold px-1.5 py-0.5 rounded mr-1.5 uppercase">
+                  Đặc biệt
+                </span>
+                <span>Tài liệu thi thử được cập nhật theo thời gian học của khóa học chính thức tại CUS</span>
+              </div>
             </div>
           </div>
 
-          {/* Row 6: Buổi học GG Meet */}
+          {/* Row 5: Buổi học GG Meet (Đặc biệt) */}
           <div className="grid grid-cols-12 text-xs md:text-sm">
             <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[#e2e8e3] flex items-center">
               Buổi học GG Meet
@@ -199,7 +189,12 @@ export default function VipPage() {
             </div>
             <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
               <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
-              <span>Tham gia trực tiếp một số buổi học chính thức qua GG Meet khi liên hệ hotline</span>
+              <div>
+                <span className="inline-block bg-[#fef3c7] text-[#b45309] border border-[#fde68a] text-[10px] font-extrabold px-1.5 py-0.5 rounded mr-1.5 uppercase">
+                  Đặc biệt
+                </span>
+                <span>Tham gia trực tiếp một số buổi học chính thức qua GG Meet khi liên hệ hotline</span>
+              </div>
             </div>
           </div>
         </div>

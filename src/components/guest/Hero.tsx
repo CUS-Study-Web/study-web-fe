@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Hero() {
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-transparent">
@@ -6,20 +8,20 @@ export default function Hero() {
         <div className="lg:col-span-6 flex flex-col items-start text-left">
           {/* Subtitle Tag */}
           <div
-            className="inline-flex items-center gap-2 bg-[#edf4ee] rounded-full px-4 py-1.5 text-xs md:text-sm font-bold mb-6 text-[#28522d]"
+            className="inline-flex items-center gap-2 bg-[var(--brand-soft-200)] rounded-full px-4 py-1.5 text-xs md:text-sm font-bold mb-6 !text-[var(--brand-base-600)]"
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-[#28522d]"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[var(--brand-base-600)]"></span>
             LUYỆN THI ĐGNL - CUS
           </div>
           
           {/* H1 Headline - Matching Image 2 */}
           <h1
-            className="text-5xl sm:text-6xl lg:text-[72px] xl:text-[80px] font-black leading-[1.08] tracking-tight !text-[#1f1f1c]"
+            className="text-5xl sm:text-6xl lg:text-[72px] xl:text-[80px] font-black leading-[1.08] tracking-tight !text-[var(--text-primary-500)]"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             Cơ hội do bạn quyết
-            <span className="block my-2 text-4xl sm:text-5xl font-black !text-[#1f1f1c]">—</span>
-            <span className="relative inline-block !text-[#28522d]">
+            <span className="block my-2 text-4xl sm:text-5xl font-black !text-[var(--text-primary-500)]">—</span>
+            <span className="relative inline-block !text-[var(--brand-base-600)]">
               Tương lai do<br />bạn chọn!
               {/* Authentic Green Underline Stroke */}
               <svg
@@ -40,21 +42,23 @@ export default function Hero() {
           
           {/* Subtitle Paragraph */}
           <p
-            className="mt-6 text-base md:text-lg max-w-xl leading-relaxed font-medium !text-[#333a35]"
+            className="mt-6 text-base md:text-lg max-w-xl leading-relaxed font-medium !text-[var(--text-secondary-600)]"
             style={{ fontFamily: "var(--font-body)" }}
           >
             Đội ngũ giảng viên chuyên gia, lộ trình cá nhân hóa và hơn 3.400 học viên đã đỗ vào các trường đại học hàng đầu Việt Nam.
           </p>
           
-          {/* Action Buttons - Matching Image 2 */}
+          {/* Action Buttons - Matching User Request */}
           <div className="mt-8 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <button
-              className="px-8 py-3.5 bg-[#28522d] hover:bg-[#1e4022] !text-white font-extrabold rounded-[14px] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-center text-base cursor-pointer"
+            <Link
+              to="/login"
+              className="px-8 py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[14px] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-center text-base cursor-pointer inline-flex items-center justify-center"
             >
               Bắt đầu ngay
-            </button>
+            </Link>
             <button
-              className="px-8 py-3.5 bg-[#f8faf8] border border-[#28522d] hover:bg-[#edf4ee] !text-[#28522d] font-extrabold rounded-[14px] active:scale-95 transition-all text-center text-base cursor-pointer"
+              onClick={() => document.getElementById("courses")?.scrollIntoView({ behavior: "smooth" })}
+              className="px-8 py-3.5 bg-[var(--surface-300)] border border-[var(--brand-base-600)] hover:bg-[var(--brand-soft-300)] !text-[var(--brand-base-600)] font-extrabold rounded-[14px] active:scale-95 transition-all text-center text-base cursor-pointer inline-flex items-center justify-center"
             >
               Xem khóa học
             </button>
