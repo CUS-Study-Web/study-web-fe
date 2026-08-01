@@ -1,13 +1,25 @@
 import { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Helper for NavLink classes to reuse active styling logic
+  const getNavClasses = ({ isActive }: { isActive: boolean }) =>
+    isActive
+      ? "px-4 py-2 rounded-full text-sm font-semibold bg-[var(--brand-soft-400)] text-[var(--brand-base-600)] transition"
+      : "text-sm font-medium text-[var(--text-primary-500)] hover:text-[var(--brand-base-600)] transition";
+
+  const getMobileNavClasses = ({ isActive }: { isActive: boolean }) =>
+    isActive
+      ? "px-4 py-2 rounded-full text-sm font-semibold bg-[var(--brand-soft-400)] text-[var(--brand-base-600)]"
+      : "px-4 py-2 text-sm font-medium text-[var(--text-primary-500)] hover:bg-[var(--surface-600)] rounded-xl transition";
 
   return (
     <header className="sticky top-0 z-50 bg-[var(--surface-500)]/95 backdrop-blur-md border-b border-[var(--border-300)] px-4 md:px-8 lg:px-12 xl:px-20 py-3.5">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-2.5 group">
+        <Link to="/" className="flex items-center gap-2.5 group">
           <div className="w-10 h-10 rounded-xl bg-[var(--brand-base-600)] flex items-center justify-center text-[var(--neutral-0)] shadow-xs transition-transform group-hover:scale-105">
             {/* Crest SVG */}
             <svg className="w-6 h-6 fill-current text-[var(--neutral-0)]" viewBox="0 0 24 24">
@@ -20,40 +32,25 @@ export default function Header() {
           >
             CUS
           </span>
-        </a>
+        </Link>
 
         {/* Navigation links - Desktop & Tablet */}
-        <nav className="hidden lg:flex items-center gap-1">
-          <a
-            href="/"
-            className="px-4 py-2 rounded-full text-sm font-semibold bg-[var(--brand-soft-400)] text-[var(--brand-base-600)] transition"
-          >
+        <nav className="hidden lg:flex items-center gap-8">
+          <NavLink to="/" end className={getNavClasses}>
             Trang chủ
-          </a>
-          <a
-            href="#courses"
-            className="px-4 py-2 rounded-full text-sm font-medium text-[var(--text-secondary-500)] hover:bg-[var(--brand-soft-300)] hover:text-[var(--text-primary-500)] transition"
-          >
+          </NavLink>
+          <NavLink to="/courses" className={getNavClasses}>
             Khóa học
-          </a>
-          <a
-            href="#trial"
-            className="px-4 py-2 rounded-full text-sm font-medium text-[var(--text-secondary-500)] hover:bg-[var(--brand-soft-300)] hover:text-[var(--text-primary-500)] transition"
-          >
+          </NavLink>
+          <NavLink to="/trial" className={getNavClasses}>
             Thi thử
-          </a>
-          <a
-            href="#documents"
-            className="px-4 py-2 rounded-full text-sm font-medium text-[var(--text-secondary-500)] hover:bg-[var(--brand-soft-300)] hover:text-[var(--text-primary-500)] transition"
-          >
+          </NavLink>
+          <NavLink to="/documents" className={getNavClasses}>
             Tài liệu
-          </a>
-          <a
-            href="#about"
-            className="px-4 py-2 rounded-full text-sm font-medium text-[var(--text-secondary-500)] hover:bg-[var(--brand-soft-300)] hover:text-[var(--text-primary-500)] transition"
-          >
+          </NavLink>
+          <NavLink to="/about" className={getNavClasses}>
             Giới thiệu
-          </a>
+          </NavLink>
         </nav>
 
         {/* Actions - Desktop & Tablet */}
@@ -128,36 +125,21 @@ export default function Header() {
       {isOpen && (
         <div className="lg:hidden mt-4 pt-4 border-t border-[var(--border-300)] flex flex-col gap-4">
           <nav className="flex flex-col gap-1">
-            <a
-              href="/"
-              className="px-4 py-2 rounded-full text-sm font-semibold bg-[var(--brand-soft-400)] text-[var(--brand-base-600)]"
-            >
+            <NavLink to="/" end className={getMobileNavClasses} onClick={() => setIsOpen(false)}>
               Trang chủ
-            </a>
-            <a
-              href="#courses"
-              className="px-4 py-2 rounded-full text-sm font-medium text-[var(--text-secondary-500)] hover:bg-[var(--brand-soft-300)]"
-            >
+            </NavLink>
+            <NavLink to="/courses" className={getMobileNavClasses} onClick={() => setIsOpen(false)}>
               Khóa học
-            </a>
-            <a
-              href="#trial"
-              className="px-4 py-2 rounded-full text-sm font-medium text-[var(--text-secondary-500)] hover:bg-[var(--brand-soft-300)]"
-            >
+            </NavLink>
+            <NavLink to="/trial" className={getMobileNavClasses} onClick={() => setIsOpen(false)}>
               Thi thử
-            </a>
-            <a
-              href="#documents"
-              className="px-4 py-2 rounded-full text-sm font-medium text-[var(--text-secondary-500)] hover:bg-[var(--brand-soft-300)]"
-            >
+            </NavLink>
+            <NavLink to="/documents" className={getMobileNavClasses} onClick={() => setIsOpen(false)}>
               Tài liệu
-            </a>
-            <a
-              href="#about"
-              className="px-4 py-2 rounded-full text-sm font-medium text-[var(--text-secondary-500)] hover:bg-[var(--brand-soft-300)]"
-            >
+            </NavLink>
+            <NavLink to="/about" className={getMobileNavClasses} onClick={() => setIsOpen(false)}>
               Giới thiệu
-            </a>
+            </NavLink>
           </nav>
           <div className="flex flex-col gap-2 pt-2 border-t border-[var(--border-300)]">
             <button
