@@ -1,14 +1,14 @@
 import type {
-  AsstLecture,
-  AsstExercise,
-  AsstCourseExam,
-  AsstLesson,
-  AsstStatCard,
-  AsstActivity,
-  AsstDocument
+  AssistantLecture,
+  AssistantExercise,
+  AssistantCourseExam,
+  AssistantLesson,
+  AssistantStatCard,
+  AssistantActivity,
+  AssistantDocument
 } from './models';
 
-export const ASST_STAT_CARDS: AsstStatCard[] = [
+export const ASST_STAT_CARDS: AssistantStatCard[] = [
   {
     id: 1,
     label: "Tổng học viên",
@@ -38,7 +38,7 @@ export const ASST_STAT_CARDS: AsstStatCard[] = [
   },
 ];
 
-export const ASST_RECENT_ACTIVITIES: AsstActivity[] = [
+export const ASST_RECENT_ACTIVITIES: AssistantActivity[] = [
   {
     id: 1,
     type: "exam",
@@ -109,7 +109,7 @@ export const DEMO_SUBJECT_META: Record<string, { topics: number; lectures: numbe
   "Sinh học": { topics: 6, lectures: 24, exercises: 60 },
 };
 
-export const DEMO_LECTURES: AsstLecture[] = [
+export const DEMO_LECTURES: AssistantLecture[] = [
   {
     id: 1,
     title: "Đại số tuyến tính — Buổi 1: Ma trận và định thức",
@@ -126,7 +126,7 @@ export const DEMO_LECTURES: AsstLecture[] = [
   },
 ];
 
-export const DEMO_ASST_EXERCISES: AsstExercise[] = [
+export const DEMO_ASST_EXERCISES: AssistantExercise[] = [
   {
     id: 1,
     title: "Bài tập Đại số — Hệ phương trình tuyến tính",
@@ -145,7 +145,7 @@ export const DEMO_ASST_EXERCISES: AsstExercise[] = [
   },
 ];
 
-export const DEMO_COURSE_EXAMS: AsstCourseExam[] = [
+export const DEMO_COURSE_EXAMS: AssistantCourseExam[] = [
   {
     id: 1,
     title: "Đề thi thử V-ACT — Đề 01/2024",
@@ -196,7 +196,7 @@ export const DEMO_COURSE_EXAMS: AsstCourseExam[] = [
   },
 ];
 
-export const DEMO_LESSONS_ASST: AsstLesson[] = [
+export const DEMO_LESSONS_ASST: AssistantLesson[] = [
   {
     id: 1,
     no: "01",
@@ -231,7 +231,7 @@ export const DEMO_LESSONS_ASST: AsstLesson[] = [
   },
 ];
 
-export const DEMO_EXAMS_ASST: AsstDocument[] = [
+export const DEMO_EXAMS_ASST: AssistantDocument[] = [
   {
     id: 1,
     title: "Đề thi Toán nâng cao 2024 — Đề 01",

@@ -1,13 +1,13 @@
 import { NavLink } from 'react-router-dom';
-import { ASST_MENU } from './constants';
+import { ASSISTANT_MENU } from './constants';
 
-interface AsstSidebarProps {
+interface AssistantSidebarProps {
   sideOpen: boolean;
   setSideOpen: (open: boolean) => void;
   onLogout?: () => void;
 }
 
-export function AsstSidebar({ sideOpen, setSideOpen, onLogout }: AsstSidebarProps) {
+export function AssistantSidebar({ sideOpen, setSideOpen, onLogout }: AssistantSidebarProps) {
   return (
     <aside
       className="flex flex-col shrink-0 overflow-hidden sticky top-0 h-screen transition-[width] duration-220 ease-out"
@@ -35,7 +35,7 @@ export function AsstSidebar({ sideOpen, setSideOpen, onLogout }: AsstSidebarProp
 
       {/* Navigation Menu */}
       <nav className="flex-1 py-3 px-2 flex flex-col gap-0.5">
-        {ASST_MENU.map((item) => (
+        {ASSISTANT_MENU.map((item) => (
           <NavLink
             key={item.key}
             to={item.path}
@@ -73,3 +73,4 @@ export function AsstSidebar({ sideOpen, setSideOpen, onLogout }: AsstSidebarProp
     </aside>
   );
 }
+

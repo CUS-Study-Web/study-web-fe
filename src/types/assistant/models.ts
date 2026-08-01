@@ -1,4 +1,4 @@
-export interface AsstActivity {
+export interface AssistantActivity {
   id: number;
   type: string;
   text: string;
@@ -6,21 +6,21 @@ export interface AsstActivity {
   icon: string;
 }
 
-export interface AsstSubject {
+export interface AssistantSubject {
   name: string;
   topicCount: number;
   lectureCount: number;
   exerciseCount: number;
 }
 
-export interface AsstCourse {
+export interface AssistantCourse {
   key: string;
   tag: string;
   accentColor: string;
-  subjects: AsstSubject[];
+  subjects: AssistantSubject[];
 }
 
-export interface AsstCourseExam {
+export interface AssistantCourseExam {
   id: number;
   title: string;
   course: string;
@@ -29,7 +29,7 @@ export interface AsstCourseExam {
   date: string;
 }
 
-export interface AsstCourseForm {
+export interface AssistantCourseForm {
   title: string;
   subject: string;
   level: string;
@@ -39,7 +39,7 @@ export interface AsstCourseForm {
   status: string;
 }
 
-export interface AsstDocument {
+export interface AssistantDocument {
   id: number;
   title: string;
   subject: string;
@@ -52,7 +52,7 @@ export interface AsstDocument {
   access: string;
 }
 
-export interface AsstExercise {
+export interface AssistantExercise {
   id: number;
   title: string;
   topic: string;
@@ -61,7 +61,7 @@ export interface AsstExercise {
   uploadedAt: string;
 }
 
-export interface AsstLecture {
+export interface AssistantLecture {
   id: number;
   title: string;
   topic: string;
@@ -69,7 +69,7 @@ export interface AsstLecture {
   uploadedAt: string;
 }
 
-export interface AsstLesson {
+export interface AssistantLesson {
   id: number;
   no: string;
   title: string;
@@ -78,13 +78,13 @@ export interface AsstLesson {
   status: string;
 }
 
-export interface AsstLessonForm {
+export interface AssistantLessonForm {
   title: string;
   type: string;
   file: string;
 }
 
-export interface AsstStatCard {
+export interface AssistantStatCard {
   id: number;
   label: string;
   value: string;

@@ -5,8 +5,8 @@ export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/asst" replace />} />
-        <Route path="/asst/*" element={<AssistantRoutes />} />
+        <Route path="/" element={<Navigate to="/assistant" replace />} />
+        <Route path="/assistant/*" element={<AssistantRoutes />} />
       </Routes>
     </BrowserRouter>
   );

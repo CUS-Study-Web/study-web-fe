@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { AsstSidebar } from './AsstSidebar';
-import { ASST_MENU } from './constants';
+import { AssistantSidebar } from './AssistantSidebar';
+import { ASSISTANT_MENU } from './constants';
 
 interface AssistantLayoutProps {
   children: React.ReactNode;
@@ -12,12 +12,12 @@ export default function AssistantLayout({ children, onLogout }: AssistantLayoutP
   const [sideOpen, setSideOpen] = useState(true);
   const location = useLocation();
 
-  const currentMenu = ASST_MENU.find((m) => location.pathname.startsWith(m.path));
+  const currentMenu = ASSISTANT_MENU.find((m) => location.pathname.startsWith(m.path));
   const pageTitle = currentMenu?.label || 'Trợ giảng';
 
   return (
     <div className="flex min-h-screen bg-[var(--surface-app)]">
-      <AsstSidebar sideOpen={sideOpen} setSideOpen={setSideOpen} onLogout={onLogout} />
+      <AssistantSidebar sideOpen={sideOpen} setSideOpen={setSideOpen} onLogout={onLogout} />
 
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0">

@@ -7,7 +7,7 @@ export interface StatCardProps {
   background: string;
 }
 
-const StatCard = ({
+const AssistantStatCard = ({
   label,
   value,
   delta,
@@ -43,4 +43,4 @@ const StatCard = ({
   );
 };
 
-export default StatCard;
+export default AssistantStatCard;
