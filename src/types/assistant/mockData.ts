@@ -1,7 +1,7 @@
 import type {
   AssistantLecture,
   AssistantExercise,
-  AssistantCourseExam,
+  AssistantCourseMaterial,
   AssistantLesson,
   AssistantStatCard,
   AssistantActivity,
@@ -41,7 +41,7 @@ export const ASST_STAT_CARDS: AssistantStatCard[] = [
 export const ASST_RECENT_ACTIVITIES: AssistantActivity[] = [
   {
     id: 1,
-    type: "exam",
+    type: "material",
     text: "Đề thi Toán nâng cao 2024 - Đề 12 đã được tải lên",
     time: "5 phút trước",
     icon: "📝"
@@ -62,7 +62,7 @@ export const ASST_RECENT_ACTIVITIES: AssistantActivity[] = [
   },
   {
     id: 4,
-    type: "exam",
+    type: "material",
     text: "Đề thi thử THPT Quốc Gia môn Hóa đã được phê duyệt",
     time: "1 giờ trước",
     icon: "📝"
@@ -145,7 +145,7 @@ export const DEMO_ASST_EXERCISES: AssistantExercise[] = [
   },
 ];
 
-export const DEMO_COURSE_EXAMS: AssistantCourseExam[] = [
+export const DEMO_COURSE_MATERIALS: AssistantCourseMaterial[] = [
   {
     id: 1,
     title: "Đề thi thử V-ACT — Đề 01/2024",
@@ -231,7 +231,7 @@ export const DEMO_LESSONS_ASST: AssistantLesson[] = [
   },
 ];
 
-export const DEMO_EXAMS_ASST: AssistantDocument[] = [
+export const DEMO_MATERIALS_ASST: AssistantDocument[] = [
   {
     id: 1,
     title: "Đề thi Toán nâng cao 2024 — Đề 01",

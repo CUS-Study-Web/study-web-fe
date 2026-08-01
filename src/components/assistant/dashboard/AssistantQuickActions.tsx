@@ -5,7 +5,7 @@ interface AssistantQuickActionsProps {
 }
 
 const AssistantQuickActions = ({ navigate }: AssistantQuickActionsProps) => {
-  const examsPath = ASSISTANT_MENU.find((m) => m.key === 'asst-exams')?.path || '/asst/exams';
+  const materialsPath = ASSISTANT_MENU.find((m) => m.key === 'asst-materials')?.path || '/asst/materials';
   const coursesPath = ASSISTANT_MENU.find((m) => m.key === 'asst-courses')?.path || '/asst/courses';
   const studentsPath = ASSISTANT_MENU.find((m) => m.key === 'asst-students')?.path || '/asst/students';
 
@@ -18,7 +18,7 @@ const AssistantQuickActions = ({ navigate }: AssistantQuickActionsProps) => {
         {/* Primary Action */}
         <div
           role="button"
-          onClick={() => navigate(examsPath)}
+          onClick={() => navigate(materialsPath)}
           className="flex items-center gap-3 py-4 px-4.5 rounded-[var(--radius-md)] cursor-pointer text-left transition-all duration-140 hover:-translate-y-0.5 bg-[var(--brand-500)] text-[var(--text-inverse)] border-none shadow-[0_2px_8px_rgba(44,90,49,0.25)]"
         >
           <span className="text-[22px]">📤</span>

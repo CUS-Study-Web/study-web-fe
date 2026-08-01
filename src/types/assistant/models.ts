@@ -20,7 +20,7 @@ export interface AssistantCourse {
   subjects: AssistantSubject[];
 }
 
-export interface AssistantCourseExam {
+export interface AssistantCourseMaterial {
   id: number;
   title: string;
   course: string;
