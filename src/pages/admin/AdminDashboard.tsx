@@ -1,30 +1,11 @@
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js'
-import {Bar, Line} from 'react-chartjs-2'
-import {GenerateOptions, GenerateData} from '../../utils/ChartHelpers'
 import {QUICK_STATS, ACTIVITY_LOG, DAYS_IN_WEEK, MONTHS_TO_7, MONTHS, WEEKLY_LOGINS, MONTHLY_REGS, MONTHLY_WEB_TRAFFIC} from './MockData'
+import { Suspense, lazy } from 'react'
 import StatsCard from '../../components/StatsCard'
 import '../../styles/AdminDashboard.css'
+import Loading from '../../components/Loading'
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-)
+const BarChart = lazy(() => import('../../components/Charts').then((m) => ({ default: m.BarChart })))
+const LineChart = lazy(() => import('../../components/Charts').then((m) => ({ default: m.LineChart })))
 
 const AdminDashboard = () => {
     return (
@@ -45,16 +26,37 @@ const AdminDashboard = () => {
         {/* Charts row */}
         <div className="grid grid-cols-3 gap-[20px] mb-[28px]">
           <div className="surface-card p-[22px_24px] relative h-[280px] w-full">
-            <Bar options={GenerateOptions('Đăng nhập trong tuần (7 ngày gần nhất)')} 
-                data={GenerateData(DAYS_IN_WEEK, 'Số lần đăng nhập', WEEKLY_LOGINS, '#2C5A31')} />
+            <Suspense fallback={<Loading />}>
+              <BarChart
+                title="Đăng nhập trong tuần (7 ngày gần nhất)"
+                label="Số lần đăng nhập"
+                labels={DAYS_IN_WEEK}
+                data={WEEKLY_LOGINS}
+                color="#2C5A31"
+              />            
+            </Suspense>
           </div>
           <div className="surface-card p-[22px_24px] relative h-[280px] w-full">
-            <Line options={GenerateOptions('Đăng ký theo tháng (Tháng 1-7/2025)')}
-                data={GenerateData(MONTHS_TO_7, 'Số lượt đăng ký', MONTHLY_REGS, '#2F6FAE')}/>
+            <Suspense fallback={<Loading />}>
+              <LineChart
+                title="Đăng ký theo tháng (Tháng 1-7/2025)"
+                label="Số lượt đăng ký"
+                labels={MONTHS_TO_7}
+                data={MONTHLY_REGS}
+                color="#2F6FAE"
+              />
+            </Suspense>
           </div>
           <div className="surface-card p-[22px_24px] relative h-[280px] w-full">
-            <Bar options={GenerateOptions('Truy cập web theo tháng (Tháng 1-7/2025)')} 
-                data={GenerateData(MONTHS, 'Số lượt truy cập', MONTHLY_WEB_TRAFFIC, '#2F6FAE')} />
+            <Suspense fallback={<Loading />}>
+              <BarChart
+                title="Truy cập web theo tháng (Tháng 1-7/2025)"
+                label="Số lượt truy cập"
+                labels={MONTHS}
+                data={MONTHLY_WEB_TRAFFIC}
+                color="#2F6FAE"
+              />
+            </Suspense>
           </div>
         </div>
 
