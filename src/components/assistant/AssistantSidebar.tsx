@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { ASSISTANT_MENU } from './constants';
+import Logo from '../guest/Logo';
 
 interface AssistantSidebarProps {
   sideOpen: boolean;
@@ -17,14 +18,13 @@ export function AssistantSidebar({ sideOpen, setSideOpen, onLogout }: AssistantS
       }}
     >
       {/* Brand Area */}
-      <div className="flex items-center gap-2.5 min-h-18 px-4 pt-5.5 pb-4 border-b border-white/10">
+      <div className="flex items-center gap-2.5 min-h-18 px-3.5 pt-5.5 pb-4 border-b border-white/10">
         <button
           onClick={() => setSideOpen(!sideOpen)}
-          className="w-9 h-9 rounded-[var(--radius-sm)] bg-[var(--brand-soft-500)] flex items-center justify-center shrink-0 cursor-pointer"
+          className="shrink-0 cursor-pointer active:scale-95 transition-transform"
+          aria-label="Toggle Sidebar"
         >
-          <span className="font-extrabold text-[length:var(--text-caption)] text-[var(--brand-500)] font-[family-name:var(--font-heading)]">
-            CUS
-          </span>
+          <Logo size="sm" variant="light" showText={false} />
         </button>
         {sideOpen && (
           <span className="font-bold text-[length:var(--text-body)] text-white whitespace-nowrap font-[family-name:var(--font-heading)]">

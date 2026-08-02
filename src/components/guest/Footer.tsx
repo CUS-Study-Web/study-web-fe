@@ -51,19 +51,19 @@ export default function Footer() {
             </h4>
             <ul className="space-y-4 text-sm font-medium">
               <li>
-                <Link to={ROUTES.COURSES} className="!text-white opacity-80 hover:!text-white transition">V-ACT</Link>
+                <Link to={ROUTES.COURSE_DETAIL("v-act")} className="!text-white opacity-80 hover:!text-white transition">V-ACT</Link>
               </li>
               <li>
-                <Link to={ROUTES.COURSES} className="!text-white opacity-80 hover:!text-white transition">V-SAT</Link>
+                <Link to={ROUTES.COURSE_DETAIL("v-sat")} className="!text-white opacity-80 hover:!text-white transition">V-SAT</Link>
               </li>
               <li>
-                <Link to={ROUTES.COURSES} className="!text-white opacity-80 hover:!text-white transition">HSA</Link>
+                <Link to={ROUTES.COURSE_DETAIL("hsa")} className="!text-white opacity-80 hover:!text-white transition">HSA</Link>
               </li>
               <li>
-                <Link to={ROUTES.COURSES} className="!text-white opacity-80 hover:!text-white transition">HSCA</Link>
+                <Link to={ROUTES.COURSE_DETAIL("hsca")} className="!text-white opacity-80 hover:!text-white transition">HSCA</Link>
               </li>
               <li>
-                <Link to={ROUTES.COURSES} className="!text-white opacity-80 hover:!text-white transition">THPT QG</Link>
+                <Link to={ROUTES.COURSE_DETAIL("thpt-qg")} className="!text-white opacity-80 hover:!text-white transition">THPT QG</Link>
               </li>
             </ul>
           </div>
@@ -78,10 +78,10 @@ export default function Footer() {
                 <Link to={ROUTES.ABOUT} className="!text-white opacity-80 hover:!text-white transition">Giới thiệu</Link>
               </li>
               <li>
-                <Link to={ROUTES.ABOUT} className="!text-white opacity-80 hover:!text-white transition">Đội ngũ giảng viên</Link>
+                <a href={`${ROUTES.ABOUT}#teachers`} className="!text-white opacity-80 hover:!text-white transition">Đội ngũ giảng viên</a>
               </li>
               <li>
-                <Link to={ROUTES.ABOUT} className="!text-white opacity-80 hover:!text-white transition">Bảng vàng</Link>
+                <a href={`${ROUTES.ABOUT}#achievements`} className="!text-white opacity-80 hover:!text-white transition">Bảng vàng</a>
               </li>
               <li>
                 <Link to={ROUTES.DOCUMENTS} className="!text-white opacity-80 hover:!text-white transition">Tài liệu</Link>
