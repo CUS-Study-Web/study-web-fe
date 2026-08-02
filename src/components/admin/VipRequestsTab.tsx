@@ -58,14 +58,14 @@ const VipRequestsTab = ({ vipRequests, onApprove, onReject }: VipRequestsTabProp
               value={vipSearch}
               onChange={(e) => setVipSearch(e.target.value)}
               placeholder="Tìm học viên..."
-              className="pl-[30px] pr-[12px] py-[8px] rounded-[10px] border border-[var(--border-500)] [font-family:var(--font-body)] text-[13px] outline-none w-[190px] focus:border-[var(--brand-500)]"
+              className="pl-[30px] pr-[12px] py-[8px] rounded-[10px] border border-[var(--border-500)] [font-family:var(--font-body)] !text-[13px] outline-none w-[190px] focus:border-[var(--brand-500)]"
             />
           </div>
           {["Tất cả", "Chờ duyệt", "Đã duyệt", "Từ chối"].map((f) => (
             <button
               key={f}
               onClick={() => setVipFilter(f)}
-              className={`px-[13px] py-[7px] rounded-[9px] [font-family:var(--font-heading)] font-semibold text-[12px] cursor-pointer transition-all duration-[var(--motion-fast)] outline-none border ${
+              className={`px-[13px] py-[7px] rounded-[9px] ![font-family:var(--font-heading)] !font-semibold !text-[12px] cursor-pointer transition-all duration-[var(--motion-fast)] outline-none border ${
                 vipFilter === f
                   ? "!border-transparent !bg-[var(--brand-500)] !text-white"
                   : "!border-[var(--border-500)] !bg-white !text-[var(--text-secondary-300)] !hover:text-[var(--text-primary)]"

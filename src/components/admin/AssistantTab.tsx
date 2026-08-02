@@ -65,12 +65,12 @@ const AssistantTab = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Tìm trợ giảng..."
-              className="w-full sm:w-[200px] pl-[32px] pr-[14px] py-[8px] rounded-[10px] border border-[var(--border-500)] [font-family:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)]"
+              className="w-full !sm:w-[200px] pl-[32px] pr-[14px] py-[8px] rounded-[10px] border border-[var(--border-500)] [font-family:var(--font-body)] !text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)]"
             />
           </div>
           <button
             onClick={() => setShowCreateAsst(true)}
-            className="flex items-center gap-[7px] [font-family:var(--font-heading)] font-bold text-[13px] px-[18px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--brand-500)] !text-white cursor-pointer hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"
+            className="flex items-center gap-[7px] ![font-family:var(--font-heading)] !font-bold !text-[13px] px-[18px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--brand-500)] !text-white cursor-pointer hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2.5" strokeLinecap="round">
               <path d="M12 5v14M5 12h14" />

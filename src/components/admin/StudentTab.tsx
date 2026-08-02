@@ -77,12 +77,12 @@ const StudentTab = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Tìm học viên..."
-              className="w-full sm:w-[200px] pl-[32px] pr-[14px] py-[8px] rounded-[10px] border border-[var(--border-500)] [font-family:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)]"
+              className="w-full !sm:w-[200px] pl-[32px] pr-[14px] py-[8px] rounded-[10px] border border-[var(--border-500)] [font-family:var(--font-body)] !text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)]"
             />
           </div>
           <button
             onClick={() => setShowVipModal(true)}
-            className="[font-family:var(--font-heading)] font-bold text-[12px] px-[16px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--warning-500)] !text-white cursor-pointer whitespace-nowrap hover:bg-[var(--warning-600)] transition-colors duration-[var(--motion-fast)]"
+            className="![font-family:var(--font-heading)] !font-bold !text-[12px] px-[16px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--warning-500)] !text-white cursor-pointer whitespace-nowrap hover:bg-[var(--warning-600)] transition-colors duration-[var(--motion-fast)]"
           >
             ⭐ Tạo tài khoản VIP
           </button>
