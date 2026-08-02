@@ -60,4 +60,4 @@ jobs:
           IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
         run: |
           cd gitops-manifests
-          IMAGE_TAG=$IMAGE_TAG sudo make fe
+          IMAGE_TAG=$IMAGE_TAG make fe
