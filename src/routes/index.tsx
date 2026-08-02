@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import AdminRoutes from './AdminRoutes'
+import AssistantRoutes from './AssistantRoutes';
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/admin" replace />} />
-        <Route path="/admin/*" element={<AdminRoutes />} />
+        <Route path="/" element={<Navigate to="/assistant" replace />} />
+        <Route path="/assistant/*" element={<AssistantRoutes />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
