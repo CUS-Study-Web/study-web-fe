@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ROUTES } from "../../../utils/routes";
 
 export default function Hero() {
   return (
@@ -50,7 +51,7 @@ export default function Hero() {
           {/* Action Buttons */}
           <div className="mt-8 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Link
-              to="/login"
+              to={ROUTES.AUTH.LOGIN}
               className="px-8 py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-center text-base cursor-pointer inline-flex items-center justify-center"
             >
               Bắt đầu ngay

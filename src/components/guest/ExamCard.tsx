@@ -1,3 +1,6 @@
+import { Link } from "react-router-dom";
+import { ROUTES } from "../../utils/routes";
+
 interface ExamCardProps {
   id: number;
   subject: string;
@@ -24,12 +27,15 @@ export default function ExamCard({ subject, difficulty, title, time, questions, 
           <p className="!text-[var(--text-primary-500)] font-black text-base mb-3" style={{ fontFamily: "var(--font-heading)" }}>
             Chỉ dành cho VIP
           </p>
-          <button className="flex items-center gap-1.5 px-6 py-2.5 bg-[var(--text-primary-800)] !text-[#ffc107] text-sm font-extrabold rounded-full shadow-md hover:bg-[var(--text-primary-900)] active:scale-95 transition-all cursor-pointer">
+          <Link
+            to={ROUTES.VIP}
+            className="flex items-center gap-1.5 px-6 py-2.5 bg-[var(--text-primary-800)] !text-[#ffc107] text-sm font-extrabold rounded-full shadow-md hover:bg-[var(--text-primary-900)] active:scale-95 transition-all cursor-pointer"
+          >
             <svg className="w-4 h-4 fill-current text-[#ffc107]" viewBox="0 0 24 24">
               <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
             </svg>
             Đăng ký VIP
-          </button>
+          </Link>
         </div>
       )}
 

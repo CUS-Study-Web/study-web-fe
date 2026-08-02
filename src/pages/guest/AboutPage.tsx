@@ -25,7 +25,7 @@ export default function AboutPage() {
       padded={false}
     >
       {/* Teachers Section */}
-      <section className="bg-[var(--neutral-0)] py-16 md:py-24">
+      <section id="teachers" className="bg-[var(--neutral-0)] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 xl:px-20">
           <div className="text-center mb-12">
             <div className="inline-block bg-[var(--brand-soft-300)] text-[var(--brand-base-600)] rounded-full px-4 py-1.5 text-xs md:text-sm font-bold mb-4">
@@ -48,7 +48,9 @@ export default function AboutPage() {
       </section>
 
       {/* Achievement Section */}
-      <AchievementSection />
+      <div id="achievements">
+        <AchievementSection />
+      </div>
 
       {/* Testimonials Section */}
       <section className="bg-[var(--neutral-0)] py-16 md:py-24">

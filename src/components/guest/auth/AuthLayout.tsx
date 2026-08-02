@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Logo from "../Logo";
+import { ROUTES } from "../../../utils/routes";
 
 interface AuthLayoutProps {
   leftBadge: string;
@@ -42,12 +43,12 @@ export default function AuthLayout({
 
         {/* Top Header Row in Cover */}
         <div className="relative z-10 flex items-center justify-between mb-8">
-          <Link to="/" className="group">
+          <Link to={ROUTES.HOME} className="group">
             <Logo size="md" variant="light" />
           </Link>
 
           <Link
-            to="/"
+            to={ROUTES.HOME}
             className="flex items-center gap-1.5 px-4 py-1.5 bg-white/15 hover:bg-white/25 border border-white/20 !text-white font-bold text-xs rounded-full backdrop-blur-md transition-all active:scale-95 cursor-pointer shadow-xs"
           >
             <span>‹</span> Quay lại

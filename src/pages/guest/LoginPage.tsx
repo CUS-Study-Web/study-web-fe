@@ -1,15 +1,29 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthLayout from "../../components/guest/auth/AuthLayout";
 import ForgotPasswordModal from "../../components/guest/auth/ForgotPasswordModal";
+import { ROUTES } from "../../utils/routes";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isForgotOpen, setIsForgotOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
+
+    const lowerEmail = email.trim().toLowerCase();
+
+    if (lowerEmail.includes("admin")) {
+      navigate(ROUTES.ADMIN.DASHBOARD);
+    } else if (lowerEmail.includes("assistant") || lowerEmail.includes("ta")) {
+      navigate(ROUTES.ASSISTANT.DASHBOARD);
+    } else {
+      // Student / Learner Login -> Navigates to "Tính năng đang được phát triển" page
+      navigate(ROUTES.UNDER_DEVELOPMENT);
+    }
   };
 
   const leftFeatures = [
@@ -28,7 +42,7 @@ export default function LoginPage() {
         formTitle="Đăng nhập"
         formSubtitle="Nhập thông tin tài khoản để tiếp tục học tập."
         footerLinkText="Chưa có tài khoản?"
-        footerLinkTo="/register"
+        footerLinkTo={ROUTES.AUTH.REGISTER}
         footerLinkLabel="Đăng ký"
       >
         <form onSubmit={handleSubmit} className="w-full space-y-5 text-left">

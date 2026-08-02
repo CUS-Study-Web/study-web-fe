@@ -4,6 +4,7 @@ import { COURSES_DATA } from "../../utils/coursesData";
 import type { Subject } from "../../types/course";
 import SubjectCard from "../../components/guest/SubjectCard";
 import VipGateModal from "../../components/guest/VipGateModal";
+import { ROUTES } from "../../utils/routes";
 
 export default function CourseDetailPage() {
   const { courseId } = useParams<{ courseId: string }>();
@@ -20,7 +21,7 @@ export default function CourseDetailPage() {
         <div className="max-w-[1440px] mx-auto relative z-10">
           {/* Breadcrumb / Back Link */}
           <Link
-            to="/courses"
+            to={ROUTES.COURSES}
             className="inline-flex items-center gap-1.5 text-xs font-extrabold !text-[#beccbf] hover:!text-white mb-6 transition"
           >
             <span>‹</span> Tất cả khóa học

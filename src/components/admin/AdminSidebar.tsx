@@ -1,13 +1,15 @@
 import { NavLink } from 'react-router-dom'
+import { ROUTES } from '../../utils/routes'
+import Logo from '../guest/Logo'
 
 type AdminNavBarProps = {
   onLogout?: () => void,
 }
 
 const NAV = [
-  { to: '/admin/dashboard', label: 'Trang Chủ' },
-  { to: '/admin/system',    label: 'Quản Trị Hệ Thống' },
-  { to: '/admin/website',   label: 'Quản Lý Website' },
+  { to: ROUTES.ADMIN.DASHBOARD, label: 'Trang Chủ' },
+  { to: ROUTES.ADMIN.SYSTEM,    label: 'Quản Trị Hệ Thống' },
+  { to: ROUTES.ADMIN.WEBSITE,   label: 'Quản Lý Website' },
 ]
 
 export default function AdminNavBar({ onLogout }: AdminNavBarProps) {
@@ -17,11 +19,7 @@ export default function AdminNavBar({ onLogout }: AdminNavBarProps) {
 
         {/* Logo */}
         <div className="flex items-center gap-2 shrink-0">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--brand-500)] to-[var(--brand-700)] flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2L2 8l10 6 10-6-10-6zM2 16l10 6 10-6M2 12l10 6 10-6" />
-            </svg>
-          </div>
+          <Logo size="sm" showText={false} />
           <span className="[font-family:var(--font-heading)] font-extrabold text-base text-[var(--text-primary)] tracking-[-0.3px]">CUS Admin</span>
         </div>
 

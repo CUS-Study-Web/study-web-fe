@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ROUTES } from "../../utils/routes";
 
 interface CourseCardProps {
   id?: string;
@@ -42,7 +43,7 @@ export default function CourseCard({ id, title, tag, subtitle, desc, img, btnCol
           {desc}
         </p>
         <Link
-          to={`/courses/${courseSlug}`}
+          to={ROUTES.COURSE_DETAIL(courseSlug)}
           className={`w-full py-3.5 ${btnColor} !text-white font-extrabold rounded-[var(--radius-md)] shadow-md hover:shadow-lg active:scale-95 transition-all text-base flex items-center justify-center gap-2 cursor-pointer`}
         >
           Vào khóa học <span className="text-lg font-bold">→</span>
