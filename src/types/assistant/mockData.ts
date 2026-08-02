@@ -5,7 +5,8 @@ import type {
   AssistantLesson,
   AssistantStatCard,
   AssistantActivity,
-  AssistantDocument
+  AssistantDocument,
+  AssistantStudent
 } from './models';
 
 export const ASST_STAT_CARDS: AssistantStatCard[] = [
@@ -333,4 +334,91 @@ export const DEMO_MATERIALS_ASST: AssistantDocument[] = [
 export const DEMO_TOPIC_LIST: string[] = [
   "Đại số", "Giải tích", "Tổ hợp", "Hình học",
   "Xác suất", "Lượng giác", "Phương trình vi phân", "Số học"
+];
+
+export const DEMO_STUDENTS_ASST: AssistantStudent[] = [
+  {
+    id: 1,
+    email: "khoa.nm@gmail.com",
+    course: "V-ACT",
+    progress: 72,
+    joined: "12/01/2025",
+    status: "Hoạt động",
+    isVip: true,
+    lastLogin: "Hôm nay, 09:15",
+    examsCompleted: 5,
+    averageScore: 7.4
+  },
+  {
+    id: 2,
+    email: "lananh.tt@gmail.com",
+    course: "HSA",
+    progress: 55,
+    joined: "03/02/2025",
+    status: "Hoạt động",
+    isVip: false,
+    lastLogin: "Hôm qua, 14:20",
+    examsCompleted: 3,
+    averageScore: 6.8
+  },
+  {
+    id: 3,
+    email: "bao.lq@gmail.com",
+    course: "V-SAT",
+    progress: 38,
+    joined: "18/02/2025",
+    status: "Chờ duyệt",
+    isVip: false,
+    lastLogin: "18/02/2025, 08:00",
+    examsCompleted: 0,
+    averageScore: 0
+  },
+  {
+    id: 4,
+    email: "dung.pt@gmail.com",
+    course: "HSCA",
+    progress: 91,
+    joined: "25/02/2025",
+    status: "Hoạt động",
+    isVip: true,
+    lastLogin: "Hôm nay, 10:45",
+    examsCompleted: 12,
+    averageScore: 8.5
+  },
+  {
+    id: 5,
+    email: "duc.hv@gmail.com",
+    course: "THPT QG",
+    progress: 44,
+    joined: "01/03/2025",
+    status: "Hoạt động",
+    isVip: false,
+    lastLogin: "02/03/2025, 19:30",
+    examsCompleted: 2,
+    averageScore: 5.5
+  },
+  {
+    id: 6,
+    email: "ha.vn8@gmail.com",
+    course: "V-ACT",
+    progress: 20,
+    joined: "07/03/2025",
+    status: "Chờ duyệt",
+    isVip: false,
+    lastLogin: "07/03/2025, 11:15",
+    examsCompleted: 0,
+    averageScore: 0
+  },
+  {
+    id: 7,
+    email: "tung.dt@gmail.com",
+    course: "HSA",
+    progress: 63,
+    joined: "14/03/2025",
+    status: "Hoạt động",
+    isVip: false,
+    lastLogin: "Hôm nay, 08:30",
+    examsCompleted: 4,
+    averageScore: 7.0
+  }
 ];

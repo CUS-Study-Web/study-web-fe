@@ -93,3 +93,16 @@ export interface AssistantStatCard {
   color: string;
   background: string;
 }
+
+export interface AssistantStudent {
+  id: number;
+  email: string;
+  course: string;
+  progress: number;
+  joined: string;
+  status: 'Hoạt động' | 'Chờ duyệt' | 'Tạm khóa';
+  isVip?: boolean;
+  lastLogin?: string;
+  examsCompleted?: number;
+  averageScore?: number;
+}
