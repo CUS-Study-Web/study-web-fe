@@ -29,8 +29,8 @@ const StatsCard = ({
       <div className="font-bold text-[32px] leading-none mb-[4px] [font-family:var(--font-heading)] [font-weight:800]" style={{ color }}>
         {value.toLocaleString('vi-VN')}
       </div>
-      <div className="[font-family:var(--font-heading)] font-bold text-[14px] text-[#1b1f1c]">{label}</div>
-      <div className="[font-family:var(--font-body)] text-[12px] text-[#a0aaa2] mt-[2px]">{sublabel}</div>
+      <div className="[font-family:var(--font-heading)] font-bold text-[14px] text-[var(--text-primary)]">{label}</div>
+      <div className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-200)] mt-[2px]">{sublabel}</div>
     </div>
   )
 }

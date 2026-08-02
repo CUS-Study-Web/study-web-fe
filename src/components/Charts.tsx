@@ -31,11 +31,11 @@ type ChartProps = {
   color?: string
 }
 
-const BarChart = ({ title, label, labels, data, color = '#000000' }: ChartProps) => (
+const BarChart = ({ title, label, labels, data, color = 'var(--text-primary)' }: ChartProps) => (
   <Bar options={GenerateOptions(title)} data={GenerateData(labels, label, data, color)} />
 )
 
-const LineChart = ({ title, label, labels, data, color = '#000000' }: ChartProps) => (
+const LineChart = ({ title, label, labels, data, color = 'var(--text-primary)' }: ChartProps) => (
   <Line options={GenerateOptions(title)} data={GenerateData(labels, label, data, color)} />
 )
 

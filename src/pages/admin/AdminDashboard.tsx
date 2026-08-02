@@ -32,7 +32,7 @@ const AdminDashboard = () => {
                 label="Số lần đăng nhập"
                 labels={DAYS_IN_WEEK}
                 data={WEEKLY_LOGINS}
-                color="#2C5A31"
+                color="var(--brand-500)"
               />            
             </Suspense>
           </div>
@@ -43,7 +43,7 @@ const AdminDashboard = () => {
                 label="Số lượt đăng ký"
                 labels={MONTHS_TO_7}
                 data={MONTHLY_REGS}
-                color="#2F6FAE"
+                color="var(--info-500)"
               />
             </Suspense>
           </div>
@@ -54,7 +54,7 @@ const AdminDashboard = () => {
                 label="Số lượt truy cập"
                 labels={MONTHS}
                 data={MONTHLY_WEB_TRAFFIC}
-                color="#2F6FAE"
+                color="var(--info-500)"
               />
             </Suspense>
           </div>
@@ -63,7 +63,7 @@ const AdminDashboard = () => {
         {/* Activity log */}
         <div className="surface-card px-[28px] py-[24px]">
           <div className="flex justify-between items-center mb-[20px]">
-            <div className="[font-family:var(--font-heading)] font-bold text-[16px] text-[#1b1f1c]">Hoạt động gần đây</div>
+            <div className="[font-family:var(--font-heading)] font-bold text-[16px] text-[var(--text-primary)]">Hoạt động gần đây</div>
             <span className="[font-family:var(--font-heading)] font-semibold text-[12px] text-[var(--brand-500)] cursor-pointer">Xem tất cả</span>
           </div>
           <div className="flex flex-col">
@@ -72,8 +72,8 @@ const AdminDashboard = () => {
                 key={`${a.text} - ${a.time}`}
                 className={`flex items-center gap-[16px] py-[13px] ${i < ACTIVITY_LOG.length - 1 ? ' activity-row-bordered' : ''}`}>
                 <div className="w-[8px] h-[8px] rounded-full bg-[var(--brand-500)] shrink-0" />
-                <span className="[font-family:var(--font-body)] text-[13.5px] text-[#1b1f1c] flex-1">{a.text}</span>
-                <span className="[font-family:var(--font-body)] text-[12px] text-[#a0aaa2] shrink-0">{a.time}</span>
+                <span className="[font-family:var(--font-body)] text-[13.5px] text-[var(--text-primary)] flex-1">{a.text}</span>
+                <span className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-200)] shrink-0">{a.time}</span>
               </div>
             ))}
           </div>

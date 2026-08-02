@@ -6,6 +6,12 @@
     @apply inline-flex items-center gap-[3px] px-[10px] py-[4px] rounded-full text-[12px] font-bold;
     font-family: var(--font-heading);
   }
-  .stats-trend--up   { @apply bg-[#dce9de] text-[#1e6b28]; }
-  .stats-trend--down { @apply bg-[#fae0e0] text-[#c94b4b]; }
+  .stats-trend--up {
+    background-color: var(--brand-soft-500);
+    color: var(--success-700);
+  }
+  .stats-trend--down {
+    background-color: var(--error-50);
+    color: var(--error-500);
+  }
 }

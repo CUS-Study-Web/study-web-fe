@@ -1,5 +1,14 @@
 import { type ChartOptions, type ChartData, type ChartType } from 'chart.js'
 
+function resolveCSSVar(colorStr: string): string {
+  if (typeof window !== 'undefined' && colorStr.startsWith('var(')) {
+    const varName = colorStr.slice(4, -1).trim()
+    const val = getComputedStyle(document.documentElement).getPropertyValue(varName).trim()
+    return val || colorStr
+  }
+  return colorStr
+}
+
 function GenerateOptions<T extends ChartType = ChartType>(titleText: string): ChartOptions<T> {
   return {
     responsive: true,
@@ -23,9 +32,10 @@ function GenerateData<T extends ChartType = ChartType>(
   data: number[],
   backgroundColor?: string,
 ): ChartData<T> {
+  const resolvedColor = backgroundColor ? resolveCSSVar(backgroundColor) : undefined
   return {
     labels,
-    datasets: [{ label, data, backgroundColor } as never],
+    datasets: [{ label, data, backgroundColor: resolvedColor } as never],
   } as ChartData<T>
 }
 

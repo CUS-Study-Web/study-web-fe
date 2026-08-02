@@ -2,22 +2,22 @@ import IconBox from '../../components/IconBox'
 
 // NOTE: icons coupled to data, extract to a config map when data comes from API
 const QUICK_STATS = [
-    { label: "Lượt truy cập", sublabel: "Tuần này", value: 9_430, trend: +12.4, color: "#2C5A31",
+    { label: "Lượt truy cập", sublabel: "Tuần này", value: 9_430, trend: +12.4, color: "var(--brand-500)",
     icon: (
-        <IconBox bg="#DCE9DE">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#2C5A31" strokeWidth="2"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" stroke="#2C5A31" strokeWidth="2" strokeLinecap="round"/></svg> 
+        <IconBox bg="var(--brand-soft-500)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="var(--brand-500)" strokeWidth="2"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" stroke="var(--brand-500)" strokeWidth="2" strokeLinecap="round"/></svg> 
         </IconBox>
     )},
-    { label: "Lượt đăng ký", sublabel: "Tháng này", value: 43, trend: +8.2, color: "#2F6FAE",
+    { label: "Lượt đăng ký", sublabel: "Tháng này", value: 43, trend: +8.2, color: "var(--info-500)",
     icon: (
-        <IconBox bg="#DDEAF8">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="#2F6FAE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>   
+        <IconBox bg="var(--info-50)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="var(--info-500)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>   
         </IconBox>
     )},
-    { label: "Lượt mở VIP", sublabel: "Tháng này", value: 18, trend: -3.5, color: "#9B4E8D",
+    { label: "Lượt mở VIP", sublabel: "Tháng này", value: 18, trend: -3.5, color: "var(--warning-500)",
     icon: (
-        <IconBox bg="#F5E6F3">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z" stroke="#9B4E8D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>   
+        <IconBox bg="var(--warning-50)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z" stroke="var(--warning-500)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>   
         </IconBox>
     )},
 ]
