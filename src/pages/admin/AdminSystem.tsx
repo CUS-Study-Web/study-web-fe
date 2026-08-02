@@ -8,12 +8,14 @@ import {
   MONTHLY_REGS_FULL,
   MONTHLY_VIP
 } from './MockData'
-import AdminStatsOverview from '../../components/admin/AdminStatsOverview'
-import TabsNav from '../../components/admin/TabsNav'
-import StudentTab from '../../components/admin/StudentTab'
-import AssistantTab from '../../components/admin/AssistantTab'
-import VipRequestsTab from '../../components/admin/VipRequestsTab'
-import AccessStatsTab from '../../components/admin/AccessStatsTab'
+import {
+  SystemTabsNav,
+  SystemStatsOverview,
+  StudentTab,
+  AssistantTab,
+  VipRequestsTab,
+  AccessStatsTab
+} from '../../components/admin/SystemComponents'
 
 const AdminSystem = () => {
   const [activeTab, setActiveTab] = useState<SysTab>('students')
@@ -188,7 +190,7 @@ const AdminSystem = () => {
       </div>
 
       {/* Stats Cards Row */}
-      <AdminStatsOverview
+      <SystemStatsOverview
         regularCount={regularCount}
         vipCount={vipCount}
         assistantCount={assistantCount}
@@ -197,7 +199,7 @@ const AdminSystem = () => {
 
       {/* Tab panel */}
       <div className="bg-white rounded-[18px] shadow-[var(--shadow-clay-sm)] border border-[rgba(220,233,222,0.5)] overflow-hidden">
-        <TabsNav
+        <SystemTabsNav
           activeTab={activeTab}
           onTabChange={setActiveTab}
           pendingVipCount={pendingVipCount}
