@@ -11,7 +11,7 @@ interface ExamCardProps {
 
 export default function ExamCard({ subject, difficulty, title, time, questions, attempts, isVip }: ExamCardProps) {
   return (
-    <div className="relative bg-[var(--neutral-0)] rounded-[24px] p-6 shadow-md border border-[var(--border-300)] flex flex-col justify-between h-full hover:shadow-lg transition-shadow overflow-hidden group">
+    <div className="relative bg-[var(--neutral-0)] rounded-[var(--radius-xl)] p-6 shadow-md border border-[var(--border-300)] flex flex-col justify-between h-full hover:shadow-lg transition-shadow overflow-hidden group">
       
       {/* VIP Blur Overlay */}
       {isVip && (
@@ -38,16 +38,16 @@ export default function ExamCard({ subject, difficulty, title, time, questions, 
         <div>
           {/* Tags Row */}
           <div className="flex justify-between items-center mb-5">
-            <span className="px-3 py-1 bg-[var(--brand-soft-300)] !text-[var(--brand-base-600)] text-[10px] font-extrabold uppercase rounded-full tracking-wider">
+            <span className="px-3 py-1 bg-[var(--brand-soft-300)] !text-[var(--brand-base-600)] text-caption font-extrabold uppercase rounded-full tracking-wider">
               {subject}
             </span>
-            <span className="px-3 py-1 bg-[var(--error-50)] !text-[var(--error-600)] text-[10px] font-extrabold rounded-full">
+            <span className="px-3 py-1 bg-[var(--error-50)] !text-[var(--error-600)] text-caption font-extrabold rounded-full">
               {difficulty}
             </span>
           </div>
 
           {/* Title */}
-          <h3 className="text-xl font-bold !text-[var(--text-primary-500)] mb-6 line-clamp-2 min-h-[56px] flex items-center" style={{ fontFamily: "var(--font-heading)" }}>
+          <h3 className="text-h3 font-bold !text-[var(--text-primary-500)] mb-6 line-clamp-2 min-h-[56px] flex items-center">
             {title}
           </h3>
         </div>
@@ -59,23 +59,23 @@ export default function ExamCard({ subject, difficulty, title, time, questions, 
               <svg className="w-4 h-4 text-[var(--text-secondary-300)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span className="text-[11px] font-semibold text-[var(--text-secondary-500)]">{time}</span>
+              <span className="text-caption font-semibold text-[var(--text-secondary-500)]">{time}</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <svg className="w-4 h-4 text-[var(--error-400)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              <span className="text-[11px] font-semibold text-[var(--text-secondary-500)]">{questions}</span>
+              <span className="text-caption font-semibold text-[var(--text-secondary-500)]">{questions}</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <svg className="w-4 h-4 text-[var(--info-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              <span className="text-[11px] font-semibold text-[var(--text-secondary-500)]">{attempts}</span>
+              <span className="text-caption font-semibold text-[var(--text-secondary-500)]">{attempts}</span>
             </div>
           </div>
           
-          <button className="w-full py-3 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[14px] shadow-sm hover:shadow-md active:scale-95 transition-all text-sm cursor-pointer">
+          <button className="w-full py-3 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-sm hover:shadow-md active:scale-95 transition-all text-sm cursor-pointer">
             Xem đề thi
           </button>
         </div>

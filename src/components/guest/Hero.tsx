@@ -42,8 +42,7 @@ export default function Hero() {
           
           {/* Subtitle Paragraph */}
           <p
-            className="mt-6 text-base md:text-lg max-w-xl leading-relaxed font-medium !text-[var(--text-secondary-600)]"
-            style={{ fontFamily: "var(--font-body)" }}
+            className="mt-6 text-body-lg max-w-xl leading-relaxed font-medium !text-[var(--text-secondary-600)]"
           >
             Đội ngũ giảng viên chuyên gia, lộ trình cá nhân hóa và hơn 3.400 học viên đã đỗ vào các trường đại học hàng đầu Việt Nam.
           </p>
@@ -52,13 +51,13 @@ export default function Hero() {
           <div className="mt-8 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Link
               to="/login"
-              className="px-8 py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[14px] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-center text-base cursor-pointer inline-flex items-center justify-center"
+              className="px-8 py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-center text-base cursor-pointer inline-flex items-center justify-center"
             >
               Bắt đầu ngay
             </Link>
             <button
               onClick={() => document.getElementById("courses")?.scrollIntoView({ behavior: "smooth" })}
-              className="px-8 py-3.5 bg-[var(--surface-300)] border border-[var(--brand-base-600)] hover:bg-[var(--brand-soft-300)] !text-[var(--brand-base-600)] font-extrabold rounded-[14px] active:scale-95 transition-all text-center text-base cursor-pointer inline-flex items-center justify-center"
+              className="px-8 py-3.5 bg-[var(--surface-300)] border border-[var(--brand-base-600)] hover:bg-[var(--brand-soft-300)] !text-[var(--brand-base-600)] font-extrabold rounded-[var(--radius-md)] active:scale-95 transition-all text-center text-base cursor-pointer inline-flex items-center justify-center"
             >
               Xem khóa học
             </button>
@@ -92,7 +91,7 @@ export default function Hero() {
 
         {/* Right Content - Hero Image & Floating Badges (Bigger Image: max-w-[560px]) */}
         <div className="lg:col-span-6 relative flex justify-center w-full mt-8 lg:mt-0">
-          <div className="relative w-full max-w-[560px] aspect-[4/5] lg:h-[540px] rounded-[32px] overflow-hidden shadow-2xl bg-white border border-[#e2e8e3]">
+          <div className="relative w-full max-w-[560px] aspect-[4/5] lg:h-[540px] rounded-[var(--radius-xl)] overflow-hidden shadow-2xl bg-white border border-[var(--border-300)]">
             <img
               src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&q=80&auto=format&fit=crop"
               alt="CUS Students"
@@ -101,15 +100,15 @@ export default function Hero() {
           </div>
 
           {/* Floating Badge 1 - Top Right */}
-          <div className="absolute top-6 right-2 md:-right-2 bg-[#1e4022] border border-[#28522d] rounded-[14px] px-5 py-3 shadow-xl text-left">
+          <div className="absolute top-6 right-2 md:-right-2 bg-[#1e4022] border border-[var(--brand-base-600)] rounded-[var(--radius-md)] px-5 py-3 shadow-xl text-left">
             <div className="text-xl font-bold leading-none !text-white">29 / 30</div>
-            <div className="text-[10px] font-bold mt-1.5 uppercase tracking-wider text-[#beccbf]">Điểm thi cao nhất 2024</div>
+            <div className="text-xs font-bold mt-1.5 uppercase tracking-wider text-[#beccbf]">Điểm thi cao nhất 2024</div>
           </div>
 
           {/* Floating Badge 2 - Bottom Left */}
-          <div className="absolute bottom-6 left-2 md:-left-2 bg-white border border-[#e2e8e3] rounded-[16px] px-5 py-3 shadow-xl text-left">
+          <div className="absolute bottom-6 left-2 md:-left-2 bg-white border border-[var(--border-300)] rounded-[var(--radius-lg)] px-5 py-3 shadow-xl text-left">
             <div className="text-xl font-bold leading-none text-[#28522d]">96%</div>
-            <div className="text-[10px] font-bold mt-1.5 uppercase tracking-wider text-[#7d827f]">đạt điểm mục tiêu</div>
+            <div className="text-xs font-bold mt-1.5 uppercase tracking-wider text-[#7d827f]">đạt điểm mục tiêu</div>
           </div>
         </div>
       </div>

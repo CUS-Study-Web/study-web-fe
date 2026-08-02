@@ -31,8 +31,8 @@ export default function DocumentsPage() {
             onClick={() => setActiveTab("Lý thuyết")}
             className={`px-8 py-2.5 font-extrabold rounded-full transition-all text-sm cursor-pointer shadow-xs ${
               activeTab === "Lý thuyết"
-                ? "bg-[#28522d] !text-white border border-[#28522d] shadow-sm"
-                : "bg-white text-[#333a35] border border-[#d2dcd4] hover:bg-[#edf4ee] hover:text-[#28522d]"
+                ? "bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] shadow-sm"
+                : "bg-white text-[#333a35] border border-[var(--border-500)] hover:bg-[#edf4ee] hover:text-[var(--brand-base-600)]"
             }`}
           >
             Lý thuyết
@@ -41,8 +41,8 @@ export default function DocumentsPage() {
             onClick={() => setActiveTab("Bài tập")}
             className={`px-8 py-2.5 font-extrabold rounded-full transition-all text-sm cursor-pointer shadow-xs ${
               activeTab === "Bài tập"
-                ? "bg-[#28522d] !text-white border border-[#28522d] shadow-sm"
-                : "bg-white text-[#333a35] border border-[#d2dcd4] hover:bg-[#edf4ee] hover:text-[#28522d]"
+                ? "bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] shadow-sm"
+                : "bg-white text-[#333a35] border border-[var(--border-500)] hover:bg-[#edf4ee] hover:text-[var(--brand-base-600)]"
             }`}
           >
             Bài tập
@@ -50,7 +50,7 @@ export default function DocumentsPage() {
         </div>
 
         {/* Section Header */}
-        <div className="flex items-end justify-between mb-8 border-b border-[#e2e8e3] pb-4">
+        <div className="flex items-end justify-between mb-8 border-b border-[var(--border-300)] pb-4">
           <h2 className="text-2xl md:text-3xl font-black text-[#1f1f1c]" style={{ fontFamily: "var(--font-heading)" }}>
             Tài liệu {activeTab.toLowerCase()}
           </h2>

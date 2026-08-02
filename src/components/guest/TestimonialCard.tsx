@@ -8,7 +8,7 @@ interface TestimonialCardProps {
 
 export default function TestimonialCard({ avatar, name, course, date, review }: TestimonialCardProps) {
   return (
-    <div className="bg-[var(--neutral-0)] rounded-[24px] p-8 shadow-sm border border-[var(--border-200)] flex flex-col hover:shadow-md transition-shadow h-full">
+    <div className="bg-[var(--neutral-0)] rounded-[var(--radius-xl)] p-8 shadow-sm border border-[var(--border-200)] flex flex-col hover:shadow-md transition-shadow h-full">
       
       {/* Header */}
       <div className="flex items-center justify-between mb-6">

@@ -56,7 +56,7 @@ export default function AchievementSection() {
         <div className="flex flex-col lg:flex-row gap-6 mb-6">
           
           {/* Left Hero Student Card */}
-          <div className="w-full lg:w-1/3 bg-[var(--neutral-0)] rounded-[32px] p-8 shadow-sm border border-[var(--border-300)] flex flex-col items-center justify-center text-center">
+          <div className="w-full lg:w-1/3 bg-[var(--neutral-0)] rounded-[var(--radius-xl)] p-8 shadow-sm border border-[var(--border-300)] flex flex-col items-center justify-center text-center">
             <div className="w-24 h-24 rounded-full overflow-hidden mb-5 border-4 border-[var(--surface-500)] shadow-sm">
               <img src={students[0].avatar} alt={students[0].name} className="w-full h-full object-cover" />
             </div>
@@ -83,13 +83,13 @@ export default function AchievementSection() {
           </div>
 
           {/* Right Details */}
-          <div className="w-full lg:w-2/3 bg-[var(--neutral-0)] rounded-[32px] p-8 shadow-sm border border-[var(--border-300)]">
+          <div className="w-full lg:w-2/3 bg-[var(--neutral-0)] rounded-[var(--radius-xl)] p-8 shadow-sm border border-[var(--border-300)]">
             <div className="flex items-center gap-4 mb-6">
               <h3 className="text-xl font-bold text-[var(--text-primary-500)]">{students[0].school} · {students[0].title}</h3>
             </div>
             
             <div className="mb-4">
-              <span className="text-[10px] font-bold text-[var(--text-secondary-400)] uppercase tracking-wider">ĐIỂM THÀNH PHẦN</span>
+              <span className="text-xs font-bold text-[var(--text-secondary-400)] uppercase tracking-wider">ĐIỂM THÀNH PHẦN</span>
             </div>
             
             <div className="space-y-3 mb-8">
@@ -106,7 +106,7 @@ export default function AchievementSection() {
 
             <div className="bg-[var(--brand-base-700)] rounded-2xl p-6 flex items-center justify-between text-[var(--neutral-0)]">
               <div>
-                <div className="text-[10px] font-bold text-[#ffffff] opacity-80 uppercase tracking-widest mb-1">TỔNG ĐIỂM</div>
+                <div className="text-xs font-bold text-[#ffffff] opacity-80 uppercase tracking-widest mb-1">TỔNG ĐIỂM</div>
                 <div className="text-4xl font-extrabold tracking-tight text-[#FFC107]">{students[0].total}</div>
               </div>
               <div className="w-12 h-12 rounded-full bg-[var(--brand-base-600)] flex items-center justify-center border border-[var(--brand-base-500)]">

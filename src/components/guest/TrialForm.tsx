@@ -31,7 +31,7 @@ export default function TrialForm() {
                 type="text"
                 required
                 placeholder="Họ và tên"
-                className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[12px] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition text-sm font-medium"
+                className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[var(--radius-md)] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition text-sm font-medium"
               />
             </div>
 
@@ -44,7 +44,7 @@ export default function TrialForm() {
                 type="tel"
                 required
                 placeholder="0912 345 678"
-                className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[12px] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition text-sm font-medium"
+                className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[var(--radius-md)] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition text-sm font-medium"
               />
             </div>
 
@@ -56,7 +56,7 @@ export default function TrialForm() {
               <input
                 type="email"
                 placeholder="@gmail.com"
-                className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[12px] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition text-sm font-medium"
+                className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[var(--radius-md)] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition text-sm font-medium"
               />
             </div>
 
@@ -68,7 +68,7 @@ export default function TrialForm() {
               <input
                 type="text"
                 placeholder="Nhập môn..."
-                className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[12px] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition text-sm font-medium"
+                className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[var(--radius-md)] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition text-sm font-medium"
               />
             </div>
           </div>
@@ -81,7 +81,7 @@ export default function TrialForm() {
             <textarea
               rows={4}
               placeholder="Nhập thông tin bạn muốn thi thử..."
-              className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[12px] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition resize-none text-sm font-medium"
+              className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[var(--radius-md)] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition resize-none text-sm font-medium"
             />
           </div>
 
@@ -89,7 +89,7 @@ export default function TrialForm() {
           <div className="flex justify-center pt-4">
             <button
               type="submit"
-              className="px-12 py-3.5 bg-[#FFC107] hover:bg-[#ffcd38] active:scale-95 text-[#1f1f1c] font-extrabold rounded-[14px] shadow-lg shadow-[#FFC107]/20 hover:shadow-xl hover:shadow-[#FFC107]/30 transition-all duration-200 text-base cursor-pointer"
+              className="px-12 py-3.5 bg-[#FFC107] hover:bg-[#ffcd38] active:scale-95 text-[#1f1f1c] font-extrabold rounded-[var(--radius-md)] shadow-lg shadow-[#FFC107]/20 hover:shadow-xl hover:shadow-[#FFC107]/30 transition-all duration-200 text-base cursor-pointer"
             >
               Đăng ký ngay!
             </button>

@@ -19,7 +19,7 @@ export default function VipGateModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white rounded-[24px] max-w-md w-full p-6 sm:p-8 shadow-2xl border border-[var(--border-300)] text-center relative overflow-hidden select-none">
+      <div className="bg-white rounded-[var(--radius-xl)] max-w-md w-full p-6 sm:p-8 shadow-2xl border border-[var(--border-300)] text-center relative overflow-hidden select-none">
         {/* Crown / Lock Badge */}
         <div className="w-16 h-16 rounded-full bg-[#18321b] flex items-center justify-center mx-auto mb-5 shadow-lg border-2 border-[#ffc107]/40">
           <svg className="w-8 h-8 text-[#ffc107] fill-current" viewBox="0 0 24 24">
@@ -28,7 +28,7 @@ export default function VipGateModal({
         </div>
 
         {/* Title */}
-        <span className="inline-block bg-[#fffdf5] border border-[#fde68a] text-[#b45309] text-[11px] font-extrabold uppercase px-3 py-1 rounded-full tracking-wider mb-3">
+        <span className="inline-block bg-[#fffdf5] border border-[#fde68a] text-[#b45309] text-xs font-extrabold uppercase px-3 py-1 rounded-full tracking-wider mb-3">
           ✦ TÀI KHOẢN VIP
         </span>
 
@@ -51,7 +51,7 @@ export default function VipGateModal({
               onClose();
               navigate("/vip");
             }}
-            className="w-full py-3.5 bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] font-black text-base rounded-[16px] shadow-md shadow-[#e6a800]/30 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            className="w-full py-3.5 bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] font-black text-base rounded-[var(--radius-lg)] shadow-md shadow-[#e6a800]/30 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
           >
             Nâng cấp VIP ngay (80.000đ/tháng) ✦
           </button>
@@ -61,7 +61,7 @@ export default function VipGateModal({
               onClose();
               navigate("/login");
             }}
-            className="w-full py-3 bg-[var(--surface-300)] border border-[var(--border-500)] !text-[var(--text-secondary-600)] font-extrabold text-sm rounded-[14px] hover:bg-[var(--brand-soft-300)] hover:!text-[var(--brand-base-600)] active:scale-95 transition-all cursor-pointer"
+            className="w-full py-3 bg-[var(--surface-300)] border border-[var(--border-500)] !text-[var(--text-secondary-600)] font-extrabold text-sm rounded-[var(--radius-md)] hover:bg-[var(--brand-soft-300)] hover:!text-[var(--brand-base-600)] active:scale-95 transition-all cursor-pointer"
           >
             Đã có tài khoản VIP? Đăng nhập
           </button>

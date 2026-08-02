@@ -64,7 +64,7 @@ export default function TrialExamPage() {
 
       <section className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-8 xl:px-10 mt-8">
         {/* Category filter pills */}
-        <div className="flex flex-wrap gap-3 mb-10 border-b border-[#e2e8e3] pb-6">
+        <div className="flex flex-wrap gap-3 mb-10 border-b border-[var(--border-300)] pb-6">
           {categories.map((cat) => {
             const isActive = selectedCategory === cat;
             return (
@@ -73,8 +73,8 @@ export default function TrialExamPage() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-xs cursor-pointer active:scale-95 ${
                   isActive
-                    ? "bg-[#28522d] !text-white border border-[#28522d] shadow-sm"
-                    : "bg-white text-[#333a35] border border-[#d2dcd4] hover:bg-[#edf4ee] hover:text-[#28522d]"
+                    ? "bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] shadow-sm"
+                    : "bg-white text-[#333a35] border border-[var(--border-500)] hover:bg-[#edf4ee] hover:text-[var(--brand-base-600)]"
                 }`}
               >
                 {cat}

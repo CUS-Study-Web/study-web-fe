@@ -87,7 +87,7 @@ export default function Programs() {
             {programsData.map((p) => (
               <div
                 key={p.title}
-                className="w-[280px] sm:w-[310px] md:w-[330px] flex-shrink-0 relative aspect-[3/4] rounded-[20px] overflow-hidden shadow-lg border border-[var(--border-300)] snap-start group/card hover:shadow-xl transition-all duration-300"
+                className="w-[280px] sm:w-[310px] md:w-[330px] flex-shrink-0 relative aspect-[3/4] rounded-[var(--radius-xl)] overflow-hidden shadow-lg border border-[var(--border-300)] snap-start group/card hover:shadow-xl transition-all duration-300"
               >
                 {/* Full Card Image */}
                 <img
@@ -100,7 +100,7 @@ export default function Programs() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
 
                 {/* Top Left Badge - Capsule */}
-                <div className="absolute top-4 left-4 bg-[var(--brand-base-600)] !text-white text-[11px] font-black px-3.5 py-1 rounded-full shadow-md border border-[#3c6d42]">
+                <div className="absolute top-4 left-4 bg-[var(--brand-base-600)] !text-white text-xs font-black px-3.5 py-1 rounded-full shadow-md border border-[var(--brand-base-700)]">
                   {p.tag}
                 </div>
 
@@ -136,7 +136,7 @@ export default function Programs() {
         <div className="text-center mt-10">
           <Link
             to="/courses"
-            className="inline-flex items-center gap-2 px-9 py-3.5 bg-[var(--surface-300)] border-2 border-[var(--brand-base-600)] !text-[var(--brand-base-600)] font-black rounded-[16px] hover:bg-[var(--brand-soft-300)] active:scale-95 transition-all duration-150 text-base cursor-pointer shadow-xs"
+            className="inline-flex items-center gap-2 px-9 py-3.5 bg-[var(--surface-300)] border-2 border-[var(--brand-base-600)] !text-[var(--brand-base-600)] font-black rounded-[var(--radius-lg)] hover:bg-[var(--brand-soft-300)] active:scale-95 transition-all duration-150 text-base cursor-pointer shadow-xs"
           >
             Xem tất cả khóa học <span className="text-lg font-black">→</span>
           </Link>

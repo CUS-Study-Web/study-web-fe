@@ -50,7 +50,7 @@ export default function Footer() {
 
           {/* Column 2 - Programs */}
           <div className="flex flex-col gap-5 md:ml-4">
-            <h4 className="text-[13px] font-extrabold !text-white uppercase tracking-widest">
+            <h4 className="text-xs font-extrabold !text-white uppercase tracking-widest">
               CHƯƠNG TRÌNH HỌC
             </h4>
             <ul className="space-y-4 text-sm font-medium">
@@ -74,7 +74,7 @@ export default function Footer() {
 
           {/* Column 3 - About CUS */}
           <div className="flex flex-col gap-5">
-            <h4 className="text-[13px] font-extrabold !text-white uppercase tracking-widest">
+            <h4 className="text-xs font-extrabold !text-white uppercase tracking-widest">
               VỀ CUS
             </h4>
             <ul className="space-y-4 text-sm font-medium">
@@ -95,7 +95,7 @@ export default function Footer() {
 
           {/* Column 4 - Contact Info */}
           <div className="flex flex-col gap-5">
-            <h4 className="text-[13px] font-extrabold !text-white uppercase tracking-widest">
+            <h4 className="text-xs font-extrabold !text-white uppercase tracking-widest">
               LIÊN HỆ
             </h4>
             <ul className="space-y-4 text-sm font-medium">
