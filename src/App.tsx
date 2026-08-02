@@ -1,7 +1,7 @@
-import AdminDashboard from './pages/admin/AdminDashboard'
+import AppRoutes from './routes/index'
 
 function App() {
-  return <AdminDashboard />
+  return <AppRoutes />
 }
 
 export default App
