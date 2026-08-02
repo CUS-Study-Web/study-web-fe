@@ -21,7 +21,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
     if (material) {
       setTitle(material.title);
       setSubject(material.subject);
-      setDocType(material.cat === 'ly-thuyet' ? 'Lý thuyết' : 'Đề thi');
+      setDocType(material.cat === 'ly-thuyet' ? 'Lý thuyết' : 'Bài tập');
       setAccess(material.access === 'VIP' ? 'vip' : 'public');
     }
   }, [material]);
@@ -168,7 +168,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                 className={selectClass}
               >
                 <option value="Lý thuyết">Lý thuyết</option>
-                <option value="Đề thi">Đề thi</option>
+                <option value="Bài tập">Bài tập</option>
               </select>
             </div>
             <div>

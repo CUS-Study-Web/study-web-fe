@@ -242,7 +242,7 @@ export const DEMO_MATERIALS_ASST: AssistantDocument[] = [
     duration: "90 phút",
     date: "12/07/2024",
     fileType: "PDF",
-    cat: "de-thi",
+    cat: "bai-tap",
     access: "Public"
   },
   {
@@ -254,7 +254,7 @@ export const DEMO_MATERIALS_ASST: AssistantDocument[] = [
     duration: "60 phút",
     date: "10/07/2024",
     fileType: "PDF",
-    cat: "de-thi",
+    cat: "bai-tap",
     access: "VIP"
   },
   {
@@ -290,7 +290,7 @@ export const DEMO_MATERIALS_ASST: AssistantDocument[] = [
     duration: "120 phút",
     date: "15/07/2024",
     fileType: "PDF",
-    cat: "de-thi",
+    cat: "bai-tap",
     access: "Public"
   },
   {
@@ -326,7 +326,7 @@ export const DEMO_MATERIALS_ASST: AssistantDocument[] = [
     duration: "90 phút",
     date: "28/07/2024",
     fileType: "PDF",
-    cat: "de-thi",
+    cat: "bai-tap",
     access: "Public"
   },
 ];

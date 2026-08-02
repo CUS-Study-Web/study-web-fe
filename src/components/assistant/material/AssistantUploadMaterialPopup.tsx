@@ -154,7 +154,7 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
                 className={selectClass}
               >
                 <option value="Lý thuyết">Lý thuyết</option>
-                <option value="Đề thi">Đề thi</option>
+                <option value="Bài tập">Bài tập</option>
               </select>
             </div>
             <div>
