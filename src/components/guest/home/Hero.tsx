@@ -14,7 +14,7 @@ export default function Hero() {
             LUYỆN THI ĐGNL - CUS
           </div>
           
-          {/* H1 Headline - Matching Image 2 */}
+          {/* H1 Headline */}
           <h1
             className="text-5xl sm:text-6xl lg:text-[72px] xl:text-[80px] font-black leading-[1.08] tracking-tight !text-[var(--text-primary-500)]"
             style={{ fontFamily: "var(--font-heading)" }}
@@ -47,7 +47,7 @@ export default function Hero() {
             Đội ngũ giảng viên chuyên gia, lộ trình cá nhân hóa và hơn 3.400 học viên đã đỗ vào các trường đại học hàng đầu Việt Nam.
           </p>
           
-          {/* Action Buttons - Matching User Request */}
+          {/* Action Buttons */}
           <div className="mt-8 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Link
               to="/login"
@@ -89,7 +89,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right Content - Hero Image & Floating Badges (Bigger Image: max-w-[560px]) */}
+        {/* Right Content */}
         <div className="lg:col-span-6 relative flex justify-center w-full mt-8 lg:mt-0">
           <div className="relative w-full max-w-[560px] aspect-[4/5] lg:h-[540px] rounded-[var(--radius-xl)] overflow-hidden shadow-2xl bg-white border border-[var(--border-300)]">
             <img

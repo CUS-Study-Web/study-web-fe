@@ -1,4 +1,4 @@
-import PageHero from "../../components/guest/PageHero";
+import GuestPageLayout from "../../components/guest/GuestPageLayout";
 import CourseCard from "../../components/guest/CourseCard";
 
 const programsData = [
@@ -51,13 +51,11 @@ const programsData = [
 
 export default function CoursesPage() {
   return (
-    <div className="pb-20">
-      <PageHero
-        eyebrow="CHƯƠNG TRÌNH LUYỆN THI"
-        title="Khóa học tại CUS"
-        description="5 chương trình luyện thi được thiết kế chuyên biệt cho từng kỳ thi — lộ trình bài bản, lớp học tinh gọn và đội ngũ giảng viên tận tâm."
-      />
-
+    <GuestPageLayout
+      eyebrow="CHƯƠNG TRÌNH LUYỆN THI"
+      title="Khóa học tại CUS"
+      description="5 chương trình luyện thi được thiết kế chuyên biệt cho từng kỳ thi — lộ trình bài bản, lớp học tinh gọn và đội ngũ giảng viên tận tâm."
+    >
       <section className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-8 xl:px-10 mt-12 md:mt-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {programsData.map((course) => (
@@ -65,6 +63,6 @@ export default function CoursesPage() {
           ))}
         </div>
       </section>
-    </div>
+    </GuestPageLayout>
   );
 }

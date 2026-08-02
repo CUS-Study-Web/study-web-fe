@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PageHero from "../../components/guest/PageHero";
+import GuestPageLayout from "../../components/guest/GuestPageLayout";
 import ExamCard from "../../components/guest/ExamCard";
 
 const categories = ["Tất cả", "Toán", "Vật lý", "Hóa học", "Tiếng Anh", "Ngữ văn", "Sinh học"];
@@ -40,12 +40,11 @@ export default function TrialExamPage() {
   });
 
   return (
-    <div className="pb-20">
-      <PageHero
-        eyebrow="LUYỆN TẬP THỰC CHIẾN"
-        title="Thi thử"
-        description="Hơn 200 đề thi thử được cập nhật liên tục. Một số đề thi yêu cầu tài khoản VIP."
-      >
+    <GuestPageLayout
+      eyebrow="LUYỆN TẬP THỰC CHIẾN"
+      title="Thi thử"
+      description="Hơn 200 đề thi thử được cập nhật liên tục. Một số đề thi yêu cầu tài khoản VIP."
+      heroExtra={
         <div className="max-w-2xl relative mt-4">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <svg className="h-5 w-5 text-[#a0b8a3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,8 +59,8 @@ export default function TrialExamPage() {
             className="w-full bg-[#28522d] border border-[#3c6d42] rounded-xl py-3.5 pl-12 pr-4 !text-white placeholder-[#beccbf] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition text-sm font-medium"
           />
         </div>
-      </PageHero>
-
+      }
+    >
       <section className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-8 xl:px-10 mt-8">
         {/* Category filter pills */}
         <div className="flex flex-wrap gap-3 mb-10 border-b border-[var(--border-300)] pb-6">
@@ -97,6 +96,6 @@ export default function TrialExamPage() {
           </div>
         )}
       </section>
-    </div>
+    </GuestPageLayout>
   );
 }

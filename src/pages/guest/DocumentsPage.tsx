@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PageHero from "../../components/guest/PageHero";
+import GuestPageLayout from "../../components/guest/GuestPageLayout";
 import DocumentCard from "../../components/guest/DocumentCard";
 
 const docData = [
@@ -17,13 +17,11 @@ export default function DocumentsPage() {
   const filteredDocs = docData.filter((doc) => doc.category === activeTab);
 
   return (
-    <div className="pb-20">
-      <PageHero
-        eyebrow="THƯ VIỆN HỌC LIỆU"
-        title="Tài liệu"
-        description="Tải về các tài liệu ôn tập chất lượng cao. Một số tài liệu yêu cầu tài khoản VIP."
-      />
-
+    <GuestPageLayout
+      eyebrow="THƯ VIỆN HỌC LIỆU"
+      title="Tài liệu"
+      description="Tải về các tài liệu ôn tập chất lượng cao. Một số tài liệu yêu cầu tài khoản VIP."
+    >
       <section className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-8 xl:px-10 mt-10">
         {/* Tabs: Lý thuyết / Bài tập */}
         <div className="flex items-center gap-3 mb-12">
@@ -64,6 +62,6 @@ export default function DocumentsPage() {
           ))}
         </div>
       </section>
-    </div>
+    </GuestPageLayout>
   );
 }

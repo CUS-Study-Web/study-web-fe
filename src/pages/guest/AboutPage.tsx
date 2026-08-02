@@ -1,7 +1,7 @@
-import PageHero from "../../components/guest/PageHero";
-import TeacherCard from "../../components/guest/TeacherCard";
-import TestimonialCard from "../../components/guest/TestimonialCard";
-import AchievementSection from "../../components/guest/AchievementSection";
+import GuestPageLayout from "../../components/guest/GuestPageLayout";
+import TeacherCard from "../../components/guest/home/TeacherCard";
+import TestimonialCard from "../../components/guest/home/TestimonialCard";
+import AchievementSection from "../../components/guest/home/AchievementSection";
 
 const teachers = [
   { img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=60", subject: "TOÁN HỌC", name: "TS. Nguyễn Thị Lan", desc: "Tiến sĩ ĐH Quốc Gia Hà Nội - 15 năm luyện thi" },
@@ -18,13 +18,12 @@ const testimonials = [
 
 export default function AboutPage() {
   return (
-    <div className="pb-0 bg-[var(--surface-500)]">
-      <PageHero
-        eyebrow="VỀ CHÚNG TÔI"
-        title="Giới thiệu CUS"
-        description="Khám phá đội ngũ giảng viên chuyên gia, thành tích nổi bật và cảm nghĩ thực tế từ hàng nghìn học viên đã gắn bó với CUS."
-      />
-
+    <GuestPageLayout
+      eyebrow="VỀ CHÚNG TÔI"
+      title="Giới thiệu CUS"
+      description="Khám phá đội ngũ giảng viên chuyên gia, thành tích nổi bật và cảm nghĩ thực tế từ hàng nghìn học viên đã gắn bó với CUS."
+      padded={false}
+    >
       {/* Teachers Section */}
       <section className="bg-[var(--neutral-0)] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 xl:px-20">
@@ -73,6 +72,6 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-    </div>
+    </GuestPageLayout>
   );
 }

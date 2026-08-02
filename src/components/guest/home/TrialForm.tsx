@@ -85,7 +85,7 @@ export default function TrialForm() {
             />
           </div>
 
-          {/* Submit Button - Fresh Yellow with Glow */}
+          {/* Submit Button */}
           <div className="flex justify-center pt-4">
             <button
               type="submit"

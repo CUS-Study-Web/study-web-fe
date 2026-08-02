@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Outlet, useLocation } from "react-router-dom";
 import Header from "./components/guest/Header";
 import Footer from "./components/guest/Footer";
-import MapSection from "./components/guest/MapSection";
+import MapSection from "./components/guest/home/MapSection";
 import Home from "./pages/guest/Home";
 import CoursesPage from "./pages/guest/CoursesPage";
 import TrialExamPage from "./pages/guest/TrialExamPage";

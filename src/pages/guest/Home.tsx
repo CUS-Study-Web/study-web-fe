@@ -1,6 +1,6 @@
-import Hero from "../../components/guest/Hero";
-import Programs from "../../components/guest/Programs";
-import TrialForm from "../../components/guest/TrialForm";
+import Hero from "../../components/guest/home/Hero";
+import Programs from "../../components/guest/home/Programs";
+import TrialForm from "../../components/guest/home/TrialForm";
 
 export default function Home() {
   return (

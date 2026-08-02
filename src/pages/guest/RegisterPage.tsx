@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import Logo from "../../components/guest/Logo";
+import AuthLayout from "../../components/guest/auth/AuthLayout";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -9,161 +8,80 @@ export default function RegisterPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Demo register handling
+    if (!email || !password || password !== confirmPassword) return;
   };
 
+  const leftFeatures = [
+    "Khai phá toàn bộ lộ trình ôn luyện chuyên sâu",
+    "Thi thử miễn phí không giới hạn số lượt làm",
+    "Gia nhập cộng đồng hơn 3.400+ học viên đỗ top",
+  ];
+
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row bg-[#f8faf8] select-none">
-      {/* Left Column - Split Cover Banner */}
-      <div className="w-full md:w-1/2 min-h-[560px] md:min-h-screen relative p-8 lg:p-14 xl:p-20 flex flex-col justify-between overflow-hidden bg-[#122615]">
-        {/* Background Image with Dark Green Overlay */}
-        <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1600&q=80&auto=format&fit=crop')`,
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#122615]/95 via-[#18321b]/92 to-[#28522d]/88" />
-
-        {/* Top Header Row in Cover */}
-        <div className="relative z-10 flex items-center justify-between mb-12 lg:mb-16">
-          <Link to="/" className="group">
-            <Logo size="md" variant="light" />
-          </Link>
-
-          <Link
-            to="/"
-            className="flex items-center gap-1.5 px-4 py-1.5 bg-white/15 hover:bg-white/25 border border-white/20 !text-white font-bold text-xs rounded-full backdrop-blur-md transition-all active:scale-95 cursor-pointer shadow-xs"
-          >
-            <span>‹</span> Quay lại
-          </Link>
+    <AuthLayout
+      leftBadge="✦ Gia nhập cộng đồng CUS"
+      leftTitle="Bắt đầu hành trình chinh phục mục tiêu"
+      leftDescription="Mỗi học sinh đến với CUS đều mang theo một giấc mơ. Chúng tôi ở đây để biến giấc mơ đó thành hiện thực."
+      leftFeatures={leftFeatures}
+      formTitle="Đăng ký học"
+      footerLinkText="Bạn đã có tài khoản?"
+      footerLinkTo="/login"
+      footerLinkLabel="Đăng nhập"
+    >
+      <form onSubmit={handleSubmit} className="w-full space-y-5 text-left">
+        {/* Email Field */}
+        <div>
+          <label className="block text-xs font-extrabold text-[var(--text-secondary-600)] mb-2">
+            Email <span className="text-[#ef4444]">*</span>
+          </label>
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="example@email.com"
+            className="w-full bg-[var(--neutral-0)] border border-[var(--border-500)] rounded-[var(--radius-md)] py-3.5 px-4 text-sm text-[var(--text-primary-500)] placeholder-[#9ca59e] focus:border-[var(--brand-base-600)] focus:ring-1 focus:ring-[var(--brand-base-600)] outline-none shadow-xs transition font-medium"
+          />
         </div>
 
-        {/* Middle Hero Content - Spacious Layer Separation */}
-        <div className="relative z-10 my-auto py-4">
-          <div className="inline-block bg-white/15 backdrop-blur-md border border-white/10 !text-white text-[11px] font-extrabold uppercase px-4 py-1.5 rounded-full tracking-wider mb-7">
-            THAM GIA CÙNG 3.400+ HỌC VIÊN
-          </div>
-
-          <h1
-            className="text-4xl sm:text-5xl lg:text-[54px] font-black !text-white leading-[1.18] tracking-tight mb-7"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Hành trình<br />nghìn dặm bắt<br />đầu từ đây.
-          </h1>
-
-          <p
-            className="text-sm lg:text-base !text-white/85 leading-relaxed font-medium mb-10 max-w-md"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            Mỗi học sinh đến với CUS đều mang theo một giấc mơ. Chúng tôi ở đây để biến giấc mơ đó thành hiện thực.
-          </p>
-
-          <div className="space-y-4.5 pt-2">
-            <div className="flex items-center gap-3.5 text-sm text-white/90 font-semibold">
-              <div className="w-5.5 h-5.5 rounded-full bg-[#28522d] border border-[#3c6d42] flex items-center justify-center text-white text-[10px] font-extrabold flex-shrink-0 shadow-xs">
-                ✓
-              </div>
-              <span>96% học viên đạt điểm mục tiêu</span>
-            </div>
-            <div className="flex items-center gap-3.5 text-sm text-white/90 font-semibold">
-              <div className="w-5.5 h-5.5 rounded-full bg-[#28522d] border border-[#3c6d42] flex items-center justify-center text-white text-[10px] font-extrabold flex-shrink-0 shadow-xs">
-                ✓
-              </div>
-              <span>Giảng viên tiến sĩ, thạc sĩ hàng đầu</span>
-            </div>
-            <div className="flex items-center gap-3.5 text-sm text-white/90 font-semibold">
-              <div className="w-5.5 h-5.5 rounded-full bg-[#28522d] border border-[#3c6d42] flex items-center justify-center text-white text-[10px] font-extrabold flex-shrink-0 shadow-xs">
-                ✓
-              </div>
-              <span>Lộ trình học cá nhân hóa 100%</span>
-            </div>
-          </div>
+        {/* Password Field */}
+        <div>
+          <label className="block text-xs font-extrabold text-[var(--text-secondary-600)] mb-2">
+            Mật khẩu <span className="text-[#ef4444]">*</span>
+          </label>
+          <input
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Nhập mật khẩu"
+            className="w-full bg-[var(--neutral-0)] border border-[var(--border-500)] rounded-[var(--radius-md)] py-3.5 px-4 text-sm text-[var(--text-primary-500)] placeholder-[#9ca59e] focus:border-[var(--brand-base-600)] focus:ring-1 focus:ring-[var(--brand-base-600)] outline-none shadow-xs transition font-medium"
+          />
         </div>
 
-        {/* Footer info at bottom */}
-        <div className="relative z-10 text-xs text-white/50 font-medium mt-12">
-          © 2024 CUS Education JSC
+        {/* Confirm Password Field */}
+        <div>
+          <label className="block text-xs font-extrabold text-[var(--text-secondary-600)] mb-2">
+            Nhập lại mật khẩu <span className="text-[#ef4444]">*</span>
+          </label>
+          <input
+            type="password"
+            required
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Nhập lại mật khẩu"
+            className="w-full bg-[var(--neutral-0)] border border-[var(--border-500)] rounded-[var(--radius-md)] py-3.5 px-4 text-sm text-[var(--text-primary-500)] placeholder-[#9ca59e] focus:border-[var(--brand-base-600)] focus:ring-1 focus:ring-[var(--brand-base-600)] outline-none shadow-xs transition font-medium"
+          />
         </div>
-      </div>
 
-      {/* Right Column - Form Container (Left Aligned Cluster) */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-16 bg-[var(--surface-300)]">
-        <div className="w-full max-w-[400px] flex flex-col items-start text-left">
-          {/* Logo Badge - Aligned Left */}
-          <Logo size="lg" showText={false} className="mb-6 self-start" />
-
-          <h2
-            className="text-3xl font-black !text-[var(--text-primary-500)] mb-8 text-left w-full"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Đăng ký học
-          </h2>
-
-          <form onSubmit={handleSubmit} className="w-full space-y-5 text-left">
-            {/* Email Field */}
-            <div>
-              <label className="block text-xs font-extrabold text-[var(--text-secondary-600)] mb-2">
-                Email <span className="text-[#ef4444]">*</span>
-              </label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="example@email.com"
-                className="w-full bg-[var(--neutral-0)] border border-[var(--border-500)] rounded-[var(--radius-md)] py-3.5 px-4 text-sm text-[var(--text-primary-500)] placeholder-[#9ca59e] focus:border-[var(--brand-base-600)] focus:ring-1 focus:ring-[var(--brand-base-600)] outline-none shadow-xs transition font-medium"
-              />
-            </div>
-
-            {/* Password Field */}
-            <div>
-              <label className="block text-xs font-extrabold text-[var(--text-secondary-600)] mb-2">
-                Mật khẩu <span className="text-[#ef4444]">*</span>
-              </label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Nhập mật khẩu"
-                className="w-full bg-[var(--neutral-0)] border border-[var(--border-500)] rounded-[var(--radius-md)] py-3.5 px-4 text-sm text-[var(--text-primary-500)] placeholder-[#9ca59e] focus:border-[var(--brand-base-600)] focus:ring-1 focus:ring-[var(--brand-base-600)] outline-none shadow-xs transition font-medium"
-              />
-            </div>
-
-            {/* Confirm Password Field */}
-            <div>
-              <label className="block text-xs font-extrabold text-[var(--text-secondary-600)] mb-2">
-                Nhập lại mật khẩu <span className="text-[#ef4444]">*</span>
-              </label>
-              <input
-                type="password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Nhập lại mật khẩu"
-                className="w-full bg-[var(--neutral-0)] border border-[var(--border-500)] rounded-[var(--radius-md)] py-3.5 px-4 text-sm text-[var(--text-primary-500)] placeholder-[#9ca59e] focus:border-[var(--brand-base-600)] focus:ring-1 focus:ring-[var(--brand-base-600)] outline-none shadow-xs transition font-medium"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-base cursor-pointer mt-2 text-center"
-            >
-              Đăng ký ngay
-            </button>
-          </form>
-
-          {/* Footer toggle link - Left Aligned */}
-          <p className="text-sm font-medium text-[var(--text-secondary-300)] text-left w-full mt-6">
-            Bạn đã có tài khoản?{" "}
-            <Link to="/login" className="font-bold !text-[var(--brand-base-600)] underline hover:text-[var(--brand-base-700)]">
-              Đăng nhập
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-base cursor-pointer mt-2 text-center"
+        >
+          Đăng ký ngay
+        </button>
+      </form>
+    </AuthLayout>
   );
 }

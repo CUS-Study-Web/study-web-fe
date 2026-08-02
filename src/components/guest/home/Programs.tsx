@@ -132,7 +132,7 @@ export default function Programs() {
           </button>
         </div>
 
-        {/* View All Button - Rounded 16px Navigating to /courses */}
+        {/* View All Button */}
         <div className="text-center mt-10">
           <Link
             to="/courses"
