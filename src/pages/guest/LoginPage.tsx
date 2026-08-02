@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Logo from "../../components/guest/Logo";
+import ForgotPasswordModal from "../../components/guest/ForgotPasswordModal";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isForgotOpen, setIsForgotOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,12 +28,8 @@ export default function LoginPage() {
 
         {/* Top Header Row in Cover */}
         <div className="relative z-10 flex items-center justify-between mb-12 lg:mb-16">
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-11 h-11 rounded-[12px] bg-[#28522d] border border-[#3c6d42] flex items-center justify-center text-white shadow-md transition-transform group-hover:scale-105">
-              <svg className="w-6.5 h-6.5 fill-current text-white" viewBox="0 0 24 24">
-                <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5zm0 17.5c-4.14 0-7.5-3.36-7.5-7.5s3.36-7.5 7.5-7.5 7.5 3.36 7.5 7.5-3.36 7.5-7.5 7.5zm-3-8l2.5 2.5 5.5-5.5 1.5 1.5-7 7-4-4 1.5-1.5z" />
-              </svg>
-            </div>
+          <Link to="/" className="group">
+            <Logo size="md" variant="light" />
           </Link>
 
           <Link
@@ -93,11 +92,7 @@ export default function LoginPage() {
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-16 bg-[var(--surface-300)]">
         <div className="w-full max-w-[400px] flex flex-col items-start text-left">
           {/* Logo Badge - Aligned Left */}
-          <div className="w-12 h-12 rounded-[var(--radius-md)] bg-[var(--brand-base-600)] flex items-center justify-center text-white shadow-xs mb-6 self-start">
-            <svg className="w-7 h-7 fill-current text-white" viewBox="0 0 24 24">
-              <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5zm0 17.5c-4.14 0-7.5-3.36-7.5-7.5s3.36-7.5 7.5-7.5 7.5 3.36 7.5 7.5-3.36 7.5-7.5 7.5zm-3-8l2.5 2.5 5.5-5.5 1.5 1.5-7 7-4-4 1.5-1.5z" />
-            </svg>
-          </div>
+          <Logo size="lg" showText={false} className="mb-6 self-start" />
 
           <h2
             className="text-3xl font-black !text-[var(--text-primary-500)] mb-2 text-left w-full"
@@ -132,9 +127,13 @@ export default function LoginPage() {
                 <label className="text-xs font-extrabold text-[var(--text-secondary-600)]">
                   Mật khẩu <span className="text-[#ef4444]">*</span>
                 </label>
-                <a href="#forgot" className="text-xs font-bold !text-[var(--brand-base-600)] underline hover:text-[var(--brand-base-700)]">
+                <button
+                  type="button"
+                  onClick={() => setIsForgotOpen(true)}
+                  className="text-xs font-bold !text-[var(--brand-base-600)] underline hover:text-[var(--brand-base-700)] cursor-pointer"
+                >
                   Quên mật khẩu?
-                </a>
+                </button>
               </div>
               <input
                 type="password"
@@ -164,6 +163,12 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      <ForgotPasswordModal
+        isOpen={isForgotOpen}
+        onClose={() => setIsForgotOpen(false)}
+      />
     </div>
   );
 }

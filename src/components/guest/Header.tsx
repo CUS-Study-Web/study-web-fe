@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import Logo from "./Logo";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,19 +20,8 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-[#f8faf8]/95 backdrop-blur-md border-b border-[var(--border-300)] px-4 md:px-6 lg:px-8 xl:px-10 py-3.5 select-none">
       <div className="max-w-[1440px] mx-auto flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 group active:scale-95 transition-transform">
-          <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[#28522d] flex items-center justify-center text-white shadow-xs transition-transform group-hover:scale-105">
-            {/* Crest SVG */}
-            <svg className="w-6 h-6 fill-current text-white" viewBox="0 0 24 24">
-              <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5zm0 17.5c-4.14 0-7.5-3.36-7.5-7.5s3.36-7.5 7.5-7.5 7.5 3.36 7.5 7.5-3.36 7.5-7.5 7.5zm-3-8l2.5 2.5 5.5-5.5 1.5 1.5-7 7-4-4 1.5-1.5z" />
-            </svg>
-          </div>
-          <span
-            className="text-2xl font-black tracking-tight text-[#1f1f1c]"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            CUS
-          </span>
+        <Link to="/" className="group active:scale-95 transition-transform">
+          <Logo size="md" />
         </Link>
 
         {/* Navigation links - Desktop & Tablet */}

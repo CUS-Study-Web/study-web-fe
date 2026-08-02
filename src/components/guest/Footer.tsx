@@ -1,3 +1,5 @@
+import Logo from "./Logo";
+
 export default function Footer() {
   return (
     <footer id="about" className="bg-[var(--text-primary-800)] !text-white pt-16 pb-12 px-4 md:px-8 lg:px-12 xl:px-20 border-t border-[var(--border-900)]">
@@ -5,15 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Column 1 - Company Info */}
           <div className="flex flex-col items-start gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-[var(--brand-base-600)] flex items-center justify-center !text-white shadow-sm">
-                <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                  {/* TODO: Replace this path with the actual logo path later */}
-                  <path d="M12 2L2 22h20L12 2z" />
-                </svg>
-              </div>
-              <span className="text-2xl font-extrabold tracking-wide !text-white" style={{ fontFamily: "var(--font-heading)" }}>CUS</span>
-            </div>
+            <Logo size="md" variant="light" />
             
             <p className="text-sm font-bold !text-white leading-snug mt-2">
               CÔNG TY TNHH ĐÀO TẠO PHÁT TRIỂN CUS
