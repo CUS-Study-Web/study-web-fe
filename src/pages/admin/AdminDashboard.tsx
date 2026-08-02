@@ -64,7 +64,10 @@ const AdminDashboard = () => {
         <div className="surface-card px-[28px] py-[24px]">
           <div className="flex justify-between items-center mb-[20px]">
             <div className="[font-family:var(--font-heading)] font-bold text-[16px] text-[var(--text-primary)]">Hoạt động gần đây</div>
-            <span className="[font-family:var(--font-heading)] font-semibold text-[12px] text-[var(--brand-500)] cursor-pointer">Xem tất cả</span>
+            <button onClick={() => alert("Tính năng đang được phát triển.")} 
+                    className="![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--brand-500)] !cursor-pointer">
+              Xem tất cả
+            </button>
           </div>
           <div className="flex flex-col">
             {ACTIVITY_LOG.map((a, i) => (
