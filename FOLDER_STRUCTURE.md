@@ -16,6 +16,8 @@ This project is a Vite + React + TypeScript frontend located in `study-web-fe`.
 
 `src/pages/` - Page-level views.
 
+`src/types/` - Contains models or entities definition.
+
 `src/routes/` - Route definitions and navigation setup.
 
 `src/services/` - API calls and data access logic.
