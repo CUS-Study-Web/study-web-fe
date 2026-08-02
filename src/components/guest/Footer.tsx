@@ -1,4 +1,6 @@
+import { Link } from "react-router-dom";
 import Logo from "./Logo";
+import { ROUTES } from "../../utils/routes";
 
 export default function Footer() {
   return (
@@ -49,19 +51,19 @@ export default function Footer() {
             </h4>
             <ul className="space-y-4 text-sm font-medium">
               <li>
-                <a href="#courses" className="!text-white opacity-80 hover:!text-white transition">V-ACT</a>
+                <Link to={ROUTES.COURSES} className="!text-white opacity-80 hover:!text-white transition">V-ACT</Link>
               </li>
               <li>
-                <a href="#courses" className="!text-white opacity-80 hover:!text-white transition">V-SAT</a>
+                <Link to={ROUTES.COURSES} className="!text-white opacity-80 hover:!text-white transition">V-SAT</Link>
               </li>
               <li>
-                <a href="#courses" className="!text-white opacity-80 hover:!text-white transition">HSA</a>
+                <Link to={ROUTES.COURSES} className="!text-white opacity-80 hover:!text-white transition">HSA</Link>
               </li>
               <li>
-                <a href="#courses" className="!text-white opacity-80 hover:!text-white transition">HSCA</a>
+                <Link to={ROUTES.COURSES} className="!text-white opacity-80 hover:!text-white transition">HSCA</Link>
               </li>
               <li>
-                <a href="#courses" className="!text-white opacity-80 hover:!text-white transition">THPT QG</a>
+                <Link to={ROUTES.COURSES} className="!text-white opacity-80 hover:!text-white transition">THPT QG</Link>
               </li>
             </ul>
           </div>
@@ -73,16 +75,16 @@ export default function Footer() {
             </h4>
             <ul className="space-y-4 text-sm font-medium">
               <li>
-                <a href="#about" className="!text-white opacity-80 hover:!text-white transition">Giới thiệu</a>
+                <Link to={ROUTES.ABOUT} className="!text-white opacity-80 hover:!text-white transition">Giới thiệu</Link>
               </li>
               <li>
-                <a href="#" className="!text-white opacity-80 hover:!text-white transition">Đội ngũ giảng viên</a>
+                <Link to={ROUTES.ABOUT} className="!text-white opacity-80 hover:!text-white transition">Đội ngũ giảng viên</Link>
               </li>
               <li>
-                <a href="#" className="!text-white opacity-80 hover:!text-white transition">Bảng vàng</a>
+                <Link to={ROUTES.ABOUT} className="!text-white opacity-80 hover:!text-white transition">Bảng vàng</Link>
               </li>
               <li>
-                <a href="#" className="!text-white opacity-80 hover:!text-white transition">Tài liệu</a>
+                <Link to={ROUTES.DOCUMENTS} className="!text-white opacity-80 hover:!text-white transition">Tài liệu</Link>
               </li>
             </ul>
           </div>
@@ -94,14 +96,12 @@ export default function Footer() {
             </h4>
             <ul className="space-y-4 text-sm font-medium">
               <li className="flex items-center gap-3 !text-white opacity-80">
-                {/* Phone icon SVG */}
                 <svg className="w-[18px] h-[18px] text-[var(--error-400)] fill-current" viewBox="0 0 24 24">
                   <path d="M20 15.5c-1.2 0-2.4-.2-3.6-.6-.3-.1-.7 0-1 .2l-2.2 2.2c-2.8-1.4-5.1-3.8-6.6-6.6l2.2-2.2c.3-.3.4-.7.2-1-.3-1.1-.5-2.3-.5-3.5 0-.6-.4-1-1-1H4c-.6 0-1 .4-1 1 0 9.4 7.6 17 17 17 .6 0 1-.4 1-1v-3.5c0-.6-.4-1-1-1z"/>
                 </svg>
                 <span>036 217 4805</span>
               </li>
               <li className="flex items-center gap-3">
-                {/* Mail icon SVG */}
                 <svg className="w-[18px] h-[18px] !text-white opacity-80 fill-current" viewBox="0 0 24 24">
                   <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                 </svg>
@@ -110,7 +110,6 @@ export default function Footer() {
                 </a>
               </li>
               <li className="flex items-center gap-3">
-                {/* Globe/Website icon SVG */}
                 <svg className="w-[18px] h-[18px] text-[var(--info-400)] fill-current" viewBox="0 0 24 24">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                 </svg>
@@ -119,7 +118,6 @@ export default function Footer() {
                 </a>
               </li>
               <li className="flex items-center gap-3 !text-white opacity-80">
-                {/* Clock icon SVG */}
                 <svg className="w-[18px] h-[18px] text-[var(--error-400)] fill-current" viewBox="0 0 24 24">
                   <path d="M11.99 2C6.47 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.51 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                 </svg>

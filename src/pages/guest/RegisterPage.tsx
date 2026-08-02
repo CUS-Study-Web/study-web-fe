@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AuthLayout from "../../components/guest/auth/AuthLayout";
+import { ROUTES } from "../../utils/routes";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -25,7 +26,7 @@ export default function RegisterPage() {
       leftFeatures={leftFeatures}
       formTitle="Đăng ký học"
       footerLinkText="Bạn đã có tài khoản?"
-      footerLinkTo="/login"
+      footerLinkTo={ROUTES.AUTH.LOGIN}
       footerLinkLabel="Đăng nhập"
     >
       <form onSubmit={handleSubmit} className="w-full space-y-5 text-left">

@@ -1,13 +1,14 @@
 import { NavLink } from 'react-router-dom'
+import { ROUTES } from '../../utils/routes'
 
 type AdminNavBarProps = {
   onLogout?: () => void,
 }
 
 const NAV = [
-  { to: '/admin/dashboard', label: 'Trang Chủ' },
-  { to: '/admin/system',    label: 'Quản Trị Hệ Thống' },
-  { to: '/admin/website',   label: 'Quản Lý Website' },
+  { to: ROUTES.ADMIN.DASHBOARD, label: 'Trang Chủ' },
+  { to: ROUTES.ADMIN.SYSTEM,    label: 'Quản Trị Hệ Thống' },
+  { to: ROUTES.ADMIN.WEBSITE,   label: 'Quản Lý Website' },
 ]
 
 export default function AdminNavBar({ onLogout }: AdminNavBarProps) {

@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { ROUTES } from "../../../utils/routes";
 
 const programsData = [
   {
@@ -110,7 +111,7 @@ export default function Programs() {
                     {p.title}
                   </h3>
                   <Link
-                    to="/courses"
+                    to={ROUTES.COURSES}
                     className="text-xs font-extrabold !text-white hover:underline flex items-center gap-1 transition drop-shadow-sm"
                   >
                     Xem chi tiết khóa học <span className="transform group-hover/card:translate-x-1 transition-transform">→</span>
@@ -135,7 +136,7 @@ export default function Programs() {
         {/* View All Button */}
         <div className="text-center mt-10">
           <Link
-            to="/courses"
+            to={ROUTES.COURSES}
             className="inline-flex items-center gap-2 px-9 py-3.5 bg-[var(--surface-300)] border-2 border-[var(--brand-base-600)] !text-[var(--brand-base-600)] font-black rounded-[var(--radius-lg)] hover:bg-[var(--brand-soft-300)] active:scale-95 transition-all duration-150 text-base cursor-pointer shadow-xs"
           >
             Xem tất cả khóa học <span className="text-lg font-black">→</span>
