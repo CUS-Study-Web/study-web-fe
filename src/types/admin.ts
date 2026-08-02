@@ -55,4 +55,65 @@ type DayStats = {
   vip: ChartDataPoint[]
 }
 
-export type { SysTab, Student, Assistant, VipReq, StatItem, ChartDataPoint, DayStats }
+type Course = {
+  id: number
+  title: string
+  subtitle: string
+  unit: string
+  desc: string
+  subjects?: string[]
+  image?: string
+}
+
+type Instructor = {
+  id: number
+  name: string
+  bio: string
+  image?: string
+}
+
+type Achievement = {
+  id: number
+  name: string
+  exam: string
+  totalScore: string
+  subScores: string
+  image?: string
+}
+
+type Review = {
+  id: number
+  name: string
+  course: string
+  time: string
+  comment: string
+  image?: string
+}
+
+type WTab = "courses" | "instructors" | "achievements" | "reviews"
+
+type ModalKey =
+  | "add-course"
+  | "edit-course"
+  | "add-instructor"
+  | "edit-instructor"
+  | "add-achievement"
+  | "edit-achievement"
+  | "add-review"
+  | "edit-review"
+
+export type {
+  SysTab,
+  Student,
+  Assistant,
+  VipReq,
+  StatItem,
+  ChartDataPoint,
+  DayStats,
+  Course,
+  Instructor,
+  Achievement,
+  Review,
+  WTab,
+  ModalKey
+}

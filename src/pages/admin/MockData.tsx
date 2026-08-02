@@ -190,6 +190,27 @@ const MONTHLY_VIP: ChartDataPoint[] = [
   { label: "T12", value: 28 }
 ]
 
+const WEBSITE_COURSES = [
+  { id: 1, title: "V-ACT", subtitle: "Luyện thi ACT theo chuẩn Mỹ", unit: "CUS Education", desc: "Chương trình luyện thi toàn diện cho kỳ thi ACT." },
+  { id: 2, title: "V-SAT", subtitle: "Luyện thi SAT chuẩn quốc tế", unit: "CUS Education", desc: "Chương trình SAT cập nhật theo cấu trúc đề thi mới." },
+  { id: 3, title: "HSA", subtitle: "Đánh giá tư duy HSA", unit: "CUS Education", desc: "Khóa học luyện đề tư duy chuẩn ĐHQG Hà Nội." },
+]
+
+const WEBSITE_INSTRUCTORS = [
+  { id: 1, name: "Th.S Nguyễn Văn An", bio: "Giảng viên toán với hơn 10 năm kinh nghiệm giảng dạy." },
+  { id: 2, name: "GS.TS Trần Thị Bình", bio: "Chuyên gia tiếng Anh học thuật, tác giả nhiều giáo trình." },
+]
+
+const WEBSITE_ACHIEVEMENTS = [
+  { id: 1, name: "Phạm Minh Khoa", exam: "V-ACT", totalScore: "112 / 120", subScores: "Ngôn ngữ: 39 · Toán logic: 37 · GQVĐ: 36" },
+  { id: 2, name: "Lê Thị Hoa", exam: "V-SAT", totalScore: "1560 / 1600", subScores: "Toán: 800 · Anh: 760" },
+]
+
+const WEBSITE_REVIEWS = [
+  { id: 1, name: "Nguyễn Tuấn Anh", course: "HSA", time: "Tháng 06/2025", comment: "Giáo viên nhiệt tình, tài liệu rất phong phú." },
+  { id: 2, name: "Trần Quỳnh Như", course: "V-ACT", time: "Tháng 05/2025", comment: "Tôi đã cải thiện điểm từ 28 lên 34 chỉ sau 3 tháng." },
+]
+
 export {
   QUICK_STATS,
   ACTIVITY_LOG,
@@ -204,5 +225,9 @@ export {
   DEFAULT_DAY_STATS,
   MONTHLY_WEB_TRAFFIC_DATA,
   MONTHLY_REGS_FULL,
-  MONTHLY_VIP
+  MONTHLY_VIP,
+  WEBSITE_COURSES,
+  WEBSITE_INSTRUCTORS,
+  WEBSITE_ACHIEVEMENTS,
+  WEBSITE_REVIEWS
 }
