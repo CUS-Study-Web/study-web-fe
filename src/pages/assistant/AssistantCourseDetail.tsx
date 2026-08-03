@@ -5,9 +5,9 @@ import CoursePageHeader from '../../components/assistant/course/CoursePageHeader
 import TabBar from '../../components/assistant/course/TabBar';
 import SubjectCard from '../../components/assistant/course/SubjectCard';
 import ExamCard from '../../components/assistant/course/ExamCard';
-import CreateTopicModal from '../../components/assistant/course/CreateTopicModal';
-import CreateLectureModal from '../../components/assistant/course/CreateLectureModal';
-import CreateExerciseModal from '../../components/assistant/course/CreateExerciseModal';
+import CreateTopicPopup from '../../components/assistant/course/CreateTopicPopup';
+import CreateLecturePopup from '../../components/assistant/course/CreateLecturePopup';
+import CreateExercisePopup from '../../components/assistant/course/CreateExercisePopup';
 import {
   DEMO_COURSES,
   DEMO_COURSE_SUBJECTS,
@@ -57,13 +57,13 @@ export default function AssistantCourseDetail() {
     <div className="flex flex-col h-full w-full">
       {/* Modals */}
       {openModal === 'topic' && (
-        <CreateTopicModal courseKey={key} onClose={() => setOpenModal(null)} />
+        <CreateTopicPopup courseKey={key} onClose={() => setOpenModal(null)} />
       )}
       {openModal === 'lecture' && (
-        <CreateLectureModal courseKey={key} onClose={() => setOpenModal(null)} />
+        <CreateLecturePopup courseKey={key} onClose={() => setOpenModal(null)} />
       )}
       {openModal === 'exercise' && (
-        <CreateExerciseModal courseKey={key} onClose={() => setOpenModal(null)} />
+        <CreateExercisePopup courseKey={key} onClose={() => setOpenModal(null)} />
       )}
 
       <CoursePageHeader
