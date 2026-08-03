@@ -106,3 +106,43 @@ export interface AssistantStudent {
   examsCompleted?: number;
   averageScore?: number;
 }
+
+export interface Course {
+  key: string;
+  name: string;
+  tag: string;
+  accentColor: string;
+  subjectCount: number;
+  examCount: number;
+}
+
+export interface CourseExam {
+  id: number;
+  title: string;
+  courseKey: string;
+  questions: number;
+  duration: string;
+  date: string;
+  status: 'published' | 'draft';
+}
+
+export interface SubjectLecture {
+  id: number;
+  title: string;
+  link: string;
+}
+
+export interface SubjectExercise {
+  id: number;
+  title: string;
+  subject: string;
+  questions: number;
+  fileType: string;
+}
+
+export interface SubjectTopic {
+  id: number;
+  name: string;
+  lectures: SubjectLecture[];
+  exercises: SubjectExercise[];
+}
