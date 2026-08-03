@@ -1,0 +1,17 @@
+@reference "../index.css";
+
+@layer components {
+  /* kept in CSS — two runtime-variant classes, cleaner than a ternary of 4+ utilities */
+  .stats-trend {
+    @apply inline-flex items-center gap-[3px] px-[10px] py-[4px] rounded-full text-[12px] font-bold;
+    font-family: var(--font-heading);
+  }
+  .stats-trend--up {
+    background-color: var(--brand-soft-500);
+    color: var(--success-700);
+  }
+  .stats-trend--down {
+    background-color: var(--error-50);
+    color: var(--error-500);
+  }
+}

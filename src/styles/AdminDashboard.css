@@ -1,0 +1,13 @@
+@reference "../index.css";
+
+@layer components {
+  /* ponytail: shared card shell used in 2 places; worth a name */
+  .surface-card {
+    @apply bg-[var(--surface-card)] rounded-[18px] shadow-[var(--shadow-clay-sm)] border border-[rgba(220,233,222,0.5)];
+  }
+
+  /* ponytail: runtime-conditional border, cleaner than a ternary of 2 utilities */
+  .activity-row-bordered {
+    @apply border-b border-[var(--border-100)];
+  }
+}
