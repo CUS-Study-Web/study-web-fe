@@ -1,23 +1,21 @@
 import { useState } from 'react';
-import { DEMO_COURSE_SUBJECTS, DEMO_SUBJECT_TOPICS } from '../../../types/assistant/mockData';
+import { DEMO_COURSE_SUBJECTS } from '../../../types/assistant/mockData';
 
-interface CreateLecturePopup {
+interface AssistantCreateLecturePopup {
   courseKey: string;
   onClose: () => void;
 }
 
-export default function CreateLecturePopup({ courseKey, onClose }: CreateLecturePopup) {
+export default function AssistantCreateLecturePopup({ courseKey, onClose }: AssistantCreateLecturePopup) {
   const [subject, setSubject] = useState('');
-  const [topicId, setTopicId] = useState('');
   const [order, setOrder] = useState(1);
   const [title, setTitle] = useState('');
   const [link, setLink] = useState('');
 
   const subjects = DEMO_COURSE_SUBJECTS[courseKey] ?? [];
-  const topics = subject ? (DEMO_SUBJECT_TOPICS[subject] ?? []) : [];
 
   const handleCreate = () => {
-    console.log('Create lecture:', { courseKey, subject, topicId, order, title, link });
+    console.log('Create lecture:', { courseKey, subject, order, title, link });
     onClose();
   };
 
@@ -74,7 +72,7 @@ export default function CreateLecturePopup({ courseKey, onClose }: CreateLecture
             </div>
             <select
               value={subject}
-              onChange={(e) => { setSubject(e.target.value); setTopicId(''); }}
+              onChange={(e) => setSubject(e.target.value)}
               className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none cursor-pointer"
             >
               <option value="">— Chọn môn học —</option>
@@ -83,34 +81,18 @@ export default function CreateLecturePopup({ courseKey, onClose }: CreateLecture
           </div>
         </div>
 
-        {/* Row: Chuyên đề + Số thứ tự */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div>
-            <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
-              Chuyên đề
-            </div>
-            <select
-              value={topicId}
-              onChange={(e) => setTopicId(e.target.value)}
-              disabled={!subject}
-              className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <option value="">— Chọn chuyên đề —</option>
-              {topics.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-            </select>
+        {/* Số thứ tự */}
+        <div className="mb-4">
+          <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
+            Số thứ tự
           </div>
-          <div>
-            <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
-              Số thứ tự
-            </div>
-            <input
-              type="number"
-              min={1}
-              value={order}
-              onChange={(e) => setOrder(Number(e.target.value))}
-              className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)] transition-colors"
-            />
-          </div>
+          <input
+            type="number"
+            min={1}
+            value={order}
+            onChange={(e) => setOrder(Number(e.target.value))}
+            className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)] transition-colors"
+          />
         </div>
 
         {/* Tiêu đề */}

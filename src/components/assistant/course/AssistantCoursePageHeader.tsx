@@ -1,21 +1,21 @@
-interface BreadcrumbItem {
+interface AssistantBreadcrumbItem {
   label: string;
   onClick?: () => void;
 }
 
-interface CoursePageHeaderProps {
-  breadcrumbs: BreadcrumbItem[];
+interface AssistantCoursePageHeaderProps {
+  breadcrumbs: AssistantBreadcrumbItem[];
   title: string;
   subtitle?: string;
   rightSlot?: React.ReactNode;
 }
 
-export default function CoursePageHeader({
+export default function AssistantCoursePageHeader({
   breadcrumbs,
   title,
   subtitle,
   rightSlot,
-}: CoursePageHeaderProps) {
+}: AssistantCoursePageHeaderProps) {
   return (
     <div className="flex items-start justify-between mb-6">
       <div>

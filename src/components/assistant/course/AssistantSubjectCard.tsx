@@ -1,4 +1,4 @@
-interface SubjectCardProps {
+interface AssistantSubjectCardProps {
   name: string;
   topics: number;
   lectures: number;
@@ -6,7 +6,7 @@ interface SubjectCardProps {
   onViewDetail: (subjectName: string) => void;
 }
 
-export default function SubjectCard({ name, topics, lectures, exercises, onViewDetail }: SubjectCardProps) {
+export default function AssistantSubjectCard({ name, topics, lectures, exercises, onViewDetail }: AssistantSubjectCardProps) {
   return (
     <div 
       onClick={() => onViewDetail(name)}

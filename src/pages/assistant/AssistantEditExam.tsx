@@ -1,8 +1,9 @@
 import { useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import CoursePageHeader from '../../components/assistant/course/CoursePageHeader';
-import ExamFormPanel, { type ExamFormPanelHandle } from '../../components/assistant/course/ExamFormPanel';
+import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
+import AssistantExamFormPanel, { type AssistantExamFormPanelHandle } from '../../components/assistant/course/AssistantExamFormPanel';
 import { DEMO_COURSES, DEMO_COURSE_EXAMS } from '../../types/assistant/mockData';
+import { ROUTES } from '../../utils/routes';
 
 // Simulated exam question lines for the PDF preview
 const PREVIEW_QUESTIONS = [
@@ -26,7 +27,7 @@ const MOCK_OPTIONS = [
 export default function AssistantEditExam() {
   const { courseKey, examId } = useParams<{ courseKey: string; examId: string }>();
   const navigate = useNavigate();
-  const formRef = useRef<ExamFormPanelHandle>(null);
+  const formRef = useRef<AssistantExamFormPanelHandle>(null);
 
   const course = DEMO_COURSES.find((c) => c.key === courseKey);
   const exams = DEMO_COURSE_EXAMS[courseKey ?? ''] ?? [];
@@ -34,7 +35,7 @@ export default function AssistantEditExam() {
 
   const key = courseKey ?? '';
 
-  const handleBackWithState = () => navigate(`/assistant/courses/${key}`);
+  const handleBackWithState = () => navigate(ROUTES.ASSISTANT.COURSE_DETAIL(key));
 
   const handleConfirm = () => {
     const data = formRef.current?.getData();
@@ -59,9 +60,9 @@ export default function AssistantEditExam() {
       {/* Top bar */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <CoursePageHeader
+          <AssistantCoursePageHeader
             breadcrumbs={[
-              { label: 'Quản lý khóa học', onClick: () => navigate('/assistant/courses') },
+              { label: 'Quản lý khóa học', onClick: () => navigate(ROUTES.ASSISTANT.COURSES) },
               { label: course?.name ?? key, onClick: handleBackWithState },
               { label: exam?.title ?? 'Đề thi' },
             ]}
@@ -82,7 +83,7 @@ export default function AssistantEditExam() {
             Tải đề thi
           </div>
           <div
-            onClick={() => navigate(`/assistant/courses/${key}/upload-exam`)}
+            onClick={() => navigate(ROUTES.ASSISTANT.COURSE_UPLOAD_EXAM(key))}
             className="flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white cursor-pointer transition-colors select-none shadow-sm"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -156,23 +157,23 @@ export default function AssistantEditExam() {
         </div>
 
         {/* Right: form panel */}
-        <div className="w-[380px] shrink-0 overflow-y-auto pr-2 pb-4">
-          <ExamFormPanel ref={formRef} courseKey={key} mode="edit" initialData={initialData}>
-            <div className="flex items-center gap-3 pt-4 border-t border-[var(--border-subtle)] mt-2">
+        <div className="w-[380px] shrink-0 flex flex-col min-h-0">
+          <AssistantExamFormPanel ref={formRef} courseKey={key} mode="edit" initialData={initialData}>
+            <div className="flex items-center gap-3 pt-3 border-t border-[var(--border-subtle)] mt-1 shrink-0">
               <div
                 onClick={handleBackWithState}
-                className="mr-auto px-6 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none bg-white"
+                className="mr-auto px-5 py-2 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none bg-white"
               >
                 Hủy
               </div>
               <div
                 onClick={handleConfirm}
-                className="px-6 py-2.5 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-white cursor-pointer transition-colors select-none shadow-sm"
+                className="px-5 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white cursor-pointer transition-colors select-none shadow-sm"
               >
                 Xác nhận chỉnh sửa
               </div>
             </div>
-          </ExamFormPanel>
+          </AssistantExamFormPanel>
         </div>
       </div>
     </div>

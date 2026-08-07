@@ -1,26 +1,26 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { CourseExam } from '../../types/assistant/models';
-import CoursePageHeader from '../../components/assistant/course/CoursePageHeader';
-import TabBar from '../../components/assistant/course/TabBar';
-import SubjectCard from '../../components/assistant/course/SubjectCard';
-import ExamCard from '../../components/assistant/course/ExamCard';
-import CreateTopicPopup from '../../components/assistant/course/CreateTopicPopup';
-import CreateLecturePopup from '../../components/assistant/course/CreateLecturePopup';
-import CreateExercisePopup from '../../components/assistant/course/CreateExercisePopup';
+import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
+import AssistantTabBar from '../../components/assistant/course/AssistantTabBar';
+import AssistantSubjectCard from '../../components/assistant/course/AssistantSubjectCard';
+import AssistantExamCard from '../../components/assistant/course/AssistantExamCard';
+import AssistantCreateLecturePopup from '../../components/assistant/course/AssistantCreateLecturePopup';
+import AssistantCreateExercisePopup from '../../components/assistant/course/AssistantCreateExercisePopup';
 import {
   DEMO_COURSES,
   DEMO_COURSE_SUBJECTS,
   DEMO_SUBJECT_META_V2,
   DEMO_COURSE_EXAMS,
 } from '../../types/assistant/mockData';
+import { ROUTES } from '../../utils/routes';
 
 const TABS = [
   { key: 'mon-hoc', label: 'Môn học' },
   { key: 'de-thi', label: 'Đề thi' },
 ];
 
-type ModalType = 'topic' | 'lecture' | 'exercise' | null;
+type ModalType = 'lecture' | 'exercise' | null;
 
 export default function AssistantCourseDetail() {
   const { courseKey } = useParams<{ courseKey: string }>();
@@ -44,11 +44,10 @@ export default function AssistantCourseDetail() {
   }
 
   const handleEditExam = (exam: CourseExam) => {
-    navigate(`/assistant/courses/${key}/edit-exam/${exam.id}`);
+    navigate(ROUTES.ASSISTANT.COURSE_EDIT_EXAM(key, String(exam.id)));
   };
 
   const ACTION_BUTTONS: { label: string; modal: ModalType }[] = [
-    { label: 'Tạo chuyên đề', modal: 'topic' },
     { label: 'Tạo bài giảng', modal: 'lecture' },
     { label: 'Tạo bài tập', modal: 'exercise' },
   ];
@@ -56,19 +55,16 @@ export default function AssistantCourseDetail() {
   return (
     <div className="flex flex-col h-full w-full">
       {/* Modals */}
-      {openModal === 'topic' && (
-        <CreateTopicPopup courseKey={key} onClose={() => setOpenModal(null)} />
-      )}
       {openModal === 'lecture' && (
-        <CreateLecturePopup courseKey={key} onClose={() => setOpenModal(null)} />
+        <AssistantCreateLecturePopup courseKey={key} onClose={() => setOpenModal(null)} />
       )}
       {openModal === 'exercise' && (
-        <CreateExercisePopup courseKey={key} onClose={() => setOpenModal(null)} />
+        <AssistantCreateExercisePopup courseKey={key} onClose={() => setOpenModal(null)} />
       )}
 
-      <CoursePageHeader
+      <AssistantCoursePageHeader
         breadcrumbs={[
-          { label: 'Quản lý khóa học', onClick: () => navigate('/assistant/courses') },
+          { label: 'Quản lý khóa học', onClick: () => navigate(ROUTES.ASSISTANT.COURSES) },
           { label: course.name },
         ]}
         title="Chi tiết khóa học"
@@ -80,7 +76,7 @@ export default function AssistantCourseDetail() {
         }
       />
 
-      <TabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
+      <AssistantTabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Môn học tab */}
       {activeTab === 'mon-hoc' && (
@@ -103,14 +99,14 @@ export default function AssistantCourseDetail() {
             {subjects.map((subjectName) => {
               const meta = DEMO_SUBJECT_META_V2[subjectName] ?? { topics: 0, lectures: 0, exercises: 0 };
               return (
-                <SubjectCard
+                <AssistantSubjectCard
                   key={subjectName}
                   name={subjectName}
                   topics={meta.topics}
                   lectures={meta.lectures}
                   exercises={meta.exercises}
                   onViewDetail={(name) =>
-                    navigate(`/assistant/courses/${key}/${encodeURIComponent(name)}`)
+                   navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, encodeURIComponent(name)))
                   }
                 />
               );
@@ -125,7 +121,7 @@ export default function AssistantCourseDetail() {
           {/* Upload button */}
           <div className="flex items-center gap-3">
             <div
-              onClick={() => navigate(`/assistant/courses/${key}/upload-exam`)}
+              onClick={() => navigate(ROUTES.ASSISTANT.COURSE_UPLOAD_EXAM(key))}
               className="flex items-center gap-2 px-4 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white cursor-pointer active:scale-95 transition-all duration-150 select-none shadow-sm"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -145,7 +141,7 @@ export default function AssistantCourseDetail() {
               </div>
             ) : (
               exams.map((exam) => (
-                <ExamCard key={exam.id} exam={exam} onEdit={handleEditExam} />
+                <AssistantExamCard key={exam.id} exam={exam} onEdit={handleEditExam} />
               ))
             )}
           </div>

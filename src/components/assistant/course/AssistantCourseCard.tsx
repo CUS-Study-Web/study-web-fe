@@ -1,11 +1,11 @@
 import type { Course } from '../../../types/assistant/models';
 
-interface CourseCardProps {
+interface AssistantCourseCardProps {
   course: Course;
   onViewDetail: (key: string) => void;
 }
 
-export default function CourseCard({ course, onViewDetail }: CourseCardProps) {
+export default function AssistantCourseCard({ course, onViewDetail }: AssistantCourseCardProps) {
   return (
     <div 
       onClick={() => onViewDetail(course.key)}

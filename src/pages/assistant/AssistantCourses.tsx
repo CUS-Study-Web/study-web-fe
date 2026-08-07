@@ -1,12 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import CourseCard from '../../components/assistant/course/CourseCard';
+import AssistantCourseCard from '../../components/assistant/course/AssistantCourseCard';
 import { DEMO_COURSES } from '../../types/assistant/mockData';
+import { ROUTES } from '../../utils/routes';
 
 export default function AssistantCourses() {
   const navigate = useNavigate();
 
   const handleViewDetail = (key: string) => {
-    navigate(`/assistant/courses/${key}`);
+    navigate(ROUTES.ASSISTANT.COURSE_DETAIL(key));
   };
 
   return (
@@ -24,7 +25,7 @@ export default function AssistantCourses() {
       {/* Course grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
         {DEMO_COURSES.map((course) => (
-          <CourseCard
+          <AssistantCourseCard
             key={course.key}
             course={course}
             onViewDetail={handleViewDetail}

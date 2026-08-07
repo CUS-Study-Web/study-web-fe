@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { DEMO_COURSE_SUBJECTS, DEMO_SUBJECT_TOPICS } from '../../../types/assistant/mockData';
+import { DEMO_COURSE_SUBJECTS } from '../../../types/assistant/mockData';
 
-interface CreateExercisePopup {
+interface AssistantCreateExercisePopup {
   courseKey: string;
   onClose: () => void;
 }
@@ -13,9 +13,8 @@ const FILE_TYPE_COLORS: Record<string, string> = {
   XLSX: 'bg-[#D1FAE5] text-[#065F46]',
 };
 
-export default function CreateExercisePopup({ courseKey, onClose }: CreateExercisePopup) {
+export default function AssistantCreateExercisePopup({ courseKey, onClose }: AssistantCreateExercisePopup) {
   const [subject, setSubject] = useState('');
-  const [topicId, setTopicId] = useState('');
   const [order, setOrder] = useState(1);
   const [questionCount, setQuestionCount] = useState(20);
   const [title, setTitle] = useState('');
@@ -25,10 +24,9 @@ export default function CreateExercisePopup({ courseKey, onClose }: CreateExerci
   const [fileName, setFileName] = useState('');
 
   const subjects = DEMO_COURSE_SUBJECTS[courseKey] ?? [];
-  const topics = subject ? (DEMO_SUBJECT_TOPICS[subject] ?? []) : [];
 
   const handleCreate = () => {
-    console.log('Create exercise:', { courseKey, subject, topicId, order, questionCount, title, solutionLink, fileType, fileName });
+    console.log('Create exercise:', { courseKey, subject, order, questionCount, title, solutionLink, fileType, fileName });
     onClose();
   };
 
@@ -116,7 +114,7 @@ export default function CreateExercisePopup({ courseKey, onClose }: CreateExerci
                 />
               </label>
               <div className="font-[family-name:var(--font-body)] text-[10px] text-[var(--text-tertiary)]">
-                PDF, DOCX và đu 50MB
+                PDF, DOCX và dưới 50MB
               </div>
             </div>
 
@@ -162,27 +160,11 @@ export default function CreateExercisePopup({ courseKey, onClose }: CreateExerci
               </div>
               <select
                 value={subject}
-                onChange={(e) => { setSubject(e.target.value); setTopicId(''); }}
+                onChange={(e) => setSubject(e.target.value)}
                 className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none cursor-pointer"
               >
                 <option value="">— Chọn môn học —</option>
                 {subjects.map((s) => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
-
-            {/* Chuyên đề */}
-            <div>
-              <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
-                Chuyên đề
-              </div>
-              <select
-                value={topicId}
-                onChange={(e) => setTopicId(e.target.value)}
-                disabled={!subject}
-                className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none cursor-pointer disabled:opacity-50"
-              >
-                <option value="">— Chọn chuyên đề —</option>
-                {topics.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
               </select>
             </div>
 

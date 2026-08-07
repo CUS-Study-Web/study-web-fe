@@ -1,11 +1,11 @@
 import type { CourseExam } from '../../../types/assistant/models';
 
-interface ExamCardProps {
+interface AssistantExamCardProps {
   exam: CourseExam;
   onEdit?: (exam: CourseExam) => void;
 }
 
-export default function ExamCard({ exam, onEdit }: ExamCardProps) {
+export default function AssistantExamCard({ exam, onEdit }: AssistantExamCardProps) {
   const isPublished = exam.status === 'published';
 
   return (

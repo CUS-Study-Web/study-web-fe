@@ -3,13 +3,13 @@ interface Tab {
   label: string;
 }
 
-interface TabBarProps {
+interface AssistantTabBarProps {
   tabs: Tab[];
   activeTab: string;
   onTabChange: (key: string) => void;
 }
 
-export default function TabBar({ tabs, activeTab, onTabChange }: TabBarProps) {
+export default function AssistantTabBar({ tabs, activeTab, onTabChange }: AssistantTabBarProps) {
   const activeIndex = tabs.findIndex((t) => t.key === activeTab);
 
   return (
