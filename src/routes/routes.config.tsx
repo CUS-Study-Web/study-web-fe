@@ -25,6 +25,11 @@ import RegisterPage from "../pages/guest/RegisterPage";
 // Learner Components & Pages
 import LearnerLayout from "../components/learner/LearnerLayout";
 import LearnerDashboard from "../pages/learner/LearnerDashboard";
+import LearnerProfilePage from "../pages/learner/LearnerProfilePage";
+import LearnerMyCoursesPage from "../pages/learner/LearnerMyCoursesPage";
+import LearnerSubjectDetailPage from "../pages/learner/LearnerSubjectDetailPage";
+import LearnerExamStartPage from "../pages/learner/LearnerExamStartPage";
+import LearnerTakeExamPage from "../pages/learner/LearnerTakeExamPage";
 
 // Assistant Components & Pages
 import AssistantLayout from "../components/assistant/AssistantLayout";
@@ -97,13 +102,38 @@ export default function AppRoutes() {
         <Route path={ROUTES.VIP} element={<VipPage />} />
       </Route>
 
+      {/* Protected Learner Pages using standard AppLayout (Header + Footer) */}
+      <Route
+        element={
+          <ProtectedRoute allowedRoles={["student", "learner", "assistant", "admin"]} userRole="student">
+            <AppLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path={ROUTES.LEARNER.PROFILE} element={<LearnerProfilePage />} />
+        <Route path={ROUTES.LEARNER.MY_COURSES} element={<LearnerMyCoursesPage />} />
+        <Route path={ROUTES.LEARNER.SUBJECT_DETAIL()} element={<LearnerSubjectDetailPage />} />
+        <Route path={ROUTES.LEARNER.EXAM_START()} element={<LearnerExamStartPage />} />
+      </Route>
+
+      {/* Full-screen Learner Pages (No Footer) */}
+      <Route
+        element={
+          <ProtectedRoute allowedRoles={["student", "learner", "assistant", "admin"]} userRole="student">
+            <Outlet />
+          </ProtectedRoute>
+        }
+      >
+        <Route path={ROUTES.LEARNER.TAKE_EXAM()} element={<LearnerTakeExamPage />} />
+      </Route>
+
       {/* Full-screen Auth & System Pages */}
       <Route path={ROUTES.AUTH.LOGIN} element={<LoginPage />} />
       <Route path={ROUTES.AUTH.REGISTER} element={<RegisterPage />} />
       <Route path={ROUTES.UNDER_DEVELOPMENT} element={<UnderDevelopmentPage />} />
       <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
 
-      {/* Learner Protected Routes */}
+      {/* Learner Protected Routes (dashboard uses separate layout) */}
       <Route
         element={
           <ProtectedRoute allowedRoles={["student", "learner", "assistant", "admin"]} userRole="student">

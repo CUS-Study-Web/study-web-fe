@@ -15,6 +15,11 @@ export const ROUTES = {
   LEARNER: {
     ROOT: '/learner',
     DASHBOARD: '/learner/dashboard',
+    PROFILE: '/learner/profile',
+    MY_COURSES: '/learner/my-courses',
+    SUBJECT_DETAIL: (courseId: string | number = ':courseId', subjectId: string | number = ':subjectId') => `/learner/courses/${courseId}/subjects/${subjectId}`,
+    EXAM_START: (courseId: string | number = ':courseId', subjectId: string | number = ':subjectId', examId: string | number = ':examId') => `/learner/courses/${courseId}/subjects/${subjectId}/exams/${examId}`,
+    TAKE_EXAM: (courseId: string | number = ':courseId', subjectId: string | number = ':subjectId', examId: string | number = ':examId') => `/learner/courses/${courseId}/subjects/${subjectId}/exams/${examId}/take`,
   },
   ASSISTANT: {
     ROOT: '/assistant',

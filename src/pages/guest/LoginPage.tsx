@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import AuthLayout from "../../components/guest/auth/AuthLayout";
 import ForgotPasswordModal from "../../components/guest/auth/ForgotPasswordModal";
 import { ROUTES } from "../../utils/routes";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isForgotOpen, setIsForgotOpen] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,8 +23,8 @@ export default function LoginPage() {
     } else if (lowerEmail.includes("assistant") || lowerEmail.includes("ta")) {
       navigate(ROUTES.ASSISTANT.DASHBOARD);
     } else {
-      // Student / Learner Login -> Navigates to "Tính năng đang được phát triển" page
-      navigate(ROUTES.UNDER_DEVELOPMENT);
+      login(lowerEmail);
+      navigate(ROUTES.HOME);
     }
   };
 
