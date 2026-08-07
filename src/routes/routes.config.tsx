@@ -36,6 +36,7 @@ import AssistantUploadExam from "../pages/assistant/AssistantUploadExam";
 import AssistantEditExam from "../pages/assistant/AssistantEditExam";
 import AssistantMaterials from "../pages/assistant/AssistantMaterials";
 import AssistantStudents from "../pages/assistant/AssistantStudents";
+import AssistantFlashcards from "../pages/assistant/AssistantFlashcards";
 
 // Admin Components & Pages
 import AdminLayout from "../components/admin/AdminLayout";
@@ -136,6 +137,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL()} element={<AssistantSubjectDetail />} />
         <Route path={ROUTES.ASSISTANT.MATERIALS} element={<AssistantMaterials />} />
         <Route path={ROUTES.ASSISTANT.STUDENTS} element={<AssistantStudents />} />
+        <Route path={ROUTES.ASSISTANT.FLASHCARDS} element={<AssistantFlashcards />} />
       </Route>
 
       {/* Admin Protected Routes */}

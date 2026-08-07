@@ -10,6 +10,8 @@ import type {
   Course,
   CourseExam,
   SubjectTopic,
+  FlashcardTopic,
+  VocabularyWord,
 } from './models';
 
 
@@ -444,14 +446,14 @@ export const DEMO_COURSE_SUBJECTS: Record<string, string[]> = {
 };
 
 export const DEMO_SUBJECT_META_V2: Record<string, { topics: number; lectures: number; exercises: number }> = {
-  'Toán':     { topics: 8, lectures: 32, exercises: 96 },
-  'Vật lý':   { topics: 6, lectures: 24, exercises: 48 },
-  'Hóa học':  { topics: 7, lectures: 28, exercises: 84 },
+  'Toán': { topics: 8, lectures: 32, exercises: 96 },
+  'Vật lý': { topics: 6, lectures: 24, exercises: 48 },
+  'Hóa học': { topics: 7, lectures: 28, exercises: 84 },
   'Sinh học': { topics: 6, lectures: 24, exercises: 60 },
-  'Lịch sử':  { topics: 4, lectures: 16, exercises: 32 },
-  'Địa lý':   { topics: 4, lectures: 16, exercises: 32 },
+  'Lịch sử': { topics: 4, lectures: 16, exercises: 32 },
+  'Địa lý': { topics: 4, lectures: 16, exercises: 32 },
   'Tiếng Anh': { topics: 10, lectures: 40, exercises: 120 },
-  'Ngữ văn':  { topics: 5, lectures: 20, exercises: 40 },
+  'Ngữ văn': { topics: 5, lectures: 20, exercises: 40 },
 };
 
 export const DEMO_COURSE_EXAMS: Record<string, CourseExam[]> = {
@@ -476,7 +478,7 @@ export const DEMO_COURSE_EXAMS: Record<string, CourseExam[]> = {
 export const DEMO_SUBJECT_TOPICS: Record<string, SubjectTopic[]> = {
   'Toán': [
     {
-      id: 1, name: 'Chuyên đề 1: Đại số', 
+      id: 1, name: 'Chuyên đề 1: Đại số',
       lectures: [
         { id: 1, title: 'Đại số tuyến tính – Buổi 1. Ma trận và định thức', link: 'https://youtu.be/abc123' },
         { id: 101, title: 'Đại số tuyến tính – Buổi 2. Không gian vector', link: 'https://youtu.be/abc124' },
@@ -537,3 +539,37 @@ export const DEMO_SUBJECT_TOPICS: Record<string, SubjectTopic[]> = {
     },
   ],
 };
+
+// --- Flashcard mock data ---
+
+export const DEMO_FLASHCARD_TOPICS: FlashcardTopic[] = [
+  { id: 1, title: 'Từ vựng cốt lõi ĐGNL', words: 50, created: '10/01/2025', status: 'Đang dùng' },
+  { id: 2, title: 'Động từ bất quy tắc', words: 80, created: '15/02/2025', status: 'Đang dùng' },
+  { id: 3, title: 'Thành ngữ tiếng Anh', words: 60, created: '22/03/2025', status: 'Nháp' },
+  { id: 4, title: 'Từ vựng học thuật (Academic)', words: 120, created: '05/04/2025', status: 'Đang dùng' },
+  { id: 5, title: 'Từ vựng V-ACT — Toán học', words: 40, created: '18/05/2025', status: 'Nháp' },
+];
+
+export const DEMO_VOCABULARY_WORDS: VocabularyWord[] = [
+  { id: 1, en: 'Perseverance', phonetic: '/ˌpɜː.sɪˈvɪər.əns/', type: 'Noun', vi: 'Sự kiên trì, bền bỉ', ex: 'Perseverance is key to success.' },
+  { id: 2, en: 'Ambiguous', phonetic: '/æmˈbɪɡ.ju.əs/', type: 'Adjective', vi: 'Mơ hồ, không rõ ràng', ex: 'The instructions were ambiguous.' },
+  { id: 3, en: 'Eloquent', phonetic: '/ˈel.ə.kwənt/', type: 'Adjective', vi: 'Hùng hồn, lưu loát', ex: 'She gave an eloquent speech.' },
+  { id: 4, en: 'Diligent', phonetic: '/ˈdɪl.ɪ.dʒənt/', type: 'Adjective', vi: 'Chăm chỉ, cần cù', ex: 'He is a diligent student.' },
+  { id: 5, en: 'Phenomenon', phonetic: '/fɪˈnɒm.ɪ.nən/', type: 'Noun', vi: 'Hiện tượng', ex: 'The northern lights are a natural phenomenon.' },
+  { id: 6, en: 'Resilient', phonetic: '/rɪˈzɪl.i.ənt/', type: 'Adjective', vi: 'Kiên cường, dẻ dai', ex: 'Children are resilient and adaptable.' },
+  { id: 7, en: 'Meticulous', phonetic: '/məˈtɪk.ju.ləs/', type: 'Adjective', vi: 'Tỷ mỉ, cẩn thận', ex: 'She was meticulous in her work.' },
+  { id: 8, en: 'Perseverance', phonetic: '/ˌpɜː.sɪˈvɪər.əns/', type: 'Noun', vi: 'Sự kiên trì, bền bỉ', ex: 'Perseverance is key to success.' },
+  { id: 9, en: 'Ambiguous', phonetic: '/æmˈbɪɡ.ju.əs/', type: 'Adjective', vi: 'Mơ hồ, không rõ ràng', ex: 'The instructions were ambiguous.' },
+  { id: 10, en: 'Eloquent', phonetic: '/ˈel.ə.kwənt/', type: 'Adjective', vi: 'Hùng hồn, lưu loát', ex: 'She gave an eloquent speech.' },
+  { id: 11, en: 'Diligent', phonetic: '/ˈdɪl.ɪ.dʒənt/', type: 'Adjective', vi: 'Chăm chỉ, cần cù', ex: 'He is a diligent student.' },
+  { id: 12, en: 'Phenomenon', phonetic: '/fɪˈnɒm.ɪ.nən/', type: 'Noun', vi: 'Hiện tượng', ex: 'The northern lights are a natural phenomenon.' },
+  { id: 13, en: 'Resilient', phonetic: '/rɪˈzɪl.i.ənt/', type: 'Adjective', vi: 'Kiên cường, dẻ dai', ex: 'Children are resilient and adaptable.' },
+  { id: 14, en: 'Meticulous', phonetic: '/məˈtɪk.ju.ləs/', type: 'Adjective', vi: 'Tỷ mỉ, cẩn thận', ex: 'She was meticulous in her work.' },
+  { id: 15, en: 'Perseverance', phonetic: '/ˌpɜː.sɪˈvɪər.əns/', type: 'Noun', vi: 'Sự kiên trì, bền bỉ', ex: 'Perseverance is key to success.' },
+  { id: 16, en: 'Ambiguous', phonetic: '/æmˈbɪɡ.ju.əs/', type: 'Adjective', vi: 'Mơ hồ, không rõ ràng', ex: 'The instructions were ambiguous.' },
+  { id: 17, en: 'Eloquent', phonetic: '/ˈel.ə.kwənt/', type: 'Adjective', vi: 'Hùng hồn, lưu loát', ex: 'She gave an eloquent speech.' },
+  { id: 18, en: 'Diligent', phonetic: '/ˈdɪl.ɪ.dʒənt/', type: 'Adjective', vi: 'Chăm chỉ, cần cù', ex: 'He is a diligent student.' },
+  { id: 19, en: 'Phenomenon', phonetic: '/fɪˈnɒm.ɪ.nən/', type: 'Noun', vi: 'Hiện tượng', ex: 'The northern lights are a natural phenomenon.' },
+  { id: 20, en: 'Resilient', phonetic: '/rɪˈzɪl.i.ənt/', type: 'Adjective', vi: 'Kiên cường, dẻ dai', ex: 'Children are resilient and adaptable.' },
+  { id: 21, en: 'Meticulous', phonetic: '/məˈtɪk.ju.ləs/', type: 'Adjective', vi: 'Tỷ mỉ, cẩn thận', ex: 'She was meticulous in her work.' },
+];

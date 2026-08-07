@@ -26,6 +26,7 @@ export const ROUTES = {
     COURSE_SUBJECT_DETAIL: (courseKey: string = ':courseKey', subjectName: string = ':subjectName') => `/assistant/courses/${courseKey}/${subjectName}`,
     MATERIALS: '/assistant/materials',
     STUDENTS: '/assistant/students',
+    FLASHCARDS: '/assistant/flashcards',
   },
   ADMIN: {
     ROOT: '/admin',

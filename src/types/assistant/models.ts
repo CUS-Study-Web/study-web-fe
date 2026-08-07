@@ -147,3 +147,26 @@ export interface SubjectTopic {
   lectures: SubjectLecture[];
   exercises: SubjectExercise[];
 }
+
+// --- Flashcard types ---
+
+export type TopicStatus = 'Đang dùng' | 'Nháp';
+
+export interface FlashcardTopic {
+  id: number;
+  title: string;
+  words: number;
+  created: string; // "DD/MM/YYYY"
+  status: TopicStatus;
+}
+
+export interface VocabularyWord {
+  id: number;
+  en: string;
+  phonetic: string;
+  type: string; // "Noun", "Adjective", "Verb", etc.
+  vi: string;
+  ex: string;
+}
+
+export type FlashcardModalState = null | 'create' | 'edit';
