@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CoursePageHeader from '../../components/assistant/course/CoursePageHeader';
 import TabBar from '../../components/assistant/course/TabBar';
 import TopicAccordion from '../../components/assistant/course/TopicAccordion';
+import CreateLecturePopup from '../../components/assistant/course/CreateLecturePopup';
+import CreateExercisePopup from '../../components/assistant/course/CreateExercisePopup';
 import {
   DEMO_COURSES,
   DEMO_SUBJECT_META_V2,
@@ -19,6 +21,8 @@ export default function AssistantSubjectDetail() {
   const { courseKey, subjectName } = useParams<{ courseKey: string; subjectName: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('bai-giang');
+  const [isLecturePopupOpen, setIsLecturePopupOpen] = useState(false);
+  const [isExercisePopupOpen, setIsExercisePopupOpen] = useState(false);
 
   const decodedSubject = decodeURIComponent(subjectName ?? '');
   const course = DEMO_COURSES.find((c) => c.key === courseKey);
@@ -42,7 +46,10 @@ export default function AssistantSubjectDetail() {
         subtitle={`Quản lý nội dung môn học · Khóa ${course?.name ?? courseKey}`}
         rightSlot={
           <div
-            onClick={() => console.log('Tải lên')}
+            onClick={() => {
+              if (activeTab === 'bai-giang') setIsLecturePopupOpen(true);
+              else setIsExercisePopupOpen(true);
+            }}
             className="flex items-center gap-2 px-5 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-white cursor-pointer active:scale-95 transition-all duration-150 select-none shadow-sm"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -63,10 +70,11 @@ export default function AssistantSubjectDetail() {
             Chưa có nội dung. Hãy tải lên bài giảng hoặc bài tập đầu tiên.
           </div>
         ) : (
-          topicsRaw.map((topic) => (
+          topicsRaw.map((topic, index) => (
             <TopicAccordion
               key={topic.id}
               topic={topic}
+              index={index}
               mode={activeTab === 'bai-giang' ? 'lecture' : 'exercise'}
               onEdit={(id) => console.log('Edit', id)}
               onDelete={(id) => console.log('Delete', id)}
@@ -94,6 +102,18 @@ export default function AssistantSubjectDetail() {
           ))
         }
       </div>
+      {isLecturePopupOpen && (
+        <CreateLecturePopup
+          courseKey={courseKey ?? ''}
+          onClose={() => setIsLecturePopupOpen(false)}
+        />
+      )}
+      {isExercisePopupOpen && (
+        <CreateExercisePopup
+          courseKey={courseKey ?? ''}
+          onClose={() => setIsExercisePopupOpen(false)}
+        />
+      )}
     </div>
   );
 }

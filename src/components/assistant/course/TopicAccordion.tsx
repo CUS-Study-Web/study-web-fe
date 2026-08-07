@@ -8,6 +8,7 @@ interface TopicAccordionProps {
   onDelete?: (id: number) => void;
   onView?: (id: number) => void;
   onDownload?: (id: number) => void;
+  index?: number;
 }
 
 export default function TopicAccordion({
@@ -19,22 +20,23 @@ export default function TopicAccordion({
   onDownload,
 }: TopicAccordionProps) {
   const [open, setOpen] = useState(true);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const items = mode === 'lecture' ? topic.lectures : topic.exercises;
   const count = items.length;
 
   return (
-    <div className="rounded-[12px] border border-[var(--border-default)] bg-[var(--surface-card)] overflow-hidden">
+    <div className={`rounded-[12px] border ${open ? 'border-[var(--brand-base-600)]' : 'border-[var(--border-default)]'} bg-[var(--surface-card)] transition-colors`}>
       {/* Accordion header */}
       <div
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center justify-between px-5 py-3.5 cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
+        className={`flex items-center justify-between px-5 py-3.5 cursor-pointer transition-colors select-none ${open ? 'bg-[var(--brand-base-50)] rounded-t-[11px]' : 'bg-transparent rounded-[11px]'}`}
       >
         <div className="flex items-center gap-3">
-          <span className="w-2 h-2 rounded-full bg-[var(--brand-500)] shrink-0" />
-          <span className="font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)]">
+          <span className={`w-2 h-2 rounded-full shrink-0 ${open ? 'bg-[var(--brand-500)]' : 'bg-[var(--border-strong)]'}`} />
+          <span className={`font-[family-name:var(--font-heading)] font-semibold text-[14px] ${open ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
             {topic.name}
           </span>
-          <span className="px-2 py-0.5 rounded-full bg-[var(--brand-soft-300)] text-[var(--brand-700)] font-[family-name:var(--font-heading)] font-semibold text-[11px]">
+          <span className={`px-2 py-0.5 rounded-full font-[family-name:var(--font-heading)] font-semibold text-[11px] ${open ? 'bg-[var(--brand-soft-300)] text-[var(--brand-700)]' : 'bg-[var(--surface-muted)] text-[var(--text-secondary)]'}`}>
             {count} bài
           </span>
         </div>
@@ -60,7 +62,7 @@ export default function TopicAccordion({
             topic.lectures.map((lec) => (
               <div
                 key={lec.id}
-                className="flex items-start justify-between px-5 py-4 border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--surface-400)] transition-colors"
+                className="flex items-start justify-between px-5 py-2.5 border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--surface-400)] transition-colors last:rounded-b-[11px]"
               >
                 <div>
                   <div className="font-[family-name:var(--font-body)] font-semibold text-[13px] text-[var(--text-primary)]">
@@ -76,25 +78,29 @@ export default function TopicAccordion({
                     {lec.link}
                   </a>
                 </div>
-                <div className="flex items-center gap-2 shrink-0 ml-4">
-                  <div
-                    onClick={() => onEdit?.(lec.id)}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-[6px] border border-[var(--border-default)] bg-[var(--surface-card)] font-[family-name:var(--font-heading)] font-semibold text-[12px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
+                <div className="flex items-center gap-2 shrink-0 ml-4 relative" onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpenMenuId(null); }}>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === `lec-${lec.id}` ? null : `lec-${lec.id}`); }}
+                    className="p-1.5 rounded-full hover:bg-[var(--surface-muted)] text-[var(--text-secondary)] transition-colors"
                   >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-                    </svg>
-                    Sửa
-                  </div>
-                  <div
-                    onClick={() => onDelete?.(lec.id)}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-[6px] border border-[#FCA5A5] bg-[#FEF2F2] font-[family-name:var(--font-heading)] font-semibold text-[12px] text-[#DC2626] cursor-pointer hover:bg-[#FEE2E2] transition-colors select-none"
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                    </svg>
-                    Xóa
-                  </div>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" /></svg>
+                  </button>
+                  {openMenuId === `lec-${lec.id}` && (
+                    <div className="absolute right-0 top-full mt-1 w-32 bg-white border border-[var(--border-default)] rounded-[8px] shadow-lg z-10 py-1 overflow-hidden">
+                      <button
+                        onClick={() => { onEdit?.(lec.id); setOpenMenuId(null); }}
+                        className="w-full text-left px-4 py-2 font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors"
+                      >
+                        Sửa
+                      </button>
+                      <button
+                        onClick={() => { onDelete?.(lec.id); setOpenMenuId(null); }}
+                        className="w-full text-left px-4 py-2 font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[#DC2626] hover:bg-[#FEE2E2] transition-colors"
+                      >
+                        Xóa
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -103,7 +109,7 @@ export default function TopicAccordion({
             topic.exercises.map((ex) => (
               <div
                 key={ex.id}
-                className="flex items-start justify-between px-5 py-4 border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--surface-400)] transition-colors"
+                className="flex items-start justify-between px-5 py-2.5 border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--surface-400)] transition-colors last:rounded-b-[11px]"
               >
                 <div>
                   <div className="font-[family-name:var(--font-body)] font-semibold text-[13px] text-[var(--text-primary)] mb-1">
@@ -116,33 +122,49 @@ export default function TopicAccordion({
                     <span>{ex.questions} câu hỏi</span>
                     <span>·</span>
                     <span className="font-semibold">{ex.fileType}</span>
+                    <span>·</span>
+                    <span>
+                      Link bài giải: {ex.solutionLink ? (
+                        <a href={ex.solutionLink} target="_blank" rel="noopener noreferrer" className="text-[var(--brand-500)] hover:underline" onClick={e => e.stopPropagation()}>{ex.solutionLink}</a>
+                      ) : 'chưa có'}
+                    </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0 ml-4">
-                  <div
-                    onClick={() => onView?.(ex.id)}
-                    className="px-3 py-1.5 rounded-[6px] border border-[var(--border-default)] bg-[var(--surface-card)] font-[family-name:var(--font-heading)] font-semibold text-[12px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
+                <div className="flex items-center gap-2 shrink-0 ml-4 relative" onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpenMenuId(null); }}>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === `ex-${ex.id}` ? null : `ex-${ex.id}`); }}
+                    className="p-1.5 rounded-full hover:bg-[var(--surface-muted)] text-[var(--text-secondary)] transition-colors"
                   >
-                    Xem
-                  </div>
-                  <div
-                    onClick={() => onDownload?.(ex.id)}
-                    className="px-3 py-1.5 rounded-[6px] border border-[var(--border-default)] bg-[var(--surface-card)] font-[family-name:var(--font-heading)] font-semibold text-[12px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
-                  >
-                    Tải
-                  </div>
-                  <div
-                    onClick={() => onEdit?.(ex.id)}
-                    className="px-3 py-1.5 rounded-[6px] border border-[var(--border-default)] bg-[var(--surface-card)] font-[family-name:var(--font-heading)] font-semibold text-[12px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
-                  >
-                    Sửa
-                  </div>
-                  <div
-                    onClick={() => onDelete?.(ex.id)}
-                    className="px-3 py-1.5 rounded-[6px] border border-[#FCA5A5] bg-[#FEF2F2] font-[family-name:var(--font-heading)] font-semibold text-[12px] text-[#DC2626] cursor-pointer hover:bg-[#FEE2E2] transition-colors select-none"
-                  >
-                    Xóa
-                  </div>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" /></svg>
+                  </button>
+                  {openMenuId === `ex-${ex.id}` && (
+                    <div className="absolute right-0 top-full mt-1 w-32 bg-white border border-[var(--border-default)] rounded-[8px] shadow-lg z-10 py-1 overflow-hidden">
+                      <button
+                        onClick={() => { onView?.(ex.id); setOpenMenuId(null); }}
+                        className="w-full text-left px-4 py-2 font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors"
+                      >
+                        Xem
+                      </button>
+                      <button
+                        onClick={() => { onDownload?.(ex.id); setOpenMenuId(null); }}
+                        className="w-full text-left px-4 py-2 font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors"
+                      >
+                        Tải
+                      </button>
+                      <button
+                        onClick={() => { onEdit?.(ex.id); setOpenMenuId(null); }}
+                        className="w-full text-left px-4 py-2 font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors"
+                      >
+                        Sửa
+                      </button>
+                      <button
+                        onClick={() => { onDelete?.(ex.id); setOpenMenuId(null); }}
+                        className="w-full text-left px-4 py-2 font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[#DC2626] hover:bg-[#FEE2E2] transition-colors"
+                      >
+                        Xóa
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

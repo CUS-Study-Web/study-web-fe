@@ -16,9 +16,9 @@ export default function AssistantUploadExam() {
 
   const handleBack = () => navigate(`/assistant/courses/${key}`);
 
-  const handleSubmit = (status: 'draft' | 'published') => {
+  const handleSubmit = () => {
     const data = formRef.current?.getData();
-    console.log('Submit exam:', { ...data, status, fileName });
+    console.log('Submit exam:', { ...data, fileName });
     handleBack();
   };
 
@@ -100,30 +100,25 @@ export default function AssistantUploadExam() {
         </div>
 
         {/* Right: form panel */}
-        <div className="w-[380px] shrink-0 overflow-y-auto">
-          <ExamFormPanel ref={formRef} courseKey={key} mode="create" />
-        </div>
-      </div>
-
-      {/* Bottom action bar */}
-      <div className="flex items-center justify-end gap-3 pt-5 mt-2 border-t border-[var(--border-subtle)]">
-        <div
-          onClick={handleBack}
-          className="px-6 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
-        >
-          Hủy
-        </div>
-        <div
-          onClick={() => handleSubmit('draft')}
-          className="px-6 py-2.5 rounded-[8px] border border-[var(--brand-500)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--brand-600)] cursor-pointer hover:bg-[var(--brand-soft-300)] transition-colors select-none"
-        >
-          Tạo nháp
-        </div>
-        <div
-          onClick={() => handleSubmit('published')}
-          className="px-6 py-2.5 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-white cursor-pointer transition-colors select-none shadow-sm"
-        >
-          Xuất bản
+        <div className="flex flex-col w-[380px] shrink-0 border-l border-[var(--border-default)] pl-6">
+          <div className="flex-1 overflow-y-auto pr-2 pb-4">
+            <ExamFormPanel ref={formRef} courseKey={key} mode="create">
+              <div className="flex items-center gap-2 pt-4 border-t border-[var(--border-subtle)] mt-2">
+                <div
+                  onClick={handleBack}
+                  className="mr-auto px-6 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none bg-white"
+                >
+                  Hủy
+                </div>
+                <div
+                  onClick={handleSubmit}
+                  className="px-6 py-2.5 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-white cursor-pointer transition-colors select-none shadow-sm"
+                >
+                  Tạo đề thi
+                </div>
+              </div>
+            </ExamFormPanel>
+          </div>
         </div>
       </div>
     </div>

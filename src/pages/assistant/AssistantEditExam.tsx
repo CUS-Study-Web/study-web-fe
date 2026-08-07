@@ -156,24 +156,23 @@ export default function AssistantEditExam() {
         </div>
 
         {/* Right: form panel */}
-        <div className="w-[380px] shrink-0 overflow-y-auto">
-          <ExamFormPanel ref={formRef} courseKey={key} mode="edit" initialData={initialData} />
-        </div>
-      </div>
-
-      {/* Bottom action bar */}
-      <div className="flex items-center justify-end gap-3 pt-5 mt-2 border-t border-[var(--border-subtle)]">
-        <div
-          onClick={handleBackWithState}
-          className="px-6 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
-        >
-          Hủy
-        </div>
-        <div
-          onClick={handleConfirm}
-          className="px-6 py-2.5 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-white cursor-pointer transition-colors select-none shadow-sm"
-        >
-          Xác nhận chỉnh sửa
+        <div className="w-[380px] shrink-0 overflow-y-auto pr-2 pb-4">
+          <ExamFormPanel ref={formRef} courseKey={key} mode="edit" initialData={initialData}>
+            <div className="flex items-center gap-3 pt-4 border-t border-[var(--border-subtle)] mt-2">
+              <div
+                onClick={handleBackWithState}
+                className="mr-auto px-6 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none bg-white"
+              >
+                Hủy
+              </div>
+              <div
+                onClick={handleConfirm}
+                className="px-6 py-2.5 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-white cursor-pointer transition-colors select-none shadow-sm"
+              >
+                Xác nhận chỉnh sửa
+              </div>
+            </div>
+          </ExamFormPanel>
         </div>
       </div>
     </div>

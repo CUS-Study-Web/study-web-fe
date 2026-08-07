@@ -19,6 +19,7 @@ export default function CreateExercisePopup({ courseKey, onClose }: CreateExerci
   const [order, setOrder] = useState(1);
   const [questionCount, setQuestionCount] = useState(20);
   const [title, setTitle] = useState('');
+  const [solutionLink, setSolutionLink] = useState('');
   const [fileType, setFileType] = useState('PDF');
   const [dragging, setDragging] = useState(false);
   const [fileName, setFileName] = useState('');
@@ -27,7 +28,7 @@ export default function CreateExercisePopup({ courseKey, onClose }: CreateExerci
   const topics = subject ? (DEMO_SUBJECT_TOPICS[subject] ?? []) : [];
 
   const handleCreate = () => {
-    console.log('Create exercise:', { courseKey, subject, topicId, order, questionCount, title, fileType, fileName });
+    console.log('Create exercise:', { courseKey, subject, topicId, order, questionCount, title, solutionLink, fileType, fileName });
     onClose();
   };
 
@@ -77,8 +78,8 @@ export default function CreateExercisePopup({ courseKey, onClose }: CreateExerci
                 if (file) setFileName(file.name);
               }}
               className={`flex flex-col items-center justify-center gap-2 p-6 rounded-[12px] border-2 border-dashed transition-colors ${dragging
-                  ? 'border-[var(--brand-500)] bg-[var(--brand-soft-300)]'
-                  : 'border-[var(--border-default)] bg-[var(--surface-muted)]'
+                ? 'border-[var(--brand-500)] bg-[var(--brand-soft-300)]'
+                : 'border-[var(--border-default)] bg-[var(--surface-muted)]'
                 }`}
             >
               <div className="w-10 h-10 rounded-full bg-white border border-[var(--border-default)] flex items-center justify-center shadow-sm">
@@ -103,7 +104,7 @@ export default function CreateExercisePopup({ courseKey, onClose }: CreateExerci
                 </>
               )}
               <label className="mt-1 px-4 py-1.5 rounded-[7px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[12px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none shadow-sm">
-                Chọn tập
+                Chọn tệp
                 <input
                   type="file"
                   className="hidden"
@@ -223,6 +224,20 @@ export default function CreateExercisePopup({ courseKey, onClose }: CreateExerci
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Nhập tiêu đề bài tập..."
+                className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] outline-none focus:border-[var(--brand-500)] transition-colors placeholder:text-[var(--text-tertiary)]"
+              />
+            </div>
+
+            {/* Link bài giải */}
+            <div>
+              <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
+                Link bài giải (nếu có)
+              </div>
+              <input
+                type="text"
+                value={solutionLink}
+                onChange={(e) => setSolutionLink(e.target.value)}
+                placeholder="Nhập link bài giải..."
                 className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] outline-none focus:border-[var(--brand-500)] transition-colors placeholder:text-[var(--text-tertiary)]"
               />
             </div>

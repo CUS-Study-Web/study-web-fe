@@ -16,13 +16,13 @@ export default function AssistantLayout({ children, onLogout }: AssistantLayoutP
   const pageTitle = currentMenu?.label || 'Trợ giảng';
 
   return (
-    <div className="flex min-h-screen bg-[var(--surface-app)]">
+    <div className="flex min-h-screen bg-[var(--brand-base-50)]">
       <AssistantSidebar sideOpen={sideOpen} setSideOpen={setSideOpen} onLogout={onLogout} />
 
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0">
         {/* Top Bar */}
-        <header className="sticky top-0 z-40 h-16 bg-white/90 backdrop-blur-[12px] border-b border-[var(--border-default)] px-4 md:px-6 lg:px-8 flex items-center justify-between">
+        <header className="sticky top-0 z-40 h-16 bg-[#F4F6F4] backdrop-blur-[12px] border-b border-[var(--border-default)] px-4 md:px-6 lg:px-8 flex items-center justify-between">
           <div>
             <div className="font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-lg)] leading-[var(--lh-body-lg)] text-[var(--text-primary)] m-0">
               {pageTitle}

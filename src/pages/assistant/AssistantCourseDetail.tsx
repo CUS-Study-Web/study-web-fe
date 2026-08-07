@@ -123,10 +123,10 @@ export default function AssistantCourseDetail() {
       {activeTab === 'de-thi' && (
         <div className="mt-5 flex flex-col gap-4">
           {/* Upload button */}
-          <div className="flex justify-end">
+          <div className="flex items-center gap-3">
             <div
               onClick={() => navigate(`/assistant/courses/${key}/upload-exam`)}
-              className="flex items-center gap-2 px-4 py-2 rounded-[8px] border border-[var(--border-default)] bg-[var(--surface-card)] hover:bg-[var(--surface-muted)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] cursor-pointer active:scale-95 transition-all duration-150 select-none shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white cursor-pointer active:scale-95 transition-all duration-150 select-none shadow-sm"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -138,7 +138,7 @@ export default function AssistantCourseDetail() {
           </div>
 
           {/* Exam list */}
-          <div className="flex flex-col gap-4 max-w-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {exams.length === 0 ? (
               <div className="py-12 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                 Chưa có đề thi nào.
