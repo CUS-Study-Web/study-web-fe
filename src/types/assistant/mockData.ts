@@ -476,16 +476,20 @@ export const DEMO_COURSE_EXAMS: Record<string, CourseExam[]> = {
 export const DEMO_SUBJECT_TOPICS: Record<string, SubjectTopic[]> = {
   'Toán': [
     {
-      id: 1, name: 'Đại số', 
+      id: 1, name: 'Chuyên đề 1: Đại số', 
       lectures: [
         { id: 1, title: 'Đại số tuyến tính – Buổi 1. Ma trận và định thức', link: 'https://youtu.be/abc123' },
+        { id: 101, title: 'Đại số tuyến tính – Buổi 2. Không gian vector', link: 'https://youtu.be/abc124' },
+        { id: 102, title: 'Đại số tuyến tính – Buổi 3. Ánh xạ tuyến tính', link: 'https://youtu.be/abc125' },
       ],
       exercises: [
-        { id: 1, title: 'Bài tập Đại số – Hệ phương trình tuyến tính', subject: 'Toán', questions: 20, fileType: 'PDF' },
+        { id: 1, title: 'Bài tập Đại số – Hệ phương trình tuyến tính', subject: 'Toán', questions: 20, fileType: 'PDF', solutionLink: 'https://example.com/sol1' },
+        { id: 101, title: 'Bài tập Đại số – Ma trận nghịch đảo', subject: 'Toán', questions: 15, fileType: 'DOCX' },
+        { id: 102, title: 'Bài tập Đại số – Đa thức đặc trưng', subject: 'Toán', questions: 25, fileType: 'PDF', solutionLink: 'https://example.com/sol3' },
       ],
     },
     {
-      id: 2, name: 'Giải tích',
+      id: 2, name: 'Chuyên đề 2: Giải tích',
       lectures: [
         { id: 2, title: 'Giải tích – Đạo hàm và vi phân', link: 'https://youtu.be/def456' },
       ],
@@ -494,7 +498,7 @@ export const DEMO_SUBJECT_TOPICS: Record<string, SubjectTopic[]> = {
       ],
     },
     {
-      id: 3, name: 'Tổ hợp',
+      id: 3, name: 'Chuyên đề 3: Tổ hợp',
       lectures: [
         { id: 3, title: 'Tổ hợp – Hoán vị và chỉnh hợp', link: 'https://youtu.be/ghi789' },
       ],
@@ -503,7 +507,7 @@ export const DEMO_SUBJECT_TOPICS: Record<string, SubjectTopic[]> = {
       ],
     },
     {
-      id: 4, name: 'Hình học',
+      id: 4, name: 'Chuyên đề 4: Hình học',
       lectures: [
         { id: 4, title: 'Hình học không gian – Mặt cầu và mặt trụ', link: 'https://youtu.be/jkl012' },
       ],
@@ -514,7 +518,7 @@ export const DEMO_SUBJECT_TOPICS: Record<string, SubjectTopic[]> = {
   ],
   'Vật lý': [
     {
-      id: 1, name: 'Cơ học',
+      id: 1, name: 'Chuyên đề 1: Cơ học',
       lectures: [
         { id: 1, title: 'Cơ học – Định luật Newton', link: 'https://youtu.be/vl001' },
       ],
@@ -523,7 +527,7 @@ export const DEMO_SUBJECT_TOPICS: Record<string, SubjectTopic[]> = {
       ],
     },
     {
-      id: 2, name: 'Điện học',
+      id: 2, name: 'Chuyên đề 2: Điện học',
       lectures: [
         { id: 2, title: 'Điện học – Định luật Ohm và mạch điện', link: 'https://youtu.be/vl002' },
       ],

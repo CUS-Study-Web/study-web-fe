@@ -138,6 +138,7 @@ export interface SubjectExercise {
   subject: string;
   questions: number;
   fileType: string;
+  solutionLink?: string;
 }
 
 export interface SubjectTopic {
