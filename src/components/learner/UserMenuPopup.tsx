@@ -23,7 +23,7 @@ export default function UserMenuPopup() {
 
   if (!user) return null;
 
-  const initial = user.name.charAt(0).toUpperCase();
+
 
   const handleLogout = () => {
     setIsOpen(false);
