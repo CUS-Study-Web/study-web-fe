@@ -1,12 +1,11 @@
 interface AssistantSubjectCardProps {
   name: string;
-  topics: number;
   lectures: number;
   exercises: number;
   onViewDetail: (subjectName: string) => void;
 }
 
-export default function AssistantSubjectCard({ name, topics, lectures, exercises, onViewDetail }: AssistantSubjectCardProps) {
+export default function AssistantSubjectCard({ name, lectures, exercises, onViewDetail }: AssistantSubjectCardProps) {
   return (
     <div 
       onClick={() => onViewDetail(name)}
@@ -19,10 +18,9 @@ export default function AssistantSubjectCard({ name, topics, lectures, exercises
         </div>
       </div>
 
-      {/* Stat row */}
+      {/* Stat row — only 2 stats now */}
       <div className="flex gap-2 px-5 py-4">
         {[
-          { value: topics, label: 'Chuyên đề' },
           { value: lectures, label: 'Bài giảng' },
           { value: exercises, label: 'Bài tập' },
         ].map((stat) => (

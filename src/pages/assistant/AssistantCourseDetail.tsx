@@ -10,7 +10,6 @@ import AssistantCreateExercisePopup from '../../components/assistant/course/Assi
 import {
   DEMO_COURSES,
   DEMO_COURSE_SUBJECTS,
-  DEMO_SUBJECT_META_V2,
   DEMO_COURSE_EXAMS,
 } from '../../types/assistant/mockData';
 import { ROUTES } from '../../utils/routes';
@@ -97,14 +96,12 @@ export default function AssistantCourseDetail() {
           {/* Subject grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {subjects.map((subjectName) => {
-              const meta = DEMO_SUBJECT_META_V2[subjectName] ?? { topics: 0, lectures: 0, exercises: 0 };
               return (
                 <AssistantSubjectCard
                   key={subjectName}
                   name={subjectName}
-                  topics={meta.topics}
-                  lectures={meta.lectures}
-                  exercises={meta.exercises}
+                  lectures={0}
+                  exercises={0}
                   onViewDetail={(name) =>
                    navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, encodeURIComponent(name)))
                   }

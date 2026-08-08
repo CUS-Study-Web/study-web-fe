@@ -4,6 +4,10 @@ import AssistantCoursePageHeader from '../../components/assistant/course/Assista
 import AssistantTabBar from '../../components/assistant/course/AssistantTabBar';
 import AssistantCreateLecturePopup from '../../components/assistant/course/AssistantCreateLecturePopup';
 import AssistantCreateExercisePopup from '../../components/assistant/course/AssistantCreateExercisePopup';
+import AssistantEditLecturePopup from '../../components/assistant/course/AssistantEditLecturePopup';
+import AssistantEditExercisePopup from '../../components/assistant/course/AssistantEditExercisePopup';
+import AssistantViewExercisePopup from '../../components/assistant/course/AssistantViewExercisePopup';
+import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
 import {
   DEMO_COURSES,
   DEMO_SUBJECT_TOPICS,
@@ -66,15 +70,13 @@ function LectureActionMenu({ onEdit, onDelete }: LectureActionMenuProps) {
       <button
         ref={btnRef}
         onClick={handleToggle}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[var(--border-default)] bg-[var(--surface-card)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] active:scale-95 transition-all duration-150 select-none"
+        className="w-8 h-8 rounded-lg border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
+        aria-label="Tùy chọn"
       >
-        Hành động
-        <svg
-          width="12" height="12" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-          className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-        >
-          <polyline points="6 9 12 15 18 9" />
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--neutral-500)">
+          <circle cx="12" cy="5" r="1.5" />
+          <circle cx="12" cy="12" r="1.5" />
+          <circle cx="12" cy="19" r="1.5" />
         </svg>
       </button>
 
@@ -82,7 +84,7 @@ function LectureActionMenu({ onEdit, onDelete }: LectureActionMenuProps) {
         <div
           ref={menuRef}
           style={{ position: 'fixed', top: menuPos.top, right: menuPos.right, zIndex: 9999 }}
-          className="min-w-[140px] rounded-[10px] border border-[var(--border-default)] bg-[var(--surface-card)] shadow-[0_8px_24px_rgba(0,0,0,0.14)] overflow-hidden"
+          className="min-w-[140px] rounded-[10px] border border-[var(--border-default)] bg-[var(--surface-card)] shadow-[0_8px_24px_rgba(0,0,0,0.14)] overflow-hidden py-1"
         >
           <button
             onClick={() => { setOpen(false); onEdit(); }}
@@ -153,15 +155,13 @@ function ExerciseActionMenu({ onView, onDownload, onEdit, onDelete }: ExerciseAc
       <button
         ref={btnRef}
         onClick={handleToggle}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[var(--border-default)] bg-[var(--surface-card)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] active:scale-95 transition-all duration-150 select-none"
+        className="w-8 h-8 rounded-lg border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
+        aria-label="Tùy chọn"
       >
-        Hành động
-        <svg
-          width="12" height="12" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-          className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-        >
-          <polyline points="6 9 12 15 18 9" />
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--neutral-500)">
+          <circle cx="12" cy="5" r="1.5" />
+          <circle cx="12" cy="12" r="1.5" />
+          <circle cx="12" cy="19" r="1.5" />
         </svg>
       </button>
 
@@ -169,7 +169,7 @@ function ExerciseActionMenu({ onView, onDownload, onEdit, onDelete }: ExerciseAc
         <div
           ref={menuRef}
           style={{ position: 'fixed', top: menuPos.top, right: menuPos.right, zIndex: 9999 }}
-          className="min-w-[140px] rounded-[10px] border border-[var(--border-default)] bg-[var(--surface-card)] shadow-[0_8px_24px_rgba(0,0,0,0.14)] overflow-hidden"
+          className="min-w-[140px] rounded-[10px] border border-[var(--border-default)] bg-[var(--surface-card)] shadow-[0_8px_24px_rgba(0,0,0,0.14)] overflow-hidden py-1"
         >
           <button
             onClick={() => { setOpen(false); onView(); }}
@@ -222,6 +222,11 @@ export default function AssistantSubjectDetail() {
   const [activeTab, setActiveTab] = useState('bai-giang');
   const [isLecturePopupOpen, setIsLecturePopupOpen] = useState(false);
   const [isExercisePopupOpen, setIsExercisePopupOpen] = useState(false);
+  const [editLecture, setEditLecture] = useState<SubjectLecture | null>(null);
+  const [editExercise, setEditExercise] = useState<SubjectExercise | null>(null);
+  const [viewExercise, setViewExercise] = useState<SubjectExercise | null>(null);
+  const [deleteLectureId, setDeleteLectureId] = useState<number | null>(null);
+  const [deleteExerciseId, setDeleteExerciseId] = useState<number | null>(null);
 
   const decodedSubject = decodeURIComponent(subjectName ?? '');
   const course = DEMO_COURSES.find((c) => c.key === courseKey);
@@ -313,8 +318,8 @@ export default function AssistantSubjectDetail() {
                       <td className="py-3.5 px-5">
                         <div className="flex justify-end">
                           <LectureActionMenu
-                            onEdit={() => console.log('Edit lecture', lec.id)}
-                            onDelete={() => console.log('Delete lecture', lec.id)}
+                            onEdit={() => setEditLecture(lec)}
+                            onDelete={() => setDeleteLectureId(lec.id)}
                           />
                         </div>
                       </td>
@@ -395,10 +400,10 @@ export default function AssistantSubjectDetail() {
                       <td className="py-3.5 px-5">
                         <div className="flex justify-end">
                           <ExerciseActionMenu
-                            onView={() => console.log('View exercise', ex.id)}
+                            onView={() => setViewExercise(ex)}
                             onDownload={() => console.log('Download exercise', ex.id)}
-                            onEdit={() => console.log('Edit exercise', ex.id)}
-                            onDelete={() => console.log('Delete exercise', ex.id)}
+                            onEdit={() => setEditExercise(ex)}
+                            onDelete={() => setDeleteExerciseId(ex.id)}
                           />
                         </div>
                       </td>
@@ -419,15 +424,62 @@ export default function AssistantSubjectDetail() {
       </div>
 
       {isLecturePopupOpen && (
-        <AssistantCreateLecturePopup
-          courseKey={courseKey ?? ''}
-          onClose={() => setIsLecturePopupOpen(false)}
-        />
+        <AssistantCreateLecturePopup courseKey={courseKey ?? ''} onClose={() => setIsLecturePopupOpen(false)} />
       )}
       {isExercisePopupOpen && (
-        <AssistantCreateExercisePopup
-          courseKey={courseKey ?? ''}
-          onClose={() => setIsExercisePopupOpen(false)}
+        <AssistantCreateExercisePopup courseKey={courseKey ?? ''} onClose={() => setIsExercisePopupOpen(false)} />
+      )}
+      
+      {/* Edit / View Popups */}
+      {editLecture && (
+        <AssistantEditLecturePopup
+          course={course?.name ?? courseKey ?? ''}
+          subjects={[decodedSubject]}
+          lecture={editLecture}
+          onClose={() => setEditLecture(null)}
+          onSave={() => console.log('Saved lecture', editLecture.id)}
+        />
+      )}
+      
+      {editExercise && (
+        <AssistantEditExercisePopup
+          course={course?.name ?? courseKey ?? ''}
+          subjects={[decodedSubject]}
+          exercise={editExercise}
+          onClose={() => setEditExercise(null)}
+          onSave={() => console.log('Saved exercise', editExercise.id)}
+        />
+      )}
+      
+      {viewExercise && (
+        <AssistantViewExercisePopup
+          course={course?.name ?? courseKey ?? ''}
+          subject={decodedSubject}
+          exercise={viewExercise}
+          onClose={() => setViewExercise(null)}
+        />
+      )}
+      
+      {/* Delete Confirmation */}
+      {deleteLectureId && (
+        <AssistantConfirmPopup
+          title="Xóa bài giảng"
+          message={`Bạn có chắc muốn xóa bài giảng này?`}
+          confirmLabel="Xóa"
+          variant="danger"
+          onConfirm={() => setDeleteLectureId(null)}
+          onCancel={() => setDeleteLectureId(null)}
+        />
+      )}
+      
+      {deleteExerciseId && (
+        <AssistantConfirmPopup
+          title="Xóa bài tập"
+          message={`Bạn có chắc muốn xóa bài tập này?`}
+          confirmLabel="Xóa"
+          variant="danger"
+          onConfirm={() => setDeleteExerciseId(null)}
+          onCancel={() => setDeleteExerciseId(null)}
         />
       )}
     </div>

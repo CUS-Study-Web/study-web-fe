@@ -1,7 +1,6 @@
 import { useState, useImperativeHandle, forwardRef, type ReactNode, useEffect } from 'react';
 
 export interface AssistantExamAnswer {
-  type: 'single' | 'multiple';
   selected: string[];
 }
 
@@ -35,7 +34,7 @@ const OPTION_LABELS = ['A', 'B', 'C', 'D'];
 
 /** Tạo mảng answers với số câu cho trước */
 function buildAnswers(count: number, existing: AssistantExamAnswer[] = []): AssistantExamAnswer[] {
-  return Array.from({ length: count }, (_, i) => existing[i] ?? { type: 'single', selected: [] });
+  return Array.from({ length: count }, (_, i) => existing[i] ?? { selected: [] });
 }
 
 const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, AssistantExamFormPanelProps>(
@@ -59,24 +58,12 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
       getData: () => ({ title, courseKey, questions, duration, date, status, answers }),
     }));
 
-    const updateAnswerType = (idx: number, type: 'single' | 'multiple') => {
-      setAnswers((prev) => prev.map((a, i) => (i === idx ? { ...a, type, selected: [] } : a)));
-    };
-
     const updateAnswerSelected = (idx: number, opt: string) => {
       setAnswers((prev) =>
         prev.map((a, i) => {
           if (i !== idx) return a;
-          if (a.type === 'single') {
-            return { ...a, selected: a.selected.includes(opt) ? [] : [opt] };
-          } else {
-            return {
-              ...a,
-              selected: a.selected.includes(opt)
-                ? a.selected.filter((o) => o !== opt)
-                : [...a.selected, opt],
-            };
-          }
+          // Always single-choice: toggle selection
+          return { ...a, selected: a.selected.includes(opt) ? [] : [opt] };
         })
       );
     };
@@ -191,7 +178,7 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
           </div>
 
           {/* height cố định ~10 câu, cuộn nếu nhiều hơn */}
-          <div className="overflow-y-auto flex flex-col gap-1.5 pr-1" style={{ maxHeight: '300px' }}>
+          <div className="overflow-y-auto flex flex-col gap-3 pr-1" style={{ maxHeight: '300px' }}>
             {answers.map((ans, idx) => (
               <div key={idx} className="flex items-center gap-2">
                 {/* Question label */}
@@ -199,25 +186,15 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
                   Câu {idx + 1}:
                 </span>
 
-                {/* Type dropdown — compact */}
-                <select
-                  value={ans.type}
-                  onChange={(e) => updateAnswerType(idx, e.target.value as 'single' | 'multiple')}
-                  className="w-[70px] shrink-0 px-1 py-0.5 rounded-[5px] border border-[var(--brand-base-600)] bg-white font-[family-name:var(--font-body)] text-[11px] text-[var(--text-primary)] outline-none cursor-pointer"
-                >
-                  <option value="single">Single</option>
-                  <option value="multiple">Multi</option>
-                </select>
-
                 {/* ABCD selectors */}
-                <div className="flex items-center gap-1 ml-6">
+                <div className="flex items-center gap-3">
                   {OPTION_LABELS.map((opt) => {
                     const isSelected = ans.selected.includes(opt);
                     return (
                       <div
                         key={opt}
                         onClick={() => updateAnswerSelected(idx, opt)}
-                        className={`w-6 h-6 rounded-full flex items-center justify-center font-[family-name:var(--font-heading)] font-bold text-[11px] cursor-pointer select-none transition-all duration-150 border ${isSelected
+                        className={`w-7 h-7 rounded-full flex items-center justify-center font-[family-name:var(--font-heading)] font-bold text-[12px] cursor-pointer select-none transition-all duration-150 border ${isSelected
                           ? 'bg-[var(--brand-500)] text-white border-[var(--brand-500)]'
                           : 'bg-white text-[var(--text-secondary)] border-[var(--brand-base-600)] hover:border-[var(--brand-400)] hover:text-[var(--brand-600)]'
                           }`}

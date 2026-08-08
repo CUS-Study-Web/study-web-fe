@@ -106,7 +106,7 @@ export default function AssistantUploadExam() {
 
               {/* iframe PDF viewer */}
               <iframe
-                src={`${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=1`}
                 className="flex-1 w-full border-none"
                 title="PDF Preview"
               />
