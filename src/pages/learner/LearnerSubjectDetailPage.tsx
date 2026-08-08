@@ -2,6 +2,10 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ROUTES } from "../../utils/routes";
 import { COURSES_DATA } from "../../utils/coursesData";
+import ProgressBar from "../../components/learner/ProgressBar";
+import LessonItem from "../../components/learner/LessonItem";
+import ExerciseItem from "../../components/learner/ExerciseItem";
+import ExamItem from "../../components/learner/ExamItem";
 
 // Mock data matching screenshots
 const MOCK_LESSONS = [
@@ -83,9 +87,12 @@ export default function LearnerSubjectDetailPage() {
                   <span className="font-[family:var(--font-heading)] font-semibold text-xs text-[#DCE9DE]/85">Tiến độ học</span>
                   <span className="font-[family:var(--font-heading)] font-bold text-xs text-[#A8D5A2]">38%</span>
                 </div>
-                <div className="w-full rounded-full overflow-hidden bg-white/20 h-2">
-                  <div className="h-full rounded-full w-[38%] bg-gradient-to-r from-[#5EA85A] to-[#A8D5A2]" />
-                </div>
+                <ProgressBar
+                  progress={38}
+                  heightClass="h-2"
+                  bgClass="bg-white/20"
+                  fillStyle={{ background: "linear-gradient(90deg, #5EA85A, #A8D5A2)" }}
+                />
                 <div className="font-[family:var(--font-body)] text-[11px] text-[#DCE9DE]/70 mt-1.5">
                   2/8 bài học hoàn thành
                 </div>
@@ -126,42 +133,11 @@ export default function LearnerSubjectDetailPage() {
         {activeTab === "lessons" && (
           <div className="flex flex-col bg-white rounded-[18px] border border-[#E4EBE5] shadow-sm overflow-hidden">
             {MOCK_LESSONS.map((lesson, i) => (
-              <div key={lesson.id} className={`hover:bg-[#FAFCFA] flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors px-5.5 py-4.5 ${i < MOCK_LESSONS.length - 1 ? "border-b border-[#F4F7F4]" : "border-none"}`}>
-                <div className="flex items-center gap-4 flex-1">
-                  {/* Number badge */}
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${lesson.isLocked ? "bg-[#F4F7F4]" : "bg-[#DCE9DE]"}`}>
-                    {lesson.isLocked ? (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                        <rect x="3" y="11" width="18" height="11" rx="3" fill="#A0AAA2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#A0AAA2" strokeWidth="2" strokeLinecap="round" />
-                      </svg>
-                    ) : (
-                      <span className="font-[family:var(--font-heading)] font-bold text-xs text-[#2C5A31]">{String(lesson.id).padStart(2, "0")}</span>
-                    )}
-                  </div>
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className={`font-[family:var(--font-heading)] text-sm leading-snug ${lesson.isLocked ? "font-medium text-[#A0AAA2]" : "font-bold text-[#1B1F1C]"}`}>
-                      {lesson.title}
-                    </div>
-                    <div className="font-[family:var(--font-body)] text-xs text-[#A0AAA2] mt-1">
-                      ⏱ {lesson.duration}
-                    </div>
-                  </div>
-                </div>
-                {/* Action Right */}
-                <div className="mt-2 md:mt-0 self-start md:self-auto shrink-0">
-                  {lesson.isLocked ? (
-                    <span className="font-[family:var(--font-heading)] font-semibold text-xs text-[#A0AAA2] whitespace-nowrap">
-                      🔒 VIP
-                    </span>
-                  ) : (
-                    <button className="transition-colors cursor-pointer whitespace-nowrap hover:bg-[#1B1F1C] font-[family:var(--font-heading)] font-bold text-xs px-4.5 py-2 rounded-full border-none bg-[#2C5A31] !text-white">
-                      Xem bài
-                    </button>
-                  )}
-                </div>
-              </div>
+              <LessonItem
+                key={lesson.id}
+                lesson={lesson}
+                isLast={i === MOCK_LESSONS.length - 1}
+              />
             ))}
           </div>
         )}
@@ -170,32 +146,11 @@ export default function LearnerSubjectDetailPage() {
         {activeTab === "exercises" && (
           <div className="flex flex-col bg-white rounded-[18px] border border-[#E4EBE5] shadow-sm overflow-hidden">
             {MOCK_EXERCISES.map((ex, i) => (
-              <div key={ex.id} className={`hover:bg-[#FAFCFA] flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors px-5.5 py-4.5 ${i < MOCK_EXERCISES.length - 1 ? "border-b border-[#F4F7F4]" : "border-none"}`}>
-                <div className="flex items-center gap-4 flex-1">
-                  {/* Icon Left */}
-                  <div className="w-[42px] h-[42px] rounded-xl bg-[#DCE9DE] flex items-center justify-center shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="rgba(44,90,49,0.8)" />
-                      <polyline points="14,2 14,8 20,8" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" />
-                    </svg>
-                  </div>
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-[family:var(--font-heading)] font-bold text-sm text-[#1B1F1C] leading-snug">
-                      {ex.title}
-                    </div>
-                    <div className="font-[family:var(--font-body)] text-xs text-[#A0AAA2] mt-1">
-                      PDF · {ex.size} · Đăng ngày {ex.date}
-                    </div>
-                  </div>
-                </div>
-                {/* Action Right */}
-                <div className="mt-3 md:mt-0 self-start md:self-auto shrink-0">
-                  <button className="transition-all cursor-pointer whitespace-nowrap hover:bg-[#2C5A31] hover:!text-white font-[family:var(--font-heading)] font-bold text-xs px-4.5 py-2 rounded-full border-[1.5px] border-[#2C5A31] bg-white text-[#2C5A31]">
-                    ⬇ Tải về
-                  </button>
-                </div>
-              </div>
+              <ExerciseItem
+                key={ex.id}
+                exercise={ex}
+                isLast={i === MOCK_EXERCISES.length - 1}
+              />
             ))}
           </div>
         )}
@@ -204,43 +159,13 @@ export default function LearnerSubjectDetailPage() {
         {activeTab === "exams" && (
           <div className="flex flex-col bg-white rounded-[18px] border border-[#E4EBE5] shadow-sm overflow-hidden">
             {MOCK_EXAMS.map((exam, i) => (
-              <div key={exam.id} className={`hover:bg-[#FAFCFA] flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors px-5.5 py-4.5 ${i < MOCK_EXAMS.length - 1 ? "border-b border-[#F4F7F4]" : "border-none"}`}>
-                <div className="flex items-center gap-4 flex-1">
-                  {/* Icon Left */}
-                  <div className="w-[42px] h-[42px] rounded-xl bg-[#FFF3ED] flex items-center justify-center shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="rgba(230,81,0,0.8)" />
-                      <polyline points="14,2 14,8 20,8" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" />
-                    </svg>
-                  </div>
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-[family:var(--font-heading)] font-bold text-sm text-[#1B1F1C] leading-snug">
-                      {exam.title}
-                    </div>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
-                      <span className="font-[family:var(--font-body)] text-xs text-[#A0AAA2]">
-                        ⏱ {exam.time}
-                      </span>
-                      <span className="font-[family:var(--font-body)] text-xs text-[#E65100]">
-                        📝 {exam.questions}
-                      </span>
-                      <span className={`font-[family:var(--font-heading)] font-semibold text-xs ${exam.diff === "Nâng cao" ? "text-[#E65100]" : "text-[#6B746D]"}`}>
-                        {exam.diff}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                {/* Action Right */}
-                <div className="mt-3 md:mt-0 self-start md:self-auto shrink-0">
-                  <Link 
-                    to={ROUTES.LEARNER.EXAM_START(courseKey, subjectId, String(exam.id))}
-                    className="inline-flex transition-all cursor-pointer whitespace-nowrap hover:bg-[#1e4022] font-[family:var(--font-heading)] font-bold text-xs px-4.5 py-2 rounded-full border-none bg-[#2C5A31] !text-white" 
-                  >
-                    Bắt đầu thi →
-                  </Link>
-                </div>
-              </div>
+              <ExamItem
+                key={exam.id}
+                exam={exam}
+                isLast={i === MOCK_EXAMS.length - 1}
+                courseKey={courseKey}
+                subjectId={subjectId!}
+              />
             ))}
           </div>
         )}

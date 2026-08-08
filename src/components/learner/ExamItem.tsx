@@ -1,0 +1,67 @@
+import { Link } from "react-router-dom";
+import { ROUTES } from "../../utils/routes";
+
+type Exam = {
+  id: number;
+  title: string;
+  time: string;
+  questions: string;
+  diff: string;
+};
+
+type ExamItemProps = {
+  exam: Exam;
+  isLast: boolean;
+  courseKey: string;
+  subjectId: string;
+};
+
+export default function ExamItem({ exam, isLast, courseKey, subjectId }: ExamItemProps) {
+  return (
+    <div
+      className={`hover:bg-[#FAFCFA] flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors px-5.5 py-4.5 ${
+        !isLast ? "border-b border-[#F4F7F4]" : "border-none"
+      }`}
+    >
+      <div className="flex items-center gap-4 flex-1">
+        {/* Icon Left */}
+        <div className="w-[42px] h-[42px] rounded-xl bg-[#FFF3ED] flex items-center justify-center shrink-0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="rgba(230,81,0,0.8)" />
+            <polyline points="14,2 14,8 20,8" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" />
+          </svg>
+        </div>
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <div className="font-[family:var(--font-heading)] font-bold text-sm text-[#1B1F1C] leading-snug">
+            {exam.title}
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
+            <span className="font-[family:var(--font-body)] text-xs text-[#A0AAA2]">
+              ⏱ {exam.time}
+            </span>
+            <span className="font-[family:var(--font-body)] text-xs text-[#E65100]">
+              📝 {exam.questions}
+            </span>
+            <span
+              className={`font-[family:var(--font-heading)] font-semibold text-xs ${
+                exam.diff === "Nâng cao" ? "text-[#E65100]" : "text-[#6B746D]"
+              }`}
+            >
+              {exam.diff}
+            </span>
+          </div>
+        </div>
+      </div>
+      {/* Action Right */}
+      <div className="mt-3 md:mt-0 self-start md:self-auto shrink-0">
+        <Link
+          to={ROUTES.LEARNER.EXAM_START(courseKey, subjectId, String(exam.id))}
+          className="inline-flex transition-all cursor-pointer whitespace-nowrap hover:bg-[#1e4022] font-[family:var(--font-heading)] font-bold text-xs px-4.5 py-2 rounded-full border-none bg-[#2C5A31] !text-white"
+        >
+          Bắt đầu thi →
+        </Link>
+      </div>
+    </div>
+  );
+}
