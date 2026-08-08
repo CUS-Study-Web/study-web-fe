@@ -547,7 +547,7 @@ export const DEMO_FLASHCARD_TOPICS: FlashcardTopic[] = [
   { id: 2, title: 'Động từ bất quy tắc', words: 80, created: '15/02/2025', status: 'Đang dùng' },
   { id: 3, title: 'Thành ngữ tiếng Anh', words: 60, created: '22/03/2025', status: 'Nháp' },
   { id: 4, title: 'Từ vựng học thuật (Academic)', words: 120, created: '05/04/2025', status: 'Đang dùng' },
-  { id: 5, title: 'Từ vựng V-ACT — Toán học', words: 40, created: '18/05/2025', status: 'Nháp' },
+  { id: 5, title: 'Từ vựng V-ACT', words: 40, created: '18/05/2025', status: 'Nháp' },
 ];
 
 export const DEMO_VOCABULARY_WORDS: VocabularyWord[] = [
