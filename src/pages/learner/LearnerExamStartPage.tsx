@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../utils/routes";
 import { LineChart } from "../../components/Charts";
+import AttemptHistoryItem from "../../components/learner/AttemptHistoryItem";
 
 type AttemptRecord = {
   date: string;
   duration: string;
-  status: "Khá" | "Tốt" | "Giỏi" | "Trung bình";
+  status: "Khá" | "Tốt" | "Giỏi" | "Trung bình" | string;
   score: number;
 };
 
@@ -40,11 +41,7 @@ export default function LearnerExamStartPage() {
   const chartData = ATTEMPT_HISTORY.map((a) => a.score);
   const chartLabels = ATTEMPT_HISTORY.map((_, i) => `L${i + 1}`);
   
-  const statusColor = (s: string) => 
-    s === "Giỏi" ? { bg: "bg-[#DCE9DE]", text: "text-[#2C5A31]" } 
-    : s === "Tốt" ? { bg: "bg-[#DDEAF8]", text: "text-[#2F6FAE]" } 
-    : s === "Khá" ? { bg: "bg-[#FBF0DC]", text: "text-[#B7791F]" } 
-    : { bg: "bg-[#F4F7F4]", text: "text-[#6B746D]" };
+
     
   const bestScore = Math.max(...chartData);
   const avgScore = (chartData.reduce((s, a) => s + a, 0) / chartData.length).toFixed(1);
@@ -104,27 +101,15 @@ export default function LearnerExamStartPage() {
             <span className="font-[family:var(--font-body)] text-[13px] text-[#6B746D]">{ATTEMPT_HISTORY.length} lần thi</span>
           </div>
           <div>
-            {ATTEMPT_HISTORY.slice().reverse().map((a, i) => {
-              const sc = statusColor(a.status);
-              return (
-                <div key={i} className={`flex items-center gap-3 px-5.5 py-3.5 ${i < ATTEMPT_HISTORY.length - 1 ? "border-b border-[#F4F7F4]" : "border-none"}`}>
-                  <div className="w-9 h-9 rounded-[10px] bg-[#F4F7F4] flex items-center justify-center shrink-0">
-                    <span className="font-[family:var(--font-heading)] font-bold text-xs text-[#6B746D]">#{ATTEMPT_HISTORY.length - i}</span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-[family:var(--font-heading)] font-semibold text-sm text-[#1B1F1C]">{a.date}</div>
-                    <div className="font-[family:var(--font-body)] text-xs text-[#6B746D] mt-0.5">Hoàn thành trong {a.duration}</div>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <span className={`${sc.bg} ${sc.text} font-[family:var(--font-heading)] font-semibold text-[11px] px-2.5 py-[3px] rounded-full`}>{a.status}</span>
-                    <div className="text-right">
-                      <div className={`font-[family:var(--font-heading)] font-extrabold text-lg leading-none ${sc.text}`}>{a.score}</div>
-                      <div className="font-[family:var(--font-body)] text-[10px] text-[#D4DCD5]">/10</div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {ATTEMPT_HISTORY.slice().reverse().map((a, i) => (
+              <AttemptHistoryItem 
+                key={i} 
+                attempt={a} 
+                index={i} 
+                totalAttempts={ATTEMPT_HISTORY.length}
+                isLast={i === ATTEMPT_HISTORY.length - 1}
+              />
+            ))}
           </div>
         </div>
         

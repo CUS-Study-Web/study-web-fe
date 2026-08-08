@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../utils/routes";
 import Header from "../../components/guest/Header";
+import ExamQuestionViewerItem from "../../components/learner/ExamQuestionViewerItem";
+import ExamAnswerSelector from "../../components/learner/ExamAnswerSelector";
 
 type Question = {
   id: number;
@@ -99,15 +101,7 @@ export default function LearnerTakeExamPage() {
                 <div className="font-[family:var(--font-body)] text-xs text-[#6B746D] mt-1.5">Thời gian: {exam.duration} — {exam.questions} câu hỏi</div>
               </div>
               {EXAM_QUESTIONS.slice(0, 10).map((q) => (
-                <div key={q.id} className="mb-7">
-                  <div className="font-[family:var(--font-heading)] font-bold text-sm text-[#1B1F1C] mb-2.5">Câu {q.id}: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore?</div>
-                  {["A", "B", "C", "D"].map((opt, oi) => (
-                    <div key={opt} className="font-[family:var(--font-body)] text-sm text-[#3D4540] py-1.5 flex gap-2.5">
-                      <span className="font-semibold">{opt}.</span>
-                      <span>{"Phương án " + opt + " — " + ["mô tả lựa chọn này", "đây là đáp án có thể đúng", "một phương án khác cho câu hỏi", "lựa chọn cuối cùng"][oi]}</span>
-                    </div>
-                  ))}
-                </div>
+                <ExamQuestionViewerItem key={q.id} question={q} />
               ))}
               <div className="text-center text-[#D4DCD5] font-[family:var(--font-body)] text-[13px] pt-6 pb-2">— Hết trang 1 / 4 —</div>
             </div>
@@ -137,21 +131,12 @@ export default function LearnerTakeExamPage() {
             {/* Question list */}
             <div className="custom-scrollbar overflow-y-auto max-h-[440px] py-3">
               {EXAM_QUESTIONS.map((q) => (
-                <div key={q.id} className="flex items-center gap-2 py-1.5 px-4 border-b border-[#F4F7F4]">
-                  <div className="font-[family:var(--font-heading)] font-semibold text-xs text-[#6B746D] min-w-[40px]">Câu {q.id}</div>
-                  <div className="flex gap-1 flex-1 justify-end">
-                    {["A", "B", "C", "D"].map((opt) => {
-                      const selected = answers[q.id] === opt;
-                      return (
-                        <button key={opt} onClick={() => setAnswers((prev) => ({ ...prev, [q.id]: opt }))}
-                          className={`w-7 h-7 rounded-full font-[family:var(--font-heading)] font-bold text-xs cursor-pointer flex items-center justify-center transition-all duration-100 shrink-0 hover:scale-105 ${selected ? "border-2 border-[#2C5A31] bg-[#2C5A31] text-white" : "border-[1.5px] border-[#D4DCD5] bg-white text-[#6B746D]"}`}
-                        >
-                          {opt}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                <ExamAnswerSelector
+                  key={q.id}
+                  question={q}
+                  selectedAnswer={answers[q.id]}
+                  onSelect={(opt) => setAnswers((prev) => ({ ...prev, [q.id]: opt }))}
+                />
               ))}
             </div>
 
