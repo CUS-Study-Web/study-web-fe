@@ -14,7 +14,7 @@ const MOCK_USER = {
   gender: "Nam",
   school: "THPT Chu Văn An, Hà Nội",
   coursesCount: 2,
-  isVip: true,
+  isVip: false,
 };
 
 export default function LearnerProfilePage() {

@@ -28,7 +28,7 @@ const MOCK_USER: UserInfo = {
   gender: "Nam",
   school: "THPT Chu Văn An, Hà Nội",
   coursesCount: 2,
-  isVip: true,
+  isVip: false,
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
