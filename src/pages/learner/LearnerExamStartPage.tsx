@@ -56,17 +56,17 @@ export default function LearnerExamStartPage() {
       <div className="bg-gradient-to-br from-[#1B1F1C] to-[#2C3A1E] pt-[52px] pb-[80px] px-6">
         <div className="max-w-[900px] mx-auto text-center">
           <div className="flex justify-center gap-2.5 mb-5">
-            <span className="bg-white/15 text-white font-[family:var(--font-heading)] font-semibold text-[11px] px-2.5 py-[3px] rounded-full">
+            <span className="bg-white/15 !text-white font-[family:var(--font-heading)] font-semibold text-[11px] px-2.5 py-[3px] rounded-full">
               {subjectId?.replace("-", " ")?.toUpperCase() || "TOÁN HỌC"}
             </span>
             <span className={`${exam.level === "Nâng cao" ? "bg-[#FAE0E0] text-[#C94B4B]" : "bg-[#FBF0DC] text-[#B7791F]"} font-[family:var(--font-heading)] font-semibold text-[11px] px-2.5 py-[3px] rounded-full`}>
               {exam.level}
             </span>
           </div>
-          <h1 className="font-[family:var(--font-heading)] font-bold text-4xl text-white mb-3.5 tracking-tight leading-tight">
+          <h1 className="font-[family:var(--font-heading)] font-bold text-4xl !text-white mb-3.5 tracking-tight leading-tight">
             {exam.title}
           </h1>
-          <p className="font-[family:var(--font-body)] text-[15px] text-[#DCE9DE]/75 mb-7 leading-relaxed">
+          <p className="font-[family:var(--font-body)] text-[15px] !text-[#DCE9DE] opacity-75 mb-7 leading-relaxed">
             Hoàn thành đề thi trong thời gian quy định. Kết quả và lời giải chi tiết sẽ hiển thị ngay sau khi nộp bài.
           </p>
           <div className="flex justify-center gap-6 mb-8 flex-wrap">
@@ -77,14 +77,14 @@ export default function LearnerExamStartPage() {
             ].map(({ icon, label, value }) => (
               <div key={label} className="bg-white/10 rounded-[14px] px-5 py-3.5 text-center min-w-[120px]">
                 <div className="text-[22px] mb-1.5">{icon}</div>
-                <div className="font-[family:var(--font-heading)] font-bold text-base text-white">{value}</div>
-                <div className="font-[family:var(--font-body)] text-xs text-white/50 mt-0.5">{label}</div>
+                <div className="font-[family:var(--font-heading)] font-bold text-base !text-white">{value}</div>
+                <div className="font-[family:var(--font-body)] text-xs !text-white opacity-50 mt-0.5">{label}</div>
               </div>
             ))}
           </div>
           <button 
             onClick={handleTakeExam} 
-            className="font-[family:var(--font-heading)] font-bold text-lg px-12 py-[18px] rounded-[16px] border-none bg-[#2C5A31] text-white cursor-pointer transition-all duration-150 ease-out inline-block hover:-translate-y-0.5 hover:bg-[#234A28] shadow-[0_8px_32px_rgba(44,90,49,0.5)]"
+            className="font-[family:var(--font-heading)] font-bold text-lg px-12 py-[18px] rounded-[16px] border-none bg-[#2C5A31] !text-white cursor-pointer transition-all duration-150 ease-out inline-block hover:-translate-y-0.5 hover:bg-[#234A28] shadow-[0_8px_32px_rgba(44,90,49,0.5)]"
           >
             Bắt đầu làm bài
           </button>

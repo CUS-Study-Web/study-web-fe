@@ -61,7 +61,7 @@ export default function LearnerTakeExamPage() {
             </div>
             <button 
               onClick={() => navigate(ROUTES.LEARNER.SUBJECT_DETAIL(courseId, subjectId))} 
-              className="w-full font-[family:var(--font-heading)] font-bold text-[15px] py-3.5 rounded-[14px] border-none bg-[#2C5A31] text-white cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.05)] hover:bg-[#234A28] transition-colors"
+              className="w-full font-[family:var(--font-heading)] font-bold text-[15px] py-3.5 rounded-[14px] border-none bg-[#2C5A31] !text-white cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.05)] hover:bg-[#234A28] transition-colors"
             >
               Về trang môn học
             </button>
@@ -143,7 +143,7 @@ export default function LearnerTakeExamPage() {
             {/* Submit */}
             <div className="py-3.5 px-4 border-t border-[#E4EBE5]">
               <button onClick={() => setSubmitted(true)}
-                className="w-full font-[family:var(--font-heading)] font-bold text-[15px] py-3.5 rounded-[14px] border-none bg-[#2C5A31] text-white cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-150 ease-out hover:bg-[#234A28]"
+                className="w-full font-[family:var(--font-heading)] font-bold text-[15px] py-3.5 rounded-[14px] border-none bg-[#2C5A31] !text-white cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-150 ease-out hover:bg-[#234A28]"
               >
                 Nộp bài
               </button>

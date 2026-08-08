@@ -1,10 +1,10 @@
-import React from "react";
+import type { CSSProperties } from "react";
 
 type ProgressBarProps = {
   progress: number;
   heightClass?: string;
   bgClass?: string;
-  fillStyle?: React.CSSProperties;
+  fillStyle?: CSSProperties;
 };
 
 export default function ProgressBar({

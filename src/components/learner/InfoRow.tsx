@@ -1,7 +1,7 @@
-import React from "react";
+import type { ReactNode } from "react";
 
 type InfoRowProps = {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   value: string;
   isEditing?: boolean;
