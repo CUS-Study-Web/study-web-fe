@@ -90,7 +90,7 @@ type Review = {
   image?: string
 }
 
-type WTab = "courses" | "instructors" | "achievements" | "reviews"
+type WTab = "trang-chu" | "footer" | "goi-cuoc" | "courses" | "instructors" | "achievements" | "reviews"
 
 type ModalKey =
   | "add-course"

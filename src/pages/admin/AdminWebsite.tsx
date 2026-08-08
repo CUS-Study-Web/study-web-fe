@@ -13,9 +13,12 @@ import {
   AchievementModal,
   ReviewModal
 } from '../../components/admin/modals/WebsiteModals'
+import TrangChuTab from '../../components/admin/website/TrangChuTab'
+import FooterTab from '../../components/admin/website/FooterTab'
+import GoiCuocTab from '../../components/admin/website/GoiCuocTab'
 
 const AdminWebsite = () => {
-  const [activeTab, setActiveTab] = useState<WTab>("courses")
+  const [activeTab, setActiveTab] = useState<WTab>("trang-chu")
   const [showModal, setShowModal] = useState<ModalKey | null>(null)
   
   // Local list states
@@ -49,11 +52,14 @@ const AdminWebsite = () => {
     setActiveDropdownId(null)
   }
 
-  const tabsConfig = {
-    courses: { label: "Danh sách khóa học", addLabel: "Thêm khóa học", addModal: "add-course" as ModalKey },
-    instructors: { label: "Đội ngũ giảng viên", addLabel: "Thêm giảng viên", addModal: "add-instructor" as ModalKey },
-    achievements: { label: "Bảng thành tích", addLabel: "Thêm thành tích", addModal: "add-achievement" as ModalKey },
-    reviews: { label: "Cảm nhận học viên", addLabel: "Thêm cảm nhận", addModal: "add-review" as ModalKey }
+  const tabsConfig: Record<WTab, { label: string; addLabel?: string; addModal?: ModalKey }> = {
+    "trang-chu":    { label: "Trang chủ" },
+    "footer":       { label: "Footer" },
+    "goi-cuoc":     { label: "Gói cước" },
+    "courses":      { label: "Danh sách khóa học", addLabel: "Thêm khóa học",   addModal: "add-course" },
+    "instructors":  { label: "Đội ngũ giảng viên", addLabel: "Thêm giảng viên", addModal: "add-instructor" },
+    "achievements": { label: "Bảng thành tích",    addLabel: "Thêm thành tích", addModal: "add-achievement" },
+    "reviews":      { label: "Cảm nhận học viên",  addLabel: "Thêm cảm nhận",   addModal: "add-review" },
   }
 
   const currentTab = tabsConfig[activeTab]
@@ -172,24 +178,32 @@ const AdminWebsite = () => {
             <div className="[font-family:var(--font-heading)] font-bold text-[15px] text-[var(--text-primary)]">
               {currentTab.label}
             </div>
-            <button
-              onClick={() => {
-                setEditingCourse(undefined)
-                setEditingInstructor(undefined)
-                setEditingAchievement(undefined)
-                setEditingReview(undefined)
-                setShowModal(currentTab.addModal)
-              }}
-              className="flex items-center gap-2 px-[18px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--brand-500)] !text-white ![font-family:var(--font-heading)] !font-bold !text-[13px] cursor-pointer !hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-              {currentTab.addLabel}
-            </button>
+            {currentTab.addModal && (
+              <button
+                onClick={() => {
+                  setEditingCourse(undefined)
+                  setEditingInstructor(undefined)
+                  setEditingAchievement(undefined)
+                  setEditingReview(undefined)
+                  setShowModal(currentTab.addModal!)
+                }}
+                className="flex items-center gap-2 px-[18px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--brand-500)] !text-white ![font-family:var(--font-heading)] !font-bold !text-[13px] cursor-pointer !hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                {currentTab.addLabel}
+              </button>
+            )}
           </div>
 
+          {/* CMS form tabs */}
+          {activeTab === "trang-chu" && <TrangChuTab />}
+          {activeTab === "footer"    && <FooterTab />}
+          {activeTab === "goi-cuoc" && <GoiCuocTab />}
+
           {/* Tab Tables */}
+          {(activeTab === "courses" || activeTab === "instructors" || activeTab === "achievements" || activeTab === "reviews") && (
           <div className="overflow-x-auto rounded-[var(--radius-md)] border border-[var(--border-300)]">
             {activeTab === "courses" && (
               <table className="w-full border-collapse">
@@ -484,6 +498,7 @@ const AdminWebsite = () => {
               </table>
             )}
           </div>
+          )}
         </div>
       </div>
 
