@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/routes";
 import InfoRow from "../../components/learner/InfoRow";
+import Avatar from "../../components/learner/Avatar";
 
 // Mock data directly on page (similar to assistant/admin components)
 const MOCK_USER = {
@@ -51,22 +52,7 @@ export default function LearnerProfilePage() {
       <section className="bg-[#1b3b22] pt-10 pb-36 px-4 md:px-6">
         <div className="max-w-[560px] mx-auto flex flex-col items-center text-center">
           {/* Avatar with edit icon badge */}
-          <div className="relative mb-4">
-            <div className="w-20 h-20 rounded-full bg-[#254d2d] border-2 border-[#3c6d42] flex items-center justify-center shadow-lg">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9cb6a0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </div>
-            <button
-              className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-white border border-[var(--border-300)] flex items-center justify-center cursor-pointer shadow-sm hover:bg-gray-100 transition-colors"
-              aria-label="Đổi ảnh đại diện"
-            >
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-              </svg>
-            </button>
-          </div>
+          <Avatar size="lg" showEdit className="mb-4" />
 
           {/* Name & Email */}
           <h1 className="text-xl font-black !text-white tracking-tight mb-1 font-[family:var(--font-heading)]">

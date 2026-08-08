@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/routes";
+import Avatar from "./Avatar";
 
 export default function UserMenuPopup() {
   const { user, logout } = useAuth();
@@ -35,14 +36,10 @@ export default function UserMenuPopup() {
       {/* Avatar Button */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="w-10 h-10 rounded-full bg-[#28522d] flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-[#28522d]/30 active:scale-95 transition-all duration-150 shadow-sm"
+        className="rounded-full flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-[#28522d]/30 active:scale-95 transition-all duration-150 shadow-sm border-none p-0 bg-transparent"
         aria-label="Mở menu người dùng"
       >
-        <span
-          className="text-sm font-black !text-white select-none font-[family:var(--font-heading)]"
-        >
-          {initial}
-        </span>
+        <Avatar size="sm" />
       </button>
 
       {/* Dropdown Arrow + Indicator */}

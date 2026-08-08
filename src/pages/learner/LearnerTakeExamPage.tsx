@@ -109,10 +109,10 @@ export default function LearnerTakeExamPage() {
         </div>
 
         {/* Right: sidebar */}
-        <div className="sticky top-[84px]">
-          <div className="bg-white rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-[#E4EBE5] overflow-hidden">
+        <div className="sticky top-[84px] h-[calc(100vh-100px)]">
+          <div className="bg-white rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-[#E4EBE5] overflow-hidden flex flex-col h-full">
             {/* Timer */}
-            <div className={`p-5 pb-4 ${secondsLeft < 300 ? "bg-gradient-to-br from-[#C94B4B] to-[#a83434]" : "bg-gradient-to-br from-[#2C5A31] to-[#1e4023]"}`}>
+            <div className={`shrink-0 p-5 pb-4 ${secondsLeft < 300 ? "bg-gradient-to-br from-[#C94B4B] to-[#a83434]" : "bg-gradient-to-br from-[#2C5A31] to-[#1e4023]"}`}>
               <div className="font-[family:var(--font-body)] text-xs text-white/75 mb-1.5 text-center">Thời gian còn lại</div>
               <div className="font-[family:var(--font-heading)] font-extrabold text-[40px] text-white text-center tracking-[2px] leading-none">{mm}:{ss}</div>
               <div className="flex justify-center gap-4 mt-3">
@@ -129,7 +129,7 @@ export default function LearnerTakeExamPage() {
             </div>
 
             {/* Question list */}
-            <div className="custom-scrollbar overflow-y-auto max-h-[440px] py-3">
+            <div className="custom-scrollbar overflow-y-auto flex-1 py-3">
               {EXAM_QUESTIONS.map((q) => (
                 <ExamAnswerSelector
                   key={q.id}
@@ -141,7 +141,7 @@ export default function LearnerTakeExamPage() {
             </div>
 
             {/* Submit */}
-            <div className="py-3.5 px-4 border-t border-[#E4EBE5]">
+            <div className="shrink-0 py-3.5 px-4 border-t border-[#E4EBE5]">
               <button onClick={() => setSubmitted(true)}
                 className="w-full font-[family:var(--font-heading)] font-bold text-[15px] py-3.5 rounded-[14px] border-none bg-[#2C5A31] !text-white cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-150 ease-out hover:bg-[#234A28]"
               >
