@@ -187,7 +187,7 @@ const AdminWebsite = () => {
                   setEditingReview(undefined)
                   setShowModal(currentTab.addModal!)
                 }}
-                className="flex items-center gap-2 px-[18px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--brand-500)] !text-white ![font-family:var(--font-heading)] !font-bold !text-[13px] cursor-pointer !hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"
+                className="flex items-center gap-2 px-[18px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--brand-500)] !text-white ![font-family:var(--font-heading)] !font-bold !text-[13px] cursor-pointer hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2.5" strokeLinecap="round">
                   <path d="M12 5v14M5 12h14" />
