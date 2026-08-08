@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../../utils/routes'
 import {QUICK_STATS, ACTIVITY_LOG, DAYS_IN_WEEK, MONTHS_TO_7, MONTHS, WEEKLY_LOGINS, MONTHLY_REGS, MONTHLY_WEB_TRAFFIC} from './MockData'
 import { Suspense, lazy } from 'react'
 import StatsCard from '../../components/StatsCard'
@@ -8,6 +10,7 @@ const BarChart = lazy(() => import('../../components/Charts').then((m) => ({ def
 const LineChart = lazy(() => import('../../components/Charts').then((m) => ({ default: m.LineChart })))
 
 const AdminDashboard = () => {
+    const navigate = useNavigate()
     return (
       <div className="max-w-[1280px] mx-auto px-[28px] pt-[40px] pb-[80px]">
         {/* Introduction */}
@@ -64,7 +67,7 @@ const AdminDashboard = () => {
         <div className="surface-card px-[28px] py-[24px]">
           <div className="flex justify-between items-center mb-[20px]">
             <div className="[font-family:var(--font-heading)] font-bold text-[16px] text-[var(--text-primary)]">Hoạt động gần đây</div>
-            <button onClick={() => alert("Tính năng đang được phát triển.")} 
+            <button onClick={() => navigate(ROUTES.ADMIN.ACTIVITIES)} 
                     className="![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--brand-500)] !cursor-pointer">
               Xem tất cả
             </button>

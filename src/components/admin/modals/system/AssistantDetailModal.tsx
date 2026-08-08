@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../../../../utils/routes'
 import type { Assistant } from '../../../../types/admin'
 
 type AssistantDetailModalProps = {
@@ -7,6 +9,7 @@ type AssistantDetailModalProps = {
 }
 
 export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProps) => {
+  const navigate = useNavigate()
   const actLog = [
     { time: "Hôm nay, 10:42", text: "Đăng tải đề thi V-ACT mã đề 007" },
     { time: "Hôm qua, 14:20", text: "Tạo bài học mới: Tư duy logic nâng cao" },
@@ -64,7 +67,7 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
               Hoạt động gần đây
             </div>
             <button
-              onClick={() => alert("Tính năng đang được phát triển.")}
+              onClick={() => navigate(ROUTES.ADMIN.ACTIVITIES)}
               className="bg-transparent border-none cursor-pointer ![font-family:var(--font-heading)] !font-bold !text-[12px] !text-[var(--brand-500)] p-0 underline underline-offset-[3px]"
             >
               Xem tất cả

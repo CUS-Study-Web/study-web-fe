@@ -1,5 +1,5 @@
 import IconBox from '../../components/IconBox'
-import type { Student, Assistant, DayStats, ChartDataPoint } from '../../types/admin'
+import type { Student, Assistant, DayStats, ChartDataPoint, AsstActivity } from '../../types/admin'
 
 // NOTE: icons coupled to data, extract to a config map when data comes from API
 const QUICK_STATS = [
@@ -211,6 +211,21 @@ const WEBSITE_REVIEWS = [
   { id: 2, name: "Trần Quỳnh Như", course: "V-ACT", time: "Tháng 05/2025", comment: "Tôi đã cải thiện điểm từ 28 lên 34 chỉ sau 3 tháng." },
 ]
 
+const ALL_ASST_ACTIVITIES: AsstActivity[] = [
+  { date: "26/07/2026", week: "W30", month: "07", year: "2026", text: "Đăng tải đề thi V-ACT mã đề 007",              asst: "Lê Thị Mai" },
+  { date: "25/07/2026", week: "W30", month: "07", year: "2026", text: "Tạo bài học mới: Tư duy logic nâng cao",        asst: "Nguyễn Quang Huy" },
+  { date: "24/07/2026", week: "W30", month: "07", year: "2026", text: "Trả lời 12 câu hỏi học viên",                   asst: "Lê Thị Mai" },
+  { date: "23/07/2026", week: "W30", month: "07", year: "2026", text: "Cập nhật nội dung khóa V-ACT chương 4",         asst: "Trần Bảo Ngọc" },
+  { date: "20/07/2026", week: "W29", month: "07", year: "2026", text: "Thêm 3 câu hỏi vào ngân hàng đề HSA",          asst: "Nguyễn Quang Huy" },
+  { date: "19/07/2026", week: "W29", month: "07", year: "2026", text: "Phê duyệt 5 bài nộp của học viên",             asst: "Lê Thị Mai" },
+  { date: "18/07/2026", week: "W29", month: "07", year: "2026", text: "Cập nhật tiến độ khóa V-SAT tháng 7",          asst: "Trần Bảo Ngọc" },
+  { date: "15/07/2026", week: "W28", month: "07", year: "2026", text: "Tải lên tài liệu lý thuyết THPT QG",           asst: "Nguyễn Quang Huy" },
+  { date: "10/06/2026", week: "W23", month: "06", year: "2026", text: "Tạo đề thi thử HSCA đợt 2",                    asst: "Lê Thị Mai" },
+  { date: "05/06/2026", week: "W22", month: "06", year: "2026", text: "Gửi thông báo lịch học tháng 6 cho học viên",  asst: "Trần Bảo Ngọc" },
+  { date: "15/05/2026", week: "W19", month: "05", year: "2026", text: "Tổng kết kết quả thi thử tháng 5",             asst: "Nguyễn Quang Huy" },
+  { date: "01/05/2026", week: "W17", month: "05", year: "2026", text: "Khởi động khóa học V-ACT kỳ mới",              asst: "Lê Thị Mai" },
+]
+
 export {
   QUICK_STATS,
   ACTIVITY_LOG,
@@ -229,5 +244,6 @@ export {
   WEBSITE_COURSES,
   WEBSITE_INSTRUCTORS,
   WEBSITE_ACHIEVEMENTS,
-  WEBSITE_REVIEWS
+  WEBSITE_REVIEWS,
+  ALL_ASST_ACTIVITIES
 }
