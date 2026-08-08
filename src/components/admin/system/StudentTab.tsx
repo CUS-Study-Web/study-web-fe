@@ -90,7 +90,7 @@ export const StudentTab = ({
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-[var(--surface-500)]">
-              {["Email", "Khóa học chủ yếu", "Tiến độ", "Đ.TB", "Đăng nhập", "Thời lượng", "Trạng thái", ""].map((h) => (
+              {["Email", "Khóa học chủ yếu", "Tiến độ", "Đ.TB", "Đăng nhập", "Trạng thái", ""].map((h) => (
                 <th
                   key={h}
                   className="[font-family:var(--font-heading)] font-bold text-[11px] text-[var(--text-secondary-300)] p-[10px_12px] text-left uppercase tracking-[0.3px] whitespace-nowrap"
@@ -160,9 +160,6 @@ export const StudentTab = ({
                   </td>
                   <td className="p-[12px_12px] [font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-600)]">
                     {u.lastLogin}
-                  </td>
-                  <td className="p-[12px_12px] [font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-600)]">
-                    {Math.round(u.progress * 0.6 + 10)} giờ
                   </td>
                   <td className="p-[12px_12px]">
                     <span
