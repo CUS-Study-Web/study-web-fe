@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import type { FlashcardTopic, VocabularyWord } from '../../../types/assistant/models';
+import AssistantConfirmPopup from '../AssistantConfirmPopup';
 
 const EDIT_PER_PAGE = 20;
 
@@ -69,6 +70,7 @@ export function AssistantEditTopicModal({
   const [editPage, setEditPage] = useState(1);
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   // ─── Derived state ──────────────────────────────────────────────────────────
   const filteredWords = editWords.filter(
@@ -108,7 +110,8 @@ export function AssistantEditTopicModal({
   ];
 
   return (
-    /* Backdrop */
+    <>
+      {/* Backdrop */}
     <div
       className="fixed inset-0 z-[1000] flex items-center justify-center p-6"
       style={{ background: 'rgba(0,0,0,0.5)' }}
@@ -258,7 +261,7 @@ export function AssistantEditTopicModal({
               Hủy
             </div>
             <div
-              onClick={() => { onSave(editWords); onClose(); }}
+              onClick={() => setShowConfirm(true)}
               className="px-[26px] py-2.5 rounded-[11px] border-none bg-[var(--brand-500)] text-white font-[family-name:var(--font-heading)] font-bold text-[13px] cursor-pointer hover:bg-[var(--brand-600)] transition-colors"
             >
               Lưu thay đổi
@@ -267,5 +270,17 @@ export function AssistantEditTopicModal({
         </div>
       </div>
     </div>
+
+      {showConfirm && (
+        <AssistantConfirmPopup
+          title="Xác nhận chỉnh sửa"
+          message={`Bạn có chắc chắn muốn lưu thay đổi cho chủ đề "${topic.title}"?`}
+          confirmLabel="Lưu"
+          variant="warning"
+          onConfirm={() => { onSave(editWords); setShowConfirm(false); onClose(); }}
+          onCancel={() => setShowConfirm(false)}
+        />
+      )}
+    </>
   );
 }

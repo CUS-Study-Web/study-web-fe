@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type { AssistantDocument } from '../../../types/assistant/models';
+import AssistantConfirmPopup from '../AssistantConfirmPopup';
 
 interface AssistantEditMaterialPopupProps {
   material: AssistantDocument | null;
@@ -16,6 +17,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     if (material) {
@@ -57,8 +59,9 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
     'w-full px-4 py-2.5 rounded-[var(--radius-sm)] border-[1.5px] border-[var(--border-default)] font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-primary)] outline-none box-border bg-[var(--surface-card)] focus:border-[var(--brand-400)] transition-colors cursor-pointer';
 
   return (
-    <div
-      className="fixed inset-0 bg-black/45 z-[1000] flex items-center justify-center p-6"
+    <>
+      <div
+        className="fixed inset-0 bg-black/45 z-[1000] flex items-center justify-center p-6"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div className="bg-[var(--surface-card)] rounded-[var(--radius-xl)] py-7 px-7 w-full max-w-[520px] max-h-[90vh] overflow-y-auto shadow-[0_8px_40px_rgba(0,0,0,0.18)]">
@@ -231,7 +234,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
             Hủy
           </div>
           <div
-            onClick={onClose}
+            onClick={() => setShowConfirm(true)}
             className="flex-[2] p-3 flex items-center justify-center rounded-[var(--radius-md)] border-none bg-[var(--brand-500)] text-[var(--text-inverse)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--brand-600)] transition-colors"
           >
             Lưu thay đổi
@@ -239,5 +242,17 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
         </div>
       </div>
     </div>
+
+      {showConfirm && (
+        <AssistantConfirmPopup
+          title="Xác nhận chỉnh sửa"
+          message={`Bạn có chắc chắn muốn lưu thay đổi cho tài liệu "${title}"?`}
+          confirmLabel="Lưu"
+          variant="warning"
+          onConfirm={() => { setShowConfirm(false); onClose(); }}
+          onCancel={() => setShowConfirm(false)}
+        />
+      )}
+    </>
   );
 }

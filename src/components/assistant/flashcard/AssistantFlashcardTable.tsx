@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { FlashcardTopic } from '../../../types/assistant/models';
 
 // ─── Summary Chips ────────────────────────────────────────────────────────────
@@ -64,54 +64,93 @@ export function AssistantSummaryChips({ topics }: AssistantSummaryChipsProps) {
   );
 }
 
-// ─── Status Badge ─────────────────────────────────────────────────────────────
-
-// function StatusBadge({ status }: { status: FlashcardTopic['status'] }) {
-//   const isDangDung = status === 'Đang dùng';
-//   return (
-//     <div
-//       className="inline-block rounded-full px-3 py-1 font-[family-name:var(--font-heading)] font-bold text-[11px] whitespace-nowrap"
-//       style={{
-//         background: isDangDung ? 'var(--brand-soft-500)' : 'var(--surface-500)',
-//         color: isDangDung ? 'var(--brand-500)' : 'var(--neutral-500)',
-//       }}
-//     >
-//       {status}
-//     </div>
-//   );
-// }
-
-// ─── Kebab Menu ───────────────────────────────────────────────────────────────
+// ─── Kebab Menu — portal-style to avoid table overflow clipping ───────────────
 
 interface KebabMenuProps {
   topicId: number;
   openKebab: number | null;
   setOpenKebab: (id: number | null) => void;
+  onDownload: () => void;
   onEdit: () => void;
+  onDelete: () => void;
 }
 
-function KebabMenu({ topicId, openKebab, setOpenKebab, onEdit }: KebabMenuProps) {
+function KebabMenu({ topicId, openKebab, setOpenKebab, onDownload, onEdit, onDelete }: KebabMenuProps) {
   const isOpen = openKebab === topicId;
+  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isOpen && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setMenuPos({
+        top: rect.bottom + 4,
+        right: window.innerWidth - rect.right,
+      });
+    }
+    setOpenKebab(isOpen ? null : topicId);
+  };
+
+  // Close on outside click or Escape
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClose = (e: MouseEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent && e.key !== 'Escape') return;
+      if (e instanceof MouseEvent) {
+        if (btnRef.current?.contains(e.target as Node)) return;
+        if (menuRef.current?.contains(e.target as Node)) return;
+      }
+      setOpenKebab(null);
+    };
+    document.addEventListener('mousedown', handleClose);
+    document.addEventListener('keydown', handleClose);
+    return () => {
+      document.removeEventListener('mousedown', handleClose);
+      document.removeEventListener('keydown', handleClose);
+    };
+  }, [isOpen]);
 
   const menuItems = [
-    { label: 'Tải về', icon: '⬇', color: 'var(--info-500)', action: () => setOpenKebab(null) },
+    {
+      label: 'Tải về',
+      icon: (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+      ),
+      color: 'var(--text-primary)',
+      action: () => { onDownload(); setOpenKebab(null); },
+    },
     {
       label: 'Chỉnh sửa',
-      icon: '✏️',
-      color: 'var(--text-secondary)',
-      action: () => {
-        onEdit();
-        setOpenKebab(null);
-      },
+      icon: (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+        </svg>
+      ),
+      color: 'var(--text-primary)',
+      action: () => { onEdit(); setOpenKebab(null); },
     },
-    { label: 'Xóa', icon: '🗑️', color: 'var(--error-500)', action: () => setOpenKebab(null) },
+    {
+      label: 'Xóa',
+      icon: (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+        </svg>
+      ),
+      color: '#DC2626',
+      hoverBg: '#FEF2F2',
+      action: () => { onDelete(); },
+    },
   ];
 
   return (
-    <div className="relative inline-block" onClick={e => e.stopPropagation()}>
-      {/* Trigger button */}
+    <>
       <button
-        onClick={() => setOpenKebab(isOpen ? null : topicId)}
+        ref={btnRef}
+        onClick={handleToggle}
         className="w-8 h-8 rounded-lg border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
         aria-label="Tùy chọn"
       >
@@ -122,26 +161,37 @@ function KebabMenu({ topicId, openKebab, setOpenKebab, onEdit }: KebabMenuProps)
         </svg>
       </button>
 
-      {/* Dropdown */}
+      {/* Portal-style dropdown — fixed position to escape table overflow:hidden */}
       {isOpen && (
         <div
-          className="absolute right-0 z-[200] bg-white rounded-xl border border-[var(--border-default)] py-1.5 min-w-[160px]"
-          style={{ top: 'calc(100% + 4px)', boxShadow: '0 8px 32px rgba(0,0,0,0.14)' }}
+          ref={menuRef}
+          style={{
+            position: 'fixed',
+            top: menuPos.top,
+            right: menuPos.right,
+            zIndex: 9999,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.14)',
+          }}
+          className="bg-white rounded-xl border border-[var(--border-default)] py-1.5 min-w-[160px]"
         >
-          {menuItems.map(item => (
+          {menuItems.map((item, i) => (
             <button
               key={item.label}
               onClick={item.action}
-              className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-left hover:bg-[var(--surface-500)] transition-colors"
+              className={`flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-left transition-colors ${
+                i === menuItems.length - 1
+                  ? 'hover:bg-[#FEF2F2]'
+                  : 'hover:bg-[var(--surface-500)]'
+              }`}
               style={{ color: item.color }}
             >
-              <span className="text-[14px]">{item.icon}</span>
+              <span className="flex-shrink-0">{item.icon}</span>
               {item.label}
             </button>
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 }
 
@@ -151,7 +201,9 @@ interface AssistantTopicTableProps {
   topics: FlashcardTopic[];
   openKebab: number | null;
   setOpenKebab: (id: number | null) => void;
+  onDownloadTopic: (id: number) => void;
   onEditTopic: (topic: FlashcardTopic) => void;
+  onDeleteTopic: (id: number) => void;
 }
 
 const ROW_GRID = 'grid-cols-[2fr_1fr_1fr_64px]';
@@ -167,17 +219,19 @@ export function AssistantTopicTable({
   topics,
   openKebab,
   setOpenKebab,
+  onDownloadTopic,
   onEditTopic,
+  onDeleteTopic,
 }: AssistantTopicTableProps) {
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
 
   return (
     <div
-      className="bg-white rounded-[18px] border border-[var(--border-default)] overflow-hidden"
+      className="bg-white rounded-[18px] border border-[var(--border-default)]"
       style={{ boxShadow: 'var(--shadow-clay-sm)' }}
     >
       {/* Header row */}
-      <div className={`grid ${ROW_GRID} bg-[var(--surface-500)]`}>
+      <div className={`grid ${ROW_GRID} bg-[var(--surface-500)] rounded-t-[18px]`}>
         {HEADER_COLS.map((col, i) => (
           <div
             key={i}
@@ -215,12 +269,14 @@ export function AssistantTopicTable({
               {topic.created}
             </div>
             {/* Actions */}
-            <div className="px-5 py-3.5 flex justify-end relative">
+            <div className="px-5 py-3.5 flex justify-end">
               <KebabMenu
                 topicId={topic.id}
                 openKebab={openKebab}
                 setOpenKebab={setOpenKebab}
+                onDownload={() => onDownloadTopic(topic.id)}
                 onEdit={() => onEditTopic(topic)}
+                onDelete={() => onDeleteTopic(topic.id)}
               />
             </div>
           </div>

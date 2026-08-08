@@ -1,23 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import type { FlashcardTopic, FlashcardModalState, VocabularyWord } from '../../types/assistant/models';
 import { DEMO_FLASHCARD_TOPICS, DEMO_VOCABULARY_WORDS } from '../../types/assistant/mockData';
 import { AssistantSummaryChips, AssistantTopicTable } from '../../components/assistant/flashcard/AssistantFlashcardTable';
 import { AssistantCreateTopicModal } from '../../components/assistant/flashcard/AssistantCreateTopicModal';
 import { AssistantEditTopicModal } from '../../components/assistant/flashcard/AssistantEditTopicModal';
+import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
+import AssistantFeatureInDevPopup from '../../components/assistant/AssistantFeatureInDevPopup';
 
 export default function AssistantFlashcards() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // ─── Page-level state ───────────────────────────────────────────────────────
   const [topics, setTopics] = useState<FlashcardTopic[]>(DEMO_FLASHCARD_TOPICS);
-  const [modal, setModal] = useState<FlashcardModalState>(null);
+  const [modal, setModal] = useState<FlashcardModalState>(() =>
+    searchParams.get('create') === '1' ? 'create' : null
+  );
   const [openKebab, setOpenKebab] = useState<number | null>(null);
   const [editTopic, setEditTopic] = useState<FlashcardTopic | null>(null);
   const [editWords, setEditWords] = useState<VocabularyWord[]>(DEMO_VOCABULARY_WORDS);
+  const [deleteTopicId, setDeleteTopicId] = useState<number | null>(null);
+  const [showDevPopup, setShowDevPopup] = useState(false);
+
+  // Clear URL param after reading it once
+  useEffect(() => {
+    if (searchParams.get('create') === '1') {
+      setSearchParams({}, { replace: true });
+    }
+  }, []);
 
   // ─── Handlers ───────────────────────────────────────────────────────────────
   const handleOpenEdit = (topic: FlashcardTopic) => {
     setEditTopic(topic);
     setModal('edit');
     setOpenKebab(null);
+  };
+
+  const handleDeleteRequest = (id: number) => {
+    setDeleteTopicId(id);
+    setOpenKebab(null);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteTopicId !== null) {
+      setTopics(prev => prev.filter(t => t.id !== deleteTopicId));
+    }
+    setDeleteTopicId(null);
   };
 
   const handleCreate = (name: string, _fileName: string) => {
@@ -42,16 +70,18 @@ export default function AssistantFlashcards() {
     setModal(null);
   };
 
+  const deleteTopic = topics.find(t => t.id === deleteTopicId);
+
   return (
     /* Page container — click to close any open kebab */
     <div
-      className="px-8 py-7 lg:px-8 md:px-6 min-h-full"
+      className="w-full"
       onClick={() => setOpenKebab(null)}
     >
       {/* Page header */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <div>
-          <div className="font-[family-name:var(--font-heading)] font-black text-[22px] text-[var(--text-primary)] mb-1">
+          <div className="font-[family-name:var(--font-heading)] font-bold text-[22px] text-[var(--text-primary)] mb-1">
             Quản lý Flashcard
           </div>
           <div className="font-[family-name:var(--font-body)] text-[13px] text-[var(--neutral-500)]">
@@ -82,7 +112,9 @@ export default function AssistantFlashcards() {
         topics={topics}
         openKebab={openKebab}
         setOpenKebab={setOpenKebab}
+        onDownloadTopic={() => setShowDevPopup(true)}
         onEditTopic={handleOpenEdit}
+        onDeleteTopic={handleDeleteRequest}
       />
 
       {/* Modals */}
@@ -100,6 +132,21 @@ export default function AssistantFlashcards() {
           onClose={() => setModal(null)}
           onSave={handleSaveWords}
         />
+      )}
+
+      {deleteTopicId !== null && (
+        <AssistantConfirmPopup
+          title="Xóa chủ đề"
+          message={`Bạn có chắc muốn xóa chủ đề "${deleteTopic?.title ?? ''}"? Toàn bộ từ vựng trong chủ đề này sẽ bị xóa và không thể hoàn tác.`}
+          confirmLabel="Xóa"
+          variant="danger"
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setDeleteTopicId(null)}
+        />
+      )}
+
+      {showDevPopup && (
+        <AssistantFeatureInDevPopup onClose={() => setShowDevPopup(false)} />
       )}
     </div>
   );
