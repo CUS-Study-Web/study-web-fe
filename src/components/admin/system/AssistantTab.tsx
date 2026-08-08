@@ -112,7 +112,7 @@ export const AssistantTab = ({
                 {a.email} · {a.phone}
               </div>
               <div className="flex flex-wrap gap-x-[18px] gap-y-[4px] mt-[8px]">
-                {[{ label: "Khóa học", v: a.courses }, { label: "Đề thi", v: a.exams }, { label: "Học viên", v: a.students }].map((s) => (
+                {[{ label: "Đề thi", v: a.exams }, { label: "Học viên", v: a.students }].map((s) => (
                   <div key={s.label} className="flex gap-[5px] items-baseline">
                     <span className="[font-family:var(--font-heading)] font-bold text-[14px] text-[var(--brand-500)]">
                       {s.v}
