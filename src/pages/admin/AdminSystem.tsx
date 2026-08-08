@@ -198,7 +198,7 @@ const AdminSystem = () => {
       />
 
       {/* Tab panel */}
-      <div className="bg-white rounded-[18px] shadow-[var(--shadow-clay-sm)] border border-[rgba(220,233,222,0.5)] overflow-hidden">
+      <div className="bg-white rounded-[18px] shadow-[var(--shadow-clay-sm)] border border-[rgba(220,233,222,0.5)]">
         <SystemTabsNav
           activeTab={activeTab}
           onTabChange={setActiveTab}

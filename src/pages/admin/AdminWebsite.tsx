@@ -154,8 +154,8 @@ const AdminWebsite = () => {
 
   // Common styles
   const thClass = "px-5 py-[11px] [font-family:var(--font-heading)] font-bold text-xs text-[var(--text-secondary-300)] text-left uppercase tracking-[0.4px] whitespace-nowrap"
-  const tdCellClass = "px-5 py-3.5 [font-family:var(--font-body)] text-[13.5px] text-[var(--text-secondary-600)] vertical-middle align-middle"
-  const tdBoldClass = "px-5 py-3.5 [font-family:var(--font-heading)] font-semibold text-[13.5px] text-[var(--text-primary)] vertical-middle align-middle"
+  const tdCellClass = "px-5 py-3.5 [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-600)] align-middle"
+  const tdBoldClass = "px-5 py-3.5 [font-family:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] align-middle"
 
   return (
     <div className="max-w-[1280px] mx-auto pt-[8px] pb-[80px]">
@@ -169,7 +169,7 @@ const AdminWebsite = () => {
       </div>
 
       {/* Tab Panel */}
-      <div className="bg-white rounded-[18px] shadow-[var(--shadow-clay-sm)] border border-[rgba(220,233,222,0.5)] overflow-hidden">
+      <div className="bg-white rounded-[18px] shadow-[var(--shadow-clay-sm)] border border-[rgba(220,233,222,0.5)]">
         <WebsiteTabsNav activeTab={activeTab} onTabChange={handleTabChange} />
 
         <div className="p-7">
@@ -204,7 +204,8 @@ const AdminWebsite = () => {
 
           {/* Tab Tables */}
           {(activeTab === "courses" || activeTab === "instructors" || activeTab === "achievements" || activeTab === "reviews") && (
-          <div className="overflow-x-auto rounded-[var(--radius-md)] border border-[var(--border-300)]">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-300)] overflow-visible">
+            <div>
             {activeTab === "courses" && (
               <table className="w-full border-collapse">
                 <thead>
@@ -248,7 +249,7 @@ const AdminWebsite = () => {
                                   setShowModal("edit-course")
                                   setActiveDropdownId(null)
                                 }}
-                                className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                               >
                                 Sửa
                               </button>
@@ -257,7 +258,7 @@ const AdminWebsite = () => {
                                   handleDeleteCourse(c.id)
                                   setActiveDropdownId(null)
                                 }}
-                                className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                               >
                                 Xóa
                               </button>
@@ -320,7 +321,7 @@ const AdminWebsite = () => {
                                   setShowModal("edit-instructor")
                                   setActiveDropdownId(null)
                                 }}
-                                className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                               >
                                 Sửa
                               </button>
@@ -329,7 +330,7 @@ const AdminWebsite = () => {
                                   handleDeleteInstructor(inst.id)
                                   setActiveDropdownId(null)
                                 }}
-                                className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                               >
                                 Xóa
                               </button>
@@ -394,7 +395,7 @@ const AdminWebsite = () => {
                                   setShowModal("edit-achievement")
                                   setActiveDropdownId(null)
                                 }}
-                                className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                               >
                                 Sửa
                               </button>
@@ -403,7 +404,7 @@ const AdminWebsite = () => {
                                   handleDeleteAchievement(a.id)
                                   setActiveDropdownId(null)
                                 }}
-                                className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                               >
                                 Xóa
                               </button>
@@ -468,7 +469,7 @@ const AdminWebsite = () => {
                                   setShowModal("edit-review")
                                   setActiveDropdownId(null)
                                 }}
-                                className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                               >
                                 Sửa
                               </button>
@@ -477,7 +478,7 @@ const AdminWebsite = () => {
                                   handleDeleteReview(r.id)
                                   setActiveDropdownId(null)
                                 }}
-                                className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                               >
                                 Xóa
                               </button>
@@ -497,6 +498,7 @@ const AdminWebsite = () => {
                 </tbody>
               </table>
             )}
+            </div>
           </div>
           )}
         </div>
