@@ -1,12 +1,13 @@
 name: Study Web FE CD
 
 on:
-   workflow_run:
+  workflow_run:
     workflows: ["ReactJS CI Pipeline"]
     types:
       - completed
     branches:
       - main
+      - staging
 
 env:
   REGISTRY: ghcr.io
@@ -37,14 +38,35 @@ jobs:
       - name: Format image name to lowercase
         run: echo "IMAGE_NAME_LOWER=${IMAGE_NAME,,}" >> ${GITHUB_ENV}
 
-      - name: Build and push
+      # If staging branch: Build from Dockerfile and push to GHCR as staging and SHA
+      - name: Build and push (Staging)
+        if: ${{ github.event.workflow_run.head_branch == 'staging' }}
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:${{ github.event.workflow_run.head_sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:staging
+
+      # If main branch: Promote staging image to latest/production (Pull, tag, push)
+      - name: Promote image (Production)
+        if: ${{ github.event.workflow_run.head_branch == 'main' }}
+        run: |
+          IMAGE_BASE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}"
+          SHA="${{ github.event.workflow_run.head_sha }}"
+          
+          # Pull the staging image
+          docker pull ${IMAGE_BASE}:staging
+          
+          # Tag as latest and with the specific commit SHA
+          docker tag ${IMAGE_BASE}:staging ${IMAGE_BASE}:latest
+          docker tag ${IMAGE_BASE}:staging ${IMAGE_BASE}:${SHA}
+          
+          # Push the promoted tags
+          docker push ${IMAGE_BASE}:latest
+          docker push ${IMAGE_BASE}:${SHA}
+
   deploy:
     runs-on: self-hosted
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -58,6 +80,16 @@ jobs:
       - name: Deploy Locally on Self-Hosted
         env:
           IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
         run: |
           cd gitops-manifests
-          IMAGE_TAG=$IMAGE_TAG make fe
+          if [ "$BRANCH" = "main" ]; then
+            # Deploy production container on port 80 using make target
+            IMAGE_TAG=$IMAGE_TAG make fe-prod
+          elif [ "$BRANCH" = "staging" ]; then
+            # Deploy staging container on port 8080 using make target
+            make fe-staging
+          else
+            echo "Branch $BRANCH is not configured for deployment."
+            exit 1
+          fi
