@@ -78,6 +78,6 @@ export const ModalHeader = ({ title, onClose }: { title: string; onClose: () => 
   )
 }
 
-export const mLabel = "block [font-family:var(--font-heading)] font-bold text-[13px] text-[var(--text-primary)] mb-1.5"
-export const mInput = "w-full px-3.5 py-2.5 rounded-[var(--radius-sm)] border border-[var(--border-500)] [font-family:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none box-border focus:border-[var(--brand-500)]"
+export const mLabel = "block ![font-family:var(--font-heading)] !font-bold !text-[13px] !text-[var(--text-primary)] mb-1.5"
+export const mInput = "w-full px-3.5 py-2.5 rounded-[var(--radius-sm)] border border-[var(--border-500)] bg-white [font-family:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none box-border focus:border-[var(--brand-500)]"
 export const mSubmitBtnClass = "w-full py-3 rounded-[var(--radius-md)] border-none bg-[var(--brand-500)] !text-white ![font-family:var(--font-heading)] !font-bold !text-sm cursor-pointer mt-1.5 hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"

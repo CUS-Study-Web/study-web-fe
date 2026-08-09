@@ -86,11 +86,11 @@ export const StudentTab = ({
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div>
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-[var(--surface-500)]">
-              {["Email", "Khóa học chủ yếu", "Tiến độ", "Đ.TB", "Đăng nhập", "Thời lượng", "Trạng thái", ""].map((h) => (
+              {["Email", "Khóa học chủ yếu", "Tiến độ", "Đ.TB", "Đăng nhập", "Trạng thái", ""].map((h) => (
                 <th
                   key={h}
                   className="[font-family:var(--font-heading)] font-bold text-[11px] text-[var(--text-secondary-300)] p-[10px_12px] text-left uppercase tracking-[0.3px] whitespace-nowrap"
@@ -161,9 +161,6 @@ export const StudentTab = ({
                   <td className="p-[12px_12px] [font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-600)]">
                     {u.lastLogin}
                   </td>
-                  <td className="p-[12px_12px] [font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-600)]">
-                    {Math.round(u.progress * 0.6 + 10)} giờ
-                  </td>
                   <td className="p-[12px_12px]">
                     <span
                       className={`inline-block rounded-full px-[10px] py-[3px] [font-family:var(--font-heading)] font-semibold text-[11px] ${statusInfo.bg}`}
@@ -193,7 +190,7 @@ export const StudentTab = ({
                               setSelectedStudent(u)
                               setActiveDropdownRowId(null)
                             }}
-                            className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                            className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                           >
                             Chi tiết
                           </button>
@@ -203,7 +200,7 @@ export const StudentTab = ({
                                 onBlockToggle(u.id)
                                 setActiveDropdownRowId(null)
                               }}
-                              className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                              className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--warning-500)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                             >
                               Khóa
                             </button>
@@ -214,7 +211,7 @@ export const StudentTab = ({
                                 onBlockToggle(u.id)
                                 setActiveDropdownRowId(null)
                               }}
-                              className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                              className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--brand-base-500)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                             >
                               Mở khóa
                             </button>
@@ -225,7 +222,7 @@ export const StudentTab = ({
                                 onBanToggle(u.id)
                                 setActiveDropdownRowId(null)
                               }}
-                              className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                              className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                             >
                               Cấm
                             </button>

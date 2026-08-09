@@ -73,7 +73,7 @@ export const AchievementModal = ({ achievement, onSave, onClose }: AchievementMo
                 <div key={idx} className="flex items-center gap-2">
                   <input
                     className={`${mInput} flex-1`}
-                    placeholder="Ví dụ: Ngôn ngữ: 39"
+                    placeholder="Ví dụ: Ngôn ngữ — 39/40"
                     value={score}
                     onChange={(e) => setSubScores((prev) => prev.map((s, i) => i === idx ? e.target.value : s))}
                   />

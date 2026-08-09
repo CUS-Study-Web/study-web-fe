@@ -38,6 +38,7 @@ import AdminLayout from "../components/admin/AdminLayout";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import AdminSystem from "../pages/admin/AdminSystem";
 import AdminWebsite from "../pages/admin/AdminWebsite";
+import AdminAsstActivities from "../pages/admin/AdminAsstActivities";
 
 function AppLayout() {
   const location = useLocation();
@@ -142,6 +143,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.ADMIN.DASHBOARD} element={<AdminDashboard />} />
         <Route path={ROUTES.ADMIN.SYSTEM} element={<AdminSystem />} />
         <Route path={ROUTES.ADMIN.WEBSITE} element={<AdminWebsite />} />
+        <Route path={ROUTES.ADMIN.ACTIVITIES} element={<AdminAsstActivities />} />
       </Route>
 
       {/* Catch-all 404 Fallback Route */}

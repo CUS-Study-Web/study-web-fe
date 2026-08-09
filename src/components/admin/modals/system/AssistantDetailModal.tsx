@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../../../../utils/routes'
 import type { Assistant } from '../../../../types/admin'
 
 type AssistantDetailModalProps = {
@@ -7,6 +9,7 @@ type AssistantDetailModalProps = {
 }
 
 export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProps) => {
+  const navigate = useNavigate()
   const actLog = [
     { time: "Hôm nay, 10:42", text: "Đăng tải đề thi V-ACT mã đề 007" },
     { time: "Hôm qua, 14:20", text: "Tạo bài học mới: Tư duy logic nâng cao" },
@@ -42,9 +45,8 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
 
         <div className="px-7 py-[22px]">
           {/* Stats Grid */}
-          <div className="grid grid-cols-3 gap-3 mb-[22px]">
+          <div className="grid grid-cols-2 gap-3 mb-[22px]">
             {[
-              { label: "Khóa học", value: asst.courses },
               { label: "Đề thi đã tạo", value: asst.exams },
               { label: "Học viên phụ trách", value: asst.students },
             ].map((s) => (
@@ -65,7 +67,7 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
               Hoạt động gần đây
             </div>
             <button
-              onClick={() => alert("Tính năng đang được phát triển.")}
+              onClick={() => navigate(ROUTES.ADMIN.ACTIVITIES)}
               className="bg-transparent border-none cursor-pointer ![font-family:var(--font-heading)] !font-bold !text-[12px] !text-[var(--brand-500)] p-0 underline underline-offset-[3px]"
             >
               Xem tất cả
