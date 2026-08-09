@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import { COURSES_DATA } from "../../utils/coursesData";
 import type { Subject } from "../../types/course";
 import SubjectCard from "../../components/guest/SubjectCard";
@@ -9,6 +10,8 @@ import { ROUTES } from "../../utils/routes";
 export default function CourseDetailPage() {
   const { courseId } = useParams<{ courseId: string }>();
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
+  const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
 
   // Default to V-SAT if courseId not found
   const courseKey = (courseId && COURSES_DATA[courseId.toLowerCase()]) ? courseId.toLowerCase() : "v-sat";
@@ -21,10 +24,10 @@ export default function CourseDetailPage() {
         <div className="max-w-[1440px] mx-auto relative z-10">
           {/* Breadcrumb / Back Link */}
           <Link
-            to={ROUTES.COURSES}
+            to={isLoggedIn ? ROUTES.LEARNER.MY_COURSES : ROUTES.COURSES}
             className="inline-flex items-center gap-1.5 text-xs font-extrabold !text-[#beccbf] hover:!text-white mb-6 transition"
           >
-            <span>‹</span> Tất cả khóa học
+            <span>‹</span> {isLoggedIn ? "Khóa học của tôi" : "Tất cả khóa học"}
           </Link>
 
           <h1
@@ -60,17 +63,30 @@ export default function CourseDetailPage() {
 
         {/* 4-Column Subjects Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {course.subjects.map((sub) => (
-            <SubjectCard
-              key={sub.id}
-              title={sub.title}
-              duration={sub.duration}
-              lessons={sub.lessons}
-              cardHeaderBg={course.cardHeaderBg}
-              cardBtnColor={course.cardBtnColor}
-              onSelect={() => setSelectedSubject(sub)}
-            />
-          ))}
+          {course.subjects.map((sub, index) => {
+            // Dữ liệu mock tiến độ học cho các môn dựa vào index
+            const mockProgressArray = [70, 15, 15, 80, 53, 51, 69, 21];
+            const progress = isLoggedIn ? (mockProgressArray[index] || 0) : undefined;
+            
+            return (
+              <SubjectCard
+                key={sub.id}
+                title={sub.title}
+                duration={sub.duration}
+                lessons={sub.lessons}
+                cardHeaderBg={course.cardHeaderBg}
+                cardBtnColor={course.cardBtnColor}
+                progress={progress}
+                onSelect={() => {
+                  if (isLoggedIn) {
+                    navigate(ROUTES.LEARNER.SUBJECT_DETAIL(courseKey, sub.id));
+                  } else {
+                    setSelectedSubject(sub);
+                  }
+                }}
+              />
+            );
+          })}
         </div>
       </section>
 

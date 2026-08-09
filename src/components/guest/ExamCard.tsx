@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../utils/routes";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface ExamCardProps {
   id: number;
@@ -12,12 +13,24 @@ interface ExamCardProps {
   isVip: boolean;
 }
 
-export default function ExamCard({ subject, difficulty, title, time, questions, attempts, isVip }: ExamCardProps) {
+export default function ExamCard({ id, subject, difficulty, title, time, questions, attempts, isVip }: ExamCardProps) {
+  const { isLoggedIn, user } = useAuth();
+  const navigate = useNavigate();
+
+  const showVipLock = isVip && (!isLoggedIn || !user?.isVip);
+
+  const handleTakeExam = () => {
+    if (!isLoggedIn) {
+      navigate(ROUTES.AUTH.LOGIN);
+    } else {
+      navigate(ROUTES.LEARNER.TAKE_EXAM("trial", "trial", id));
+    }
+  };
   return (
     <div className="relative bg-[var(--neutral-0)] rounded-[var(--radius-xl)] p-6 shadow-md border border-[var(--border-300)] flex flex-col justify-between h-full hover:shadow-lg transition-shadow overflow-hidden group">
       
       {/* VIP Blur Overlay */}
-      {isVip && (
+      {showVipLock && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center bg-[var(--neutral-0)]/40 backdrop-blur-[2px]">
           <div className="w-14 h-14 bg-[var(--text-primary-800)] rounded-full flex items-center justify-center mb-2.5 shadow-lg">
             <svg className="w-6 h-6 text-[#ffc107] fill-current" viewBox="0 0 24 24">
@@ -39,8 +52,8 @@ export default function ExamCard({ subject, difficulty, title, time, questions, 
         </div>
       )}
 
-      {/* Main Card Content - Fully Blurred when isVip */}
-      <div className={isVip ? "filter blur-[6px] opacity-35 select-none pointer-events-none flex flex-col justify-between h-full" : "flex flex-col justify-between h-full"}>
+      {/* Main Card Content - Fully Blurred when showVipLock */}
+      <div className={showVipLock ? "filter blur-[6px] opacity-35 select-none pointer-events-none flex flex-col justify-between h-full" : "flex flex-col justify-between h-full"}>
         <div>
           {/* Tags Row */}
           <div className="flex justify-between items-center mb-5">
@@ -81,7 +94,10 @@ export default function ExamCard({ subject, difficulty, title, time, questions, 
             </div>
           </div>
           
-          <button className="w-full py-3 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-sm hover:shadow-md active:scale-95 transition-all text-sm cursor-pointer">
+          <button 
+            onClick={handleTakeExam}
+            className="w-full py-3 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-sm hover:shadow-md active:scale-95 transition-all text-sm cursor-pointer"
+          >
             Xem đề thi
           </button>
         </div>

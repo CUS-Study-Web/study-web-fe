@@ -1,5 +1,8 @@
 import GuestPageLayout from "../../components/guest/GuestPageLayout";
 import CourseCard from "../../components/guest/CourseCard";
+import { Link } from "react-router-dom";
+import { ROUTES } from "../../utils/routes";
+import { useAuth } from "../../contexts/AuthContext";
 
 const programsData = [
   {
@@ -50,11 +53,33 @@ const programsData = [
 ];
 
 export default function CoursesPage() {
+  const { isLoggedIn } = useAuth();
+
+  const myCoursesBtn = isLoggedIn ? (
+    <Link
+      to={ROUTES.LEARNER.MY_COURSES}
+      className="inline-flex items-center gap-2 mt-2 px-4 py-1.5 bg-white/15 hover:bg-white/25 border border-white/40 rounded-full !text-white text-sm font-bold backdrop-blur-md transition-all shadow-sm active:scale-95"
+      style={{ fontFamily: "var(--font-heading)" }}
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path 
+          d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+          stroke="#fff"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      Khóa học của tôi
+    </Link>
+  ) : undefined;
+
   return (
     <GuestPageLayout
       eyebrow="CHƯƠNG TRÌNH LUYỆN THI"
       title="Khóa học tại CUS"
       description="5 chương trình luyện thi được thiết kế chuyên biệt cho từng kỳ thi — lộ trình bài bản, lớp học tinh gọn và đội ngũ giảng viên tận tâm."
+      heroExtra={myCoursesBtn}
     >
       <section className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-8 xl:px-10 mt-12 md:mt-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
