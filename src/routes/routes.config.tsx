@@ -114,6 +114,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.LEARNER.MY_COURSES} element={<LearnerMyCoursesPage />} />
         <Route path={ROUTES.LEARNER.SUBJECT_DETAIL()} element={<LearnerSubjectDetailPage />} />
         <Route path={ROUTES.LEARNER.EXAM_START()} element={<LearnerExamStartPage />} />
+        <Route path={ROUTES.LEARNER.EXERCISE_START()} element={<LearnerExamStartPage />} />
       </Route>
 
       {/* Full-screen Learner Pages (No Footer) */}
@@ -125,6 +126,7 @@ export default function AppRoutes() {
         }
       >
         <Route path={ROUTES.LEARNER.TAKE_EXAM()} element={<LearnerTakeExamPage />} />
+        <Route path={ROUTES.LEARNER.TAKE_EXERCISE()} element={<LearnerTakeExamPage />} />
       </Route>
 
       {/* Full-screen Auth & System Pages */}

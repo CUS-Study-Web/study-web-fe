@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { ROUTES } from "../../utils/routes";
 import { LineChart } from "../../components/Charts";
 import AttemptHistoryItem from "../../components/learner/AttemptHistoryItem";
@@ -26,14 +26,16 @@ const ATTEMPT_HISTORY: AttemptRecord[] = [
 ];
 
 export default function LearnerExamStartPage() {
-  const { courseId, subjectId, examId } = useParams<{ courseId: string; subjectId: string; examId: string }>();
+  const { courseId, subjectId, examId, exerciseId } = useParams<{ courseId: string; subjectId: string; examId: string; exerciseId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isExercise = location.pathname.includes('/exercises/');
   
   // Mock Exam logic
   const exam: ExamData = {
-    title: "Đề thi thử THPT Quốc gia 2026",
+    title: isExercise ? "Bài tập thực hành" : "Đề thi thử THPT Quốc gia 2026",
     level: "Nâng cao",
-    duration: "90 phút",
+    duration: isExercise ? "--:--" : "90 phút",
     questions: 40,
     attempts: 1240,
   };
@@ -47,7 +49,11 @@ export default function LearnerExamStartPage() {
   const avgScore = (chartData.reduce((s, a) => s + a, 0) / chartData.length).toFixed(1);
 
   const handleTakeExam = () => {
-    navigate(ROUTES.LEARNER.TAKE_EXAM(courseId, subjectId, examId));
+    if (isExercise) {
+      navigate(ROUTES.LEARNER.TAKE_EXERCISE(courseId, subjectId, exerciseId));
+    } else {
+      navigate(ROUTES.LEARNER.TAKE_EXAM(courseId, subjectId, examId));
+    }
   };
 
   return (
@@ -59,14 +65,14 @@ export default function LearnerExamStartPage() {
             <span className="bg-white/15 !text-white font-[family:var(--font-heading)] font-semibold text-[11px] px-2.5 py-[3px] rounded-full">
               {subjectId?.replace("-", " ")?.toUpperCase() || "TOÁN HỌC"}
             </span>
-            <span className={`${exam.level === "Nâng cao" ? "bg-[#FAE0E0] text-[#C94B4B]" : "bg-[#FBF0DC] text-[#B7791F]"} font-[family:var(--font-heading)] font-semibold text-[11px] px-2.5 py-[3px] rounded-full`}>
+            <span className={`${exam.level === "Nâng cao" ? "bg-[#FAE0E0] text-[var(--error-500)]" : "bg-[#FBF0DC] text-[#B7791F]"} font-[family:var(--font-heading)] font-semibold text-[11px] px-2.5 py-[3px] rounded-full`}>
               {exam.level}
             </span>
           </div>
           <h1 className="font-[family:var(--font-heading)] font-bold text-4xl !text-white mb-3.5 tracking-tight leading-tight">
             {exam.title}
           </h1>
-          <p className="font-[family:var(--font-body)] text-[15px] !text-[#DCE9DE] opacity-75 mb-7 leading-relaxed">
+          <p className="font-[family:var(--font-body)] text-[15px] !text-[var(--brand-soft-500)] opacity-75 mb-7 leading-relaxed">
             Hoàn thành đề thi trong thời gian quy định. Kết quả và lời giải chi tiết sẽ hiển thị ngay sau khi nộp bài.
           </p>
           <div className="flex justify-center gap-6 mb-8 flex-wrap">
@@ -84,7 +90,7 @@ export default function LearnerExamStartPage() {
           </div>
           <button 
             onClick={handleTakeExam} 
-            className="font-[family:var(--font-heading)] font-bold text-lg px-12 py-[18px] rounded-[16px] border-none bg-[#2C5A31] !text-white cursor-pointer transition-all duration-150 ease-out inline-block hover:-translate-y-0.5 hover:bg-[#234A28] shadow-[0_8px_32px_rgba(44,90,49,0.5)]"
+            className="font-[family:var(--font-heading)] font-bold text-lg px-12 py-[18px] rounded-[16px] border-none bg-[var(--brand-base-500)] !text-white cursor-pointer transition-all duration-150 ease-out inline-block hover:-translate-y-0.5 hover:bg-[#234A28] shadow-[0_8px_32px_rgba(44,90,49,0.5)]"
           >
             Bắt đầu làm bài
           </button>
@@ -121,7 +127,7 @@ export default function LearnerExamStartPage() {
           </div>
           <div className="grid grid-cols-3 gap-0 border-b border-[#EEF3EE]">
             {[
-              { label: "Điểm cao nhất", value: bestScore, color: "text-[#2C5A31]" }, 
+              { label: "Điểm cao nhất", value: bestScore, color: "text-[var(--brand-base-500)]" }, 
               { label: "Điểm trung bình", value: avgScore, color: "text-[#2F6FAE]" }, 
               { label: "Số lần thi", value: ATTEMPT_HISTORY.length, color: "text-[#B7791F]" }
             ].map(({ label, value, color }, i) => (

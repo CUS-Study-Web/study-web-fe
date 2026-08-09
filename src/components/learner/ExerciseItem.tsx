@@ -1,3 +1,6 @@
+import { Link, useParams } from "react-router-dom";
+import { ROUTES } from "../../utils/routes";
+
 type Exercise = {
   id: number;
   title: string;
@@ -11,15 +14,17 @@ type ExerciseItemProps = {
 };
 
 export default function ExerciseItem({ exercise, isLast }: ExerciseItemProps) {
+  const { courseId, subjectId } = useParams<{ courseId: string; subjectId: string }>();
+
   return (
     <div
       className={`hover:bg-[#FAFCFA] flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors px-5.5 py-4.5 ${
-        !isLast ? "border-b border-[#F4F7F4]" : "border-none"
+        !isLast ? "border-b border-[var(--surface-500)]" : "border-none"
       }`}
     >
       <div className="flex items-center gap-4 flex-1">
         {/* Icon Left */}
-        <div className="w-[42px] h-[42px] rounded-xl bg-[#DCE9DE] flex items-center justify-center shrink-0">
+        <div className="w-[42px] h-[42px] rounded-xl bg-[var(--brand-soft-500)] flex items-center justify-center shrink-0">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="rgba(44,90,49,0.8)" />
             <polyline points="14,2 14,8 20,8" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" />
@@ -37,9 +42,12 @@ export default function ExerciseItem({ exercise, isLast }: ExerciseItemProps) {
       </div>
       {/* Action Right */}
       <div className="mt-3 md:mt-0 self-start md:self-auto shrink-0">
-        <button className="transition-all cursor-pointer whitespace-nowrap hover:bg-[#2C5A31] hover:!text-white font-[family:var(--font-heading)] font-bold text-xs px-4.5 py-2 rounded-full border-[1.5px] border-[#2C5A31] bg-white text-[#2C5A31]">
-          ⬇ Tải về
-        </button>
+        <Link 
+          to={ROUTES.LEARNER.EXERCISE_START(courseId, subjectId, String(exercise.id))}
+          className="inline-flex transition-all cursor-pointer whitespace-nowrap hover:bg-[var(--brand-base-700)] font-[family:var(--font-heading)] font-bold text-xs px-4.5 py-2 rounded-full border-none bg-[var(--brand-base-500)] !text-white"
+        >
+          Bắt đầu làm bài →
+        </Link>
       </div>
     </div>
   );
