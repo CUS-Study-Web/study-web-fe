@@ -190,7 +190,7 @@ export default function AssistantMaterials() {
     if (searchParams.get('upload') === '1') {
       setSearchParams({}, { replace: true });
     }
-  }, []);
+  }, [searchParams, setSearchParams]);
 
   const filtered = docs.filter(d => {
     if (d.cat !== activeTab) return false;

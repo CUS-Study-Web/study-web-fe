@@ -110,7 +110,7 @@ function KebabMenu({ topicId, openKebab, setOpenKebab, onDownload, onEdit, onDel
       document.removeEventListener('mousedown', handleClose);
       document.removeEventListener('keydown', handleClose);
     };
-  }, [isOpen]);
+  }, [isOpen, setOpenKebab]);
 
   const menuItems = [
     {

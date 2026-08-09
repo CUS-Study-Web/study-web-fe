@@ -27,7 +27,7 @@ export default function AssistantFlashcards() {
     if (searchParams.get('create') === '1') {
       setSearchParams({}, { replace: true });
     }
-  }, []);
+  }, [searchParams, setSearchParams]);
 
   // ─── Handlers ───────────────────────────────────────────────────────────────
   const handleOpenEdit = (topic: FlashcardTopic) => {
