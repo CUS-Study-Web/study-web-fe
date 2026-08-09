@@ -106,3 +106,67 @@ export interface AssistantStudent {
   examsCompleted?: number;
   averageScore?: number;
 }
+
+export interface Course {
+  key: string;
+  name: string;
+  tag: string;
+  accentColor: string;
+  subjectCount: number;
+  examCount: number;
+}
+
+export interface CourseExam {
+  id: number;
+  title: string;
+  courseKey: string;
+  questions: number;
+  duration: string;
+  date: string;
+  status: 'published' | 'draft';
+}
+
+export interface SubjectLecture {
+  id: number;
+  title: string;
+  link: string;
+}
+
+export interface SubjectExercise {
+  id: number;
+  title: string;
+  subject: string;
+  questions: number;
+  fileType: string;
+  solutionLink?: string;
+}
+
+export interface SubjectTopic {
+  id: number;
+  name: string;
+  lectures: SubjectLecture[];
+  exercises: SubjectExercise[];
+}
+
+// --- Flashcard types ---
+
+export type TopicStatus = 'Đang dùng' | 'Nháp';
+
+export interface FlashcardTopic {
+  id: number;
+  title: string;
+  words: number;
+  created: string; // "DD/MM/YYYY"
+  status: TopicStatus;
+}
+
+export interface VocabularyWord {
+  id: number;
+  en: string;
+  phonetic: string;
+  type: string; // "Noun", "Adjective", "Verb", etc.
+  vi: string;
+  ex: string;
+}
+
+export type FlashcardModalState = null | 'create' | 'edit';

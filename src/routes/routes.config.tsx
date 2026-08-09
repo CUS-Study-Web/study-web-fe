@@ -30,8 +30,13 @@ import LearnerDashboard from "../pages/learner/LearnerDashboard";
 import AssistantLayout from "../components/assistant/AssistantLayout";
 import AssistantDashboard from "../pages/assistant/AssistantDashboard";
 import AssistantCourses from "../pages/assistant/AssistantCourses";
+import AssistantCourseDetail from "../pages/assistant/AssistantCourseDetail";
+import AssistantSubjectDetail from "../pages/assistant/AssistantSubjectDetail";
+import AssistantUploadExam from "../pages/assistant/AssistantUploadExam";
+import AssistantEditExam from "../pages/assistant/AssistantEditExam";
 import AssistantMaterials from "../pages/assistant/AssistantMaterials";
 import AssistantStudents from "../pages/assistant/AssistantStudents";
+import AssistantFlashcards from "../pages/assistant/AssistantFlashcards";
 
 // Admin Components & Pages
 import AdminLayout from "../components/admin/AdminLayout";
@@ -127,8 +132,13 @@ export default function AppRoutes() {
         <Route path={ROUTES.ASSISTANT.ROOT} element={<Navigate to={ROUTES.ASSISTANT.DASHBOARD} replace />} />
         <Route path={ROUTES.ASSISTANT.DASHBOARD} element={<AssistantDashboard />} />
         <Route path={ROUTES.ASSISTANT.COURSES} element={<AssistantCourses />} />
+        <Route path={ROUTES.ASSISTANT.COURSE_DETAIL()} element={<AssistantCourseDetail />} />
+        <Route path={ROUTES.ASSISTANT.COURSE_UPLOAD_EXAM()} element={<AssistantUploadExam />} />
+        <Route path={ROUTES.ASSISTANT.COURSE_EDIT_EXAM()} element={<AssistantEditExam />} />
+        <Route path={ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL()} element={<AssistantSubjectDetail />} />
         <Route path={ROUTES.ASSISTANT.MATERIALS} element={<AssistantMaterials />} />
         <Route path={ROUTES.ASSISTANT.STUDENTS} element={<AssistantStudents />} />
+        <Route path={ROUTES.ASSISTANT.FLASHCARDS} element={<AssistantFlashcards />} />
       </Route>
 
       {/* Admin Protected Routes */}

@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import type { AssistantDocument } from '../../../types/assistant/models';
+import AssistantFeatureInDevPopup from '../AssistantFeatureInDevPopup';
 
 interface AssistantViewMaterialPopupProps {
   material: AssistantDocument | null;
@@ -6,6 +8,8 @@ interface AssistantViewMaterialPopupProps {
 }
 
 export default function AssistantViewMaterialPopup({ material, onClose }: AssistantViewMaterialPopupProps) {
+  const [showDevPopup, setShowDevPopup] = useState(false);
+
   if (!material) return null;
 
   return (
@@ -47,12 +51,17 @@ export default function AssistantViewMaterialPopup({ material, onClose }: Assist
             Thoát
           </div>
           <div
+            onClick={() => setShowDevPopup(true)}
             className="flex-[2] p-3 flex items-center justify-center rounded-[var(--radius-md)] border-none bg-[var(--brand-500)] text-[var(--text-inverse)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--brand-600)]"
           >
             Tải về
           </div>
         </div>
       </div>
+      
+      {showDevPopup && (
+        <AssistantFeatureInDevPopup onClose={() => setShowDevPopup(false)} />
+      )}
     </div>
   );
 }

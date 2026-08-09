@@ -6,8 +6,14 @@ import type {
   AssistantStatCard,
   AssistantActivity,
   AssistantDocument,
-  AssistantStudent
+  AssistantStudent,
+  Course,
+  CourseExam,
+  SubjectTopic,
+  FlashcardTopic,
+  VocabularyWord,
 } from './models';
+
 
 export const ASST_STAT_CARDS: AssistantStatCard[] = [
   {
@@ -421,4 +427,149 @@ export const DEMO_STUDENTS_ASST: AssistantStudent[] = [
     examsCompleted: 4,
     averageScore: 7.0
   }
+];
+
+export const DEMO_COURSES: Course[] = [
+  { key: 'V-SAT', name: 'V-SAT', tag: 'Khảo thí QG', accentColor: '#2A4A2E', subjectCount: 8, examCount: 1 },
+  { key: 'V-ACT', name: 'V-ACT', tag: 'ĐGNL TP.HCM', accentColor: '#2A4A2E', subjectCount: 8, examCount: 2 },
+  { key: 'HSA', name: 'HSA', tag: 'ĐGNL HN', accentColor: '#2A4A2E', subjectCount: 8, examCount: 1 },
+  { key: 'HSCA', name: 'HSCA', tag: 'ĐH Sư phạm', accentColor: '#2A4A2E', subjectCount: 6, examCount: 1 },
+  { key: 'THPT-QG', name: 'THPT QG', tag: 'Bộ GD&ĐT', accentColor: '#2A4A2E', subjectCount: 6, examCount: 1 },
+];
+
+export const DEMO_COURSE_SUBJECTS: Record<string, string[]> = {
+  'V-SAT': ['Toán', 'Vật lý', 'Hóa học', 'Sinh học', 'Lịch sử', 'Địa lý', 'Tiếng Anh', 'Ngữ văn'],
+  'V-ACT': ['Toán', 'Vật lý', 'Hóa học', 'Sinh học', 'Lịch sử', 'Địa lý', 'Tiếng Anh', 'Ngữ văn'],
+  'HSA': ['Toán', 'Vật lý', 'Hóa học', 'Sinh học', 'Lịch sử', 'Địa lý', 'Tiếng Anh', 'Ngữ văn'],
+  'HSCA': ['Toán', 'Vật lý', 'Hóa học', 'Sinh học', 'Tiếng Anh', 'Ngữ văn'],
+  'THPT-QG': ['Toán', 'Vật lý', 'Hóa học', 'Sinh học', 'Tiếng Anh', 'Ngữ văn'],
+};
+
+export const DEMO_SUBJECT_META_V2: Record<string, { topics: number; lectures: number; exercises: number }> = {
+  'Toán': { topics: 8, lectures: 32, exercises: 96 },
+  'Vật lý': { topics: 6, lectures: 24, exercises: 48 },
+  'Hóa học': { topics: 7, lectures: 28, exercises: 84 },
+  'Sinh học': { topics: 6, lectures: 24, exercises: 60 },
+  'Lịch sử': { topics: 4, lectures: 16, exercises: 32 },
+  'Địa lý': { topics: 4, lectures: 16, exercises: 32 },
+  'Tiếng Anh': { topics: 10, lectures: 40, exercises: 120 },
+  'Ngữ văn': { topics: 5, lectures: 20, exercises: 40 },
+};
+
+export const DEMO_COURSE_EXAMS: Record<string, CourseExam[]> = {
+  'V-SAT': [
+    { id: 1, title: 'Đề thi thử V-SAT Toán – Đề 01', courseKey: 'V-SAT', questions: 43, duration: '75 phút', date: '15/06/2024', status: 'published' },
+  ],
+  'V-ACT': [
+    { id: 2, title: 'Đề thi thử V-ACT – Đề 01/2024', courseKey: 'V-ACT', questions: 50, duration: '90 phút', date: '12/07/2024', status: 'published' },
+    { id: 3, title: 'Đề thi thử V-ACT – Đề 02/2024', courseKey: 'V-ACT', questions: 50, duration: '90 phút', date: '20/07/2024', status: 'draft' },
+  ],
+  'HSA': [
+    { id: 4, title: 'Đề thi thử HSA – Đề 01/2024', courseKey: 'HSA', questions: 60, duration: '120 phút', date: '18/07/2024', status: 'published' },
+  ],
+  'HSCA': [
+    { id: 5, title: 'Đề thi thử HSCA – Đề 01/2024', courseKey: 'HSCA', questions: 40, duration: '60 phút', date: '20/07/2024', status: 'published' },
+  ],
+  'THPT-QG': [
+    { id: 6, title: 'Đề thi thử THPT QG – Môn Toán Đề 01', courseKey: 'THPT-QG', questions: 50, duration: '90 phút', date: '22/07/2024', status: 'published' },
+  ],
+};
+
+export const DEMO_SUBJECT_TOPICS: Record<string, SubjectTopic[]> = {
+  'Toán': [
+    {
+      id: 1, name: 'Chuyên đề 1: Đại số',
+      lectures: [
+        { id: 1, title: 'Đại số tuyến tính – Buổi 1. Ma trận và định thức', link: 'https://youtu.be/abc123' },
+        { id: 101, title: 'Đại số tuyến tính – Buổi 2. Không gian vector', link: 'https://youtu.be/abc124' },
+        { id: 102, title: 'Đại số tuyến tính – Buổi 3. Ánh xạ tuyến tính', link: 'https://youtu.be/abc125' },
+      ],
+      exercises: [
+        { id: 1, title: 'Bài tập Đại số – Hệ phương trình tuyến tính', subject: 'Toán', questions: 20, fileType: 'PDF', solutionLink: 'https://example.com/sol1' },
+        { id: 101, title: 'Bài tập Đại số – Ma trận nghịch đảo', subject: 'Toán', questions: 15, fileType: 'DOCX' },
+        { id: 102, title: 'Bài tập Đại số – Đa thức đặc trưng', subject: 'Toán', questions: 25, fileType: 'PDF', solutionLink: 'https://example.com/sol3' },
+      ],
+    },
+    {
+      id: 2, name: 'Chuyên đề 2: Giải tích',
+      lectures: [
+        { id: 2, title: 'Giải tích – Đạo hàm và vi phân', link: 'https://youtu.be/def456' },
+      ],
+      exercises: [
+        { id: 2, title: 'Bài tập Giải tích – Tích phân bất định', subject: 'Toán', questions: 15, fileType: 'DOCX' },
+      ],
+    },
+    {
+      id: 3, name: 'Chuyên đề 3: Tổ hợp',
+      lectures: [
+        { id: 3, title: 'Tổ hợp – Hoán vị và chỉnh hợp', link: 'https://youtu.be/ghi789' },
+      ],
+      exercises: [
+        { id: 3, title: 'Bài tập Tổ hợp – Xác suất cơ bản', subject: 'Toán', questions: 18, fileType: 'PDF' },
+      ],
+    },
+    {
+      id: 4, name: 'Chuyên đề 4: Hình học',
+      lectures: [
+        { id: 4, title: 'Hình học không gian – Mặt cầu và mặt trụ', link: 'https://youtu.be/jkl012' },
+      ],
+      exercises: [
+        { id: 4, title: 'Bài tập Hình học – Tọa độ không gian', subject: 'Toán', questions: 22, fileType: 'PDF' },
+      ],
+    },
+  ],
+  'Vật lý': [
+    {
+      id: 1, name: 'Chuyên đề 1: Cơ học',
+      lectures: [
+        { id: 1, title: 'Cơ học – Định luật Newton', link: 'https://youtu.be/vl001' },
+      ],
+      exercises: [
+        { id: 1, title: 'Bài tập Cơ học – Động lực học', subject: 'Vật lý', questions: 15, fileType: 'PDF' },
+      ],
+    },
+    {
+      id: 2, name: 'Chuyên đề 2: Điện học',
+      lectures: [
+        { id: 2, title: 'Điện học – Định luật Ohm và mạch điện', link: 'https://youtu.be/vl002' },
+      ],
+      exercises: [
+        { id: 2, title: 'Bài tập Điện học – Mạch RLC', subject: 'Vật lý', questions: 12, fileType: 'DOCX' },
+      ],
+    },
+  ],
+};
+
+// --- Flashcard mock data ---
+
+export const DEMO_FLASHCARD_TOPICS: FlashcardTopic[] = [
+  { id: 1, title: 'Từ vựng cốt lõi ĐGNL', words: 50, created: '10/01/2025', status: 'Đang dùng' },
+  { id: 2, title: 'Động từ bất quy tắc', words: 80, created: '15/02/2025', status: 'Đang dùng' },
+  { id: 3, title: 'Thành ngữ tiếng Anh', words: 60, created: '22/03/2025', status: 'Nháp' },
+  { id: 4, title: 'Từ vựng học thuật (Academic)', words: 120, created: '05/04/2025', status: 'Đang dùng' },
+  { id: 5, title: 'Từ vựng V-ACT', words: 40, created: '18/05/2025', status: 'Nháp' },
+];
+
+export const DEMO_VOCABULARY_WORDS: VocabularyWord[] = [
+  { id: 1, en: 'Perseverance', phonetic: '/ˌpɜː.sɪˈvɪər.əns/', type: 'Noun', vi: 'Sự kiên trì, bền bỉ', ex: 'Perseverance is key to success.' },
+  { id: 2, en: 'Ambiguous', phonetic: '/æmˈbɪɡ.ju.əs/', type: 'Adjective', vi: 'Mơ hồ, không rõ ràng', ex: 'The instructions were ambiguous.' },
+  { id: 3, en: 'Eloquent', phonetic: '/ˈel.ə.kwənt/', type: 'Adjective', vi: 'Hùng hồn, lưu loát', ex: 'She gave an eloquent speech.' },
+  { id: 4, en: 'Diligent', phonetic: '/ˈdɪl.ɪ.dʒənt/', type: 'Adjective', vi: 'Chăm chỉ, cần cù', ex: 'He is a diligent student.' },
+  { id: 5, en: 'Phenomenon', phonetic: '/fɪˈnɒm.ɪ.nən/', type: 'Noun', vi: 'Hiện tượng', ex: 'The northern lights are a natural phenomenon.' },
+  { id: 6, en: 'Resilient', phonetic: '/rɪˈzɪl.i.ənt/', type: 'Adjective', vi: 'Kiên cường, dẻ dai', ex: 'Children are resilient and adaptable.' },
+  { id: 7, en: 'Meticulous', phonetic: '/məˈtɪk.ju.ləs/', type: 'Adjective', vi: 'Tỷ mỉ, cẩn thận', ex: 'She was meticulous in her work.' },
+  { id: 8, en: 'Perseverance', phonetic: '/ˌpɜː.sɪˈvɪər.əns/', type: 'Noun', vi: 'Sự kiên trì, bền bỉ', ex: 'Perseverance is key to success.' },
+  { id: 9, en: 'Ambiguous', phonetic: '/æmˈbɪɡ.ju.əs/', type: 'Adjective', vi: 'Mơ hồ, không rõ ràng', ex: 'The instructions were ambiguous.' },
+  { id: 10, en: 'Eloquent', phonetic: '/ˈel.ə.kwənt/', type: 'Adjective', vi: 'Hùng hồn, lưu loát', ex: 'She gave an eloquent speech.' },
+  { id: 11, en: 'Diligent', phonetic: '/ˈdɪl.ɪ.dʒənt/', type: 'Adjective', vi: 'Chăm chỉ, cần cù', ex: 'He is a diligent student.' },
+  { id: 12, en: 'Phenomenon', phonetic: '/fɪˈnɒm.ɪ.nən/', type: 'Noun', vi: 'Hiện tượng', ex: 'The northern lights are a natural phenomenon.' },
+  { id: 13, en: 'Resilient', phonetic: '/rɪˈzɪl.i.ənt/', type: 'Adjective', vi: 'Kiên cường, dẻ dai', ex: 'Children are resilient and adaptable.' },
+  { id: 14, en: 'Meticulous', phonetic: '/məˈtɪk.ju.ləs/', type: 'Adjective', vi: 'Tỷ mỉ, cẩn thận', ex: 'She was meticulous in her work.' },
+  { id: 15, en: 'Perseverance', phonetic: '/ˌpɜː.sɪˈvɪər.əns/', type: 'Noun', vi: 'Sự kiên trì, bền bỉ', ex: 'Perseverance is key to success.' },
+  { id: 16, en: 'Ambiguous', phonetic: '/æmˈbɪɡ.ju.əs/', type: 'Adjective', vi: 'Mơ hồ, không rõ ràng', ex: 'The instructions were ambiguous.' },
+  { id: 17, en: 'Eloquent', phonetic: '/ˈel.ə.kwənt/', type: 'Adjective', vi: 'Hùng hồn, lưu loát', ex: 'She gave an eloquent speech.' },
+  { id: 18, en: 'Diligent', phonetic: '/ˈdɪl.ɪ.dʒənt/', type: 'Adjective', vi: 'Chăm chỉ, cần cù', ex: 'He is a diligent student.' },
+  { id: 19, en: 'Phenomenon', phonetic: '/fɪˈnɒm.ɪ.nən/', type: 'Noun', vi: 'Hiện tượng', ex: 'The northern lights are a natural phenomenon.' },
+  { id: 20, en: 'Resilient', phonetic: '/rɪˈzɪl.i.ənt/', type: 'Adjective', vi: 'Kiên cường, dẻ dai', ex: 'Children are resilient and adaptable.' },
+  { id: 21, en: 'Meticulous', phonetic: '/məˈtɪk.ju.ləs/', type: 'Adjective', vi: 'Tỷ mỉ, cẩn thận', ex: 'She was meticulous in her work.' },
 ];
