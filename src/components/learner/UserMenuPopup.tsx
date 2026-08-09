@@ -36,7 +36,7 @@ export default function UserMenuPopup() {
       {/* Avatar Button */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="rounded-full flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-[#28522d]/30 active:scale-95 transition-all duration-150 shadow-sm border-none p-0 bg-transparent"
+        className="rounded-full flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-[var(--brand-base-600)]/30 active:scale-95 transition-all duration-150 shadow-sm border-none p-0 bg-transparent"
         aria-label="Mở menu người dùng"
       >
         <Avatar size="sm" />
@@ -53,7 +53,7 @@ export default function UserMenuPopup() {
           height="10"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#28522d"
+          stroke="var(--brand-base-600)"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"

@@ -14,16 +14,16 @@ type AttemptHistoryItemProps = {
 
 export default function AttemptHistoryItem({ attempt, index, totalAttempts, isLast }: AttemptHistoryItemProps) {
   const statusColor = (s: string) => 
-    s === "Giỏi" ? { bg: "bg-[#DCE9DE]", text: "text-[#2C5A31]" } 
+    s === "Giỏi" ? { bg: "bg-[var(--brand-soft-500)]", text: "text-[var(--brand-base-500)]" } 
     : s === "Tốt" ? { bg: "bg-[#DDEAF8]", text: "text-[#2F6FAE]" } 
     : s === "Khá" ? { bg: "bg-[#FBF0DC]", text: "text-[#B7791F]" } 
-    : { bg: "bg-[#F4F7F4]", text: "text-[#6B746D]" };
+    : { bg: "bg-[var(--surface-500)]", text: "text-[#6B746D]" };
 
   const sc = statusColor(attempt.status);
   
   return (
-    <div className={`flex items-center gap-3 px-5.5 py-3.5 ${!isLast ? "border-b border-[#F4F7F4]" : "border-none"}`}>
-      <div className="w-9 h-9 rounded-[10px] bg-[#F4F7F4] flex items-center justify-center shrink-0">
+    <div className={`flex items-center gap-3 px-5.5 py-3.5 ${!isLast ? "border-b border-[var(--surface-500)]" : "border-none"}`}>
+      <div className="w-9 h-9 rounded-[10px] bg-[var(--surface-500)] flex items-center justify-center shrink-0">
         <span className="font-[family:var(--font-heading)] font-bold text-xs text-[#6B746D]">
           #{totalAttempts - index}
         </span>

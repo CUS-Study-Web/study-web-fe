@@ -74,7 +74,7 @@ export default function LearnerSubjectDetailPage() {
               {/* CỘT TRÁI */}
               <div>
                 <div className="inline-flex rounded-full bg-white/20 border border-white/30 px-3 py-1 mb-2.5">
-                  <span className="font-[family:var(--font-heading)] font-bold text-[11px] text-[#DCE9DE] tracking-[0.3px]">Chi tiết môn học</span>
+                  <span className="font-[family:var(--font-heading)] font-bold text-[11px] text-[var(--brand-soft-500)] tracking-[0.3px]">Chi tiết môn học</span>
                 </div>
                 <h1 className="font-[family:var(--font-heading)] font-extrabold text-4xl !text-white m-0 tracking-tight">
                   {subject.title}
@@ -84,7 +84,7 @@ export default function LearnerSubjectDetailPage() {
               {/* CỘT PHẢI */}
               <div className="shrink-0 min-w-[200px]">
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="font-[family:var(--font-heading)] font-semibold text-xs text-[#DCE9DE]/85">Tiến độ học</span>
+                  <span className="font-[family:var(--font-heading)] font-semibold text-xs text-[var(--brand-soft-500)]/85">Tiến độ học</span>
                   <span className="font-[family:var(--font-heading)] font-bold text-xs text-[#A8D5A2]">38%</span>
                 </div>
                 <ProgressBar
@@ -93,7 +93,7 @@ export default function LearnerSubjectDetailPage() {
                   bgClass="bg-white/20"
                   fillStyle={{ background: "linear-gradient(90deg, #5EA85A, #A8D5A2)" }}
                 />
-                <div className="font-[family:var(--font-body)] text-[11px] text-[#DCE9DE]/70 mt-1.5">
+                <div className="font-[family:var(--font-body)] text-[11px] text-[var(--brand-soft-500)]/70 mt-1.5">
                   2/8 bài học hoàn thành
                 </div>
               </div>
@@ -107,19 +107,19 @@ export default function LearnerSubjectDetailPage() {
         <div className="mx-auto flex gap-1 overflow-x-auto hide-scrollbar w-full max-w-[1160px] py-2">
           <button
             onClick={() => setActiveTab("lessons")}
-            className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "lessons" ? "bg-[#2C5A31] !text-white" : "bg-transparent text-[#6B746D]"}`}
+            className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "lessons" ? "bg-[var(--brand-base-500)] !text-white" : "bg-transparent text-[#6B746D]"}`}
           >
             📖 Bài giảng ({MOCK_LESSONS.length})
           </button>
           <button
             onClick={() => setActiveTab("exercises")}
-            className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "exercises" ? "bg-[#2C5A31] !text-white" : "bg-transparent text-[#6B746D]"}`}
+            className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "exercises" ? "bg-[var(--brand-base-500)] !text-white" : "bg-transparent text-[#6B746D]"}`}
           >
             📎 Bài tập ({MOCK_EXERCISES.length})
           </button>
           <button
             onClick={() => setActiveTab("exams")}
-            className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "exams" ? "bg-[#2C5A31] !text-white" : "bg-transparent text-[#6B746D]"}`}
+            className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "exams" ? "bg-[var(--brand-base-500)] !text-white" : "bg-transparent text-[#6B746D]"}`}
           >
             📝 Đề thi ({MOCK_EXAMS.length})
           </button>

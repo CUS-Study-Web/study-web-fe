@@ -5,7 +5,7 @@ export default function LearnerDashboard() {
   return (
     <div className="space-y-8">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-br from-[#18321b] via-[#28522d] to-[#122615] rounded-[var(--radius-xl)] p-8 sm:p-10 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#18321b] via-[var(--brand-base-600)] to-[#122615] rounded-[var(--radius-xl)] p-8 sm:p-10 text-white shadow-lg relative overflow-hidden">
         <div className="relative z-10 max-w-2xl">
           <div className="inline-block px-3 py-1 bg-[#ffc107] text-[#1f1f1c] text-xs font-black rounded-full uppercase tracking-wider mb-4">
             ✦ Dành cho Học viên
@@ -16,7 +16,7 @@ export default function LearnerDashboard() {
           >
             Chào mừng bạn trở lại, Học viên CUS!
           </h1>
-          <p className="text-sm sm:text-base text-[#beccbf] font-medium leading-relaxed">
+          <p className="text-sm sm:text-base text-[var(--brand-base-100)] font-medium leading-relaxed">
             Đây là trang tổng quan cá nhân hóa dành cho học viên. Bạn có thể theo dõi tiến độ học tập, làm bài thi thử và truy cập thư viện tài liệu.
           </p>
         </div>

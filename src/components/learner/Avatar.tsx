@@ -9,7 +9,7 @@ export default function Avatar({ size = "sm", showEdit, className = "" }: Avatar
   const containerSize = isLg ? "w-20 h-20" : "w-10 h-10";
   const iconSize = isLg ? "40" : "20";
   const borderClass = isLg ? "border-2 border-[#3c6d42]" : "";
-  const bgClass = isLg ? "bg-[#254d2d]" : "bg-[#28522d]";
+  const bgClass = isLg ? "bg-[#254d2d]" : "bg-[var(--brand-base-600)]";
 
   return (
     <div className={`relative ${className}`}>

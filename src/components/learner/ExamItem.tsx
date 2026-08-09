@@ -20,7 +20,7 @@ export default function ExamItem({ exam, isLast, courseKey, subjectId }: ExamIte
   return (
     <div
       className={`hover:bg-[#FAFCFA] flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors px-5.5 py-4.5 ${
-        !isLast ? "border-b border-[#F4F7F4]" : "border-none"
+        !isLast ? "border-b border-[var(--surface-500)]" : "border-none"
       }`}
     >
       <div className="flex items-center gap-4 flex-1">
@@ -57,7 +57,7 @@ export default function ExamItem({ exam, isLast, courseKey, subjectId }: ExamIte
       <div className="mt-3 md:mt-0 self-start md:self-auto shrink-0">
         <Link
           to={ROUTES.LEARNER.EXAM_START(courseKey, subjectId, String(exam.id))}
-          className="inline-flex transition-all cursor-pointer whitespace-nowrap hover:bg-[#1e4022] font-[family:var(--font-heading)] font-bold text-xs px-4.5 py-2 rounded-full border-none bg-[#2C5A31] !text-white"
+          className="inline-flex transition-all cursor-pointer whitespace-nowrap hover:bg-[#1e4022] font-[family:var(--font-heading)] font-bold text-xs px-4.5 py-2 rounded-full border-none bg-[var(--brand-base-500)] !text-white"
         >
           Bắt đầu thi →
         </Link>
