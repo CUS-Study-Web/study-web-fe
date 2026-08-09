@@ -90,7 +90,16 @@ type Review = {
   image?: string
 }
 
-type WTab = "courses" | "instructors" | "achievements" | "reviews"
+type AsstActivity = {
+  date: string
+  week: string
+  month: string
+  year: string
+  text: string
+  asst: string
+}
+
+type WTab = "trang-chu" | "footer" | "goi-cuoc" | "courses" | "instructors" | "achievements" | "reviews"
 
 type ModalKey =
   | "add-course"
@@ -114,6 +123,7 @@ export type {
   Instructor,
   Achievement,
   Review,
+  AsstActivity,
   WTab,
   ModalKey
 }

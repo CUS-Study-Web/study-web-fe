@@ -12,10 +12,13 @@ type WebsiteTabsNavProps = {
 
 const WebsiteTabsNav = ({ activeTab, onTabChange }: WebsiteTabsNavProps) => {
   const tabs: TabItem[] = [
-    { key: "courses", label: "Danh sách khóa học" },
-    { key: "instructors", label: "Đội ngũ giảng viên" },
+    { key: "trang-chu",    label: "Trang chủ" },
+    { key: "footer",       label: "Footer" },
+    { key: "goi-cuoc",     label: "Gói cước" },
+    { key: "courses",      label: "Danh sách khóa học" },
+    { key: "instructors",  label: "Đội ngũ giảng viên" },
     { key: "achievements", label: "Bảng thành tích" },
-    { key: "reviews", label: "Cảm nhận học viên" }
+    { key: "reviews",      label: "Cảm nhận học viên" },
   ]
 
   return (

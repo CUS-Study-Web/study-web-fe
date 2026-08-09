@@ -28,5 +28,6 @@ export const ROUTES = {
     DASHBOARD: '/admin/dashboard',
     SYSTEM: '/admin/system',
     WEBSITE: '/admin/website',
+    ACTIVITIES: '/admin/system/activities',
   },
 } as const;

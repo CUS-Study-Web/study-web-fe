@@ -23,8 +23,8 @@ const AdminSystem = () => {
   const [assistants, setAssistants] = useState<Assistant[]>(INIT_ASSISTANTS)
   const [blockedIds, setBlockedIds] = useState<number[]>([])
   const [bannedIds, setBannedIds] = useState<number[]>([])
-  const [selDate, setSelDate] = useState('23/07/2026')
-  const [selYear, setSelYear] = useState('2026')
+  const [selDate, setSelDate] = useState('2026-07-23')
+  const [selMonth, setSelMonth] = useState('07')
 
   const [vipRequests, setVipRequests] = useState<VipReq[]>([
     {
@@ -198,7 +198,7 @@ const AdminSystem = () => {
       />
 
       {/* Tab panel */}
-      <div className="bg-white rounded-[18px] shadow-[var(--shadow-clay-sm)] border border-[rgba(220,233,222,0.5)] overflow-hidden">
+      <div className="bg-white rounded-[18px] shadow-[var(--shadow-clay-sm)] border border-[rgba(220,233,222,0.5)]">
         <SystemTabsNav
           activeTab={activeTab}
           onTabChange={setActiveTab}
@@ -238,8 +238,8 @@ const AdminSystem = () => {
             <AccessStatsTab
               selDate={selDate}
               setSelDate={setSelDate}
-              selYear={selYear}
-              setSelYear={setSelYear}
+              selMonth={selMonth}
+              setSelMonth={setSelMonth}
               dayStats={DEFAULT_DAY_STATS}
               monthTraffic={MONTHLY_WEB_TRAFFIC_DATA}
               monthRegs={MONTHLY_REGS_FULL}
