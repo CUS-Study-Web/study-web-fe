@@ -81,6 +81,7 @@ jobs:
     steps:
       - name: Log in to GHCR
         run: |
+          systemd-run --user --scope podman system migrate || true
           echo "${{ secrets.GITHUB_TOKEN }}" | systemd-run --user --scope podman login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
 
       - name: Checkout GitOps Manifests
