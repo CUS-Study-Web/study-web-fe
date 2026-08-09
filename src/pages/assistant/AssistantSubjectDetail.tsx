@@ -3,9 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantTabBar from '../../components/assistant/course/AssistantTabBar';
 import AssistantCreateLecturePopup from '../../components/assistant/course/AssistantCreateLecturePopup';
-import AssistantCreateExercisePopup from '../../components/assistant/course/AssistantCreateExercisePopup';
 import AssistantEditLecturePopup from '../../components/assistant/course/AssistantEditLecturePopup';
-import AssistantEditExercisePopup from '../../components/assistant/course/AssistantEditExercisePopup';
 import AssistantViewExercisePopup from '../../components/assistant/course/AssistantViewExercisePopup';
 import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
 import {
@@ -221,9 +219,7 @@ export default function AssistantSubjectDetail() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('bai-giang');
   const [isLecturePopupOpen, setIsLecturePopupOpen] = useState(false);
-  const [isExercisePopupOpen, setIsExercisePopupOpen] = useState(false);
   const [editLecture, setEditLecture] = useState<SubjectLecture | null>(null);
-  const [editExercise, setEditExercise] = useState<SubjectExercise | null>(null);
   const [viewExercise, setViewExercise] = useState<SubjectExercise | null>(null);
   const [deleteLectureId, setDeleteLectureId] = useState<number | null>(null);
   const [deleteExerciseId, setDeleteExerciseId] = useState<number | null>(null);
@@ -252,8 +248,11 @@ export default function AssistantSubjectDetail() {
         rightSlot={
           <div
             onClick={() => {
-              if (activeTab === 'bai-giang') setIsLecturePopupOpen(true);
-              else setIsExercisePopupOpen(true);
+              if (activeTab === 'bai-giang') {
+                setIsLecturePopupOpen(true);
+              } else {
+                navigate(`${ROUTES.ASSISTANT.COURSE_CREATE_EXERCISE(courseKey ?? '')}?subject=${encodeURIComponent(decodedSubject)}`);
+              }
             }}
             className="flex items-center gap-2 px-5 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-white cursor-pointer active:scale-95 transition-all duration-150 select-none shadow-sm"
           >
@@ -402,7 +401,7 @@ export default function AssistantSubjectDetail() {
                           <ExerciseActionMenu
                             onView={() => setViewExercise(ex)}
                             onDownload={() => console.log('Download exercise', ex.id)}
-                            onEdit={() => setEditExercise(ex)}
+                            onEdit={() => navigate(`${ROUTES.ASSISTANT.COURSE_EDIT_EXERCISE(courseKey ?? '', String(ex.id))}?subject=${encodeURIComponent(decodedSubject)}`)}
                             onDelete={() => setDeleteExerciseId(ex.id)}
                           />
                         </div>
@@ -426,9 +425,6 @@ export default function AssistantSubjectDetail() {
       {isLecturePopupOpen && (
         <AssistantCreateLecturePopup courseKey={courseKey ?? ''} onClose={() => setIsLecturePopupOpen(false)} />
       )}
-      {isExercisePopupOpen && (
-        <AssistantCreateExercisePopup courseKey={courseKey ?? ''} onClose={() => setIsExercisePopupOpen(false)} />
-      )}
       
       {/* Edit / View Popups */}
       {editLecture && (
@@ -438,16 +434,6 @@ export default function AssistantSubjectDetail() {
           lecture={editLecture}
           onClose={() => setEditLecture(null)}
           onSave={() => console.log('Saved lecture', editLecture.id)}
-        />
-      )}
-      
-      {editExercise && (
-        <AssistantEditExercisePopup
-          course={course?.name ?? courseKey ?? ''}
-          subjects={[decodedSubject]}
-          exercise={editExercise}
-          onClose={() => setEditExercise(null)}
-          onSave={() => console.log('Saved exercise', editExercise.id)}
         />
       )}
       

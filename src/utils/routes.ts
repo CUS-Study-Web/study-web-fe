@@ -23,6 +23,8 @@ export const ROUTES = {
     COURSE_DETAIL: (courseKey: string = ':courseKey') => `/assistant/courses/${courseKey}`,
     COURSE_UPLOAD_EXAM: (courseKey: string = ':courseKey') => `/assistant/courses/${courseKey}/upload-exam`,
     COURSE_EDIT_EXAM: (courseKey: string = ':courseKey', examId: string | number = ':examId') => `/assistant/courses/${courseKey}/edit-exam/${examId}`,
+    COURSE_CREATE_EXERCISE: (courseKey: string = ':courseKey') => `/assistant/courses/${courseKey}/create-exercise`,
+    COURSE_EDIT_EXERCISE: (courseKey: string = ':courseKey', exerciseId: string | number = ':exerciseId') => `/assistant/courses/${courseKey}/edit-exercise/${exerciseId}`,
     COURSE_SUBJECT_DETAIL: (courseKey: string = ':courseKey', subjectName: string = ':subjectName') => `/assistant/courses/${courseKey}/${subjectName}`,
     MATERIALS: '/assistant/materials',
     STUDENTS: '/assistant/students',
