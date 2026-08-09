@@ -27,6 +27,8 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -84,7 +86,6 @@ jobs:
           repository: ${{ env.GITOPS_REPO }}
           path: gitops-manifests
           ref: main
-
       - name: Deploy Locally on Self-Hosted
         env:
           IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
@@ -99,6 +100,6 @@ jobs:
             # Deploy staging container on port 8080 using make target
             make fe-staging
           else
-            echo "Branch $BRANCH is not configured for deployment."
+            echo "Branch $BRANCH is not configured for deployment..."
             exit 1
           fi
