@@ -84,10 +84,12 @@ jobs:
           repository: ${{ env.GITOPS_REPO }}
           path: gitops-manifests
           ref: main
+
       - name: Deploy Locally on Self-Hosted
         env:
           IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
           BRANCH: ${{ github.event.workflow_run.head_branch }}
+          XDG_RUNTIME_DIR: /run/user/1000
         run: |
           cd gitops-manifests
           if [ "$BRANCH" = "main" ]; then
