@@ -75,10 +75,14 @@ jobs:
     permissions:
       contents: read
       packages: read
+    env:
+      XDG_RUNTIME_DIR: /run/user/1000
+      DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/1000/bus
     steps:
       - name: Log in to GHCR
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | podman login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+          systemd-run --user --scope podman system migrate || true
+          echo "${{ secrets.GITHUB_TOKEN }}" | systemd-run --user --scope podman login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
 
       - name: Checkout GitOps Manifests
         uses: actions/checkout@v4
@@ -90,16 +94,14 @@ jobs:
         env:
           IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
           BRANCH: ${{ github.event.workflow_run.head_branch }}
-          XDG_RUNTIME_DIR: /run/user/1000
-          DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/1000/bus
         run: |
           cd gitops-manifests
           if [ "$BRANCH" = "main" ]; then
             # Deploy production container on port 80 using make target
-            IMAGE_TAG=$IMAGE_TAG make fe-prod
+            IMAGE_TAG=$IMAGE_TAG systemd-run --user --scope make fe-prod
           elif [ "$BRANCH" = "staging" ]; then
             # Deploy staging container on port 8080 using make target
-            make fe-staging
+            systemd-run --user --scope make fe-staging
           else
             echo "Branch $BRANCH is not configured for deployment..."
             exit 1
