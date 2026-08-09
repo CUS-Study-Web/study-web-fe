@@ -90,6 +90,6 @@ jobs:
             # Deploy staging container on port 8080 using make target
             make fe-staging
           else
-            echo "Branch $BRANCH is not configured for deployment."
+            echo "Branch $BRANCH is not configured for deployment..."
             exit 1
           fi
