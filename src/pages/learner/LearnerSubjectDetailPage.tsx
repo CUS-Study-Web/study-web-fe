@@ -5,7 +5,6 @@ import { COURSES_DATA } from "../../utils/coursesData";
 import ProgressBar from "../../components/learner/ProgressBar";
 import LessonItem from "../../components/learner/LessonItem";
 import ExerciseItem from "../../components/learner/ExerciseItem";
-import ExamItem from "../../components/learner/ExamItem";
 
 // Mock data matching screenshots
 const MOCK_LESSONS = [
@@ -26,15 +25,9 @@ const MOCK_EXERCISES = [
   { id: 4, title: "Bài tập Ngữ văn nghị luận xã hội", size: "1.2 MB", date: "05/08/2024" },
 ];
 
-const MOCK_EXAMS = [
-  { id: 1, title: "Đề thi thử V-ACT – Mã đề 001", time: "150 phút", questions: "120 câu", diff: "Trung bình" },
-  { id: 2, title: "Đề thi thử V-ACT – Mã đề 002", time: "150 phút", questions: "120 câu", diff: "Nâng cao" },
-  { id: 3, title: "Đề ôn tập tổng hợp V-ACT 2024", time: "150 phút", questions: "120 câu", diff: "Nâng cao" },
-];
-
 export default function LearnerSubjectDetailPage() {
   const { courseId, subjectId } = useParams<{ courseId: string; subjectId: string }>();
-  const [activeTab, setActiveTab] = useState<"lessons" | "exercises" | "exams">("lessons");
+  const [activeTab, setActiveTab] = useState<"lessons" | "exercises">("lessons");
 
   // Fallback to defaults if not found
   const courseKey = courseId && COURSES_DATA[courseId.toLowerCase()] ? courseId.toLowerCase() : "v-act";
@@ -117,12 +110,6 @@ export default function LearnerSubjectDetailPage() {
           >
             📎 Bài tập ({MOCK_EXERCISES.length})
           </button>
-          <button
-            onClick={() => setActiveTab("exams")}
-            className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "exams" ? "bg-[var(--brand-base-500)] !text-white" : "bg-transparent text-[#6B746D]"}`}
-          >
-            📝 Đề thi ({MOCK_EXAMS.length})
-          </button>
         </div>
       </div>
 
@@ -150,21 +137,6 @@ export default function LearnerSubjectDetailPage() {
                 key={ex.id}
                 exercise={ex}
                 isLast={i === MOCK_EXERCISES.length - 1}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* TAB 3: ĐỀ THI */}
-        {activeTab === "exams" && (
-          <div className="flex flex-col bg-white rounded-[18px] border border-[#E4EBE5] shadow-sm overflow-hidden">
-            {MOCK_EXAMS.map((exam, i) => (
-              <ExamItem
-                key={exam.id}
-                exam={exam}
-                isLast={i === MOCK_EXAMS.length - 1}
-                courseKey={courseKey}
-                subjectId={subjectId!}
               />
             ))}
           </div>
