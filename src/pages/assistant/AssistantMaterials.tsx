@@ -94,7 +94,7 @@ function MaterialActionMenu({ doc, onView, onDownload, onEdit, onDelete }: Mater
       <button
         ref={btnRef}
         onClick={handleToggle}
-        className="w-8 h-8 rounded-lg border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
+        className="w-8 h-8 rounded-full border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
         aria-label="Tùy chọn"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--neutral-500)">
@@ -112,13 +112,14 @@ function MaterialActionMenu({ doc, onView, onDownload, onEdit, onDelete }: Mater
             top: menuPos.top,
             right: menuPos.right,
             zIndex: 9999,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.14)',
           }}
-          className="min-w-[152px] rounded-[10px] border border-[var(--border-default)] bg-[var(--surface-card)] shadow-[0_8px_24px_rgba(0,0,0,0.14)] overflow-hidden py-1"
+          className="bg-white rounded-[10px] border border-[var(--border-default)] py-1.5 min-w-[160px]"
         >
           {/* Tải về */}
           <button
             onClick={() => { setOpen(false); onDownload(); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -131,7 +132,7 @@ function MaterialActionMenu({ doc, onView, onDownload, onEdit, onDelete }: Mater
           {/* Xem */}
           <button
             onClick={() => { setOpen(false); onView(doc); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -143,7 +144,7 @@ function MaterialActionMenu({ doc, onView, onDownload, onEdit, onDelete }: Mater
           {/* Sửa */}
           <button
             onClick={() => { setOpen(false); onEdit(doc); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
@@ -151,12 +152,10 @@ function MaterialActionMenu({ doc, onView, onDownload, onEdit, onDelete }: Mater
             Sửa
           </button>
 
-          <div className="mx-3 border-t border-[var(--border-subtle)]" />
-
           {/* Xóa */}
           <button
             onClick={() => { setOpen(false); onDelete(doc.id); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[#DC2626] hover:bg-[#FEF2F2] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] !text-[#DC2626] text-left transition-colors hover:bg-[#FEF2F2]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
