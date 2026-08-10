@@ -28,10 +28,10 @@ export default function ExamAnswerSelector({
             <button
               key={opt}
               onClick={() => onSelect(opt)}
-              className={`w-7 h-7 rounded-full font-[family:var(--font-heading)] font-bold text-xs cursor-pointer flex items-center justify-center transition-all duration-100 shrink-0 hover:scale-105 ${
+              className={`w-7 h-7 rounded-full font-[family:var(--font-heading)] !font-bold text-xs cursor-pointer flex items-center justify-center transition-all duration-100 shrink-0 hover:scale-105 ${
                 isSelected
-                  ? "border-2 border-[var(--brand-base-500)] bg-[var(--brand-base-500)] text-white"
-                  : "border-[1.5px] border-[#D4DCD5] bg-white text-[#6B746D]"
+                  ? "border-2 border-[var(--brand-base-500)] bg-[var(--brand-base-500)] !text-white"
+                  : "border-[1.5px] border-[#D4DCD5] bg-white !text-[#6B746D]"
               }`}
             >
               {opt}

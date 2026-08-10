@@ -45,33 +45,9 @@ export default function LearnerTakeExamPage() {
   const answered = Object.keys(answers).length;
   const total = EXAM_QUESTIONS.length;
 
-  if (submitted) {
-    const score = Math.round((answered / total) * 10 * 10) / 10;
-    return (
-      <div className="bg-[#F9FAFB] min-h-screen select-none flex flex-col">
-        <Header />
-        <div className="flex-grow flex flex-col items-center justify-center py-[60px] px-6 bg-[var(--surface-500)]">
-          <div className="bg-white rounded-[24px] shadow-[0_16px_48px_rgba(0,0,0,0.1)] pt-[56px] px-[48px] pb-[56px] text-center max-w-[480px] w-full">
-            <div className="w-20 h-20 rounded-full bg-[var(--brand-soft-500)] flex items-center justify-center mx-auto mb-6">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M10 20l8 8 12-12" stroke="var(--brand-base-500)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </div>
-            <h2 className="font-[family:var(--font-heading)] font-bold text-[28px] text-[#1B1F1C] m-0 mb-2">Đã nộp bài!</h2>
-            <p className="font-[family:var(--font-body)] text-[15px] text-[#6B746D] m-0 mb-6">Bạn đã trả lời {answered}/{total} câu hỏi.</p>
-            <div className="bg-[var(--surface-500)] rounded-[16px] px-6 py-5 mb-7">
-              <div className="font-[family:var(--font-heading)] font-bold text-[42px] text-[var(--brand-base-500)]">{score}<span className="text-[20px] text-[#6B746D]">/10</span></div>
-              <div className="font-[family:var(--font-body)] text-[13px] text-[#6B746D] mt-1">Điểm ước tính</div>
-            </div>
-            <button 
-              onClick={() => navigate(ROUTES.LEARNER.SUBJECT_DETAIL(courseId, subjectId))} 
-              className="w-full font-[family:var(--font-heading)] font-bold text-[15px] py-3.5 rounded-[14px] border-none bg-[var(--brand-base-500)] !text-white cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.05)] hover:bg-[#234A28] transition-colors"
-            >
-              Về trang môn học
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const correctAnswers: Record<number, string> = {};
+  EXAM_QUESTIONS.forEach((q) => { correctAnswers[q.id] = ["A","B","C","D"][q.id % 4]; });
+  const score = Math.round((answered / total) * 10 * 10) / 10;
 
   return (
     <div className="bg-[#F9FAFB] min-h-screen select-none flex flex-col">
@@ -116,7 +92,93 @@ export default function LearnerTakeExamPage() {
 
         {/* Right: sidebar */}
         <div className="sticky top-[84px] h-[calc(100vh-100px)]">
-          <div className="bg-white rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-[#E4EBE5] overflow-hidden flex flex-col h-full">
+          {submitted ? (
+            <div className="bg-white rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-[#E4EBE5] overflow-hidden flex flex-col h-full">
+              {/* Result summary */}
+              <div className="p-5 border-b border-[#F0F4F1] shrink-0">
+                <div className="flex items-center gap-3.5 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[var(--brand-soft-500)] flex items-center justify-center shrink-0">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="var(--brand-base-500)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </div>
+                  <div>
+                    <div className="font-[family:var(--font-heading)] font-bold text-lg text-[var(--text-primary-500)] leading-tight">Đã nộp bài!</div>
+                    <div className="font-[family:var(--font-body)] text-[13px] text-[var(--text-secondary-400)] mt-0.5">Bạn đã trả lời {answered}/{total} câu hỏi.</div>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-[var(--brand-soft-500)] to-[#EEF5EF] rounded-[14px] px-5 py-3.5 flex items-center justify-between">
+                  <div>
+                    <div className="font-[family:var(--font-heading)] font-extrabold text-4xl text-[var(--brand-base-500)] leading-none">{score}<span className="text-base text-[#6B746D] font-semibold">/10</span></div>
+                    <div className="font-[family:var(--font-body)] text-xs text-[#6B746D] mt-1">Điểm ước tính</div>
+                  </div>
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="var(--brand-base-500)" strokeWidth="2" opacity="0.3"/>
+                    <circle cx="20" cy="20" r="18" stroke="var(--brand-base-500)" strokeWidth="2" strokeDasharray={`${score / 10 * 113} 113`} strokeLinecap="round" style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%" }}/>
+                    <text x="20" y="25" textAnchor="middle" className="font-[family:var(--font-heading)] font-bold text-[11px] fill-[var(--brand-base-500)]">{Math.round(score * 10)}%</text>
+                  </svg>
+                </div>
+              </div>
+
+              {/* Scrollable answer review */}
+              <div className="custom-scrollbar overflow-y-auto flex-1 py-3">
+                <div className="px-5.5 py-2 font-[family:var(--font-heading)] font-bold text-[11px] text-[#6B746D] uppercase tracking-[0.4px]">Đáp án chi tiết</div>
+                {EXAM_QUESTIONS.map((q) => {
+                  const userAns = answers[q.id];
+                  const correct = correctAnswers[q.id];
+                  return (
+                    <div key={q.id} className="flex items-center gap-2 px-4 py-2 border-b border-[var(--surface-500)]">
+                      <div className="font-[family:var(--font-heading)] font-semibold text-xs text-[#6B746D] min-w-[44px]">Câu {q.id}</div>
+                      <div className="flex gap-1.5 flex-1 justify-end">
+                        {["A","B","C","D"].map((opt) => {
+                          const isUser = userAns === opt;
+                          const isCorrect = correct === opt;
+                          const bg = isUser && isCorrect ? "bg-[var(--brand-base-500)]" : isUser && !isCorrect ? "bg-[var(--error-500)]" : "bg-white";
+                          const color = isUser ? "text-white" : "text-[#6B746D]";
+                          const border = isCorrect && !isUser ? "border-2 border-[var(--brand-base-500)]" : isUser ? "border-none" : "border-[1.5px] border-[#D4DCD5]";
+                          return (
+                            <div key={opt} className={`w-7 h-7 rounded-full ${border} ${bg} ${color} font-[family:var(--font-heading)] font-bold text-xs flex items-center justify-center shrink-0`}>
+                              {opt}
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <div className="w-4 shrink-0 flex items-center justify-center">
+                        {userAns && (userAns === correct
+                          ? <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="var(--brand-base-500)"/><path d="M4 7l2.5 2.5L10 4.5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          : <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="var(--error-500)"/><path d="M5 5l4 4M9 5l-4 4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Sticky footer actions */}
+              <div className="px-4 py-3.5 border-t border-[#F0F4F1] flex gap-2 shrink-0">
+                <button 
+                  onClick={() => navigate(ROUTES.LEARNER.SUBJECT_DETAIL(courseId, subjectId))}
+                  className="flex-1 font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-[1.5px] border-[#D4DCD5] bg-white !text-[#3D4540] cursor-pointer hover:bg-gray-50 transition-colors"
+                >
+                  Thoát
+                </button>
+                <button 
+                  onClick={() => {
+                    setSubmitted(false);
+                    setAnswers({});
+                    setSecondsLeft(90 * 60);
+                  }}
+                  className="flex-1 font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-none bg-[var(--brand-base-500)] !text-white cursor-pointer hover:opacity-90 transition-opacity"
+                >
+                  Làm lại
+                </button>
+                <button 
+                  className="flex-1 font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-[1.5px] border-[var(--brand-base-500)] bg-white !text-[var(--brand-base-500)] cursor-pointer hover:bg-gray-50 transition-colors"
+                >
+                  Xem lời giải
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-[#E4EBE5] overflow-hidden flex flex-col h-full">
             {/* Timer */}
             <div className={`shrink-0 p-5 pb-4 ${!isExercise && secondsLeft < 300 ? "bg-gradient-to-br from-[var(--error-500)] to-[#a83434]" : "bg-gradient-to-br from-[var(--brand-base-500)] to-[#1e4023]"}`}>
               <div className="font-[family:var(--font-body)] text-xs text-white/75 mb-1.5 text-center">Thời gian còn lại</div>
@@ -151,7 +213,7 @@ export default function LearnerTakeExamPage() {
             {/* Submit */}
             <div className="shrink-0 py-3.5 px-4 border-t border-[#E4EBE5]">
               <button onClick={() => setSubmitted(true)}
-                className="w-full font-[family:var(--font-heading)] font-bold text-[15px] py-3.5 rounded-[14px] border-none bg-[var(--brand-base-500)] !text-white cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-150 ease-out hover:bg-[#234A28]"
+                className="w-full font-[family:var(--font-heading)] !font-bold text-[15px] py-3.5 rounded-[14px] border-none bg-[var(--brand-base-500)] !text-white cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-150 ease-out hover:bg-[#234A28]"
               >
                 Nộp bài
               </button>
@@ -163,12 +225,13 @@ export default function LearnerTakeExamPage() {
                     navigate(ROUTES.LEARNER.EXAM_START(courseId, subjectId, examId));
                   }
                 }} 
-                className="w-full font-[family:var(--font-body)] text-[13px] py-2 mt-2 rounded-[12px] border-none bg-transparent text-[#6B746D] cursor-pointer transition-all duration-150 ease-out hover:bg-[var(--surface-500)]"
+                className="w-full font-[family:var(--font-body)] text-[13px] py-2 mt-2 rounded-[12px] border-none bg-transparent !text-[#6B746D] cursor-pointer transition-all duration-150 ease-out hover:bg-[var(--surface-500)]"
               >
                 Thoát
               </button>
             </div>
           </div>
+          )}
         </div>
       </div>
     </div>
