@@ -485,9 +485,9 @@ export const DEMO_SUBJECT_TOPICS: Record<string, SubjectTopic[]> = {
         { id: 102, title: 'Đại số tuyến tính – Buổi 3. Ánh xạ tuyến tính', link: 'https://youtu.be/abc125' },
       ],
       exercises: [
-        { id: 1, title: 'Bài tập Đại số – Hệ phương trình tuyến tính', subject: 'Toán', questions: 20, fileType: 'PDF', solutionLink: 'https://example.com/sol1' },
-        { id: 101, title: 'Bài tập Đại số – Ma trận nghịch đảo', subject: 'Toán', questions: 15, fileType: 'DOCX' },
-        { id: 102, title: 'Bài tập Đại số – Đa thức đặc trưng', subject: 'Toán', questions: 25, fileType: 'PDF', solutionLink: 'https://example.com/sol3' },
+        { id: 1, title: 'Bài tập Đại số – Hệ phương trình tuyến tính', subject: 'Toán', questions: 20, fileType: 'PDF', solutionLink: 'https://example.com/sol1', status: 'published' },
+        { id: 101, title: 'Bài tập Đại số – Ma trận nghịch đảo', subject: 'Toán', questions: 15, fileType: 'DOCX', status: 'draft' },
+        { id: 102, title: 'Bài tập Đại số – Đa thức đặc trưng', subject: 'Toán', questions: 25, fileType: 'PDF', solutionLink: 'https://example.com/sol3', status: 'published' },
       ],
     },
     {
@@ -543,11 +543,11 @@ export const DEMO_SUBJECT_TOPICS: Record<string, SubjectTopic[]> = {
 // --- Flashcard mock data ---
 
 export const DEMO_FLASHCARD_TOPICS: FlashcardTopic[] = [
-  { id: 1, title: 'Từ vựng cốt lõi ĐGNL', words: 50, created: '10/01/2025', status: 'Đang dùng' },
-  { id: 2, title: 'Động từ bất quy tắc', words: 80, created: '15/02/2025', status: 'Đang dùng' },
-  { id: 3, title: 'Thành ngữ tiếng Anh', words: 60, created: '22/03/2025', status: 'Nháp' },
-  { id: 4, title: 'Từ vựng học thuật (Academic)', words: 120, created: '05/04/2025', status: 'Đang dùng' },
-  { id: 5, title: 'Từ vựng V-ACT', words: 40, created: '18/05/2025', status: 'Nháp' },
+  { id: 1, title: 'Từ vựng cốt lõi ĐGNL', words: 50, created: '10/01/2025', status: 'published' },
+  { id: 2, title: 'Động từ bất quy tắc', words: 80, created: '15/02/2025', status: 'published' },
+  { id: 3, title: 'Thành ngữ tiếng Anh', words: 60, created: '22/03/2025', status: 'draft' },
+  { id: 4, title: 'Từ vựng học thuật (Academic)', words: 120, created: '05/04/2025', status: 'published' },
+  { id: 5, title: 'Từ vựng V-ACT', words: 40, created: '18/05/2025', status: 'draft' },
 ];
 
 export const DEMO_VOCABULARY_WORDS: VocabularyWord[] = [
