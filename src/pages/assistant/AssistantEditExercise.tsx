@@ -166,6 +166,7 @@ export default function AssistantEditExercise() {
               questionCount: exercise?.questions || 20,
               fileType: exercise?.fileType || 'PDF',
               solutionLink: exercise?.solutionLink || '',
+              status: exercise?.status || 'published',
             }}
           >
             <div className="flex items-center gap-2 pt-3 border-t border-[var(--border-subtle)] mt-1 shrink-0">

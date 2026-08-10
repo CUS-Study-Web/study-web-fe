@@ -52,20 +52,21 @@ function EditableCell({ value, placeholder, onChange, isHovered }: EditableCellP
 
 // ─── Edit Topic Modal ─────────────────────────────────────────────────────────
 
-interface AssistantEditTopicModalProps {
+interface AssistantEditTopicPopupProps {
   topic: FlashcardTopic;
   initialWords: VocabularyWord[];
   onClose: () => void;
-  onSave: (words: VocabularyWord[]) => void;
+  onSave: (words: VocabularyWord[], status: 'published' | 'draft') => void;
 }
 
-export function AssistantEditTopicModal({
+export function AssistantEditTopicPopup({
   topic,
   initialWords,
   onClose,
   onSave,
-}: AssistantEditTopicModalProps) {
+}: AssistantEditTopicPopupProps) {
   const [editWords, setEditWords] = useState<VocabularyWord[]>(initialWords);
+  const [status, setStatus] = useState<'published' | 'draft'>(topic.status as 'published' | 'draft');
   const [editSearch, setEditSearch] = useState('');
   const [editPage, setEditPage] = useState(1);
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -163,6 +164,29 @@ export function AssistantEditTopicModal({
               className="w-full pl-[34px] pr-3 py-2.5 rounded-[10px] border border-[var(--border-strong)] outline-none font-[family-name:var(--font-body)] text-[13px] focus:border-[var(--brand-500)] focus:bg-[var(--brand-soft-100)] transition-colors"
               style={{ boxSizing: 'border-box' }}
             />
+          </div>
+          {/* Status field */}
+          <div className="flex w-[180px] rounded-[8px] overflow-hidden border border-[var(--border-default)] shrink-0">
+            <div
+              onClick={() => setStatus('published')}
+              className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none ${
+                status === 'published'
+                  ? 'bg-[var(--brand-500)] text-white'
+                  : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
+              }`}
+            >
+              Xuất bản
+            </div>
+            <div
+              onClick={() => setStatus('draft')}
+              className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none border-l border-[var(--border-default)] ${
+                status === 'draft'
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
+              }`}
+            >
+              Nháp
+            </div>
           </div>
           {/* Add word button */}
           <div
@@ -277,7 +301,7 @@ export function AssistantEditTopicModal({
           message={`Bạn có chắc chắn muốn lưu thay đổi cho chủ đề "${topic.title}"?`}
           confirmLabel="Lưu"
           variant="warning"
-          onConfirm={() => { onSave(editWords); setShowConfirm(false); onClose(); }}
+          onConfirm={() => { onSave(editWords, status); setShowConfirm(false); onClose(); }}
           onCancel={() => setShowConfirm(false)}
         />
       )}

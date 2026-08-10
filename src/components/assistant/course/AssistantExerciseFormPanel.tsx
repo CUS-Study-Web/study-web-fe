@@ -11,6 +11,7 @@ export interface ExerciseFormData {
   title: string;
   solutionLink: string;
   fileType: string;
+  status: 'published' | 'draft';
   answers: AssistantExerciseAnswer[];
 }
 
@@ -42,6 +43,7 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
     const [title, setTitle] = useState(initialData?.title ?? '');
     const [solutionLink, setSolutionLink] = useState(initialData?.solutionLink ?? '');
     const [fileType, setFileType] = useState(initialData?.fileType ?? 'PDF');
+    const [status, setStatus] = useState<'published' | 'draft'>(initialData?.status ?? 'published');
     const [answers, setAnswers] = useState<AssistantExerciseAnswer[]>(
       initialData?.answers ?? buildAnswers(initialData?.questionCount ?? 20)
     );
@@ -53,7 +55,7 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
     }, [questionCount]);
 
     useImperativeHandle(ref, () => ({
-      getData: () => ({ subject, questionCount, title, solutionLink, fileType, answers }),
+      getData: () => ({ subject, questionCount, title, solutionLink, fileType, status, answers }),
     }));
 
     const updateAnswerSelected = (idx: number, opt: string) => {
@@ -156,6 +158,33 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
           >
             {FILE_TYPES.map((ft) => <option key={ft} value={ft}>{ft}</option>)}
           </select>
+        </div>
+
+        {/* Trạng thái */}
+        <div>
+          <div className="font-[family-name:var(--font-heading)] font-bold text-[11px] uppercase tracking-widest text-[var(--text-secondary)] mb-1.5">
+            Trạng thái
+          </div>
+          <div className="flex rounded-[8px] overflow-hidden border border-[var(--border-default)]">
+            <div
+              onClick={() => setStatus('published')}
+              className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none ${status === 'published'
+                ? 'bg-[var(--brand-500)] text-white'
+                : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
+                }`}
+            >
+              Xuất bản
+            </div>
+            <div
+              onClick={() => setStatus('draft')}
+              className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none border-l border-[var(--border-default)] ${status === 'draft'
+                ? 'bg-amber-500 text-white'
+                : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
+                }`}
+            >
+              Nháp
+            </div>
+          </div>
         </div>
 
         {/* Đáp án trắc nghiệm */}
