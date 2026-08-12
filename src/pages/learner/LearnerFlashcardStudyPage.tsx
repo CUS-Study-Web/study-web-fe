@@ -176,9 +176,9 @@ export default function LearnerFlashcardStudyPage() {
             {/* Phase 2 prototype note */}
             <div className="w-full max-w-[560px] bg-[var(--warning-50)] border border-[var(--warning-200)] rounded-[10px] py-2.5 px-4 mb-4.5 flex items-start gap-2">
               <span className="text-[14px] shrink-0 mt-0.5">💡</span>
-              <p className="font-[family:var(--font-body)] text-[12px] text-[var(--warning-800)] m-0 leading-[1.5]">
+              <div className="font-[family:var(--font-body)] text-[12px] text-[var(--warning-800)] m-0 leading-[1.5]">
                 <strong>Giai đoạn Ôn tập</strong> — Hiển thị {p2Words.length} từ bạn chưa nhớ. Nhập đúng nghĩa → tự động chuyển thẻ. Nhập sai → hiển thị đáp án → "Tiếp tục".
-              </p>
+              </div>
             </div>
 
             <NavRow current={(p2Index % p2Total) + 1} total={p2Total} remembered={p2Remembered.length} label="Giai đoạn 2" />

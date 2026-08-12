@@ -69,9 +69,9 @@ export default function LearnerSubjectDetailPage() {
                 <div className="inline-flex rounded-full bg-white/20 border border-white/30 px-3 py-1 mb-2.5">
                   <span className="font-[family:var(--font-heading)] font-bold text-[11px] text-[var(--brand-soft-500)] tracking-[0.3px]">Chi tiết môn học</span>
                 </div>
-                <h1 className="font-[family:var(--font-heading)] font-extrabold text-4xl !text-white m-0 tracking-tight">
+                <div className="font-[family:var(--font-heading)] font-extrabold text-4xl !text-white m-0 tracking-tight">
                   {subject.title}
-                </h1>
+                </div>
               </div>
 
               {/* CỘT PHẢI */}

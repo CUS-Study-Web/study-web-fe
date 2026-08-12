@@ -55,10 +55,10 @@ export default function LearnerProfilePage() {
           <Avatar size="lg" showEdit className="mb-4" />
 
           {/* Name & Email */}
-          <h1 className="text-xl font-black !text-white tracking-tight mb-1 font-[family:var(--font-heading)]">
+          <div className="text-xl font-black !text-white tracking-tight mb-1 font-[family:var(--font-heading)]">
             {user.name}
-          </h1>
-          <p className="text-xs font-medium !text-[var(--brand-base-100)] mb-3.5">{user.email}</p>
+          </div>
+          <div className="text-xs font-medium !text-[var(--brand-base-100)] mb-3.5">{user.email}</div>
 
           {/* Badges */}
           <div className="flex items-center gap-2">
@@ -79,9 +79,9 @@ export default function LearnerProfilePage() {
         <div className="bg-white rounded-[20px] border border-white/80 shadow-[0_-12px_35px_rgba(255,255,255,0.7),0_10px_25px_rgba(0,0,0,0.06)] overflow-hidden">
           {/* Card Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-200)]">
-            <h3 className="text-sm font-black text-[var(--text-primary-500)] font-[family:var(--font-heading)]">
+            <div className="text-sm font-black text-[var(--text-primary-500)] font-[family:var(--font-heading)]">
               Thông tin cá nhân
-            </h3>
+            </div>
             <button 
               onClick={() => setIsEditingInfo(!isEditingInfo)}
               className={`px-4 py-1.5 text-body-sm font-bold rounded-full border active:scale-95 transition-all cursor-pointer ${ /* Tăng nút lên text-body-sm (14px) */
@@ -118,9 +118,9 @@ export default function LearnerProfilePage() {
           ) : (
             <div className="bg-white rounded-[20px] border border-[var(--border-300)] shadow-sm overflow-hidden animate-[fadeSlideDown_0.2s_ease-out]">
               <div className="px-6 py-4 border-b border-[var(--border-200)]">
-                <h3 className="text-sm font-black text-[var(--text-primary-500)] font-[family:var(--font-heading)]">
+                <div className="text-sm font-black text-[var(--text-primary-500)] font-[family:var(--font-heading)]">
                   Đổi mật khẩu
-                </h3>
+                </div>
               </div>
               <form onSubmit={handleSavePassword} className="px-6 py-5 space-y-4">
                 <div>

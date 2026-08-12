@@ -23,8 +23,8 @@ export default function LearnerFlashcardTopicsPage() {
       {/* Hero */}
       <div className="bg-gradient-to-br from-[var(--brand-base-500)] to-[var(--brand-base-900)] pt-14 pb-22 px-6">
         <div className="max-w-[860px] mx-auto">
-          <h1 className="font-[family:var(--font-heading)] font-black text-4xl !text-white m-0 mb-2.5 leading-tight">Học từ vựng với Flashcard</h1>
-          <p className="font-[family:var(--font-body)] text-[15px] text-[var(--brand-soft-200)] m-0 mb-8">Ôn luyện từ vựng hiệu quả theo phương pháp Active Recall</p>
+          <div className="font-[family:var(--font-heading)] font-black text-4xl !text-white m-0 mb-2.5 leading-tight">Học từ vựng với Flashcard</div>
+          <div className="font-[family:var(--font-body)] text-[15px] text-[var(--brand-soft-200)] m-0 mb-8">Ôn luyện từ vựng hiệu quả theo phương pháp Active Recall</div>
           <div className="flex gap-4 flex-wrap">
             {[
               { label: "Chủ đề", value: FLASHCARD_TOPICS.length },
