@@ -62,6 +62,7 @@ export default function ExerciseItem({ exercise, isLast }: ExerciseItemProps) {
         {completed ? (
           <>
             <button 
+              onClick={() => alert("Hệ thống đang cập nhật lời giải. Bạn vui lòng quay lại sau nhé!")}
               className="font-[family:var(--font-heading)] !font-bold text-xs px-3.5 py-1.5 rounded-full border-[1.5px] border-[var(--brand-base-500)] bg-white !text-[var(--brand-base-500)] cursor-pointer whitespace-nowrap transition-all hover:bg-[var(--brand-soft-500)]"
             >
               Xem lời giải

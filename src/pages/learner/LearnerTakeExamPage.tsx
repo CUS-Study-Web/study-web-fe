@@ -171,7 +171,8 @@ export default function LearnerTakeExamPage() {
                   Làm lại
                 </button>
                 <button 
-                  className="flex-1 font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-[1.5px] border-[var(--brand-base-500)] bg-white !text-[var(--brand-base-500)] cursor-pointer hover:bg-gray-50 transition-colors"
+                  onClick={() => alert("Hệ thống đang cập nhật lời giải chi tiết. Bạn vui lòng quay lại sau nhé!")}
+                  className="flex-[1.15] whitespace-nowrap font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-none bg-[#F5C518] !text-[var(--text-primary-900)] cursor-pointer hover:brightness-95 transition-all"
                 >
                   Xem lời giải
                 </button>
