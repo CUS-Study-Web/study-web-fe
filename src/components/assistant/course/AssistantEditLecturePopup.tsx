@@ -90,21 +90,21 @@ export default function AssistantEditLecturePopup({ course, subjects, lecture, o
             </div>
 
             <div>
-              <label className={labelClass}>Link YouTube</label>
+              <label className={labelClass}>Link bài giảng</label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96C1 8.12 1 12 1 12s0 3.88.46 5.58a2.78 2.78 0 001.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.96C23 15.88 23 12 23 12s0-3.88-.46-5.58z" stroke="#C94B4B" strokeWidth="1.8" /><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" stroke="#C94B4B" strokeWidth="1.8" strokeLinejoin="round" /></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-tertiary)]"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
                 </span>
-                <input type="url" placeholder="https://youtube.com/watch?v=..." value={link} onChange={(e) => setLink(e.target.value)} className={`${inputClass} pl-9`} />
+                <input type="url" placeholder="https://..." value={link} onChange={(e) => setLink(e.target.value)} className={`${inputClass} pl-9`} />
               </div>
             </div>
           </div>
 
           <div className="flex gap-2.5 mt-6">
-            <div onClick={onClose} className="flex-1 p-3 rounded-[var(--radius-md)] border-[1.5px] border-[var(--border-default)] bg-[var(--surface-card)] text-[var(--text-primary)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors">
+            <div onClick={onClose} className="flex-1 p-3 flex justify-center items-center rounded-[var(--radius-md)] border-[1.5px] border-[var(--border-default)] bg-[var(--surface-card)] text-[var(--text-primary)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors">
               Hủy
             </div>
-            <div onClick={handleSaveRequest} className="flex-[2] p-3 rounded-[var(--radius-md)] border-none bg-[var(--brand-500)] text-[var(--text-inverse)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--brand-600)] transition-colors">
+            <div onClick={handleSaveRequest} className="flex-[2] p-3 flex justify-center items-center rounded-[var(--radius-md)] border-none bg-[var(--brand-500)] text-[var(--text-inverse)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--brand-600)] transition-colors">
               Lưu thay đổi
             </div>
           </div>

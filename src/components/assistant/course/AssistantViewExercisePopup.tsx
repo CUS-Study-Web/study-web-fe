@@ -25,12 +25,12 @@ export default function AssistantViewExercisePopup({ course, subject, exercise, 
           <div className="font-[family-name:var(--font-heading)] font-extrabold text-[17px] text-[var(--text-primary)]">
             Xem bài tập
           </div>
-          <button
+          <div
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-muted)] bg-transparent border-none cursor-pointer text-xl transition-colors"
           >
             ×
-          </button>
+          </div>
         </div>
 
         {/* Metadata grid */}
@@ -71,12 +71,12 @@ export default function AssistantViewExercisePopup({ course, subject, exercise, 
 
         {/* Actions */}
         <div className="flex gap-2.5 mt-5">
-          <button onClick={onClose} className="flex-1 p-3 rounded-[var(--radius-md)] border-[1.5px] border-[var(--border-default)] bg-[var(--surface-card)] text-[var(--text-primary)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors">
+          <div onClick={onClose} className="flex-1 p-3 rounded-[var(--radius-md)] border-[1.5px] border-[var(--border-default)] bg-[var(--surface-card)] text-[var(--text-primary)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors">
             Đóng
-          </button>
-          <button onClick={() => setShowDevPopup(true)} className="flex-[2] p-3 rounded-[var(--radius-md)] border-none bg-[var(--brand-500)] text-[var(--text-inverse)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--brand-600)] transition-colors">
+          </div>
+          <div onClick={() => setShowDevPopup(true)} className="flex-[2] p-3 rounded-[var(--radius-md)] border-none bg-[var(--brand-500)] text-[var(--text-inverse)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--brand-600)] transition-colors">
             Tải về
-          </button>
+          </div>
         </div>
       </div>
 

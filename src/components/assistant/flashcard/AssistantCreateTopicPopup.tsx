@@ -94,21 +94,19 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
             <div className="flex w-[200px] rounded-[8px] overflow-hidden border border-[var(--border-default)]">
               <div
                 onClick={() => setStatus('published')}
-                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none ${
-                  status === 'published'
-                    ? 'bg-[var(--brand-500)] text-white'
-                    : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
-                }`}
+                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none ${status === 'published'
+                  ? 'bg-[var(--brand-500)] text-white'
+                  : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
+                  }`}
               >
                 Xuất bản
               </div>
               <div
                 onClick={() => setStatus('draft')}
-                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none border-l border-[var(--border-default)] ${
-                  status === 'draft'
-                    ? 'bg-amber-500 text-white'
-                    : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
-                }`}
+                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none border-l border-[var(--border-default)] ${status === 'draft'
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
+                  }`}
               >
                 Nháp
               </div>
@@ -188,19 +186,18 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
 
         {/* Footer */}
         <div className="flex justify-end gap-2.5 px-7 pb-[22px] pt-3.5 border-t border-[var(--surface-500)]">
-          <button
+          <div
             onClick={onClose}
             className="px-[22px] py-2.5 rounded-[11px] border border-[var(--border-strong)] bg-white text-[var(--text-secondary)] font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer hover:bg-[var(--surface-500)] transition-colors"
           >
             Hủy
-          </button>
-          <button
+          </div>
+          <div
             onClick={handleCreate}
-            disabled={!topicName.trim()}
             className="px-7 py-2.5 rounded-[11px] border-none bg-[var(--brand-500)] text-white font-[family-name:var(--font-heading)] font-bold text-[13px] cursor-pointer hover:bg-[var(--brand-600)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Tạo
-          </button>
+          </div>
         </div>
       </div>
     </div>
