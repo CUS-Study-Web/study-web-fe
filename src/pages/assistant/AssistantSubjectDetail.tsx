@@ -3,9 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantTabBar from '../../components/assistant/course/AssistantTabBar';
 import AssistantCreateLecturePopup from '../../components/assistant/course/AssistantCreateLecturePopup';
-import AssistantCreateExercisePopup from '../../components/assistant/course/AssistantCreateExercisePopup';
 import AssistantEditLecturePopup from '../../components/assistant/course/AssistantEditLecturePopup';
-import AssistantEditExercisePopup from '../../components/assistant/course/AssistantEditExercisePopup';
 import AssistantViewExercisePopup from '../../components/assistant/course/AssistantViewExercisePopup';
 import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
 import {
@@ -70,7 +68,7 @@ function LectureActionMenu({ onEdit, onDelete }: LectureActionMenuProps) {
       <button
         ref={btnRef}
         onClick={handleToggle}
-        className="w-8 h-8 rounded-lg border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
+        className="w-8 h-8 rounded-full border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
         aria-label="Tùy chọn"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--neutral-500)">
@@ -83,22 +81,21 @@ function LectureActionMenu({ onEdit, onDelete }: LectureActionMenuProps) {
       {open && (
         <div
           ref={menuRef}
-          style={{ position: 'fixed', top: menuPos.top, right: menuPos.right, zIndex: 9999 }}
-          className="min-w-[140px] rounded-[10px] border border-[var(--border-default)] bg-[var(--surface-card)] shadow-[0_8px_24px_rgba(0,0,0,0.14)] overflow-hidden py-1"
+          style={{ position: 'fixed', top: menuPos.top, right: menuPos.right, zIndex: 9999, boxShadow: '0 8px 32px rgba(0,0,0,0.14)' }}
+          className="bg-white rounded-[10px] border border-[var(--border-default)] py-1.5 min-w-[160px]"
         >
           <button
             onClick={() => { setOpen(false); onEdit(); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
             </svg>
             Sửa
           </button>
-          <div className="mx-3 border-t border-[var(--border-subtle)]" />
           <button
             onClick={() => { setOpen(false); onDelete(); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[#DC2626] hover:bg-[#FEF2F2] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold !text-[#DC2626] text-left transition-colors hover:bg-[#FEF2F2]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -155,7 +152,7 @@ function ExerciseActionMenu({ onView, onDownload, onEdit, onDelete }: ExerciseAc
       <button
         ref={btnRef}
         onClick={handleToggle}
-        className="w-8 h-8 rounded-lg border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
+        className="w-8 h-8 rounded-full border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
         aria-label="Tùy chọn"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--neutral-500)">
@@ -168,12 +165,12 @@ function ExerciseActionMenu({ onView, onDownload, onEdit, onDelete }: ExerciseAc
       {open && (
         <div
           ref={menuRef}
-          style={{ position: 'fixed', top: menuPos.top, right: menuPos.right, zIndex: 9999 }}
-          className="min-w-[140px] rounded-[10px] border border-[var(--border-default)] bg-[var(--surface-card)] shadow-[0_8px_24px_rgba(0,0,0,0.14)] overflow-hidden py-1"
+          style={{ position: 'fixed', top: menuPos.top, right: menuPos.right, zIndex: 9999, boxShadow: '0 8px 32px rgba(0,0,0,0.14)' }}
+          className="bg-white rounded-[10px] border border-[var(--border-default)] py-1.5 min-w-[160px]"
         >
           <button
             onClick={() => { setOpen(false); onView(); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
@@ -182,7 +179,7 @@ function ExerciseActionMenu({ onView, onDownload, onEdit, onDelete }: ExerciseAc
           </button>
           <button
             onClick={() => { setOpen(false); onDownload(); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
@@ -191,17 +188,16 @@ function ExerciseActionMenu({ onView, onDownload, onEdit, onDelete }: ExerciseAc
           </button>
           <button
             onClick={() => { setOpen(false); onEdit(); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
             </svg>
             Sửa
           </button>
-          <div className="mx-3 border-t border-[var(--border-subtle)]" />
           <button
             onClick={() => { setOpen(false); onDelete(); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[#DC2626] hover:bg-[#FEF2F2] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold !text-[#DC2626] text-left transition-colors hover:bg-[#FEF2F2]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -221,9 +217,7 @@ export default function AssistantSubjectDetail() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('bai-giang');
   const [isLecturePopupOpen, setIsLecturePopupOpen] = useState(false);
-  const [isExercisePopupOpen, setIsExercisePopupOpen] = useState(false);
   const [editLecture, setEditLecture] = useState<SubjectLecture | null>(null);
-  const [editExercise, setEditExercise] = useState<SubjectExercise | null>(null);
   const [viewExercise, setViewExercise] = useState<SubjectExercise | null>(null);
   const [deleteLectureId, setDeleteLectureId] = useState<number | null>(null);
   const [deleteExerciseId, setDeleteExerciseId] = useState<number | null>(null);
@@ -252,8 +246,11 @@ export default function AssistantSubjectDetail() {
         rightSlot={
           <div
             onClick={() => {
-              if (activeTab === 'bai-giang') setIsLecturePopupOpen(true);
-              else setIsExercisePopupOpen(true);
+              if (activeTab === 'bai-giang') {
+                setIsLecturePopupOpen(true);
+              } else {
+                navigate(`${ROUTES.ASSISTANT.COURSE_CREATE_EXERCISE(courseKey ?? '')}?subject=${encodeURIComponent(decodedSubject)}`);
+              }
             }}
             className="flex items-center gap-2 px-5 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-white cursor-pointer active:scale-95 transition-all duration-150 select-none shadow-sm"
           >
@@ -355,6 +352,9 @@ export default function AssistantSubjectDetail() {
                       Loại file
                     </th>
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
+                      Trạng thái
+                    </th>
+                    <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
                       Link giải
                     </th>
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]" />
@@ -382,6 +382,12 @@ export default function AssistantSubjectDetail() {
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
+                        <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${ex.status === 'draft' ? 'bg-[var(--warning-100)] text-[var(--warning-700)]' : 'bg-[var(--success-100)] text-[var(--success-700)]'
+                          }`}>
+                          {ex.status === 'draft' ? 'Nháp' : 'Đã xuất bản'}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-5">
                         {ex.solutionLink ? (
                           <a
                             href={ex.solutionLink}
@@ -402,7 +408,7 @@ export default function AssistantSubjectDetail() {
                           <ExerciseActionMenu
                             onView={() => setViewExercise(ex)}
                             onDownload={() => console.log('Download exercise', ex.id)}
-                            onEdit={() => setEditExercise(ex)}
+                            onEdit={() => navigate(`${ROUTES.ASSISTANT.COURSE_EDIT_EXERCISE(courseKey ?? '', String(ex.id))}?subject=${encodeURIComponent(decodedSubject)}`)}
                             onDelete={() => setDeleteExerciseId(ex.id)}
                           />
                         </div>
@@ -411,7 +417,7 @@ export default function AssistantSubjectDetail() {
                   ))}
                   {exercises.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                      <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Chưa có bài tập nào. Hãy tải lên bài tập đầu tiên.
                       </td>
                     </tr>
@@ -426,10 +432,7 @@ export default function AssistantSubjectDetail() {
       {isLecturePopupOpen && (
         <AssistantCreateLecturePopup courseKey={courseKey ?? ''} onClose={() => setIsLecturePopupOpen(false)} />
       )}
-      {isExercisePopupOpen && (
-        <AssistantCreateExercisePopup courseKey={courseKey ?? ''} onClose={() => setIsExercisePopupOpen(false)} />
-      )}
-      
+
       {/* Edit / View Popups */}
       {editLecture && (
         <AssistantEditLecturePopup
@@ -440,17 +443,7 @@ export default function AssistantSubjectDetail() {
           onSave={() => console.log('Saved lecture', editLecture.id)}
         />
       )}
-      
-      {editExercise && (
-        <AssistantEditExercisePopup
-          course={course?.name ?? courseKey ?? ''}
-          subjects={[decodedSubject]}
-          exercise={editExercise}
-          onClose={() => setEditExercise(null)}
-          onSave={() => console.log('Saved exercise', editExercise.id)}
-        />
-      )}
-      
+
       {viewExercise && (
         <AssistantViewExercisePopup
           course={course?.name ?? courseKey ?? ''}
@@ -459,7 +452,7 @@ export default function AssistantSubjectDetail() {
           onClose={() => setViewExercise(null)}
         />
       )}
-      
+
       {/* Delete Confirmation */}
       {deleteLectureId && (
         <AssistantConfirmPopup
@@ -471,7 +464,7 @@ export default function AssistantSubjectDetail() {
           onCancel={() => setDeleteLectureId(null)}
         />
       )}
-      
+
       {deleteExerciseId && (
         <AssistantConfirmPopup
           title="Xóa bài tập"

@@ -4,8 +4,8 @@ import AssistantConfirmPopup from '../AssistantConfirmPopup';
 
 const EDIT_PER_PAGE = 20;
 
-// Grid template for the 4 vocabulary columns (equal width)
-const WORD_ROW_GRID = 'grid-cols-4';
+// Grid template for the 4 vocabulary columns (equal width) plus delete button
+const WORD_ROW_GRID = 'grid-cols-[1fr_1fr_1fr_1fr_40px]';
 
 // ─── Editable Cell ────────────────────────────────────────────────────────────
 
@@ -52,25 +52,27 @@ function EditableCell({ value, placeholder, onChange, isHovered }: EditableCellP
 
 // ─── Edit Topic Modal ─────────────────────────────────────────────────────────
 
-interface AssistantEditTopicModalProps {
+interface AssistantEditTopicPopupProps {
   topic: FlashcardTopic;
   initialWords: VocabularyWord[];
   onClose: () => void;
-  onSave: (words: VocabularyWord[]) => void;
+  onSave: (words: VocabularyWord[], status: 'published' | 'draft') => void;
 }
 
-export function AssistantEditTopicModal({
+export function AssistantEditTopicPopup({
   topic,
   initialWords,
   onClose,
   onSave,
-}: AssistantEditTopicModalProps) {
+}: AssistantEditTopicPopupProps) {
   const [editWords, setEditWords] = useState<VocabularyWord[]>(initialWords);
+  const [status, setStatus] = useState<'published' | 'draft'>(topic.status as 'published' | 'draft');
   const [editSearch, setEditSearch] = useState('');
   const [editPage, setEditPage] = useState(1);
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   // ─── Derived state ──────────────────────────────────────────────────────────
   const filteredWords = editWords.filter(
@@ -84,6 +86,38 @@ export function AssistantEditTopicModal({
   // ─── Handlers ──────────────────────────────────────────────────────────────
   const updateWord = (id: number, field: keyof VocabularyWord, val: string) =>
     setEditWords(ws => ws.map(w => (w.id === id ? { ...w, [field]: val } : w)));
+
+  const handleDeleteWord = (id: number) => {
+    setEditWords(ws => {
+      const newWords = ws.filter(w => w.id !== id);
+      const newFiltered = newWords.filter(
+        w =>
+          w.en.toLowerCase().includes(editSearch.toLowerCase()) ||
+          w.vi.toLowerCase().includes(editSearch.toLowerCase()),
+      );
+      setEditPage(p => Math.min(p, Math.max(1, Math.ceil(newFiltered.length / EDIT_PER_PAGE))));
+      return newWords;
+    });
+  };
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUploadFileClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // TODO: Handle file parsing here
+      console.log('File selected:', file.name);
+      e.target.value = ''; // reset
+    }
+  };
+
+  const handleClearWords = () => {
+    setShowClearConfirm(true);
+  };
 
   const handleAddWord = () => {
     const newWord: VocabularyWord = { id: Date.now(), en: '', phonetic: '', type: 'Noun', vi: '', ex: '' };
@@ -164,6 +198,57 @@ export function AssistantEditTopicModal({
               style={{ boxSizing: 'border-box' }}
             />
           </div>
+          {/* Status field */}
+          <div className="flex w-[180px] rounded-[8px] overflow-hidden border border-[var(--border-default)] shrink-0">
+            <div
+              onClick={() => setStatus('published')}
+              className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none ${
+                status === 'published'
+                  ? 'bg-[var(--brand-500)] text-white'
+                  : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
+              }`}
+            >
+              Xuất bản
+            </div>
+            <div
+              onClick={() => setStatus('draft')}
+              className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none border-l border-[var(--border-default)] ${
+                status === 'draft'
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
+              }`}
+            >
+              Nháp
+            </div>
+          </div>
+          {/* Action buttons */}
+          <div
+            onClick={handleClearWords}
+            className="flex items-center justify-center px-4 py-2.5 rounded-[10px] border border-[var(--border-strong)] bg-white text-[var(--text-secondary)] font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer hover:bg-[var(--surface-500)] transition-colors whitespace-nowrap"
+          >
+            Làm mới
+          </div>
+
+          <div
+            onClick={handleUploadFileClick}
+            className="flex items-center justify-center px-4 py-2.5 rounded-[10px] border border-[var(--border-strong)] bg-white text-[var(--text-secondary)] font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer hover:bg-[var(--surface-500)] transition-colors whitespace-nowrap"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="mr-1.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            Thêm bằng file
+          </div>
+          
+          <input
+            type="file"
+            accept=".xlsx,.xls,.csv"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+          />
+
           {/* Add word button */}
           <div
             onClick={handleAddWord}
@@ -174,6 +259,26 @@ export function AssistantEditTopicModal({
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
             Thêm từ vựng
+          </div>
+        </div>
+
+        {/* Warning Note */}
+        <div className="px-6 py-4 shrink-0">
+          <div
+            className="rounded-[10px] px-3.5 py-2.5 flex items-center gap-2"
+            style={{
+              background: 'var(--warning-50)',
+              border: '1px solid var(--warning-100)',
+            }}
+          >
+            <span className="text-[14px] shrink-0">⚠️</span>
+            <div
+              className="font-[family-name:var(--font-body)] text-[12px] leading-[1.55]"
+              style={{ color: 'var(--warning-800)' }}
+            >
+              <span className="font-bold">Lưu ý:</span> File Excel upload phải bao gồm các cột theo đúng thứ tự sau:{' '}
+              <span className="font-bold">Tiếng Anh · Phiên âm · Từ loại · Tiếng Việt</span>
+            </div>
           </div>
         </div>
 
@@ -190,6 +295,7 @@ export function AssistantEditTopicModal({
                 {col.header}
               </div>
             ))}
+            <div className="border-b border-[var(--border-default)]"></div>
           </div>
 
           {/* Word rows */}
@@ -214,6 +320,20 @@ export function AssistantEditTopicModal({
                     isHovered={hoveredRow === word.id}
                   />
                 ))}
+                <div className="flex items-center justify-center">
+                  <div
+                    onClick={() => handleDeleteWord(word.id)}
+                    className="w-7 h-7 rounded-md flex items-center justify-center cursor-pointer text-[var(--neutral-400)] hover:text-red-500 hover:bg-red-50 transition-colors"
+                    title="Xóa dòng"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <path d="M3 6h18" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      <line x1="10" y1="11" x2="10" y2="17" />
+                      <line x1="14" y1="11" x2="14" y2="17" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             ))
           )}
@@ -277,8 +397,18 @@ export function AssistantEditTopicModal({
           message={`Bạn có chắc chắn muốn lưu thay đổi cho chủ đề "${topic.title}"?`}
           confirmLabel="Lưu"
           variant="warning"
-          onConfirm={() => { onSave(editWords); setShowConfirm(false); onClose(); }}
+          onConfirm={() => { onSave(editWords, status); setShowConfirm(false); onClose(); }}
           onCancel={() => setShowConfirm(false)}
+        />
+      )}
+      {showClearConfirm && (
+        <AssistantConfirmPopup
+          title="Xác nhận làm mới"
+          message="Bạn có chắc chắn muốn xóa tất cả từ vựng hiện tại?"
+          confirmLabel="Làm mới"
+          variant="info"
+          onConfirm={() => { setEditWords([]); setEditPage(1); setShowClearConfirm(false); }}
+          onCancel={() => setShowClearConfirm(false)}
         />
       )}
     </>

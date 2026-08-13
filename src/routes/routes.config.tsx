@@ -39,6 +39,8 @@ import AssistantCourseDetail from "../pages/assistant/AssistantCourseDetail";
 import AssistantSubjectDetail from "../pages/assistant/AssistantSubjectDetail";
 import AssistantUploadExam from "../pages/assistant/AssistantUploadExam";
 import AssistantEditExam from "../pages/assistant/AssistantEditExam";
+import AssistantCreateExercise from "../pages/assistant/AssistantCreateExercise";
+import AssistantEditExercise from "../pages/assistant/AssistantEditExercise";
 import AssistantMaterials from "../pages/assistant/AssistantMaterials";
 import AssistantStudents from "../pages/assistant/AssistantStudents";
 import AssistantFlashcards from "../pages/assistant/AssistantFlashcards";
@@ -167,6 +169,8 @@ export default function AppRoutes() {
         <Route path={ROUTES.ASSISTANT.COURSE_DETAIL()} element={<AssistantCourseDetail />} />
         <Route path={ROUTES.ASSISTANT.COURSE_UPLOAD_EXAM()} element={<AssistantUploadExam />} />
         <Route path={ROUTES.ASSISTANT.COURSE_EDIT_EXAM()} element={<AssistantEditExam />} />
+        <Route path={ROUTES.ASSISTANT.COURSE_CREATE_EXERCISE()} element={<AssistantCreateExercise />} />
+        <Route path={ROUTES.ASSISTANT.COURSE_EDIT_EXERCISE()} element={<AssistantEditExercise />} />
         <Route path={ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL()} element={<AssistantSubjectDetail />} />
         <Route path={ROUTES.ASSISTANT.MATERIALS} element={<AssistantMaterials />} />
         <Route path={ROUTES.ASSISTANT.STUDENTS} element={<AssistantStudents />} />
