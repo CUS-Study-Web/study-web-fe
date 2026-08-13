@@ -458,20 +458,20 @@ export const DEMO_SUBJECT_META_V2: Record<string, { topics: number; lectures: nu
 
 export const DEMO_COURSE_EXAMS: Record<string, CourseExam[]> = {
   'V-SAT': [
-    { id: 1, title: 'Đề thi thử V-SAT Toán – Đề 01', courseKey: 'V-SAT', questions: 43, duration: '75 phút', date: '15/06/2024', status: 'published' },
+    { id: 1, title: 'Đề thi thử V-SAT Toán – Đề 01', courseKey: 'V-SAT', questions: 43, duration: '75 ', date: '15/06/2024', status: 'published' },
   ],
   'V-ACT': [
-    { id: 2, title: 'Đề thi thử V-ACT – Đề 01/2024', courseKey: 'V-ACT', questions: 50, duration: '90 phút', date: '12/07/2024', status: 'published' },
-    { id: 3, title: 'Đề thi thử V-ACT – Đề 02/2024', courseKey: 'V-ACT', questions: 50, duration: '90 phút', date: '20/07/2024', status: 'draft' },
+    { id: 2, title: 'Đề thi thử V-ACT – Đề 01/2024', courseKey: 'V-ACT', questions: 50, duration: '90 ', date: '12/07/2024', status: 'published' },
+    { id: 3, title: 'Đề thi thử V-ACT – Đề 02/2024', courseKey: 'V-ACT', questions: 50, duration: '90 ', date: '20/07/2024', status: 'draft' },
   ],
   'HSA': [
-    { id: 4, title: 'Đề thi thử HSA – Đề 01/2024', courseKey: 'HSA', questions: 60, duration: '120 phút', date: '18/07/2024', status: 'published' },
+    { id: 4, title: 'Đề thi thử HSA – Đề 01/2024', courseKey: 'HSA', questions: 60, duration: '120 ', date: '18/07/2024', status: 'published' },
   ],
   'HSCA': [
-    { id: 5, title: 'Đề thi thử HSCA – Đề 01/2024', courseKey: 'HSCA', questions: 40, duration: '60 phút', date: '20/07/2024', status: 'published' },
+    { id: 5, title: 'Đề thi thử HSCA – Đề 01/2024', courseKey: 'HSCA', questions: 40, duration: '60 ', date: '20/07/2024', status: 'published' },
   ],
   'THPT-QG': [
-    { id: 6, title: 'Đề thi thử THPT QG – Môn Toán Đề 01', courseKey: 'THPT-QG', questions: 50, duration: '90 phút', date: '22/07/2024', status: 'published' },
+    { id: 6, title: 'Đề thi thử THPT QG – Môn Toán Đề 01', courseKey: 'THPT-QG', questions: 50, duration: '90 ', date: '22/07/2024', status: 'published' },
   ],
 };
 

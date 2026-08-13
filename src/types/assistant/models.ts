@@ -124,6 +124,7 @@ export interface CourseExam {
   duration: string;
   date: string;
   status: 'published' | 'draft';
+  solutionLink?: string;
 }
 
 export interface SubjectLecture {

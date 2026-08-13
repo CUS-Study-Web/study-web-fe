@@ -11,6 +11,7 @@ export interface ExamFormData {
   duration: string;
   date: string;
   status: 'published' | 'draft';
+  solutionLink?: string;
   answers: AssistantExamAnswer[];
 }
 
@@ -44,6 +45,7 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
     const [duration, setDuration] = useState(initialData?.duration ?? '90');
     const [date, setDate] = useState(initialData?.date ?? todayString());
     const [status, setStatus] = useState<'published' | 'draft'>(initialData?.status ?? 'published');
+    const [solutionLink, setSolutionLink] = useState(initialData?.solutionLink ?? '');
     const [answers, setAnswers] = useState<AssistantExamAnswer[]>(
       initialData?.answers ?? buildAnswers(Number(initialData?.questions ?? 50))
     );
@@ -55,7 +57,7 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
     }, [questions]);
 
     useImperativeHandle(ref, () => ({
-      getData: () => ({ title, courseKey, questions, duration, date, status, answers }),
+      getData: () => ({ title, courseKey, questions, duration, date, status, solutionLink, answers }),
     }));
 
     const updateAnswerSelected = (idx: number, opt: string) => {
@@ -138,6 +140,20 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
             onChange={(e) => setDate(e.target.value)}
             placeholder="DD/MM/YYYY"
             className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--brand-base-600)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-base-600)] transition-colors bg-white"
+          />
+        </div>
+
+        {/* Link lời giải */}
+        <div>
+          <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
+            Link bài giải (nếu có)
+          </div>
+          <input
+            type="text"
+            value={solutionLink}
+            onChange={(e) => setSolutionLink(e.target.value)}
+            placeholder="Nhập link lời giải..."
+            className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--brand-base-600)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-base-600)] transition-colors placeholder:text-[var(--text-tertiary)] bg-white"
           />
         </div>
 
