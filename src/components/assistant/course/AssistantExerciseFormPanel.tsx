@@ -135,13 +135,13 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
         {/* Link bài giải */}
         <div>
           <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
-            Link bài giải (nếu có)
+            Link lời giải (nếu có)
           </div>
           <input
             type="text"
             value={solutionLink}
             onChange={(e) => setSolutionLink(e.target.value)}
-            placeholder="Nhập link bài giải..."
+            placeholder="Nhập link lời giải..."
             className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] outline-none focus:border-[var(--brand-500)] transition-colors placeholder:text-[var(--text-tertiary)]"
           />
         </div>
@@ -209,11 +209,10 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
                       <div
                         key={opt}
                         onClick={() => updateAnswerSelected(idx, opt)}
-                        className={`w-7 h-7 rounded-full flex items-center justify-center font-[family-name:var(--font-heading)] font-bold text-[12px] cursor-pointer select-none transition-all duration-150 border ${
-                          isSelected
-                            ? 'bg-[var(--brand-500)] text-white border-[var(--brand-500)]'
-                            : 'bg-white text-[var(--text-secondary)] border-[var(--border-strong)] hover:border-[var(--brand-400)] hover:text-[var(--brand-600)]'
-                        }`}
+                        className={`w-7 h-7 rounded-full flex items-center justify-center font-[family-name:var(--font-heading)] font-bold text-[12px] cursor-pointer select-none transition-all duration-150 border ${isSelected
+                          ? 'bg-[var(--brand-500)] text-white border-[var(--brand-500)]'
+                          : 'bg-white text-[var(--text-secondary)] border-[var(--border-strong)] hover:border-[var(--brand-400)] hover:text-[var(--brand-600)]'
+                          }`}
                       >
                         {opt}
                       </div>

@@ -146,7 +146,7 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
         {/* Link lời giải */}
         <div>
           <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
-            Link bài giải (nếu có)
+            Link lời giải (nếu có)
           </div>
           <input
             type="text"
