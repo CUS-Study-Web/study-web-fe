@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import AssistantFeatureInDevPopup from '../AssistantFeatureInDevPopup';
+import type { CourseExam } from '../../../types/assistant/models';
 
-interface AssistantViewExercisePopupProps {
-  course: string;
-  subject: string;
-  exercise: any; // Type as needed
+interface AssistantViewExamPopupProps {
+  exam: CourseExam;
   onClose: () => void;
 }
 
-export default function AssistantViewExercisePopup({ course, subject, exercise, onClose }: AssistantViewExercisePopupProps) {
+export default function AssistantViewExamPopup({ exam, onClose }: AssistantViewExamPopupProps) {
   const [showDevPopup, setShowDevPopup] = useState(false);
 
   const labelClass = 'font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] uppercase tracking-[0.4px]';
@@ -23,7 +22,7 @@ export default function AssistantViewExercisePopup({ course, subject, exercise, 
         {/* Header */}
         <div className="flex items-center justify-between mb-4.5">
           <div className="font-[family-name:var(--font-heading)] font-extrabold text-[17px] text-[var(--text-primary)]">
-            Xem bài tập
+            Xem đề thi
           </div>
           <div
             onClick={onClose}
@@ -36,20 +35,28 @@ export default function AssistantViewExercisePopup({ course, subject, exercise, 
         {/* Metadata grid */}
         <div className="grid grid-cols-2 gap-y-2.5 gap-x-6 mb-4.5">
           <div>
-            <div className={labelClass}>Tên tài liệu</div>
-            <div className={valueClass}>{exercise?.title ?? "—"}</div>
-          </div>
-          <div>
-            <div className={labelClass}>Loại file</div>
-            <div className={valueClass}>{exercise?.fileType ?? "PDF"}</div>
+            <div className={labelClass}>Tên đề thi</div>
+            <div className={valueClass}>{exam.title}</div>
           </div>
           <div>
             <div className={labelClass}>Khóa học</div>
-            <div className={valueClass}>{course}</div>
+            <div className={valueClass}>{exam.courseKey}</div>
           </div>
           <div>
-            <div className={labelClass}>Môn học</div>
-            <div className={valueClass}>{subject}</div>
+            <div className={labelClass}>Số câu</div>
+            <div className={valueClass}>{exam.questions} câu</div>
+          </div>
+          <div>
+            <div className={labelClass}>Thời gian</div>
+            <div className={valueClass}>{exam.duration} phút</div>
+          </div>
+          <div>
+            <div className={labelClass}>Ngày đăng</div>
+            <div className={valueClass}>{exam.date}</div>
+          </div>
+          <div>
+            <div className={labelClass}>Trạng thái</div>
+            <div className={valueClass}>{exam.status === 'published' ? 'Đã xuất bản' : 'Nháp'}</div>
           </div>
         </div>
 
@@ -62,19 +69,19 @@ export default function AssistantViewExercisePopup({ course, subject, exercise, 
             <line x1="16" y1="17" x2="8" y2="17" stroke="#A0AAA2" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
           <div className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-secondary)]">
-            Xem trước tài liệu
+            Xem trước tài liệu đề thi
           </div>
           <div className="font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)]">
-            {exercise?.title ?? "Bài tập"}.{exercise?.fileType?.toLowerCase() ?? "pdf"}
+            {exam.title}.pdf
           </div>
         </div>
 
         {/* Actions */}
         <div className="flex gap-2.5 mt-5">
-          <div onClick={onClose} className="flex-1 flex justify-center items-center p-3 rounded-[var(--radius-md)] border-[1.5px] border-[var(--border-default)] bg-[var(--surface-card)] text-[var(--text-primary)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors">
+          <div onClick={onClose} className="flex-1 p-3 rounded-[var(--radius-md)] border-[1.5px] border-[var(--border-default)] bg-[var(--surface-card)] text-[var(--text-primary)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer text-center hover:bg-[var(--surface-muted)] transition-colors">
             Đóng
           </div>
-          <div onClick={() => setShowDevPopup(true)} className="flex-[2] flex justify-center items-center p-3 rounded-[var(--radius-md)] border-none bg-[var(--brand-500)] text-[var(--text-inverse)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--brand-600)] transition-colors">
+          <div onClick={() => setShowDevPopup(true)} className="flex-[2] p-3 rounded-[var(--radius-md)] border-none bg-[var(--brand-500)] text-[var(--text-inverse)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer text-center hover:bg-[var(--brand-600)] transition-colors">
             Tải về
           </div>
         </div>

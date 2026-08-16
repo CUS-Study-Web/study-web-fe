@@ -7,12 +7,12 @@ interface AssistantSubjectCardProps {
 
 export default function AssistantSubjectCard({ name, lectures, exercises, onViewDetail }: AssistantSubjectCardProps) {
   return (
-    <div 
+    <div
       onClick={() => onViewDetail(name)}
       className="rounded-[14px] border border-[var(--border-default)] bg-[var(--surface-card)] shadow-[var(--shadow-clay-sm)] overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
     >
       {/* Subject name */}
-      <div className="px-5 pt-4 pb-3 bg-[#F2F5F3]">
+      <div className="px-5 pt-4 pb-3 bg-[var(--brand-base-50)]">
         <div className="font-[family-name:var(--font-heading)] font-bold text-[16px] text-[var(--text-primary)]">
           {name}
         </div>

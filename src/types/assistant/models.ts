@@ -124,6 +124,7 @@ export interface CourseExam {
   duration: string;
   date: string;
   status: 'published' | 'draft';
+  solutionLink?: string;
 }
 
 export interface SubjectLecture {
@@ -139,6 +140,7 @@ export interface SubjectExercise {
   questions: number;
   fileType: string;
   solutionLink?: string;
+  status?: 'published' | 'draft';
 }
 
 export interface SubjectTopic {
@@ -150,7 +152,7 @@ export interface SubjectTopic {
 
 // --- Flashcard types ---
 
-export type TopicStatus = 'Đang dùng' | 'Nháp';
+export type TopicStatus = 'published' | 'draft';
 
 export interface FlashcardTopic {
   id: number;

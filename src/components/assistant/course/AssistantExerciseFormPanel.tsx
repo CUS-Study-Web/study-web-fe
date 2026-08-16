@@ -1,63 +1,61 @@
 import { useState, useImperativeHandle, forwardRef, type ReactNode, useEffect } from 'react';
+import { DEMO_COURSE_SUBJECTS } from '../../../types/assistant/mockData';
 
-export interface AssistantExamAnswer {
+export interface AssistantExerciseAnswer {
   selected: string[];
 }
 
-export interface ExamFormData {
+export interface ExerciseFormData {
+  subject: string;
+  questionCount: number;
   title: string;
-  courseKey: string;
-  questions: string;
-  duration: string;
-  date: string;
+  solutionLink: string;
+  fileType: string;
   status: 'published' | 'draft';
-  solutionLink?: string;
-  answers: AssistantExamAnswer[];
+  answers: AssistantExerciseAnswer[];
 }
 
-export interface AssistantExamFormPanelHandle {
-  getData: () => ExamFormData;
+export interface AssistantExerciseFormPanelHandle {
+  getData: () => ExerciseFormData;
 }
 
-interface AssistantExamFormPanelProps {
+interface AssistantExerciseFormPanelProps {
   courseKey: string;
   mode: 'create' | 'edit';
-  initialData?: Partial<ExamFormData>;
+  initialData?: Partial<ExerciseFormData>;
   children?: ReactNode;
 }
 
-function todayString() {
-  const d = new Date();
-  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-}
-
+const FILE_TYPES = ['PDF', 'DOCX', 'XLSX'];
 const OPTION_LABELS = ['A', 'B', 'C', 'D'];
 
 /** Tạo mảng answers với số câu cho trước */
-function buildAnswers(count: number, existing: AssistantExamAnswer[] = []): AssistantExamAnswer[] {
+function buildAnswers(count: number, existing: AssistantExerciseAnswer[] = []): AssistantExerciseAnswer[] {
   return Array.from({ length: count }, (_, i) => existing[i] ?? { selected: [] });
 }
 
-const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, AssistantExamFormPanelProps>(
+const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, AssistantExerciseFormPanelProps>(
   ({ courseKey, initialData, children }, ref) => {
+    const subjects = DEMO_COURSE_SUBJECTS[courseKey] ?? [];
+
+    const [subject, setSubject] = useState(initialData?.subject ?? (subjects.length > 0 ? subjects[0] : ''));
+    const [questionCount, setQuestionCount] = useState(initialData?.questionCount ?? 20);
     const [title, setTitle] = useState(initialData?.title ?? '');
-    const [questions, setQuestions] = useState(initialData?.questions ?? '50');
-    const [duration, setDuration] = useState(initialData?.duration ?? '90');
-    const [date, setDate] = useState(initialData?.date ?? todayString());
-    const [status, setStatus] = useState<'published' | 'draft'>(initialData?.status ?? 'published');
     const [solutionLink, setSolutionLink] = useState(initialData?.solutionLink ?? '');
-    const [answers, setAnswers] = useState<AssistantExamAnswer[]>(
-      initialData?.answers ?? buildAnswers(Number(initialData?.questions ?? 50))
+    const [fileType, setFileType] = useState(initialData?.fileType ?? 'PDF');
+    const [status, setStatus] = useState<'published' | 'draft'>(initialData?.status ?? 'published');
+    const [answers, setAnswers] = useState<AssistantExerciseAnswer[]>(
+      initialData?.answers ?? buildAnswers(initialData?.questionCount ?? 20)
     );
 
     // Sync số câu trắc nghiệm khi người dùng thay đổi field "Số câu"
     useEffect(() => {
-      const count = Math.max(1, parseInt(questions) || 0);
+      const count = Math.max(1, questionCount || 0);
       setAnswers((prev) => buildAnswers(count, prev));
-    }, [questions]);
+    }, [questionCount]);
 
     useImperativeHandle(ref, () => ({
-      getData: () => ({ title, courseKey, questions, duration, date, status, solutionLink, answers }),
+      getData: () => ({ subject, questionCount, title, solutionLink, fileType, status, answers }),
     }));
 
     const updateAnswerSelected = (idx: number, opt: string) => {
@@ -72,9 +70,52 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
 
     return (
       <div className="flex flex-col gap-3 bg-white p-4 rounded-[12px]">
-        {/* Panel title */}
         <div className="font-[family-name:var(--font-heading)] font-bold text-[11px] uppercase tracking-widest text-[var(--text-secondary)]">
-          Thông tin đề thi
+          Thông tin bài tập
+        </div>
+
+        {/* Khóa học */}
+        <div>
+          <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
+            Khóa học
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-[8px] bg-[var(--surface-muted)] border border-[var(--border-default)]">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-tertiary)] shrink-0">
+              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)]">
+              {courseKey}
+            </span>
+          </div>
+        </div>
+
+        {/* Môn học */}
+        <div>
+          <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
+            Môn học
+          </div>
+          <select
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none cursor-pointer focus:border-[var(--brand-500)] transition-colors"
+          >
+            <option value="">— Chọn môn học —</option>
+            {subjects.map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
+
+        {/* Số câu */}
+        <div>
+          <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
+            Số câu hỏi
+          </div>
+          <input
+            type="number"
+            min={1}
+            value={questionCount}
+            onChange={(e) => setQuestionCount(Number(e.target.value))}
+            className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] outline-none focus:border-[var(--brand-500)] transition-colors"
+          />
         </div>
 
         {/* Tiêu đề */}
@@ -86,64 +127,12 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Nhập tiêu đề đề thi..."
-            className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--brand-base-600)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-base-600)] transition-colors placeholder:text-[var(--text-tertiary)] bg-white"
+            placeholder="Nhập tiêu đề bài tập..."
+            className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] outline-none focus:border-[var(--brand-500)] transition-colors placeholder:text-[var(--text-tertiary)]"
           />
         </div>
 
-        {/* Khóa học */}
-        <div>
-          <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
-            Khóa học
-          </div>
-          <div className="px-3 py-1.5 rounded-[8px] bg-[var(--surface-muted)] border border-[var(--brand-base-600)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)]">
-            {courseKey}
-          </div>
-        </div>
-
-        {/* Số câu + Thời gian */}
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
-              Số câu
-            </div>
-            <input
-              type="number"
-              min={1}
-              value={questions}
-              onChange={(e) => setQuestions(e.target.value)}
-              className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--brand-base-600)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-base-600)] transition-colors bg-white"
-            />
-          </div>
-          <div>
-            <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
-              Thời gian (phút)
-            </div>
-            <input
-              type="number"
-              min={1}
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--brand-base-600)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-base-600)] transition-colors bg-white"
-            />
-          </div>
-        </div>
-
-        {/* Ngày đăng */}
-        <div>
-          <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
-            Ngày đăng
-          </div>
-          <input
-            type="text"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            placeholder="DD/MM/YYYY"
-            className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--brand-base-600)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-base-600)] transition-colors bg-white"
-          />
-        </div>
-
-        {/* Link lời giải */}
+        {/* Link bài giải */}
         <div>
           <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
             Link lời giải (nếu có)
@@ -153,8 +142,22 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
             value={solutionLink}
             onChange={(e) => setSolutionLink(e.target.value)}
             placeholder="Nhập link lời giải..."
-            className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--brand-base-600)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-base-600)] transition-colors placeholder:text-[var(--text-tertiary)] bg-white"
+            className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] outline-none focus:border-[var(--brand-500)] transition-colors placeholder:text-[var(--text-tertiary)]"
           />
+        </div>
+
+        {/* Loại file */}
+        <div>
+          <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
+            Loại file
+          </div>
+          <select
+            value={fileType}
+            onChange={(e) => setFileType(e.target.value)}
+            className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none cursor-pointer focus:border-[var(--brand-500)] transition-colors"
+          >
+            {FILE_TYPES.map((ft) => <option key={ft} value={ft}>{ft}</option>)}
+          </select>
         </div>
 
         {/* Trạng thái */}
@@ -162,7 +165,7 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
           <div className="font-[family-name:var(--font-heading)] font-bold text-[11px] uppercase tracking-widest text-[var(--text-secondary)] mb-1.5">
             Trạng thái
           </div>
-          <div className="flex rounded-[8px] overflow-hidden border border-[var(--brand-base-600)]">
+          <div className="flex rounded-[8px] overflow-hidden border border-[var(--border-default)]">
             <div
               onClick={() => setStatus('published')}
               className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none ${status === 'published'
@@ -184,7 +187,7 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
           </div>
         </div>
 
-        {/* Đáp án trắc nghiệm — fixed-height scrollable */}
+        {/* Đáp án trắc nghiệm */}
         <div>
           <div className="font-[family-name:var(--font-heading)] font-bold text-[11px] uppercase tracking-widest text-[var(--text-secondary)] mb-2">
             Đáp án trắc nghiệm
@@ -193,16 +196,12 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
             </span>
           </div>
 
-          {/* height cố định ~10 câu, cuộn nếu nhiều hơn */}
-          <div className="overflow-y-auto flex flex-col gap-3 pr-1" style={{ maxHeight: '300px' }}>
+          <div className="overflow-y-auto flex flex-col gap-3 pr-1" style={{ maxHeight: '250px' }}>
             {answers.map((ans, idx) => (
               <div key={idx} className="flex items-center gap-2">
-                {/* Question label */}
                 <span className="font-[family-name:var(--font-heading)] font-semibold text-[12px] text-[var(--text-primary)] w-[55px] shrink-0">
                   Câu {idx + 1}:
                 </span>
-
-                {/* ABCD selectors */}
                 <div className="flex items-center gap-3">
                   {OPTION_LABELS.map((opt) => {
                     const isSelected = ans.selected.includes(opt);
@@ -212,7 +211,7 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
                         onClick={() => updateAnswerSelected(idx, opt)}
                         className={`w-7 h-7 rounded-full flex items-center justify-center font-[family-name:var(--font-heading)] font-bold text-[12px] cursor-pointer select-none transition-all duration-150 border ${isSelected
                           ? 'bg-[var(--brand-500)] text-white border-[var(--brand-500)]'
-                          : 'bg-white text-[var(--text-secondary)] border-[var(--brand-base-600)] hover:border-[var(--brand-400)] hover:text-[var(--brand-600)]'
+                          : 'bg-white text-[var(--text-secondary)] border-[var(--border-strong)] hover:border-[var(--brand-400)] hover:text-[var(--brand-600)]'
                           }`}
                       >
                         {opt}
@@ -231,5 +230,5 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
   }
 );
 
-AssistantExamFormPanel.displayName = 'AssistantExamFormPanel';
-export default AssistantExamFormPanel;
+AssistantExerciseFormPanel.displayName = 'AssistantExerciseFormPanel';
+export default AssistantExerciseFormPanel;

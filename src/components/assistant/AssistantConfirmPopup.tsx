@@ -36,8 +36,8 @@ const VARIANT_CONFIG = {
     btnClass: 'bg-amber-500 hover:bg-amber-600 text-white',
   },
   info: {
-    iconBg: 'bg-blue-50',
-    iconColor: 'text-blue-500',
+    iconBg: 'bg-green-100',
+    iconColor: 'text-green-800',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
@@ -45,7 +45,7 @@ const VARIANT_CONFIG = {
         <line x1="12" y1="16" x2="12.01" y2="16" />
       </svg>
     ),
-    btnClass: 'bg-blue-500 hover:bg-blue-600 text-white',
+    btnClass: 'bg-green-800 hover:bg-green-800 text-white',
   },
 };
 
@@ -89,18 +89,18 @@ export default function AssistantConfirmPopup({
 
         {/* Buttons */}
         <div className="flex gap-3 mt-1">
-          <button
+          <div
             onClick={onCancel}
-            className="flex-1 py-2.5 rounded-[10px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)] bg-white hover:bg-[var(--surface-muted)] cursor-pointer transition-colors select-none"
+            className="flex-1 py-2.5 flex justify-center items-center rounded-[10px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)] bg-white hover:bg-[var(--surface-muted)] cursor-pointer transition-colors select-none"
           >
             {cancelLabel}
-          </button>
-          <button
+          </div>
+          <div
             onClick={onConfirm}
-            className={`flex-1 py-2.5 rounded-[10px] font-[family-name:var(--font-heading)] font-semibold text-[14px] cursor-pointer transition-colors select-none border-none ${config.btnClass}`}
+            className={`flex-1 py-2.5 flex justify-center items-center rounded-[10px] font-[family-name:var(--font-heading)] font-semibold text-[14px] cursor-pointer transition-colors select-none border-none ${config.btnClass}`}
           >
             {confirmLabel}
-          </button>
+          </div>
         </div>
       </div>
     </div>

@@ -6,7 +6,6 @@ import AssistantTabBar from '../../components/assistant/course/AssistantTabBar';
 import AssistantSubjectCard from '../../components/assistant/course/AssistantSubjectCard';
 import AssistantExamCard from '../../components/assistant/course/AssistantExamCard';
 import AssistantCreateLecturePopup from '../../components/assistant/course/AssistantCreateLecturePopup';
-import AssistantCreateExercisePopup from '../../components/assistant/course/AssistantCreateExercisePopup';
 import {
   DEMO_COURSES,
   DEMO_COURSE_SUBJECTS,
@@ -46,9 +45,9 @@ export default function AssistantCourseDetail() {
     navigate(ROUTES.ASSISTANT.COURSE_EDIT_EXAM(key, String(exam.id)));
   };
 
-  const ACTION_BUTTONS: { label: string; modal: ModalType }[] = [
-    { label: 'Tạo bài giảng', modal: 'lecture' },
-    { label: 'Tạo bài tập', modal: 'exercise' },
+  const ACTION_BUTTONS: { label: string; action: () => void }[] = [
+    { label: 'Tạo bài giảng', action: () => setOpenModal('lecture') },
+    { label: 'Tạo bài tập', action: () => navigate(ROUTES.ASSISTANT.COURSE_CREATE_EXERCISE(key)) },
   ];
 
   return (
@@ -56,9 +55,6 @@ export default function AssistantCourseDetail() {
       {/* Modals */}
       {openModal === 'lecture' && (
         <AssistantCreateLecturePopup courseKey={key} onClose={() => setOpenModal(null)} />
-      )}
-      {openModal === 'exercise' && (
-        <AssistantCreateExercisePopup courseKey={key} onClose={() => setOpenModal(null)} />
       )}
 
       <AssistantCoursePageHeader
@@ -82,10 +78,10 @@ export default function AssistantCourseDetail() {
         <div className="mt-5 flex flex-col gap-5">
           {/* Action buttons */}
           <div className="flex items-center gap-3">
-            {ACTION_BUTTONS.map(({ label, modal }) => (
+            {ACTION_BUTTONS.map(({ label, action }) => (
               <div
                 key={label}
-                onClick={() => setOpenModal(modal)}
+                onClick={action}
                 className="px-4 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white cursor-pointer active:scale-95 transition-all duration-150 select-none shadow-sm"
               >
                 {label}

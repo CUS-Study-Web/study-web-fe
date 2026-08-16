@@ -39,7 +39,7 @@ export default function AssistantCreateLecturePopup({ courseKey, onClose }: Assi
                 Tạo bài giảng
               </div>
               <div className="font-[family-name:var(--font-body)] text-[12px] text-[var(--text-secondary)]">
-                Thêm bài giảng mới từ link YouTube
+                Thêm bài giảng mới từ link bài giảng
               </div>
             </div>
           </div>
@@ -109,22 +109,21 @@ export default function AssistantCreateLecturePopup({ courseKey, onClose }: Assi
           />
         </div>
 
-        {/* Link YouTube */}
+        {/* Link bài giảng */}
         <div className="mb-6">
           <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
-            Link YouTube
+            Link bài giảng
           </div>
           <div className="flex items-center gap-2 px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] focus-within:border-[var(--brand-500)] transition-colors bg-white">
-            {/* YouTube icon */}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF0000" className="shrink-0">
-              <path d="M23.5 6.19a3 3 0 0 0-2.12-2.12C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.57A3 3 0 0 0 .5 6.19 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 5.81 3 3 0 0 0 2.12 2.12C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.57a3 3 0 0 0 2.12-2.12A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-5.81z" />
-              <polygon fill="white" points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-tertiary)] shrink-0">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
             </svg>
             <input
               type="url"
               value={link}
               onChange={(e) => setLink(e.target.value)}
-              placeholder="https://youtube.com/watch?v=..."
+              placeholder="https://..."
               className="flex-1 bg-transparent font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)]"
             />
           </div>

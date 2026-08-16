@@ -1,13 +1,14 @@
 import { useState } from 'react';
 
-interface AssistantCreateTopicModalProps {
+interface AssistantCreateTopicPopupProps {
   onClose: () => void;
-  onCreate: (name: string, fileName: string) => void;
+  onCreate: (name: string, fileName: string, status: 'published' | 'draft') => void;
 }
 
-export function AssistantCreateTopicModal({ onClose, onCreate }: AssistantCreateTopicModalProps) {
+export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreateTopicPopupProps) {
   const [topicName, setTopicName] = useState('');
   const [fileName, setFileName] = useState('');
+  const [status, setStatus] = useState<'published' | 'draft'>('published');
   const [isDragOver, setIsDragOver] = useState(false);
 
   // ─── Drag & Drop handlers ───────────────────────────────────────────────────
@@ -35,7 +36,7 @@ export function AssistantCreateTopicModal({ onClose, onCreate }: AssistantCreate
 
   const handleCreate = () => {
     if (!topicName.trim()) return;
-    onCreate(topicName.trim(), fileName);
+    onCreate(topicName.trim(), fileName, status);
     onClose();
   };
 
@@ -83,6 +84,33 @@ export function AssistantCreateTopicModal({ onClose, onCreate }: AssistantCreate
               className="w-full px-3.5 py-[11px] rounded-[11px] border border-[var(--border-strong)] outline-none font-[family-name:var(--font-body)] text-[14px] text-[var(--text-primary)] focus:border-[var(--brand-500)] focus:bg-[var(--brand-soft-100)] transition-colors"
               style={{ boxSizing: 'border-box' }}
             />
+          </div>
+
+          {/* Status field */}
+          <div>
+            <div className="font-[family-name:var(--font-heading)] font-semibold text-[12px] text-[var(--text-secondary)] mb-1.5">
+              Trạng thái
+            </div>
+            <div className="flex w-[200px] rounded-[8px] overflow-hidden border border-[var(--border-default)]">
+              <div
+                onClick={() => setStatus('published')}
+                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none ${status === 'published'
+                  ? 'bg-[var(--brand-500)] text-white'
+                  : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
+                  }`}
+              >
+                Xuất bản
+              </div>
+              <div
+                onClick={() => setStatus('draft')}
+                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none border-l border-[var(--border-default)] ${status === 'draft'
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
+                  }`}
+              >
+                Nháp
+              </div>
+            </div>
           </div>
 
           {/* File upload */}
@@ -158,19 +186,18 @@ export function AssistantCreateTopicModal({ onClose, onCreate }: AssistantCreate
 
         {/* Footer */}
         <div className="flex justify-end gap-2.5 px-7 pb-[22px] pt-3.5 border-t border-[var(--surface-500)]">
-          <button
+          <div
             onClick={onClose}
             className="px-[22px] py-2.5 rounded-[11px] border border-[var(--border-strong)] bg-white text-[var(--text-secondary)] font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer hover:bg-[var(--surface-500)] transition-colors"
           >
             Hủy
-          </button>
-          <button
+          </div>
+          <div
             onClick={handleCreate}
-            disabled={!topicName.trim()}
             className="px-7 py-2.5 rounded-[11px] border-none bg-[var(--brand-500)] text-white font-[family-name:var(--font-heading)] font-bold text-[13px] cursor-pointer hover:bg-[var(--brand-600)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Tạo
-          </button>
+          </div>
         </div>
       </div>
     </div>

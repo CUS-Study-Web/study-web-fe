@@ -3,8 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import type { FlashcardTopic, FlashcardModalState, VocabularyWord } from '../../types/assistant/models';
 import { DEMO_FLASHCARD_TOPICS, DEMO_VOCABULARY_WORDS } from '../../types/assistant/mockData';
 import { AssistantSummaryChips, AssistantTopicTable } from '../../components/assistant/flashcard/AssistantFlashcardTable';
-import { AssistantCreateTopicModal } from '../../components/assistant/flashcard/AssistantCreateTopicModal';
-import { AssistantEditTopicModal } from '../../components/assistant/flashcard/AssistantEditTopicModal';
+import { AssistantCreateTopicPopup } from '../../components/assistant/flashcard/AssistantCreateTopicPopup';
+import { AssistantEditTopicPopup } from '../../components/assistant/flashcard/AssistantEditTopicPopup';
 import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
 import AssistantFeatureInDevPopup from '../../components/assistant/AssistantFeatureInDevPopup';
 
@@ -48,27 +48,6 @@ export default function AssistantFlashcards() {
     setDeleteTopicId(null);
   };
 
-  const handleCreate = (name: string, _fileName: string) => {
-    const newTopic: FlashcardTopic = {
-      id: Date.now(),
-      title: name,
-      words: 0,
-      created: new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-      status: 'Nháp',
-    };
-    setTopics(prev => [...prev, newTopic]);
-    setModal(null);
-  };
-
-  const handleSaveWords = (words: VocabularyWord[]) => {
-    setEditWords(words);
-    if (editTopic) {
-      setTopics(prev =>
-        prev.map(t => (t.id === editTopic.id ? { ...t, words: words.length } : t)),
-      );
-    }
-    setModal(null);
-  };
 
   const deleteTopic = topics.find(t => t.id === deleteTopicId);
 
@@ -119,18 +98,25 @@ export default function AssistantFlashcards() {
 
       {/* Modals */}
       {modal === 'create' && (
-        <AssistantCreateTopicModal
+        <AssistantCreateTopicPopup
           onClose={() => setModal(null)}
-          onCreate={handleCreate}
+          onCreate={(name, _file, status) => {
+            const newId = Date.now();
+            const dateStr = new Date().toLocaleDateString('vi-VN');
+            setTopics([...topics, { id: newId, title: name, words: 0, created: dateStr, status }]);
+            setModal(null);
+          }}
         />
       )}
-
       {modal === 'edit' && editTopic && (
-        <AssistantEditTopicModal
+        <AssistantEditTopicPopup
           topic={editTopic}
           initialWords={editWords}
-          onClose={() => setModal(null)}
-          onSave={handleSaveWords}
+          onClose={() => { setModal(null); setEditTopic(null); }}
+          onSave={(words, status) => {
+            setTopics(ts => ts.map(t => (t.id === editTopic.id ? { ...t, words: words.length, status } : t)));
+            setEditWords(words);
+          }}
         />
       )}
 

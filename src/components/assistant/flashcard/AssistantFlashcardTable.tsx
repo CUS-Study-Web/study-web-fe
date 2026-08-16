@@ -38,7 +38,7 @@ interface AssistantSummaryChipsProps {
 
 export function AssistantSummaryChips({ topics }: AssistantSummaryChipsProps) {
   const totalWords = topics.reduce((s, t) => s + t.words, 0);
-  const activeCount = topics.filter(t => t.status === 'Đang dùng').length;
+  const activeCount = topics.filter(t => t.status === 'published').length;
 
   return (
     <div className="flex gap-3 mb-6 flex-wrap">
@@ -151,7 +151,7 @@ function KebabMenu({ topicId, openKebab, setOpenKebab, onDownload, onEdit, onDel
       <button
         ref={btnRef}
         onClick={handleToggle}
-        className="w-8 h-8 rounded-lg border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
+        className="w-8 h-8 min-w-8 min-h-8 flex-shrink-0 rounded-full border border-[var(--border-strong)] bg-white cursor-pointer flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
         aria-label="Tùy chọn"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--neutral-500)">
@@ -172,17 +172,16 @@ function KebabMenu({ topicId, openKebab, setOpenKebab, onDownload, onEdit, onDel
             zIndex: 9999,
             boxShadow: '0 8px 32px rgba(0,0,0,0.14)',
           }}
-          className="bg-white rounded-xl border border-[var(--border-default)] py-1.5 min-w-[160px]"
+          className="bg-white rounded-[10px] border border-[var(--border-default)] py-1.5 min-w-[160px]"
         >
           {menuItems.map((item, i) => (
             <button
               key={item.label}
               onClick={item.action}
-              className={`flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-left transition-colors ${
-                i === menuItems.length - 1
-                  ? 'hover:bg-[#FEF2F2]'
-                  : 'hover:bg-[var(--surface-500)]'
-              }`}
+              className={`flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-left transition-colors ${i === menuItems.length - 1
+                ? 'hover:bg-[#FEF2F2]'
+                : 'hover:bg-[var(--surface-500)]'
+                }`}
               style={{ color: item.color }}
             >
               <span className="flex-shrink-0">{item.icon}</span>
@@ -206,12 +205,13 @@ interface AssistantTopicTableProps {
   onDeleteTopic: (id: number) => void;
 }
 
-const ROW_GRID = 'grid-cols-[2fr_1fr_1fr_64px]';
+const ROW_GRID = 'grid-cols-[2fr_1fr_1fr_1fr_64px]';
 
 const HEADER_COLS = [
   { label: 'Tên chủ đề', align: 'text-left' },
   { label: 'Số từ', align: 'text-center' },
   { label: 'Ngày tạo', align: 'text-left' },
+  { label: 'Trạng thái', align: 'text-left' },
   { label: '', align: 'text-right' },
 ];
 
@@ -267,6 +267,16 @@ export function AssistantTopicTable({
             {/* Date */}
             <div className="px-5 py-3.5 font-[family-name:var(--font-body)] text-[13px] text-[var(--neutral-500)] whitespace-nowrap">
               {topic.created}
+            </div>
+            {/* Status */}
+            <div className="px-5 py-3.5 flex items-center">
+              <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${
+                topic.status === 'published'
+                  ? 'bg-[var(--success-100)] text-[var(--success-700)]'
+                  : 'bg-[var(--warning-100)] text-[var(--warning-700)]'
+              }`}>
+                {topic.status === 'published' ? 'Đã xuất bản' : 'Nháp'}
+              </span>
             </div>
             {/* Actions */}
             <div className="px-5 py-3.5 flex justify-end">
