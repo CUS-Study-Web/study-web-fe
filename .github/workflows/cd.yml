@@ -75,9 +75,6 @@ jobs:
     permissions:
       contents: read
       packages: read
-    env:
-      XDG_RUNTIME_DIR: /run/user/1000
-      DBUS_SESSION_BUS_ADDRESS: unix:path=/run/user/1000/bus
     steps:
       - name: Setup Runtime Environment & Log in
         run: |
