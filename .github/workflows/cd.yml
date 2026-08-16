@@ -12,19 +12,21 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/frontend
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   GITOPS_REPO: CUS-Study-Web/study-web-gitops
 
 concurrency:
-  group: fe-deploy
+  group: fe-deploy-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: false
 
 jobs:
   build-and-push:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    outputs:
+      image_name_lower: ${{ steps.format-name.outputs.image_name_lower }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,9 +40,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Format image name to lowercase
-        run: echo "IMAGE_NAME_LOWER=${IMAGE_NAME,,}" >> ${GITHUB_ENV}
+        id: format-name
+        run: |
+          LOWER="${IMAGE_NAME,,}"
+          echo "IMAGE_NAME_LOWER=${LOWER}" >> ${GITHUB_ENV}
+          echo "image_name_lower=${LOWER}" >> ${GITHUB_OUTPUT}
 
-      # If staging branch: Build from Dockerfile and push to GHCR as staging and SHA
+      # Build Staging Image
       - name: Build and push (Staging)
         if: ${{ github.event.workflow_run.head_branch == 'staging' }}
         uses: docker/build-push-action@v5
@@ -51,27 +57,21 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:${{ github.event.workflow_run.head_sha }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:staging
 
-      # If main branch: Promote staging image to latest/production (Pull, tag, push)
-      - name: Promote image (Production)
+      # Build Production Image
+      - name: Build and push (Production)
         if: ${{ github.event.workflow_run.head_branch == 'main' }}
-        run: |
-          IMAGE_BASE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}"
-          SHA="${{ github.event.workflow_run.head_sha }}"
-          
-          # Pull the staging image
-          docker pull ${IMAGE_BASE}:staging
-          
-          # Tag as latest and with the specific commit SHA
-          docker tag ${IMAGE_BASE}:staging ${IMAGE_BASE}:latest
-          docker tag ${IMAGE_BASE}:staging ${IMAGE_BASE}:${SHA}
-          
-          # Push the promoted tags
-          docker push ${IMAGE_BASE}:latest
-          docker push ${IMAGE_BASE}:${SHA}
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:${{ github.event.workflow_run.head_sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:latest
 
   deploy:
-    runs-on: self-hosted
+    needs: build-and-push
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: self-hosted
     permissions:
       contents: read
       packages: read
@@ -88,8 +88,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ env.GITOPS_REPO }}
+          token: ${{ secrets.GITOPS_PAT || secrets.GITHUB_TOKEN }}
           path: gitops-manifests
           ref: main
+
       - name: Deploy Locally on Self-Hosted
         env:
           IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
@@ -97,12 +99,7 @@ jobs:
         run: |
           cd gitops-manifests
           if [ "$BRANCH" = "main" ]; then
-            # Deploy production container on port 8081 using make target
             IMAGE_TAG=$IMAGE_TAG make fe-prod
           elif [ "$BRANCH" = "staging" ]; then
-            # Deploy staging container on port 8080 using make target
-            make fe-staging
-          else
-            echo "Branch $BRANCH is not configured for deployment..."
-            exit 1
+            IMAGE_TAG=$IMAGE_TAG make fe-staging
           fi
