@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { DEMO_MATERIALS_ASST } from '../../types/assistant/mockData';
-import type { AssistantDocument } from '../../types/assistant/models';
+import { DEMO_MATERIALS_ASST } from '../../types/mockData';
+import type { AssistantDocument } from '../../types/assistant';
 import AssistantUploadMaterialPopup from '../../components/assistant/material/AssistantUploadMaterialPopup';
 import AssistantEditMaterialPopup from '../../components/assistant/material/AssistantEditMaterialPopup';
 import AssistantViewMaterialPopup from '../../components/assistant/material/AssistantViewMaterialPopup';

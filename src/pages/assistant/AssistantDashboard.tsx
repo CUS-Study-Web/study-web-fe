@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import AssistantStatCard from '../../components/assistant/dashboard/AssistantStatCard';
 import AssistantQuickActions from '../../components/assistant/dashboard/AssistantQuickActions';
 import AssistantRecentActivity from '../../components/assistant/dashboard/AssistantRecentActivity';
-import { ASST_STAT_CARDS } from '../../types/assistant/mockData';
+import { ASST_STAT_CARDS } from '../../types/mockData';
 
 const AssistantDashboard = () => {
   const navigate = useNavigate();

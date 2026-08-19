@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import AssistantCourseCard from '../../components/assistant/course/AssistantCourseCard';
-import { DEMO_COURSES } from '../../types/assistant/mockData';
+import { DEMO_COURSES } from '../../types/mockData';
 import { ROUTES } from '../../utils/routes';
 
 export default function AssistantCourses() {

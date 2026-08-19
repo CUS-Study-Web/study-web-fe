@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantExerciseFormPanel, { type AssistantExerciseFormPanelHandle } from '../../components/assistant/course/AssistantExerciseFormPanel';
-import { DEMO_COURSES } from '../../types/assistant/mockData';
+import { DEMO_COURSES } from '../../types/mockData';
 import { ROUTES } from '../../utils/routes';
 
 export default function AssistantCreateExercise() {
@@ -141,11 +141,10 @@ export default function AssistantCreateExercise() {
                 const dropped = e.dataTransfer.files[0];
                 if (dropped) handleFile(dropped);
               }}
-              className={`flex flex-col items-center justify-center gap-4 flex-1 min-h-[420px] rounded-[16px] border-2 border-dashed transition-all duration-200 ${
-                dragging
+              className={`flex flex-col items-center justify-center gap-4 flex-1 min-h-[420px] rounded-[16px] border-2 border-dashed transition-all duration-200 ${dragging
                   ? 'border-[var(--brand-500)] bg-[var(--brand-soft-300)]'
                   : 'border-[var(--border-default)] bg-[var(--surface-card)]'
-              }`}
+                }`}
             >
               <div className="w-14 h-14 rounded-full bg-[var(--surface-muted)] border border-[var(--border-default)] flex items-center justify-center">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-secondary)]">
@@ -181,10 +180,10 @@ export default function AssistantCreateExercise() {
 
         {/* Right: form panel */}
         <div className="flex flex-col w-[380px] shrink-0 border-l border-[var(--border-default)] pl-6 min-h-0">
-          <AssistantExerciseFormPanel 
-            ref={formRef} 
-            courseKey={key} 
-            mode="create" 
+          <AssistantExerciseFormPanel
+            ref={formRef}
+            courseKey={key}
+            mode="create"
             initialData={{ subject: subjectNameParam || '' }}
           >
             <div className="flex items-center gap-2 pt-3 border-t border-[var(--border-subtle)] mt-1 shrink-0">

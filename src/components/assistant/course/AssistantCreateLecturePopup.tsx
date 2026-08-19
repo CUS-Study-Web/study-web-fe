@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DEMO_COURSE_SUBJECTS } from '../../../types/assistant/mockData';
+import { DEMO_COURSE_SUBJECTS } from '../../../types/mockData';
 
 interface AssistantCreateLecturePopup {
   courseKey: string;

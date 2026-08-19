@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import type { FlashcardTopic, FlashcardModalState, VocabularyWord } from '../../types/assistant/models';
-import { DEMO_FLASHCARD_TOPICS, DEMO_VOCABULARY_WORDS } from '../../types/assistant/mockData';
+import type { FlashcardTopic, FlashcardModalState, VocabularyWord } from '../../types/assistant';
+import { DEMO_FLASHCARD_TOPICS, DEMO_VOCABULARY_WORDS } from '../../types/mockData';
 import { AssistantSummaryChips, AssistantTopicTable } from '../../components/assistant/flashcard/AssistantFlashcardTable';
 import { AssistantCreateTopicPopup } from '../../components/assistant/flashcard/AssistantCreateTopicPopup';
 import { AssistantEditTopicPopup } from '../../components/assistant/flashcard/AssistantEditTopicPopup';

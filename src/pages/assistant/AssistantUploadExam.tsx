@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantExamFormPanel, { type AssistantExamFormPanelHandle } from '../../components/assistant/course/AssistantExamFormPanel';
-import { DEMO_COURSES } from '../../types/assistant/mockData';
+import { DEMO_COURSES } from '../../types/mockData';
 import { ROUTES } from '../../utils/routes';
 
 export default function AssistantUploadExam() {
@@ -122,11 +122,10 @@ export default function AssistantUploadExam() {
                 const file = e.dataTransfer.files[0];
                 if (file) handleFile(file);
               }}
-              className={`flex flex-col items-center justify-center gap-4 flex-1 min-h-[420px] rounded-[16px] border-2 border-dashed transition-all duration-200 ${
-                dragging
+              className={`flex flex-col items-center justify-center gap-4 flex-1 min-h-[420px] rounded-[16px] border-2 border-dashed transition-all duration-200 ${dragging
                   ? 'border-[var(--brand-500)] bg-[var(--brand-soft-300)]'
                   : 'border-[var(--border-default)] bg-[var(--surface-card)]'
-              }`}
+                }`}
             >
               {/* Upload icon */}
               <div className="w-14 h-14 rounded-full bg-[var(--surface-muted)] border border-[var(--border-default)] flex items-center justify-center">

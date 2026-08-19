@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import AssistantFeatureInDevPopup from '../AssistantFeatureInDevPopup';
-import type { CourseExam } from '../../../types/assistant/models';
+import type { CourseExam } from '../../../types/assistant';
 
 interface AssistantViewExamPopupProps {
   exam: CourseExam;

@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantExamFormPanel, { type AssistantExamFormPanelHandle } from '../../components/assistant/course/AssistantExamFormPanel';
-import { DEMO_COURSES, DEMO_COURSE_EXAMS } from '../../types/assistant/mockData';
+import { DEMO_COURSES, DEMO_COURSE_EXAMS } from '../../types/mockData';
 import { ROUTES } from '../../utils/routes';
 
 // Simulated exam question lines for the PDF preview
@@ -46,13 +46,13 @@ export default function AssistantEditExam() {
   // Build initialData for the form
   const initialData = exam
     ? {
-        title: exam.title,
-        courseKey: exam.courseKey,
-        questions: String(exam.questions),
-        duration: exam.duration.replace(' phút', ''),
-        date: exam.date,
-        status: exam.status,
-      }
+      title: exam.title,
+      courseKey: exam.courseKey,
+      questions: String(exam.questions),
+      duration: exam.duration.replace(' phút', ''),
+      date: exam.date,
+      status: exam.status,
+    }
     : undefined;
 
   return (

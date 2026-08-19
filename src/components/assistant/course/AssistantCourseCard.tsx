@@ -1,4 +1,4 @@
-import type { Course } from '../../../types/assistant/models';
+import type { Course } from '../../../types/assistant';
 
 interface AssistantCourseCardProps {
   course: Course;
@@ -7,7 +7,7 @@ interface AssistantCourseCardProps {
 
 export default function AssistantCourseCard({ course, onViewDetail }: AssistantCourseCardProps) {
   return (
-    <div 
+    <div
       onClick={() => onViewDetail(course.key)}
       className="rounded-[16px] overflow-hidden border border-[var(--border-default)] bg-[var(--surface-card)] shadow-[var(--shadow-clay-sm)] cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
     >

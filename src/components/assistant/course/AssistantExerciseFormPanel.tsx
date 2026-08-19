@@ -1,5 +1,5 @@
 import { useState, useImperativeHandle, forwardRef, type ReactNode, useEffect } from 'react';
-import { DEMO_COURSE_SUBJECTS } from '../../../types/assistant/mockData';
+import { DEMO_COURSE_SUBJECTS } from '../../../types/mockData';
 
 export interface AssistantExerciseAnswer {
   selected: string[];

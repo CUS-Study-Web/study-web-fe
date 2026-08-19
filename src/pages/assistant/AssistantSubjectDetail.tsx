@@ -9,8 +9,8 @@ import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPo
 import {
   DEMO_COURSES,
   DEMO_SUBJECT_TOPICS,
-} from '../../types/assistant/mockData';
-import type { SubjectLecture, SubjectExercise } from '../../types/assistant/models';
+} from '../../types/mockData';
+import type { SubjectLecture, SubjectExercise } from '../../types/assistant';
 import { ROUTES } from '../../utils/routes';
 
 const TABS = [

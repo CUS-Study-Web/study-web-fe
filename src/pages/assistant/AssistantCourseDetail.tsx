@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { CourseExam } from '../../types/assistant/models';
+import type { CourseExam } from '../../types/assistant';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantTabBar from '../../components/assistant/course/AssistantTabBar';
 import AssistantSubjectCard from '../../components/assistant/course/AssistantSubjectCard';
@@ -10,7 +10,7 @@ import {
   DEMO_COURSES,
   DEMO_COURSE_SUBJECTS,
   DEMO_COURSE_EXAMS,
-} from '../../types/assistant/mockData';
+} from '../../types/mockData';
 import { ROUTES } from '../../utils/routes';
 
 const TABS = [
@@ -99,7 +99,7 @@ export default function AssistantCourseDetail() {
                   lectures={0}
                   exercises={0}
                   onViewDetail={(name) =>
-                   navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, encodeURIComponent(name)))
+                    navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, encodeURIComponent(name)))
                   }
                 />
               );
