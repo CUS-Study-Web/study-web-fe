@@ -1,49 +1,85 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useCallback, useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { useUserQuery } from "../hooks/queries/useAuth";
+import { ROUTES } from "../utils/routes";
+import { parseJwt } from "../utils/jwt";
+import type { AuthResponse, UserResponse } from "../types/api/auth.api";
 
-type UserInfo = {
-  name: string;
-  email: string;
-  phone: string;
-  birthday: string;
-  gender: string;
-  school: string;
-  coursesCount: number;
-  isVip: boolean;
+type UserInfo = UserResponse & {
+  coursesCount?: number;
+  isVip?: boolean;
 };
 
 type AuthContextValue = {
   user: UserInfo | null;
   isLoggedIn: boolean;
-  login: (email: string) => void;
+  isLoading: boolean;
+  login: (authData: AuthResponse, redirectPath?: string) => void;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const MOCK_USER: UserInfo = {
-  name: "Nguyễn Văn An",
-  email: "an.nguyen@email.com",
-  phone: "0912 345 678",
-  birthday: "15/08/2006",
-  gender: "Nam",
-  school: "THPT Chu Văn An, Hà Nội",
-  coursesCount: 2,
-  isVip: false,
-};
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<UserInfo | null>(null);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const token = localStorage.getItem("accessToken");
+  const isLoggedIn = !!token;
 
-  const login = useCallback((_email: string) => {
-    setUser(MOCK_USER);
-  }, []);
+  // We only fetch the user if the token exists
+  const { data: userResponse, isLoading } = useUserQuery(isLoggedIn);
+  const user = userResponse?.data || null;
+
+  // Combine with mock defaults to avoid breaking existing UI
+  const userInfo: UserInfo | null = useMemo(() => {
+    if (!user) return null;
+    return {
+      ...user,
+      coursesCount: 2, // mock fallback
+      isVip: false, // mock fallback
+    };
+  }, [user]);
+
+  const login = useCallback(
+    (authData: AuthResponse, redirectPath?: string) => {
+      localStorage.setItem("accessToken", authData.accessToken);
+      localStorage.setItem("refreshToken", authData.refreshToken);
+      
+      // Update query cache immediately so it doesn't need to refetch instantly
+      queryClient.setQueryData(['currentUser'], { data: authData.user });
+      
+      if (redirectPath) {
+        navigate(redirectPath);
+        return;
+      }
+      
+      let role = 'learner';
+      const decodedToken = parseJwt(authData.accessToken);
+      if (decodedToken && decodedToken.role) {
+        role = decodedToken.role.toLowerCase();
+      }
+      
+      if (role === 'admin') {
+        navigate(ROUTES.ADMIN.DASHBOARD);
+      } else if (role === 'assistant') {
+        navigate(ROUTES.ASSISTANT.DASHBOARD);
+      } else {
+        navigate(ROUTES.LEARNER.MY_COURSES);
+      }
+    },
+    [navigate, queryClient]
+  );
 
   const logout = useCallback(() => {
-    setUser(null);
-  }, []);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    queryClient.removeQueries({ queryKey: ['currentUser'] });
+    navigate(ROUTES.AUTH.LOGIN);
+  }, [navigate, queryClient]);
 
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, logout }}>
+    <AuthContext.Provider value={{ user: userInfo, isLoggedIn, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
