@@ -1,15 +1,62 @@
 import { useState } from "react";
 import AuthLayout from "../../components/guest/auth/AuthLayout";
 import { ROUTES } from "../../utils/routes";
+import { authService } from "../../services/authService";
+import { useNotification } from "../../components/common/NotificationProvider";
+import { useAuth } from "../../contexts/AuthContext";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  
+  const { showSuccess, showError } = useNotification();
+  const { login } = useAuth();
+
+  const registerMutation = useMutation({
+    mutationFn: authService.register,
+    onSuccess: (data) => {
+      showSuccess("Đăng ký thành công!");
+      setTimeout(() => {
+        login(data.data, ROUTES.HOME);
+      }, 1000);
+    },
+    onError: (error: any) => {
+      console.error("Register Error:", error);
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data?.message) {
+          showError(error.response.data.message);
+        } else if (error.code === 'ECONNABORTED' || !error.response) {
+          showError("Lỗi máy chủ, vui lòng thử lại sau.");
+        } else {
+          showError(`Lỗi Axios: ${error.message} - ${JSON.stringify(error.response?.data || {})}`);
+        }
+      } else {
+        showError(`Lỗi hệ thống: ${error.message || 'Không xác định'}`);
+      }
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password || password !== confirmPassword) return;
+    if (!email || !password || password !== confirmPassword) {
+      if (password !== confirmPassword) {
+        showError("Mật khẩu không khớp.");
+      }
+      return;
+    }
+    
+    registerMutation.mutate({
+      gmail: email,
+      password: password,
+      name: "",
+      phone: "",
+      birth: "",
+      gender: "MALE",
+      school: "",
+    });
   };
 
   const leftFeatures = [
