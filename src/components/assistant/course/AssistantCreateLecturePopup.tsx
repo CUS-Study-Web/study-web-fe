@@ -6,12 +6,13 @@ import type { LessonRequest } from '../../../types/api/lesson.api';
 
 interface AssistantCreateLecturePopupProps {
   courseKey: string;
+  courseName?: string;
+  defaultSubjectId?: string;
   onClose: () => void;
 }
 
-export default function AssistantCreateLecturePopup({ courseKey, onClose }: AssistantCreateLecturePopupProps) {
-  const [subject, setSubject] = useState('');
-  const [orderNum, setOrderNum] = useState(1);
+export default function AssistantCreateLecturePopup({ courseKey, courseName, defaultSubjectId, onClose }: AssistantCreateLecturePopupProps) {
+  const [subject, setSubject] = useState(defaultSubjectId || '');
   const [title, setTitle] = useState('');
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [durationMin, setDurationMin] = useState(30);
@@ -34,7 +35,7 @@ export default function AssistantCreateLecturePopup({ courseKey, onClose }: Assi
 
     const payload: LessonRequest = {
       title,
-      orderNum,
+      orderNum: 1,
       youtubeUrl,
       durationMin,
       access: 'PUBLIC' // default for now
@@ -101,7 +102,7 @@ export default function AssistantCreateLecturePopup({ courseKey, onClose }: Assi
                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
               <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-secondary)]">
-                {courseKey}
+                {courseName || courseKey}
               </span>
             </div>
           </div>
@@ -120,32 +121,18 @@ export default function AssistantCreateLecturePopup({ courseKey, onClose }: Assi
           </div>
         </div>
 
-        {/* Số thứ tự & Thời lượng */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div>
-            <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
-              Số thứ tự
-            </div>
-            <input
-              type="number"
-              min={1}
-              value={orderNum}
-              onChange={(e) => setOrderNum(Number(e.target.value))}
-              className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)] transition-colors"
-            />
+        {/* Thời lượng */}
+        <div className="mb-4">
+          <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
+            Thời lượng (phút)
           </div>
-          <div>
-            <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
-              Thời lượng (phút)
-            </div>
-            <input
-              type="number"
-              min={1}
-              value={durationMin}
-              onChange={(e) => setDurationMin(Number(e.target.value))}
-              className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)] transition-colors"
-            />
-          </div>
+          <input
+            type="number"
+            min={1}
+            value={durationMin}
+            onChange={(e) => setDurationMin(Number(e.target.value))}
+            className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)] transition-colors"
+          />
         </div>
 
         {/* Tiêu đề */}
@@ -187,7 +174,7 @@ export default function AssistantCreateLecturePopup({ courseKey, onClose }: Assi
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-[8px] border border-[var(--border-default)] text-center font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
+            className="!flex-1 !py-2.5 !rounded-[8px] !border !border-[var(--border-default)] !text-center !font-[family-name:var(--font-heading)] !font-semibold !text-[14px] !text-[var(--text-primary)] !cursor-pointer hover:!bg-[var(--surface-muted)] !transition-colors !select-none"
           >
             Hủy
           </button>
@@ -195,7 +182,7 @@ export default function AssistantCreateLecturePopup({ courseKey, onClose }: Assi
             type="button"
             onClick={handleCreate}
             disabled={createMutation.isPending}
-            className="flex-[2] py-2.5 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] disabled:bg-[var(--brand-500)]/70 text-center font-[family-name:var(--font-heading)] font-semibold text-[14px] text-white cursor-pointer transition-colors select-none"
+            className="!flex-[2] !py-2.5 !rounded-[8px] !bg-[var(--brand-500)] hover:!bg-[var(--brand-600)] disabled:!bg-[var(--brand-500)]/70 !text-center !font-[family-name:var(--font-heading)] !font-semibold !text-[14px] !text-white !cursor-pointer !transition-colors !select-none"
           >
             {createMutation.isPending ? 'Đang tạo...' : 'Tạo bài giảng'}
           </button>

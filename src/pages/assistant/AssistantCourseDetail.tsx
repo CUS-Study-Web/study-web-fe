@@ -57,7 +57,7 @@ export default function AssistantCourseDetail() {
     <div className="flex flex-col h-full w-full">
       {/* Modals */}
       {openModal === 'lecture' && (
-        <AssistantCreateLecturePopup courseKey={key} onClose={() => setOpenModal(null)} />
+        <AssistantCreateLecturePopup courseKey={key} courseName={course.title} onClose={() => setOpenModal(null)} />
       )}
 
       <AssistantCoursePageHeader

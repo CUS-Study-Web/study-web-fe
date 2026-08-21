@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantTabBar from '../../components/assistant/course/AssistantTabBar';
 import AssistantCreateLecturePopup from '../../components/assistant/course/AssistantCreateLecturePopup';
+import AssistantEditLecturePopup from '../../components/assistant/course/AssistantEditLecturePopup';
 import AssistantViewExercisePopup from '../../components/assistant/course/AssistantViewExercisePopup';
 import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
 import {
@@ -218,6 +219,7 @@ export default function AssistantSubjectDetail() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('bai-giang');
   const [isLecturePopupOpen, setIsLecturePopupOpen] = useState(false);
+  const [editLecture, setEditLecture] = useState<any>(null);
   const [viewExercise, setViewExercise] = useState<SubjectExercise | null>(null);
   const [deleteLectureId, setDeleteLectureId] = useState<string | null>(null);
   const [deleteExerciseId, setDeleteExerciseId] = useState<number | null>(null);
@@ -347,7 +349,7 @@ export default function AssistantSubjectDetail() {
                       <td className="py-3.5 px-5">
                         <div className="flex justify-end">
                           <LectureActionMenu
-                            onEdit={() => console.log('Edit', lec.id)}
+                            onEdit={() => setEditLecture(lec)}
                             onDelete={() => setDeleteLectureId(lec.id)}
                           />
                         </div>
@@ -469,21 +471,31 @@ export default function AssistantSubjectDetail() {
       </div>
 
       {isLecturePopupOpen && (
-        <AssistantCreateLecturePopup courseKey={courseKey ?? ''} onClose={() => setIsLecturePopupOpen(false)} />
+        <AssistantCreateLecturePopup 
+          courseKey={courseKey ?? ''} 
+          courseName={course?.title}
+          defaultSubjectId={subjectId}
+          onClose={() => setIsLecturePopupOpen(false)} 
+        />
       )}
 
       {/* Edit / View Popups */}
-      {/* 
       {editLecture && (
         <AssistantEditLecturePopup
-          course={course?.title ?? courseKey ?? ''}
-          subjects={[decodedSubject]}
-          lecture={editLecture}
+          courseKey={courseKey ?? ''}
+          courseName={course?.title ?? courseKey ?? ''}
+          subjectId={subjectId}
+          subjectName={subject?.name || decodedSubject}
+          lecture={{
+            id: editLecture.id,
+            title: editLecture.title,
+            link: editLecture.youtubeUrl,
+            durationMin: editLecture.durationMin,
+            orderNum: editLecture.orderNum || 1
+          }}
           onClose={() => setEditLecture(null)}
-          onSave={() => console.log('Saved lecture', editLecture.id)}
         />
       )}
-      */}
 
       {viewExercise && (
         <AssistantViewExercisePopup

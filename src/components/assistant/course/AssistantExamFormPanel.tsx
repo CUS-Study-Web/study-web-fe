@@ -21,6 +21,7 @@ export interface AssistantExamFormPanelHandle {
 
 interface AssistantExamFormPanelProps {
   courseKey: string;
+  courseName?: string;
   mode: 'create' | 'edit';
   initialData?: Partial<ExamFormData>;
   children?: ReactNode;
@@ -39,7 +40,7 @@ function buildAnswers(count: number, existing: AssistantExamAnswer[] = []): Assi
 }
 
 const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, AssistantExamFormPanelProps>(
-  ({ courseKey, initialData, children }, ref) => {
+  ({ courseKey, courseName, initialData, children }, ref) => {
     const [title, setTitle] = useState(initialData?.title ?? '');
     const [questions, setQuestions] = useState(initialData?.questions ?? '50');
     const [duration, setDuration] = useState(initialData?.duration ?? '90');
@@ -97,7 +98,7 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
             Khóa học
           </div>
           <div className="px-3 py-1.5 rounded-[8px] bg-[var(--surface-muted)] border border-[var(--brand-base-600)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)]">
-            {courseKey}
+            {courseName || courseKey}
           </div>
         </div>
 

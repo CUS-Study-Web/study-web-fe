@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantExamFormPanel, { type AssistantExamFormPanelHandle } from '../../components/assistant/course/AssistantExamFormPanel';
-import { DEMO_COURSES } from '../../types/mockData';
+import { useGetCoursesQuery } from '../../hooks/queries/useCourses';
 import { ROUTES } from '../../utils/routes';
 
 export default function AssistantUploadExam() {
@@ -13,7 +13,8 @@ export default function AssistantUploadExam() {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
-  const course = DEMO_COURSES.find((c) => c.key === courseKey);
+  const { data: coursesData } = useGetCoursesQuery({ size: 100 });
+  const course = coursesData?.data.find((c) => c.id === courseKey);
   const key = courseKey ?? '';
 
   // Tạo / thu hồi object URL khi file thay đổi
@@ -46,11 +47,11 @@ export default function AssistantUploadExam() {
       <AssistantCoursePageHeader
         breadcrumbs={[
           { label: 'Quản lý khóa học', onClick: () => navigate(ROUTES.ASSISTANT.COURSES) },
-          { label: course?.name ?? key, onClick: handleBack },
+          { label: course?.title ?? key, onClick: handleBack },
           { label: 'Upload đề thi' },
         ]}
         title="Upload đề thi"
-        subtitle={`Khóa ${course?.name ?? key}`}
+        subtitle={`Khóa ${course?.title ?? key}`}
       />
 
       {/* Two-column layout */}
@@ -162,7 +163,7 @@ export default function AssistantUploadExam() {
 
         {/* Right: form panel */}
         <div className="flex flex-col w-[380px] shrink-0 border-l border-[var(--border-default)] pl-6 min-h-0">
-          <AssistantExamFormPanel ref={formRef} courseKey={key} mode="create">
+          <AssistantExamFormPanel ref={formRef} courseKey={key} courseName={course?.title} mode="create">
             <div className="flex items-center gap-2 pt-3 border-t border-[var(--border-subtle)] mt-1 shrink-0">
               <div
                 onClick={handleBack}
