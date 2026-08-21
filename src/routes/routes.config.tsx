@@ -1,4 +1,4 @@
-import { Routes, Route, Outlet, useLocation, useNavigate, Navigate } from "react-router-dom";
+import { Routes, Route, Outlet, useLocation, Navigate } from "react-router-dom";
 import { ROUTES } from "../utils/routes";
 import ProtectedRoute from "./ProtectedRoute";
 import { useAuth } from "../contexts/AuthContext";
@@ -92,18 +92,18 @@ function LearnerAppLayout() {
 }
 
 function AssistantAppLayout() {
-  const navigate = useNavigate();
+  const { logout } = useAuth();
   return (
-    <AssistantLayout onLogout={() => navigate(ROUTES.AUTH.LOGIN)}>
+    <AssistantLayout onLogout={logout}>
       <Outlet />
     </AssistantLayout>
   );
 }
 
 function AdminAppLayout() {
-  const navigate = useNavigate();
+  const { logout } = useAuth();
   return (
-    <AdminLayout onLogout={() => navigate(ROUTES.AUTH.LOGIN)}>
+    <AdminLayout onLogout={logout}>
       <Outlet />
     </AdminLayout>
   );
@@ -111,7 +111,6 @@ function AdminAppLayout() {
 
 export default function AppRoutes() {
   const { isLoggedIn, role } = useAuth();
-  
   return (
     <Routes>
       {/* Guest Public Layout */}
