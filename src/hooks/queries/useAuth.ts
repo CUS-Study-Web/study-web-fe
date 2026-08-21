@@ -22,13 +22,13 @@ export const useRegisterMutation = () => {
 
 export const useRefreshTokenMutation = () => {
   return useMutation({
-    mutationFn: (refreshToken: string) => authService.refreshToken(refreshToken),
+    mutationFn: () => authService.refreshToken(),
   });
 };
 
 export const useSignoutMutation = () => {
   return useMutation({
-    mutationFn: (refreshToken: string) => authService.signout(refreshToken),
+    mutationFn: () => authService.signout(),
   });
 };
 

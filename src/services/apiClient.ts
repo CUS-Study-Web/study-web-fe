@@ -34,7 +34,6 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && !isAuthEndpoint && !isAlreadyOnLogin) {
       // Clear tokens and redirect to login only when session expires mid-session
       localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
       window.location.href = '/login';
     }
     return Promise.reject(error);

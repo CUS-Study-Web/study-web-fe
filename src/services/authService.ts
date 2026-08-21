@@ -21,21 +21,13 @@ export const authService = {
     return response.data;
   },
 
-  refreshToken: async (refreshToken: string): Promise<SingleResponse<AuthResponse>> => {
-    const response = await apiClient.post<SingleResponse<AuthResponse>>('/api/auth/refresh-token', null, {
-      headers: {
-        'X-Refresh-Token': refreshToken,
-      },
-    });
+  refreshToken: async (): Promise<SingleResponse<AuthResponse>> => {
+    const response = await apiClient.post<SingleResponse<AuthResponse>>('/api/auth/refresh-token', null);
     return response.data;
   },
 
-  signout: async (refreshToken: string): Promise<SuccessResponse> => {
-    const response = await apiClient.post<SuccessResponse>('/api/auth/signout', null, {
-      headers: {
-        'X-Refresh-Token': refreshToken,
-      },
-    });
+  signout: async (): Promise<SuccessResponse> => {
+    const response = await apiClient.post<SuccessResponse>('/api/auth/signout', null);
     return response.data;
   },
 
