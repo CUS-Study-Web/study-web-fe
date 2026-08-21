@@ -32,11 +32,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data: userResponse, isLoading } = useUserQuery(isLoggedIn);
   const user = userResponse?.data || null;
 
-  // Combine with mock defaults to avoid breaking existing UI
-  const userInfo: UserInfo | null = useMemo(() => {
-    if (!user) return null;
-    return user as UserInfo;
-  }, [user]);
+  // Cast to UserInfo to include optional fields that should come from Backend (coursesCount, isVip)
+  const userInfo = user as UserInfo | null;
 
   const role = useMemo(() => {
     if (!token) return null;
