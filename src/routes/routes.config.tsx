@@ -53,6 +53,18 @@ import AdminSystem from "../pages/admin/AdminSystem";
 import AdminWebsite from "../pages/admin/AdminWebsite";
 import AdminAsstActivities from "../pages/admin/AdminAsstActivities";
 
+function GuestRoute({ children }: { children?: React.ReactNode }) {
+  const { isLoggedIn, role } = useAuth();
+
+  if (isLoggedIn) {
+    if (role === "admin") return <Navigate to={ROUTES.ADMIN.DASHBOARD} replace />;
+    if (role === "assistant") return <Navigate to={ROUTES.ASSISTANT.DASHBOARD} replace />;
+    return <Navigate to={ROUTES.LEARNER.DASHBOARD} replace />;
+  }
+
+  return children ? <>{children}</> : <Outlet />;
+}
+
 function AppLayout() {
   const location = useLocation();
   const isHome = location.pathname === ROUTES.HOME;
@@ -104,7 +116,9 @@ export default function AppRoutes() {
     <Routes>
       {/* Guest Public Layout */}
       <Route element={<AppLayout />}>
-        <Route path={ROUTES.HOME} element={<Home />} />
+        <Route element={<GuestRoute />}>
+          <Route path={ROUTES.HOME} element={<Home />} />
+        </Route>
         <Route path={ROUTES.COURSES} element={<CoursesPage />} />
         <Route path={ROUTES.COURSE_DETAIL()} element={<CourseDetailPage />} />
         <Route path={ROUTES.TRIAL} element={<TrialExamPage />} />
@@ -141,8 +155,10 @@ export default function AppRoutes() {
       </Route>
 
       {/* Full-screen Auth & System Pages */}
-      <Route path={ROUTES.AUTH.LOGIN} element={<LoginPage />} />
-      <Route path={ROUTES.AUTH.REGISTER} element={<RegisterPage />} />
+      <Route element={<GuestRoute />}>
+        <Route path={ROUTES.AUTH.LOGIN} element={<LoginPage />} />
+        <Route path={ROUTES.AUTH.REGISTER} element={<RegisterPage />} />
+      </Route>
       <Route path={ROUTES.UNDER_DEVELOPMENT} element={<UnderDevelopmentPage />} />
       <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
 
