@@ -4,6 +4,7 @@ export const ROUTES = {
   COURSE_DETAIL: (courseId: string | number = ':courseId') => `/courses/${courseId}`,
   TRIAL: '/trial',
   DOCUMENTS: '/documents',
+  DOC_VIEW: (docId: string | number = ':docId') => `/documents/${docId}`,
   ABOUT: '/about',
   VIP: '/vip',
   NOT_FOUND: '/404',

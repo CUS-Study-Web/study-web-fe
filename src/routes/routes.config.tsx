@@ -17,6 +17,7 @@ import CoursesPage from "../pages/guest/CoursesPage";
 import CourseDetailPage from "../pages/guest/CourseDetailPage";
 import TrialExamPage from "../pages/guest/TrialExamPage";
 import DocumentsPage from "../pages/guest/DocumentsPage";
+import DocumentViewPage from "../pages/guest/DocumentViewPage";
 import AboutPage from "../pages/guest/AboutPage";
 import VipPage from "../pages/guest/VipPage";
 import LoginPage from "../pages/guest/LoginPage";
@@ -106,6 +107,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.COURSE_DETAIL()} element={<CourseDetailPage />} />
         <Route path={ROUTES.TRIAL} element={<TrialExamPage />} />
         <Route path={ROUTES.DOCUMENTS} element={<DocumentsPage />} />
+        <Route path={ROUTES.DOC_VIEW()} element={<DocumentViewPage />} />
         <Route path={ROUTES.ABOUT} element={<AboutPage />} />
         <Route path={ROUTES.VIP} element={<VipPage />} />
       </Route>
