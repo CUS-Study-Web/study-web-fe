@@ -63,13 +63,13 @@ export default function ExerciseItem({ exercise, isLast }: ExerciseItemProps) {
           <>
             <button 
               onClick={() => alert("Hệ thống đang cập nhật lời giải. Bạn vui lòng quay lại sau nhé!")}
-              className="font-[family:var(--font-heading)] !font-bold text-xs px-3.5 py-1.5 rounded-full border-[1.5px] border-[var(--brand-base-500)] bg-white !text-[var(--brand-base-500)] cursor-pointer whitespace-nowrap transition-all hover:bg-[var(--brand-soft-500)]"
+              className="font-[family:var(--font-heading)] !font-semibold text-[11px] px-4 py-1.5 rounded-full border-[1.5px] border-[var(--brand-base-500)] bg-white !text-[var(--brand-base-500)] cursor-pointer whitespace-nowrap transition-all hover:bg-[var(--brand-soft-500)]"
             >
               Xem lời giải
             </button>
             <button 
               onClick={() => navigate(ROUTES.LEARNER.EXERCISE_START(courseId, subjectId, String(exercise.id)))}
-              className="font-[family:var(--font-heading)] !font-bold text-xs px-3.5 py-1.5 rounded-full border-none bg-[var(--brand-base-500)] !text-white cursor-pointer whitespace-nowrap transition-all hover:opacity-90"
+              className="font-[family:var(--font-heading)] !font-semibold text-[11px] px-4 py-1.5 rounded-full border-none bg-[var(--brand-base-500)] !text-white cursor-pointer whitespace-nowrap transition-all hover:opacity-90"
             >
               Làm lại
             </button>
@@ -77,7 +77,7 @@ export default function ExerciseItem({ exercise, isLast }: ExerciseItemProps) {
         ) : (
           <button 
             onClick={() => navigate(ROUTES.LEARNER.EXERCISE_START(courseId, subjectId, String(exercise.id)))}
-            className="font-[family:var(--font-heading)] !font-bold text-xs px-4.5 py-1.5 rounded-full border-none bg-[var(--brand-base-500)] !text-white cursor-pointer whitespace-nowrap transition-all hover:opacity-90"
+            className="font-[family:var(--font-heading)] !font-semibold text-[11px] px-4 py-1.5 rounded-full border-none bg-[var(--brand-base-500)] !text-white cursor-pointer whitespace-nowrap transition-all hover:opacity-90"
           >
             Bắt đầu làm bài
           </button>

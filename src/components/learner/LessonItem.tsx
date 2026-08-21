@@ -56,7 +56,7 @@ export default function LessonItem({ lesson, isLast }: LessonItemProps) {
             🔒 VIP
           </span>
         ) : (
-          <button className="transition-colors cursor-pointer whitespace-nowrap hover:bg-[#1B1F1C] font-[family:var(--font-heading)] font-bold text-xs px-4.5 py-2 rounded-full border-none bg-[var(--brand-base-500)] !text-white">
+          <button className="transition-all cursor-pointer whitespace-nowrap hover:bg-[#1B1F1C] font-[family:var(--font-heading)] !font-semibold text-[11px] px-4 py-1.5 rounded-full border-none bg-[var(--brand-base-500)] !text-white">
             Xem bài
           </button>
         )}
