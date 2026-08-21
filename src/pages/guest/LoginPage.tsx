@@ -7,6 +7,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 import { useLoginMutation } from "../../hooks/queries/useAuth";
 import { useNotification } from "../../components/common/NotificationProvider";
+import { validateEmail, sanitizeEmail } from "../../utils/emailUtils";
 import axios from "axios";
 
 export default function LoginPage() {
@@ -14,38 +15,51 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isForgotOpen, setIsForgotOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { login } = useAuth();
-  const { mutate: loginMutation } = useLoginMutation();
+  const { mutateAsync: loginMutationAsync } = useLoginMutation();
   const { showSuccess, showError } = useNotification();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
 
-    loginMutation(
-      { gmail: email.trim().toLowerCase(), password },
-      {
-        onSuccess: (data) => {
-          showSuccess("Đăng nhập thành công!");
-          // data is SingleResponse<AuthResponse>, so data.data is AuthResponse
-          login(data.data);
-        },
-        onError: (err) => {
-          console.error("Login failed", err);
-          if (axios.isAxiosError(err)) {
-            if (err.response?.data?.message) {
-              showError(err.response.data.message);
-            } else if (err.code === 'ECONNABORTED' || !err.response) {
-              showError("Lỗi máy chủ, vui lòng thử lại sau.");
-            } else {
-              showError("Đăng nhập thất bại. Vui lòng thử lại.");
-            }
-          } else {
-            showError("Lỗi không xác định.");
-          }
+    if (!validateEmail(email)) {
+      showError("Địa chỉ email không hợp lệ.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    const startTime = Date.now();
+
+    try {
+      const sanitizedEmail = sanitizeEmail(email);
+      const data = await loginMutationAsync({ gmail: sanitizedEmail, password });
+      
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed));
+      
+      showSuccess("Đăng nhập thành công!");
+      login(data.data);
+    } catch (err: any) {
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed));
+      
+      console.error("Login failed", err);
+      if (axios.isAxiosError(err)) {
+        if (err.response?.data?.message) {
+          showError(err.response.data.message);
+        } else if (err.code === 'ECONNABORTED' || !err.response) {
+          showError("Lỗi máy chủ, vui lòng thử lại sau.");
+        } else {
+          showError("Đăng nhập thất bại. Vui lòng thử lại.");
         }
+      } else {
+        showError("Lỗi không xác định.");
       }
-    );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const leftFeatures = [
@@ -123,8 +137,15 @@ export default function LoginPage() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-base cursor-pointer mt-2 text-center"
+            className="w-full py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-base cursor-pointer mt-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
           >
+            {isSubmitting && (
+              <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            )}
             Đăng nhập
           </button>
         </form>

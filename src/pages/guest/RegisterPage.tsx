@@ -4,6 +4,7 @@ import { ROUTES } from "../../utils/routes";
 import { authService } from "../../services/authService";
 import { useNotification } from "../../components/common/NotificationProvider";
 import { useAuth } from "../../contexts/AuthContext";
+import { validateEmail, sanitizeEmail } from "../../utils/emailUtils";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -13,19 +14,55 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { showSuccess, showError } = useNotification();
   const { login } = useAuth();
 
   const registerMutation = useMutation({
     mutationFn: authService.register,
-    onSuccess: (data) => {
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password || password !== confirmPassword) {
+      if (password !== confirmPassword) {
+        showError("Mật khẩu không khớp.");
+      }
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      showError("Địa chỉ email không hợp lệ.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    const startTime = Date.now();
+
+    try {
+      const sanitizedEmail = sanitizeEmail(email);
+      const data = await registerMutation.mutateAsync({
+        gmail: sanitizedEmail,
+        password: password,
+        name: "",
+        phone: "",
+        birth: "",
+        gender: "MALE",
+        school: "",
+      });
+
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 500) await new Promise((r) => setTimeout(r, 500 - elapsed));
+
       showSuccess("Đăng ký thành công!");
       setTimeout(() => {
         login(data.data, ROUTES.HOME);
       }, 1000);
-    },
-    onError: (error: any) => {
+    } catch (error: any) {
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 500) await new Promise((r) => setTimeout(r, 500 - elapsed));
+      
       console.error("Register Error:", error);
       if (axios.isAxiosError(error)) {
         if (error.response?.data?.message) {
@@ -38,27 +75,9 @@ export default function RegisterPage() {
       } else {
         showError(`Lỗi hệ thống: ${error.message || 'Không xác định'}`);
       }
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password || password !== confirmPassword) {
-      if (password !== confirmPassword) {
-        showError("Mật khẩu không khớp.");
-      }
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
-
-    registerMutation.mutate({
-      gmail: email,
-      password: password,
-      name: "",
-      phone: "",
-      birth: "",
-      gender: "MALE",
-      school: "",
-    });
   };
 
   const leftFeatures = [
@@ -154,8 +173,15 @@ export default function RegisterPage() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-base cursor-pointer mt-2 text-center"
+          className="w-full py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-md shadow-[#28522d]/20 hover:shadow-lg active:scale-95 transition-all text-base cursor-pointer mt-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+          disabled={isSubmitting}
         >
+          {isSubmitting && (
+            <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          )}
           Đăng ký ngay
         </button>
       </form>
