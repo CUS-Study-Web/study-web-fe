@@ -16,22 +16,22 @@ export default function LearnerMyCoursesPage() {
             HỌC VIÊN
           </div>
           {/* Title */}
-          <h1 className="text-3xl md:text-4xl font-black !text-white mb-3 tracking-tight font-[family:var(--font-heading)]">
+          <div className="text-3xl md:text-4xl font-black !text-white mb-3 tracking-tight font-[family:var(--font-heading)]">
             Khóa học của tôi
-          </h1>
+          </div>
           {/* Subtitle */}
-          <p className="!text-[#b5cfb9] max-w-xl text-sm md:text-base font-medium">
+          <div className="!text-[#b5cfb9] max-w-xl text-sm md:text-base font-medium">
             Các khoá luyện thi bạn đang theo học tại CUS.
-          </p>
+          </div>
         </div>
       </section>
 
       {/* ── Main Content Grid ── */}
       <section className="max-w-[1200px] mx-auto px-4 md:px-8 pt-10">
         <div className="mb-10 md:mb-12">
-          <h2 className="text-[32px] font-black text-[var(--brand-base-700)] leading-tight mb-2 font-[family:var(--font-heading)]">
-            {courses.length} khóa học
-          </h2>
+          <div className="text-[32px] font-black text-[var(--brand-base-700)] leading-tight mb-2 font-[family:var(--font-heading)]">
+            {MY_COURSES_DATA.length} khóa học
+          </div>
         </div>
 
         {/* Grid of 5 Course Cards */}

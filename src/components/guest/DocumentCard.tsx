@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ROUTES } from "../../utils/routes";
 
 interface DocumentCardProps {
+  id: number;
   type: string;
   tag: string;
   title: string;
@@ -11,7 +12,7 @@ interface DocumentCardProps {
   isVip: boolean;
 }
 
-export default function DocumentCard({ type, tag, title, desc, iconBg, icon, isVip }: DocumentCardProps) {
+export default function DocumentCard({ id, type, tag, title, desc, iconBg, icon, isVip }: DocumentCardProps) {
   return (
     <div className="relative bg-[var(--neutral-0)] rounded-[var(--radius-xl)] shadow-sm border border-[var(--border-300)] flex flex-col justify-between h-full hover:shadow-md transition-shadow overflow-hidden group">
       
@@ -67,9 +68,9 @@ export default function DocumentCard({ type, tag, title, desc, iconBg, icon, isV
           <p className="text-caption !text-[var(--text-secondary-500)] leading-relaxed line-clamp-3 min-h-[54px] mb-5 font-medium">
             {desc}
           </p>
-          <button className="w-full text-center py-2.5 rounded-[var(--radius-md)] border border-[var(--border-500)] !text-[var(--text-secondary-600)] font-extrabold text-sm hover:bg-[var(--brand-soft-300)] hover:border-[var(--brand-base-600)] hover:!text-[var(--brand-base-600)] active:scale-95 transition-all cursor-pointer shadow-xs">
-            Tải tài liệu
-          </button>
+          <Link to={ROUTES.DOC_VIEW(id)} className="w-full block text-center py-2.5 rounded-[var(--radius-md)] border border-[var(--border-500)] !text-[var(--text-secondary-600)] font-extrabold text-sm hover:bg-[var(--brand-soft-300)] hover:border-[var(--brand-base-600)] hover:!text-[var(--brand-base-600)] active:scale-95 transition-all cursor-pointer shadow-xs">
+            Xem tài liệu
+          </Link>
         </div>
       </div>
     </div>

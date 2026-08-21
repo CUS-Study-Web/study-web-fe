@@ -18,6 +18,7 @@ import CoursesPage from "../pages/guest/CoursesPage";
 import CourseDetailPage from "../pages/guest/CourseDetailPage";
 import TrialExamPage from "../pages/guest/TrialExamPage";
 import DocumentsPage from "../pages/guest/DocumentsPage";
+import DocumentViewPage from "../pages/guest/DocumentViewPage";
 import AboutPage from "../pages/guest/AboutPage";
 import VipPage from "../pages/guest/VipPage";
 import LoginPage from "../pages/guest/LoginPage";
@@ -31,6 +32,8 @@ import LearnerMyCoursesPage from "../pages/learner/LearnerMyCoursesPage";
 import LearnerSubjectDetailPage from "../pages/learner/LearnerSubjectDetailPage";
 import LearnerExamStartPage from "../pages/learner/LearnerExamStartPage";
 import LearnerTakeExamPage from "../pages/learner/LearnerTakeExamPage";
+import LearnerFlashcardTopicsPage from "../pages/learner/LearnerFlashcardTopicsPage";
+import LearnerFlashcardStudyPage from "../pages/learner/LearnerFlashcardStudyPage";
 
 // Assistant Components & Pages
 import AssistantLayout from "../components/assistant/AssistantLayout";
@@ -120,6 +123,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.COURSE_DETAIL()} element={<CourseDetailPage />} />
         <Route path={ROUTES.TRIAL} element={<TrialExamPage />} />
         <Route path={ROUTES.DOCUMENTS} element={<DocumentsPage />} />
+        <Route path={ROUTES.DOC_VIEW()} element={<DocumentViewPage />} />
         <Route path={ROUTES.ABOUT} element={<AboutPage />} />
         <Route path={ROUTES.VIP} element={<VipPage />} />
       </Route>
@@ -149,6 +153,8 @@ export default function AppRoutes() {
       >
         <Route path={ROUTES.LEARNER.TAKE_EXAM()} element={<LearnerTakeExamPage />} />
         <Route path={ROUTES.LEARNER.TAKE_EXERCISE()} element={<LearnerTakeExamPage />} />
+        <Route path={ROUTES.LEARNER.FLASHCARD_TOPICS} element={<LearnerFlashcardTopicsPage />} />
+        <Route path={ROUTES.LEARNER.FLASHCARD_STUDY()} element={<LearnerFlashcardStudyPage />} />
       </Route>
 
       {/* Full-screen Auth & System Pages */}

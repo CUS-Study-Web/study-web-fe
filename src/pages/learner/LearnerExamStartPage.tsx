@@ -69,12 +69,12 @@ export default function LearnerExamStartPage() {
               {exam.level}
             </span>
           </div>
-          <h1 className="font-[family:var(--font-heading)] font-bold text-4xl !text-white mb-3.5 tracking-tight leading-tight">
+          <div className="font-[family:var(--font-heading)] font-bold text-4xl !text-white mb-3.5 tracking-tight leading-tight">
             {exam.title}
-          </h1>
-          <p className="font-[family:var(--font-body)] text-[15px] !text-[var(--brand-soft-500)] opacity-75 mb-7 leading-relaxed">
+          </div>
+          <div className="font-[family:var(--font-body)] text-[15px] !text-[var(--brand-soft-500)] opacity-75 mb-7 leading-relaxed">
             Hoàn thành đề thi trong thời gian quy định. Kết quả và lời giải chi tiết sẽ hiển thị ngay sau khi nộp bài.
-          </p>
+          </div>
           <div className="flex justify-center gap-6 mb-8 flex-wrap">
             {[
               { icon: "🕐", label: "Thời gian", value: exam.duration }, 
@@ -103,7 +103,7 @@ export default function LearnerExamStartPage() {
         {/* Lịch sử làm bài */}
         <div className="bg-white rounded-[20px] border border-[#D4DCD5] shadow-[0_4px_24px_rgba(0,0,0,0.07)] overflow-hidden">
           <div className="px-5.5 py-5 border-b border-[#EEF3EE] flex justify-between items-center">
-            <h3 className="font-[family:var(--font-heading)] font-bold text-base text-[#1B1F1C] m-0">Lịch sử làm bài</h3>
+            <div className="font-[family:var(--font-heading)] font-bold text-base text-[#1B1F1C] m-0">Lịch sử làm bài</div>
             <span className="font-[family:var(--font-body)] text-[13px] text-[#6B746D]">{ATTEMPT_HISTORY.length} lần thi</span>
           </div>
           <div>
@@ -122,8 +122,8 @@ export default function LearnerExamStartPage() {
         {/* Thống kê điểm số */}
         <div className="bg-white rounded-[20px] border border-[#D4DCD5] shadow-[0_4px_24px_rgba(0,0,0,0.07)] overflow-hidden">
           <div className="px-5.5 py-5 border-b border-[#EEF3EE]">
-            <h3 className="font-[family:var(--font-heading)] font-bold text-base text-[#1B1F1C] m-0 mb-1">Thống kê điểm số</h3>
-            <p className="font-[family:var(--font-body)] text-[13px] text-[#6B746D] m-0">Biểu đồ tiến bộ qua các lần thi</p>
+            <div className="font-[family:var(--font-heading)] font-bold text-base text-[#1B1F1C] m-0 mb-1">Thống kê điểm số</div>
+            <div className="font-[family:var(--font-body)] text-[13px] text-[#6B746D] m-0">Biểu đồ tiến bộ qua các lần thi</div>
           </div>
           <div className="grid grid-cols-3 gap-0 border-b border-[#EEF3EE]">
             {[

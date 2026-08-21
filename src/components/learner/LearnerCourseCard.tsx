@@ -35,18 +35,18 @@ export default function LearnerCourseCard({
 
         {/* Course Title Overlay */}
         <div className="absolute bottom-5 left-5 right-5">
-          <h3 className="!text-white text-[22px] leading-tight font-black font-[family:var(--font-heading)]">
+          <div className="!text-white text-[22px] leading-tight font-black font-[family:var(--font-heading)]">
             {title}
-          </h3>
+          </div>
         </div>
       </div>
 
       {/* Card Body */}
       <div className="p-5 md:p-6 flex-1 flex flex-col justify-between gap-5">
         {/* Description */}
-        <p className="text-sm leading-relaxed font-medium line-clamp-3 !text-[var(--brand-base-100)]">
-          {description}
-        </p>
+        <div className="text-sm leading-relaxed font-medium line-clamp-3 !text-[var(--brand-base-100)]">
+          {desc}
+        </div>
 
         {/* Progress Bar Section */}
         <div className="space-y-2 pt-1">
