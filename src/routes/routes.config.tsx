@@ -59,7 +59,7 @@ function GuestRoute({ children }: { children?: React.ReactNode }) {
   if (isLoggedIn) {
     if (role === "admin") return <Navigate to={ROUTES.ADMIN.DASHBOARD} replace />;
     if (role === "assistant") return <Navigate to={ROUTES.ASSISTANT.DASHBOARD} replace />;
-    return <Navigate to={ROUTES.LEARNER.DASHBOARD} replace />;
+    return <Navigate to={ROUTES.HOME} replace />;
   }
 
   return children ? <>{children}</> : <Outlet />;
@@ -115,9 +115,7 @@ export default function AppRoutes() {
     <Routes>
       {/* Guest Public Layout */}
       <Route element={<AppLayout />}>
-        <Route element={<GuestRoute />}>
-          <Route path={ROUTES.HOME} element={<Home />} />
-        </Route>
+        <Route path={ROUTES.HOME} element={<Home />} />
         <Route path={ROUTES.COURSES} element={<CoursesPage />} />
         <Route path={ROUTES.COURSE_DETAIL()} element={<CourseDetailPage />} />
         <Route path={ROUTES.TRIAL} element={<TrialExamPage />} />
