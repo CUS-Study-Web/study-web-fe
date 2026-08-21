@@ -6,6 +6,7 @@ import type { Subject } from "../../types/course";
 import SubjectCard from "../../components/guest/SubjectCard";
 import VipGateModal from "../../components/guest/VipGateModal";
 import { ROUTES } from "../../utils/routes";
+import { useGetCoursesQuery, useGetCourseDetailQuery } from "../../hooks/queries/useCourses";
 
 export default function CourseDetailPage() {
   const { courseId } = useParams<{ courseId: string }>();
@@ -13,14 +14,44 @@ export default function CourseDetailPage() {
   const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
 
-  // Default to V-SAT if courseId not found
-  const courseKey = (courseId && COURSES_DATA[courseId.toLowerCase()]) ? courseId.toLowerCase() : "v-sat";
-  const course = COURSES_DATA[courseKey];
+  const courseKey = courseId ?? "";
+  
+  const { data: coursesData, isLoading: isLoadingCourses } = useGetCoursesQuery({ size: 100 });
+  const course = coursesData?.data.find((c) => c.id === courseKey);
+  
+  const { data: detailData, isLoading: isLoadingDetail } = useGetCourseDetailQuery(courseKey);
+  const subjects = detailData?.data.subjects || [];
+
+  // Fallback styles from COURSES_DATA using course title matching or index
+  const styleSource = Object.values(COURSES_DATA).find(c => c.title.toLowerCase() === course?.title?.toLowerCase()) 
+    || Object.values(COURSES_DATA)[0];
+
+  const isLoading = isLoadingCourses || isLoadingDetail;
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[var(--surface-500)]">
+        <div className="text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+          Đang tải thông tin khóa học...
+        </div>
+      </div>
+    );
+  }
+
+  if (!course) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[var(--surface-500)]">
+        <div className="text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+          Không tìm thấy khóa học.
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="pb-24 bg-[var(--surface-500)] select-none">
+    <div className="pb-24 bg-[var(--surface-500)] select-none min-h-screen">
       {/* Hero Header Section */}
-      <section className={`${course.headerBg} pt-12 pb-16 px-4 md:px-6 lg:px-8 xl:px-10 border-b border-[#28522d]/40 relative overflow-hidden`}>
+      <section className={`${styleSource.headerBg} pt-12 pb-16 px-4 md:px-6 lg:px-8 xl:px-10 border-b border-[#28522d]/40 relative overflow-hidden`}>
         <div className="max-w-[1440px] mx-auto relative z-10">
           {/* Breadcrumb / Back Link */}
           <Link
@@ -41,7 +72,7 @@ export default function CourseDetailPage() {
             className="!text-[#beccbf] max-w-2xl text-base md:text-lg leading-relaxed font-medium"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Chọn môn học để bắt đầu lộ trình ôn tập — mỗi môn gồm bài giảng, bài tập và đề thi thử riêng biệt.
+            {course.description || "Chọn môn học để bắt đầu lộ trình ôn tập — mỗi môn gồm bài giảng, bài tập và đề thi thử riêng biệt."}
           </p>
         </div>
       </section>
@@ -57,31 +88,31 @@ export default function CourseDetailPage() {
             Danh sách môn học
           </h2>
           <span className="text-sm font-semibold text-[var(--text-secondary-300)]">
-            {course.subjects.length} môn học
+            {subjects.length} môn học
           </span>
         </div>
 
         {/* 4-Column Subjects Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {course.subjects.map((sub, index) => {
-            // Dữ liệu mock tiến độ học cho các môn dựa vào index
+          {subjects.map((sub, index) => {
+            // Mock tiến độ học 
             const mockProgressArray = [70, 15, 15, 80, 53, 51, 69, 21];
-            const progress = isLoggedIn ? (mockProgressArray[index] || 0) : undefined;
+            const progress = isLoggedIn ? (mockProgressArray[index % mockProgressArray.length] || 0) : undefined;
             
             return (
               <SubjectCard
                 key={sub.id}
-                title={sub.title}
-                duration={sub.duration}
-                lessons={sub.lessons}
-                cardHeaderBg={course.cardHeaderBg}
-                cardBtnColor={course.cardBtnColor}
+                title={sub.name}
+                duration={`${sub.durationHours} giờ`}
+                lessons={sub.lessonCount}
+                cardHeaderBg={styleSource.cardHeaderBg}
+                cardBtnColor={styleSource.cardBtnColor}
                 progress={progress}
                 onSelect={() => {
                   if (isLoggedIn) {
                     navigate(ROUTES.LEARNER.SUBJECT_DETAIL(courseKey, sub.id));
                   } else {
-                    setSelectedSubject(sub);
+                    setSelectedSubject({ id: sub.id, title: sub.name, duration: `${sub.durationHours} giờ`, lessons: sub.lessonCount });
                   }
                 }}
               />
