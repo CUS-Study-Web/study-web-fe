@@ -30,7 +30,7 @@ export default function LearnerMyCoursesPage() {
       <section className="max-w-[1200px] mx-auto px-4 md:px-8 pt-10">
         <div className="mb-10 md:mb-12">
           <div className="text-[32px] font-black text-[var(--brand-base-700)] leading-tight mb-2 font-[family:var(--font-heading)]">
-            {MY_COURSES_DATA.length} khóa học
+            {courses.length} khóa học
           </div>
         </div>
 

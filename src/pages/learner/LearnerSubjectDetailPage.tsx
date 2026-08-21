@@ -93,7 +93,7 @@ export default function LearnerSubjectDetailPage() {
                   <span className="font-[family:var(--font-heading)] font-bold text-[11px] text-[var(--brand-soft-500)] tracking-[0.3px]">Chi tiết môn học</span>
                 </div>
                 <div className="font-[family:var(--font-heading)] font-extrabold text-4xl !text-white m-0 tracking-tight">
-                  {subject.title}
+                  {subject.name}
                 </div>
               </div>
 

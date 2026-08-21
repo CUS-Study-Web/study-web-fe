@@ -12,7 +12,7 @@ export default function LearnerCourseCard({
   id,
   title,
   badgeTitle,
-  description,
+  description: _description,
   imageUrl,
   progress = 0,
 }: LearnerCourseCardProps) {
@@ -45,7 +45,7 @@ export default function LearnerCourseCard({
       <div className="p-5 md:p-6 flex-1 flex flex-col justify-between gap-5">
         {/* Description */}
         <div className="text-sm leading-relaxed font-medium line-clamp-3 !text-[var(--brand-base-100)]">
-          {desc}
+          {_description}
         </div>
 
         {/* Progress Bar Section */}

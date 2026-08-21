@@ -32,11 +32,11 @@ import { useNotification } from '../../components/common/NotificationProvider'
 const AdminWebsite = () => {
   const [activeTab, setActiveTab] = useState<WTab>("trang-chu")
   const [showModal, setShowModal] = useState<ModalKey | null>(null)
-  
+
   // API state for courses
   const { data: coursesData, isLoading: isLoadingCourses } = useGetCoursesQuery({ size: 100 })
   const courses = coursesData?.data || []
-  
+
   const createCourse = useCreateCourseMutation()
   const updateCourse = useUpdateCourseMutation()
   const deleteCourse = useDeleteCourseMutation()
@@ -57,7 +57,7 @@ const AdminWebsite = () => {
 
   // Dropdown row state
   const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null)
-  
+
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const { showSuccess, showError } = useNotification()
 
@@ -78,13 +78,13 @@ const AdminWebsite = () => {
   }
 
   const tabsConfig: Record<WTab, { label: string; addLabel?: string; addModal?: ModalKey }> = {
-    "trang-chu":    { label: "Trang chủ" },
-    "footer":       { label: "Footer" },
-    "goi-cuoc":     { label: "Gói cước" },
-    "courses":      { label: "Danh sách khóa học", addLabel: "Thêm khóa học",   addModal: "add-course" },
-    "instructors":  { label: "Đội ngũ giảng viên", addLabel: "Thêm giảng viên", addModal: "add-instructor" },
-    "achievements": { label: "Bảng thành tích",    addLabel: "Thêm thành tích", addModal: "add-achievement" },
-    "reviews":      { label: "Cảm nhận học viên",  addLabel: "Thêm cảm nhận",   addModal: "add-review" },
+    "trang-chu": { label: "Trang chủ" },
+    "footer": { label: "Footer" },
+    "goi-cuoc": { label: "Gói cước" },
+    "courses": { label: "Danh sách khóa học", addLabel: "Thêm khóa học", addModal: "add-course" },
+    "instructors": { label: "Đội ngũ giảng viên", addLabel: "Thêm giảng viên", addModal: "add-instructor" },
+    "achievements": { label: "Bảng thành tích", addLabel: "Thêm thành tích", addModal: "add-achievement" },
+    "reviews": { label: "Cảm nhận học viên", addLabel: "Thêm cảm nhận", addModal: "add-review" },
   }
 
   const currentTab = tabsConfig[activeTab]
@@ -202,7 +202,7 @@ const AdminWebsite = () => {
         const elapsed = Date.now() - startTime
         if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
         showSuccess("Xóa khóa học thành công!")
-      } catch (err: any) {
+      } catch {
         const elapsed = Date.now() - startTime
         if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
         showError("Lỗi khi xóa khóa học!")
@@ -289,350 +289,346 @@ const AdminWebsite = () => {
 
           {/* CMS form tabs */}
           {activeTab === "trang-chu" && <TrangChuTab />}
-          {activeTab === "footer"    && <FooterTab />}
+          {activeTab === "footer" && <FooterTab />}
           {activeTab === "goi-cuoc" && <GoiCuocTab />}
 
           {/* Tab Tables */}
           {(activeTab === "courses" || activeTab === "instructors" || activeTab === "achievements" || activeTab === "reviews") && (
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-300)] overflow-visible">
-            <div>
-            {activeTab === "courses" && (
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
-                    {["Tiêu đề", "Tiêu đề phụ", "Mô tả", ""].map((h) => (
-                      <th key={h} className={thClass}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {isLoadingCourses && (
-                    <tr>
-                      <td colSpan={4} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
-                        Đang tải dữ liệu...
-                      </td>
-                    </tr>
-                  )}
-                  {!isLoadingCourses && courses.map((c, i) => (
-                    <tr
-                      key={c.id}
-                      className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${
-                        i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"
-                      }`}
-                    >
-                      <td className={tdBoldClass}>{c.title}</td>
-                      <td className={tdCellClass}>{c.subTitle}</td>
-                      <td className={`${tdCellClass} max-w-[260px] truncate`}>{c.description}</td>
-                      <td className={`${tdCellClass} relative whitespace-nowrap`}>
-                        {deletingId === `course-${c.id}` ? (
-                          <div className="flex justify-end pr-2">
-                            <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                          </div>
-                        ) : (
-                          <div className="flex justify-end">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setActiveDropdownId(activeDropdownId === `course-${c.id}` ? null : `course-${c.id}`)
-                              }}
-                              className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
-                            >
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <circle cx="12" cy="12" r="1" />
-                                <circle cx="12" cy="5" r="1" />
-                                <circle cx="12" cy="19" r="1" />
-                              </svg>
-                            </button>
-                            {activeDropdownId === `course-${c.id}` && (
-                              <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-300)] overflow-visible">
+              <div>
+                {activeTab === "courses" && (
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
+                        {["Tiêu đề", "Tiêu đề phụ", "Mô tả", ""].map((h) => (
+                          <th key={h} className={thClass}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {isLoadingCourses && (
+                        <tr>
+                          <td colSpan={4} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                            Đang tải dữ liệu...
+                          </td>
+                        </tr>
+                      )}
+                      {!isLoadingCourses && courses.map((c, i) => (
+                        <tr
+                          key={c.id}
+                          className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"
+                            }`}
+                        >
+                          <td className={tdBoldClass}>{c.title}</td>
+                          <td className={tdCellClass}>{c.subTitle}</td>
+                          <td className={`${tdCellClass} max-w-[260px] truncate`}>{c.description}</td>
+                          <td className={`${tdCellClass} relative whitespace-nowrap`}>
+                            {deletingId === `course-${c.id}` ? (
+                              <div className="flex justify-end pr-2">
+                                <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                              </div>
+                            ) : (
+                              <div className="flex justify-end">
                                 <button
-                                  onClick={() => {
-                                    setEditingCourse(c)
-                                    setShowModal("edit-course")
-                                    setActiveDropdownId(null)
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setActiveDropdownId(activeDropdownId === `course-${c.id}` ? null : `course-${c.id}`)
                                   }}
-                                  className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                  className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
                                 >
-                                  Sửa
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="12" cy="12" r="1" />
+                                    <circle cx="12" cy="5" r="1" />
+                                    <circle cx="12" cy="19" r="1" />
+                                  </svg>
                                 </button>
-                                <button
-                                  onClick={() => {
-                                    handleDeleteCourse(c.id)
-                                    setActiveDropdownId(null)
-                                  }}
-                                  className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                                >
-                                  Xóa
-                                </button>
+                                {activeDropdownId === `course-${c.id}` && (
+                                  <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
+                                    <button
+                                      onClick={() => {
+                                        setEditingCourse(c)
+                                        setShowModal("edit-course")
+                                        setActiveDropdownId(null)
+                                      }}
+                                      className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                    >
+                                      Sửa
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        handleDeleteCourse(c.id)
+                                        setActiveDropdownId(null)
+                                      }}
+                                      className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                    >
+                                      Xóa
+                                    </button>
+                                  </div>
+                                )}
                               </div>
                             )}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                  {!isLoadingCourses && courses.length === 0 && (
-                    <tr>
-                      <td colSpan={4} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
-                        Không có khóa học nào.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            )}
+                          </td>
+                        </tr>
+                      ))}
+                      {!isLoadingCourses && courses.length === 0 && (
+                        <tr>
+                          <td colSpan={4} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                            Không có khóa học nào.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                )}
 
-            {activeTab === "instructors" && (
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
-                    {["Giảng viên", "Mô tả", ""].map((h) => (
-                      <th key={h} className={thClass}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {instructors.map((inst, i) => (
-                    <tr
-                      key={inst.id}
-                      className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${
-                        i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"
-                      }`}
-                    >
-                      <td className={tdBoldClass}>{inst.name}</td>
-                      <td className={tdCellClass}>{inst.bio}</td>
-                      <td className={`${tdCellClass} relative whitespace-nowrap`}>
-                        {deletingId === `instr-${inst.id}` ? (
-                          <div className="flex justify-end pr-2">
-                            <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                          </div>
-                        ) : (
-                          <div className="flex justify-end">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setActiveDropdownId(activeDropdownId === `instr-${inst.id}` ? null : `instr-${inst.id}`)
-                              }}
-                              className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
-                            >
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <circle cx="12" cy="12" r="1" />
-                                <circle cx="12" cy="5" r="1" />
-                                <circle cx="12" cy="19" r="1" />
-                              </svg>
-                            </button>
-                            {activeDropdownId === `instr-${inst.id}` && (
-                              <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
+                {activeTab === "instructors" && (
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
+                        {["Giảng viên", "Mô tả", ""].map((h) => (
+                          <th key={h} className={thClass}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {instructors.map((inst, i) => (
+                        <tr
+                          key={inst.id}
+                          className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"
+                            }`}
+                        >
+                          <td className={tdBoldClass}>{inst.name}</td>
+                          <td className={tdCellClass}>{inst.bio}</td>
+                          <td className={`${tdCellClass} relative whitespace-nowrap`}>
+                            {deletingId === `instr-${inst.id}` ? (
+                              <div className="flex justify-end pr-2">
+                                <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                              </div>
+                            ) : (
+                              <div className="flex justify-end">
                                 <button
-                                  onClick={() => {
-                                    setEditingInstructor(inst)
-                                    setShowModal("edit-instructor")
-                                    setActiveDropdownId(null)
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setActiveDropdownId(activeDropdownId === `instr-${inst.id}` ? null : `instr-${inst.id}`)
                                   }}
-                                  className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                  className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
                                 >
-                                  Sửa
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="12" cy="12" r="1" />
+                                    <circle cx="12" cy="5" r="1" />
+                                    <circle cx="12" cy="19" r="1" />
+                                  </svg>
                                 </button>
-                                <button
-                                  onClick={() => {
-                                    handleDeleteInstructor(inst.id)
-                                    setActiveDropdownId(null)
-                                  }}
-                                  className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                                >
-                                  Xóa
-                                </button>
+                                {activeDropdownId === `instr-${inst.id}` && (
+                                  <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
+                                    <button
+                                      onClick={() => {
+                                        setEditingInstructor(inst)
+                                        setShowModal("edit-instructor")
+                                        setActiveDropdownId(null)
+                                      }}
+                                      className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                    >
+                                      Sửa
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        handleDeleteInstructor(inst.id)
+                                        setActiveDropdownId(null)
+                                      }}
+                                      className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                    >
+                                      Xóa
+                                    </button>
+                                  </div>
+                                )}
                               </div>
                             )}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                  {instructors.length === 0 && (
-                    <tr>
-                      <td colSpan={3} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
-                        Không có giảng viên nào.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            )}
+                          </td>
+                        </tr>
+                      ))}
+                      {instructors.length === 0 && (
+                        <tr>
+                          <td colSpan={3} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                            Không có giảng viên nào.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                )}
 
-            {activeTab === "achievements" && (
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
-                    {["Học viên", "Kì thi", "Tổng điểm", "Điểm thành phần", ""].map((h) => (
-                      <th key={h} className={thClass}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {achievements.map((a, i) => (
-                    <tr
-                      key={a.id}
-                      className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${
-                        i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"
-                      }`}
-                    >
-                      <td className={tdBoldClass}>{a.name}</td>
-                      <td className={tdCellClass}>{a.exam}</td>
-                      <td className={tdCellClass}>{a.totalScore}</td>
-                      <td className={`${tdCellClass} max-w-[220px] truncate`}>{a.subScores}</td>
-                      <td className={`${tdCellClass} relative whitespace-nowrap`}>
-                        {deletingId === `ach-${a.id}` ? (
-                          <div className="flex justify-end pr-2">
-                            <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                          </div>
-                        ) : (
-                          <div className="flex justify-end">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setActiveDropdownId(activeDropdownId === `ach-${a.id}` ? null : `ach-${a.id}`)
-                              }}
-                              className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
-                            >
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <circle cx="12" cy="12" r="1" />
-                                <circle cx="12" cy="5" r="1" />
-                                <circle cx="12" cy="19" r="1" />
-                              </svg>
-                            </button>
-                            {activeDropdownId === `ach-${a.id}` && (
-                              <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
+                {activeTab === "achievements" && (
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
+                        {["Học viên", "Kì thi", "Tổng điểm", "Điểm thành phần", ""].map((h) => (
+                          <th key={h} className={thClass}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {achievements.map((a, i) => (
+                        <tr
+                          key={a.id}
+                          className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"
+                            }`}
+                        >
+                          <td className={tdBoldClass}>{a.name}</td>
+                          <td className={tdCellClass}>{a.exam}</td>
+                          <td className={tdCellClass}>{a.totalScore}</td>
+                          <td className={`${tdCellClass} max-w-[220px] truncate`}>{a.subScores}</td>
+                          <td className={`${tdCellClass} relative whitespace-nowrap`}>
+                            {deletingId === `ach-${a.id}` ? (
+                              <div className="flex justify-end pr-2">
+                                <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                              </div>
+                            ) : (
+                              <div className="flex justify-end">
                                 <button
-                                  onClick={() => {
-                                    setEditingAchievement(a)
-                                    setShowModal("edit-achievement")
-                                    setActiveDropdownId(null)
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setActiveDropdownId(activeDropdownId === `ach-${a.id}` ? null : `ach-${a.id}`)
                                   }}
-                                  className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                  className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
                                 >
-                                  Sửa
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="12" cy="12" r="1" />
+                                    <circle cx="12" cy="5" r="1" />
+                                    <circle cx="12" cy="19" r="1" />
+                                  </svg>
                                 </button>
-                                <button
-                                  onClick={() => {
-                                    handleDeleteAchievement(a.id)
-                                    setActiveDropdownId(null)
-                                  }}
-                                  className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                                >
-                                  Xóa
-                                </button>
+                                {activeDropdownId === `ach-${a.id}` && (
+                                  <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
+                                    <button
+                                      onClick={() => {
+                                        setEditingAchievement(a)
+                                        setShowModal("edit-achievement")
+                                        setActiveDropdownId(null)
+                                      }}
+                                      className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                    >
+                                      Sửa
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        handleDeleteAchievement(a.id)
+                                        setActiveDropdownId(null)
+                                      }}
+                                      className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                    >
+                                      Xóa
+                                    </button>
+                                  </div>
+                                )}
                               </div>
                             )}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                  {achievements.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
-                        Không có thành tích nào.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            )}
+                          </td>
+                        </tr>
+                      ))}
+                      {achievements.length === 0 && (
+                        <tr>
+                          <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                            Không có thành tích nào.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                )}
 
-            {activeTab === "reviews" && (
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
-                    {["Học viên", "Khóa học", "Thời gian", "Bình luận", ""].map((h) => (
-                      <th key={h} className={thClass}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {reviews.map((r, i) => (
-                    <tr
-                      key={r.id}
-                      className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${
-                        i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"
-                      }`}
-                    >
-                      <td className={tdBoldClass}>{r.name}</td>
-                      <td className={tdCellClass}>{r.course}</td>
-                      <td className={tdCellClass}>{r.time}</td>
-                      <td className={`${tdCellClass} max-w-[260px] truncate`}>{r.comment}</td>
-                      <td className={`${tdCellClass} relative whitespace-nowrap`}>
-                        {deletingId === `rev-${r.id}` ? (
-                          <div className="flex justify-end pr-2">
-                            <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                          </div>
-                        ) : (
-                          <div className="flex justify-end">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setActiveDropdownId(activeDropdownId === `rev-${r.id}` ? null : `rev-${r.id}`)
-                              }}
-                              className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
-                            >
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <circle cx="12" cy="12" r="1" />
-                                <circle cx="12" cy="5" r="1" />
-                                <circle cx="12" cy="19" r="1" />
-                              </svg>
-                            </button>
-                            {activeDropdownId === `rev-${r.id}` && (
-                              <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
+                {activeTab === "reviews" && (
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
+                        {["Học viên", "Khóa học", "Thời gian", "Bình luận", ""].map((h) => (
+                          <th key={h} className={thClass}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {reviews.map((r, i) => (
+                        <tr
+                          key={r.id}
+                          className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"
+                            }`}
+                        >
+                          <td className={tdBoldClass}>{r.name}</td>
+                          <td className={tdCellClass}>{r.course}</td>
+                          <td className={tdCellClass}>{r.time}</td>
+                          <td className={`${tdCellClass} max-w-[260px] truncate`}>{r.comment}</td>
+                          <td className={`${tdCellClass} relative whitespace-nowrap`}>
+                            {deletingId === `rev-${r.id}` ? (
+                              <div className="flex justify-end pr-2">
+                                <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                              </div>
+                            ) : (
+                              <div className="flex justify-end">
                                 <button
-                                  onClick={() => {
-                                    setEditingReview(r)
-                                    setShowModal("edit-review")
-                                    setActiveDropdownId(null)
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setActiveDropdownId(activeDropdownId === `rev-${r.id}` ? null : `rev-${r.id}`)
                                   }}
-                                  className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                  className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
                                 >
-                                  Sửa
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="12" cy="12" r="1" />
+                                    <circle cx="12" cy="5" r="1" />
+                                    <circle cx="12" cy="19" r="1" />
+                                  </svg>
                                 </button>
-                                <button
-                                  onClick={() => {
-                                    handleDeleteReview(r.id)
-                                    setActiveDropdownId(null)
-                                  }}
-                                  className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                                >
-                                  Xóa
-                                </button>
+                                {activeDropdownId === `rev-${r.id}` && (
+                                  <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
+                                    <button
+                                      onClick={() => {
+                                        setEditingReview(r)
+                                        setShowModal("edit-review")
+                                        setActiveDropdownId(null)
+                                      }}
+                                      className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                    >
+                                      Sửa
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        handleDeleteReview(r.id)
+                                        setActiveDropdownId(null)
+                                      }}
+                                      className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                                    >
+                                      Xóa
+                                    </button>
+                                  </div>
+                                )}
                               </div>
                             )}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                  {reviews.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
-                        Không có cảm nhận nào.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            )}
+                          </td>
+                        </tr>
+                      ))}
+                      {reviews.length === 0 && (
+                        <tr>
+                          <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                            Không có cảm nhận nào.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                )}
+              </div>
             </div>
-          </div>
           )}
         </div>
       </div>
