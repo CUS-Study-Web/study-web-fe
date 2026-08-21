@@ -13,6 +13,7 @@ type UserInfo = UserResponse & {
 
 type AuthContextValue = {
   user: UserInfo | null;
+  role: string | null;
   isLoggedIn: boolean;
   isLoading: boolean;
   login: (authData: AuthResponse, redirectPath?: string) => void;
@@ -34,17 +35,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Combine with mock defaults to avoid breaking existing UI
   const userInfo: UserInfo | null = useMemo(() => {
     if (!user) return null;
-    return {
-      ...user,
-      coursesCount: 2, // mock fallback
-      isVip: false, // mock fallback
-    };
+    return user as UserInfo;
   }, [user]);
+
+  const role = useMemo(() => {
+    if (!token) return null;
+    const decoded = parseJwt(token);
+    return decoded?.role?.toLowerCase() || 'learner';
+  }, [token]);
 
   const login = useCallback(
     (authData: AuthResponse, redirectPath?: string) => {
       localStorage.setItem("accessToken", authData.accessToken);
-      localStorage.setItem("refreshToken", authData.refreshToken);
       
       // Update query cache immediately so it doesn't need to refetch instantly
       queryClient.setQueryData(['currentUser'], { data: authData.user });
@@ -73,13 +75,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(() => {
     localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
     queryClient.removeQueries({ queryKey: ['currentUser'] });
     navigate(ROUTES.AUTH.LOGIN);
   }, [navigate, queryClient]);
 
   return (
-    <AuthContext.Provider value={{ user: userInfo, isLoggedIn, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user: userInfo, role, isLoggedIn, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
