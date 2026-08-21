@@ -19,7 +19,7 @@ const MOCK_LESSONS = [
 ];
 
 const MOCK_EXERCISES = [
-  { id: 1, title: "Bài tập Tư duy logic – Tuần 1", size: "1.4 MB", date: "15/07/2024" },
+  { id: 1, title: "Bài tập Tư duy logic – Tuần 1", size: "1.4 MB", date: "15/07/2024", completed: true },
   { id: 2, title: "Bài tập Toán ứng dụng – Tuần 2", size: "2.1 MB", date: "22/07/2024" },
   { id: 3, title: "Bài tập Toán tư duy logic – Tuần 3", size: "2.4 MB", date: "29/07/2024" },
   { id: 4, title: "Bài tập Ngữ văn nghị luận xã hội", size: "1.2 MB", date: "05/08/2024" },
@@ -69,9 +69,9 @@ export default function LearnerSubjectDetailPage() {
                 <div className="inline-flex rounded-full bg-white/20 border border-white/30 px-3 py-1 mb-2.5">
                   <span className="font-[family:var(--font-heading)] font-bold text-[11px] text-[var(--brand-soft-500)] tracking-[0.3px]">Chi tiết môn học</span>
                 </div>
-                <h1 className="font-[family:var(--font-heading)] font-extrabold text-4xl !text-white m-0 tracking-tight">
+                <div className="font-[family:var(--font-heading)] font-extrabold text-4xl !text-white m-0 tracking-tight">
                   {subject.title}
-                </h1>
+                </div>
               </div>
 
               {/* CỘT PHẢI */}

@@ -95,6 +95,14 @@ export default function UserMenuPopup() {
             >
               📚   Khóa học của tôi
             </Link>
+
+            <Link
+              to={ROUTES.LEARNER.FLASHCARD_TOPICS}
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 px-5 py-2.5 text-sm font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-300)] hover:text-[var(--text-primary-500)] transition-colors duration-100"
+            >
+              🃏   Flashcard
+            </Link>
           </div>
 
           {/* Logout */}

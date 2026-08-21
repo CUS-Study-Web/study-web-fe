@@ -23,7 +23,7 @@ export default function ExamCard({ id, subject, difficulty, title, time, questio
     if (!isLoggedIn) {
       navigate(ROUTES.AUTH.LOGIN);
     } else {
-      navigate(ROUTES.LEARNER.TAKE_EXAM("trial", "trial", id));
+      navigate(ROUTES.LEARNER.EXAM_START("trial", "trial", id));
     }
   };
   return (
@@ -37,9 +37,9 @@ export default function ExamCard({ id, subject, difficulty, title, time, questio
               <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
             </svg>
           </div>
-          <p className="!text-[var(--text-primary-500)] font-black text-base mb-3" style={{ fontFamily: "var(--font-heading)" }}>
+          <div className="!text-[var(--text-primary-500)] font-black text-base mb-3" style={{ fontFamily: "var(--font-heading)" }}>
             Chỉ dành cho VIP
-          </p>
+          </div>
           <Link
             to={ROUTES.VIP}
             className="flex items-center gap-1.5 px-6 py-2.5 bg-[var(--text-primary-800)] !text-[#ffc107] text-sm font-extrabold rounded-full shadow-md hover:bg-[var(--text-primary-900)] active:scale-95 transition-all cursor-pointer"
@@ -66,9 +66,9 @@ export default function ExamCard({ id, subject, difficulty, title, time, questio
           </div>
 
           {/* Title */}
-          <h3 className="text-h3 font-bold !text-[var(--text-primary-500)] mb-6 line-clamp-2 min-h-[56px] flex items-center">
+          <div className="text-h3 font-bold !text-[var(--text-primary-500)] mb-6 line-clamp-2 min-h-[56px] flex items-center">
             {title}
-          </h3>
+          </div>
         </div>
 
         {/* Bottom Info & Button Section */}
