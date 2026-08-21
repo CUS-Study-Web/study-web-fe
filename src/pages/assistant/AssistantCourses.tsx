@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import AssistantCourseCard from '../../components/assistant/course/AssistantCourseCard';
-import { DEMO_COURSES } from '../../types/mockData';
+import { useGetCoursesQuery } from '../../hooks/queries/useCourses';
 import { ROUTES } from '../../utils/routes';
 
 export default function AssistantCourses() {
+  const { data, isLoading } = useGetCoursesQuery({ size: 100 });
+  const courses = data?.data || [];
   const navigate = useNavigate();
 
   const handleViewDetail = (key: string) => {
@@ -23,15 +25,19 @@ export default function AssistantCourses() {
       </div>
 
       {/* Course grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-        {DEMO_COURSES.map((course) => (
-          <AssistantCourseCard
-            key={course.key}
-            course={course}
-            onViewDetail={handleViewDetail}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="text-center py-10 font-[family-name:var(--font-body)] text-gray-500">Đang tải...</div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+          {courses.map((course) => (
+            <AssistantCourseCard
+              key={course.id}
+              course={course}
+              onViewDetail={handleViewDetail}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

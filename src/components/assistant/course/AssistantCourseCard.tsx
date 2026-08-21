@@ -1,14 +1,14 @@
-import type { Course } from '../../../types/assistant';
+import type { CourseSummaryResponse } from '../../../types/api/course.api';
 
 interface AssistantCourseCardProps {
-  course: Course;
-  onViewDetail: (key: string) => void;
+  course: CourseSummaryResponse;
+  onViewDetail: (id: string) => void;
 }
 
 export default function AssistantCourseCard({ course, onViewDetail }: AssistantCourseCardProps) {
   return (
     <div
-      onClick={() => onViewDetail(course.key)}
+      onClick={() => onViewDetail(course.id)}
       className="rounded-[16px] overflow-hidden border border-[var(--border-default)] bg-[var(--surface-card)] shadow-[var(--shadow-clay-sm)] cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
     >
       {/* Dark header */}
@@ -24,10 +24,10 @@ export default function AssistantCourseCard({ course, onViewDetail }: AssistantC
         </div>
         <div className="relative z-10">
           <div className="font-[family-name:var(--font-heading)] font-bold text-[17px] text-white leading-tight">
-            {course.name}
+            {course.title}
           </div>
           <div className="font-[family-name:var(--font-body)] text-[12px] text-white/70 mt-0.5">
-            {course.tag}
+            {course.badgeTitle}
           </div>
         </div>
       </div>
@@ -36,7 +36,7 @@ export default function AssistantCourseCard({ course, onViewDetail }: AssistantC
       <div className="flex gap-3 px-5 py-4">
         <div className="flex-1 py-3 text-center bg-[#F4F6F8] rounded-[12px]">
           <div className="font-[family-name:var(--font-heading)] font-bold text-[22px] text-[var(--text-primary)]">
-            {course.subjectCount}
+            0
           </div>
           <div className="font-[family-name:var(--font-body)] text-[12px] text-[var(--text-secondary)] mt-0.5">
             Môn học
@@ -44,7 +44,7 @@ export default function AssistantCourseCard({ course, onViewDetail }: AssistantC
         </div>
         <div className="flex-1 py-3 text-center bg-[#F4F6F8] rounded-[12px]">
           <div className="font-[family-name:var(--font-heading)] font-bold text-[22px] text-[var(--text-primary)]">
-            {course.examCount}
+            0
           </div>
           <div className="font-[family-name:var(--font-body)] text-[12px] text-[var(--text-secondary)] mt-0.5">
             Đề thi
