@@ -30,9 +30,11 @@ apiClient.interceptors.response.use(
     const requestUrl = error.config?.url || '';
     const isAuthEndpoint = requestUrl.startsWith('/api/auth/');
     const isAlreadyOnLogin = window.location.pathname === '/login';
+    const hadToken = !!localStorage.getItem('accessToken');
 
-    if (error.response?.status === 401 && !isAuthEndpoint && !isAlreadyOnLogin) {
+    if (error.response?.status === 401 && !isAuthEndpoint && !isAlreadyOnLogin && hadToken) {
       // Clear tokens and redirect to login only when session expires mid-session
+      // (i.e., user had a token but the server rejected it — not for guest/public API calls)
       localStorage.removeItem('accessToken');
       window.location.href = '/login';
     }
