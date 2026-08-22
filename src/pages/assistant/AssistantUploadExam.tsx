@@ -4,6 +4,8 @@ import AssistantCoursePageHeader from '../../components/assistant/course/Assista
 import AssistantExamFormPanel, { type AssistantExamFormPanelHandle } from '../../components/assistant/course/AssistantExamFormPanel';
 import { useGetCoursesQuery } from '../../hooks/queries/useCourses';
 import { ROUTES } from '../../utils/routes';
+import { useNotification } from '../../components/common/NotificationProvider';
+import { useCreateAssessmentMutation } from '../../hooks/queries/useAssessments';
 
 export default function AssistantUploadExam() {
   const { courseKey } = useParams<{ courseKey: string }>();
@@ -12,6 +14,9 @@ export default function AssistantUploadExam() {
   const [dragging, setDragging] = useState(false);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+
+  const { showSuccess, showError } = useNotification();
+  const createMutation = useCreateAssessmentMutation();
 
   const { data: coursesData } = useGetCoursesQuery({ size: 100 });
   const course = coursesData?.data.find((c) => c.id === courseKey);
@@ -28,12 +33,48 @@ export default function AssistantUploadExam() {
     return () => URL.revokeObjectURL(url);
   }, [pdfFile]);
 
-  const handleBack = () => navigate(ROUTES.ASSISTANT.COURSE_DETAIL(key));
+  const handleBack = () => navigate(ROUTES.ASSISTANT.COURSE_DETAIL(key), { state: { tab: 'de-thi' } });
 
   const handleSubmit = () => {
     const data = formRef.current?.getData();
-    console.log('Submit exam:', { ...data, fileName: pdfFile?.name });
-    handleBack();
+    if (!data) return;
+
+    if (!pdfFile) {
+      showError('Vui lòng tải lên file PDF đề thi');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('assessmentType', 'EXAM');
+    formData.append('title', data.title);
+    formData.append('file', pdfFile);
+    formData.append('numQuestions', data.questions);
+    formData.append('durationMin', data.duration);
+    formData.append('accessTier', data.accessTier);
+    if (data.solutionLink) {
+      formData.append('explanationUrl', data.solutionLink);
+    }
+    formData.append('status', data.status === 'draft' ? 'DRAFT' : 'PUBLISHED');
+    formData.append('answerKeys', JSON.stringify(data.answers));
+
+    createMutation.mutate(
+      { courseId: key, data: formData },
+      {
+        onSuccess: () => {
+          setTimeout(() => {
+            showSuccess('Upload đề thi thành công');
+            handleBack();
+          }, 500);
+        },
+        onError: (error: any) => {
+          console.error("API Error Response:", error?.response?.data);
+          setTimeout(() => {
+            const msg = error?.response?.data?.message || 'Có lỗi xảy ra khi upload đề thi';
+            showError(`Lỗi: ${msg}`);
+          }, 500);
+        }
+      }
+    );
   };
 
   const handleFile = (file: File) => {
@@ -173,9 +214,13 @@ export default function AssistantUploadExam() {
               </div>
               <div
                 onClick={handleSubmit}
-                className="px-5 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white cursor-pointer transition-colors select-none shadow-sm"
+                className={`px-5 py-2 rounded-[8px] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white transition-colors select-none shadow-sm ${
+                  createMutation.isPending
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-[var(--brand-500)] hover:bg-[var(--brand-600)] cursor-pointer'
+                }`}
               >
-                Tạo đề thi
+                {createMutation.isPending ? 'Đang tải lên...' : 'Tạo đề thi'}
               </div>
             </div>
           </AssistantExamFormPanel>

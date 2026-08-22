@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import type { CourseExam } from '../../types/assistant';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantTabBar from '../../components/assistant/course/AssistantTabBar';
@@ -7,7 +7,7 @@ import AssistantSubjectCard from '../../components/assistant/course/AssistantSub
 import AssistantExamCard from '../../components/assistant/course/AssistantExamCard';
 import AssistantCreateLecturePopup from '../../components/assistant/course/AssistantCreateLecturePopup';
 import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
-import { DEMO_COURSE_EXAMS } from '../../types/mockData';
+import { useGetExamsQuery } from '../../hooks/queries/useAssessments';
 import { ROUTES } from '../../utils/routes';
 
 const TABS = [
@@ -20,7 +20,8 @@ type ModalType = 'lecture' | 'exercise' | null;
 export default function AssistantCourseDetail() {
   const { courseKey } = useParams<{ courseKey: string }>();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('mon-hoc');
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(location.state?.tab || 'mon-hoc');
   const [openModal, setOpenModal] = useState<ModalType>(null);
   
   const key = courseKey ?? '';
@@ -31,8 +32,8 @@ export default function AssistantCourseDetail() {
   const { data: detailData, isLoading } = useGetCourseDetailQuery(key);
   const subjects = detailData?.data.subjects || [];
   
-  // Exams are still mocked
-  const exams = DEMO_COURSE_EXAMS[key] ?? [];
+  const { data: examsData, isLoading: isLoadingExams } = useGetExamsQuery(key, { size: 100 });
+  const exams = examsData?.data || [];
 
   if (!course) {
     return (
@@ -136,14 +137,34 @@ export default function AssistantCourseDetail() {
 
           {/* Exam list */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            {exams.length === 0 ? (
-              <div className="py-12 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+            {isLoadingExams ? (
+              <div className="py-12 col-span-full text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                Đang tải đề thi...
+              </div>
+            ) : exams.length === 0 ? (
+              <div className="py-12 col-span-full text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                 Chưa có đề thi nào.
               </div>
             ) : (
-              exams.map((exam) => (
-                <AssistantExamCard key={exam.id} exam={exam} onEdit={handleEditExam} />
-              ))
+              exams.map((exam) => {
+                const mappedExam = {
+                  ...exam,
+                  courseKey: key,
+                  courseName: course?.title ?? key,
+                  questions: exam.numQuestions,
+                  duration: exam.durationMin,
+                  date: exam.createdAt ? new Date(exam.createdAt).toLocaleDateString('en-GB') : '',
+                  status: exam.status === 'PUBLISHED' ? 'published' : 'draft',
+                  accessTier: exam.accessTier,
+                };
+                return (
+                  <AssistantExamCard 
+                    key={exam.id} 
+                    exam={mappedExam as any} 
+                    onEdit={() => handleEditExam(exam as any)} 
+                  />
+                );
+              })
             )}
           </div>
         </div>

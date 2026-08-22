@@ -1,7 +1,8 @@
 import { useState, useImperativeHandle, forwardRef, type ReactNode, useEffect } from 'react';
 
 export interface AssistantExamAnswer {
-  selected: string[];
+  questionNumber: number;
+  correctAnswer: string;
 }
 
 export interface ExamFormData {
@@ -11,12 +12,13 @@ export interface ExamFormData {
   duration: string;
   date: string;
   status: 'published' | 'draft';
+  accessTier: 'PUBLIC' | 'VIP';
   solutionLink?: string;
   answers: AssistantExamAnswer[];
 }
 
 export interface AssistantExamFormPanelHandle {
-  getData: () => ExamFormData;
+  getData: () => ExamFormData | null;
 }
 
 interface AssistantExamFormPanelProps {
@@ -36,16 +38,20 @@ const OPTION_LABELS = ['A', 'B', 'C', 'D'];
 
 /** Tạo mảng answers với số câu cho trước */
 function buildAnswers(count: number, existing: AssistantExamAnswer[] = []): AssistantExamAnswer[] {
-  return Array.from({ length: count }, (_, i) => existing[i] ?? { selected: [] });
+  return Array.from({ length: count }, (_, i) => existing[i] ?? { questionNumber: i + 1, correctAnswer: '' });
 }
+
+import { useNotification } from '../../common/NotificationProvider';
 
 const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, AssistantExamFormPanelProps>(
   ({ courseKey, courseName, initialData, children }, ref) => {
+    const { showError } = useNotification();
     const [title, setTitle] = useState(initialData?.title ?? '');
     const [questions, setQuestions] = useState(initialData?.questions ?? '50');
     const [duration, setDuration] = useState(initialData?.duration ?? '90');
     const [date, setDate] = useState(initialData?.date ?? todayString());
     const [status, setStatus] = useState<'published' | 'draft'>(initialData?.status ?? 'published');
+    const [accessTier, setAccessTier] = useState<'PUBLIC' | 'VIP'>(initialData?.accessTier ?? 'PUBLIC');
     const [solutionLink, setSolutionLink] = useState(initialData?.solutionLink ?? '');
     const [answers, setAnswers] = useState<AssistantExamAnswer[]>(
       initialData?.answers ?? buildAnswers(Number(initialData?.questions ?? 50))
@@ -58,7 +64,14 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
     }, [questions]);
 
     useImperativeHandle(ref, () => ({
-      getData: () => ({ title, courseKey, questions, duration, date, status, solutionLink, answers }),
+      getData: () => {
+        const incompleteIndex = answers.findIndex(a => !a.correctAnswer);
+        if (incompleteIndex !== -1) {
+          showError(`Vui lòng chọn đáp án cho câu ${incompleteIndex + 1}`);
+          return null;
+        }
+        return { title, courseKey, questions, duration, date, status, solutionLink, answers, accessTier };
+      },
     }));
 
     const updateAnswerSelected = (idx: number, opt: string) => {
@@ -66,7 +79,7 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
         prev.map((a, i) => {
           if (i !== idx) return a;
           // Always single-choice: toggle selection
-          return { ...a, selected: a.selected.includes(opt) ? [] : [opt] };
+          return { ...a, correctAnswer: a.correctAnswer === opt ? '' : opt };
         })
       );
     };
@@ -158,6 +171,22 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
           />
         </div>
 
+        {/* Quyền truy cập */}
+        <div>
+          <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
+            Quyền truy cập
+          </div>
+          <select
+            value={accessTier}
+            onChange={(e) => setAccessTier(e.target.value as 'PUBLIC' | 'VIP')}
+            className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--brand-base-600)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-base-600)] transition-colors bg-white appearance-none cursor-pointer"
+            style={{ backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '14px' }}
+          >
+            <option value="PUBLIC">Public</option>
+            <option value="VIP">Vip</option>
+          </select>
+        </div>
+
         {/* Trạng thái */}
         <div>
           <div className="font-[family-name:var(--font-heading)] font-bold text-[11px] uppercase tracking-widest text-[var(--text-secondary)] mb-1.5">
@@ -206,7 +235,7 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
                 {/* ABCD selectors */}
                 <div className="flex items-center gap-3">
                   {OPTION_LABELS.map((opt) => {
-                    const isSelected = ans.selected.includes(opt);
+                    const isSelected = ans.correctAnswer === opt;
                     return (
                       <div
                         key={opt}
