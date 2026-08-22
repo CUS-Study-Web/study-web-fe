@@ -4,6 +4,8 @@ import { useAuth } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/routes";
 import InfoRow from "../../components/learner/InfoRow";
 import Avatar from "../../components/learner/Avatar";
+import { useChangePasswordMutation } from "../../hooks/queries/useAuth";
+import { useNotification } from "../../components/common/NotificationProvider";
 
 // Mock data directly on page (similar to assistant/admin components)
 const MOCK_USER = {
@@ -20,6 +22,8 @@ const MOCK_USER = {
 export default function LearnerProfilePage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const { showSuccess, showError } = useNotification();
+  const changePasswordMutation = useChangePasswordMutation();
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [isEditingInfo, setIsEditingInfo] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -42,8 +46,27 @@ export default function LearnerProfilePage() {
 
   const handleSavePassword = (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Mật khẩu đã được cập nhật thành công!");
-    handleCancelPassword();
+    if (newPassword !== confirmPassword) {
+      showError("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+
+    changePasswordMutation.mutate(
+      { newPassword },
+      {
+        onSuccess: () => {
+          setTimeout(() => {
+            showSuccess("Mật khẩu đã được cập nhật thành công!");
+            handleCancelPassword();
+          }, 500);
+        },
+        onError: () => {
+          setTimeout(() => {
+            showError("Đã có lỗi xảy ra khi cập nhật mật khẩu. Vui lòng thử lại!");
+          }, 500);
+        },
+      }
+    );
   };
 
   return (
@@ -172,9 +195,10 @@ export default function LearnerProfilePage() {
                   </button>
                   <button
                     type="submit"
-                    className="flex-[2] py-3 bg-[#1b3b22] hover:bg-[#15301b] !text-white text-xs font-extrabold rounded-[var(--radius-md)] shadow-md active:scale-95 transition-all cursor-pointer text-center"
+                    disabled={changePasswordMutation.isPending}
+                    className="flex-[2] py-3 bg-[#1b3b22] hover:bg-[#15301b] disabled:bg-[#1b3b22]/70 disabled:cursor-not-allowed !text-white text-xs font-extrabold rounded-[var(--radius-md)] shadow-md active:scale-95 transition-all cursor-pointer text-center"
                   >
-                    Lưu mật khẩu
+                    {changePasswordMutation.isPending ? "Đang lưu..." : "Lưu mật khẩu"}
                   </button>
                 </div>
               </form>

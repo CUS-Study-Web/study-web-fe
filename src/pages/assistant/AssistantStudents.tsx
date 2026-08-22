@@ -1,8 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import AssistantStudentDetailPopup from '../../components/assistant/student/AssistantStudentDetailPopup';
 
-import { DEMO_STUDENTS_ASST } from '../../types/assistant/mockData';
-import type { AssistantStudent } from '../../types/assistant/models';
+import { DEMO_STUDENTS_ASST } from '../../types/mockData';
+import type { AssistantStudent } from '../../types/assistant';
 
 // ── 3-dot action menu per student row ────────────────────────────────────────
 

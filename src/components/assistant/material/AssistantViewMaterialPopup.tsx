@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { AssistantDocument } from '../../../types/assistant/models';
+import type { AssistantDocument } from '../../../types/assistant';
 import AssistantFeatureInDevPopup from '../AssistantFeatureInDevPopup';
 
 interface AssistantViewMaterialPopupProps {
@@ -28,12 +28,12 @@ export default function AssistantViewMaterialPopup({ material, onClose }: Assist
 
         <div className="flex-1 bg-[var(--surface-muted)] rounded-[var(--radius-md)] flex flex-col items-center justify-center gap-3 min-h-[340px]">
           <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="10" y="6" width="36" height="46" rx="4" fill="#e5e7eb" stroke="#9ca3af" strokeWidth="2"/>
-            <path d="M38 6v12h10" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <rect x="10" y="6" width="38" height="12" rx="4" fill="none"/>
-            <line x1="18" y1="30" x2="46" y2="30" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round"/>
-            <line x1="18" y1="38" x2="46" y2="38" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round"/>
-            <line x1="18" y1="46" x2="34" y2="46" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round"/>
+            <rect x="10" y="6" width="36" height="46" rx="4" fill="#e5e7eb" stroke="#9ca3af" strokeWidth="2" />
+            <path d="M38 6v12h10" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <rect x="10" y="6" width="38" height="12" rx="4" fill="none" />
+            <line x1="18" y1="30" x2="46" y2="30" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" />
+            <line x1="18" y1="38" x2="46" y2="38" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" />
+            <line x1="18" y1="46" x2="34" y2="46" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" />
           </svg>
           <div className="font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-secondary)]">
             Xem trước tài liệu {material.fileType}
@@ -58,7 +58,7 @@ export default function AssistantViewMaterialPopup({ material, onClose }: Assist
           </div>
         </div>
       </div>
-      
+
       {showDevPopup && (
         <AssistantFeatureInDevPopup onClose={() => setShowDevPopup(false)} />
       )}

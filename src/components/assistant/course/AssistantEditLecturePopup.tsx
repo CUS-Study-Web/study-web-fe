@@ -1,34 +1,81 @@
 import { useState } from 'react';
 import AssistantConfirmPopup from '../AssistantConfirmPopup';
+import { useUpdateLessonMutation } from '../../../hooks/queries/useLessons';
+import { useNotification } from '../../common/NotificationProvider';
 
 interface AssistantEditLecturePopupProps {
-  course: string;
-  subjects: string[];
-  lecture: any; // Add actual type later if needed
+  courseKey: string;
+  courseName: string;
+  subjectId: string;
+  subjectName: string;
+  lecture: {
+    id: string;
+    title: string;
+    link: string;
+    durationMin: number;
+    orderNum: number;
+  };
   onClose: () => void;
-  onSave: () => void;
 }
 
-export default function AssistantEditLecturePopup({ course, subjects, lecture, onClose, onSave }: AssistantEditLecturePopupProps) {
-  const [subject, setSubject] = useState(lecture?.subject || subjects[0] || '');
-  const [title, setTitle] = useState(lecture?.title || '');
-  const [link, setLink] = useState(lecture?.link || '');
+export default function AssistantEditLecturePopup({
+  courseKey,
+  courseName,
+  subjectId,
+  subjectName,
+  lecture,
+  onClose,
+}: AssistantEditLecturePopupProps) {
+  const [title, setTitle] = useState(lecture.title);
+  const [link, setLink] = useState(lecture.link);
+  const [durationMin, setDurationMin] = useState(lecture.durationMin);
 
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const { showSuccess, showError } = useNotification();
+  const updateMutation = useUpdateLessonMutation();
+
   const handleSaveRequest = () => {
+    if (!title || !link) {
+      showError('Vui lòng nhập đầy đủ tiêu đề và link!');
+      return;
+    }
     setShowConfirm(true);
   };
 
   const handleSaveConfirm = () => {
     setShowConfirm(false);
-    onSave();
-    onClose();
+    updateMutation.mutate(
+      {
+        courseId: courseKey,
+        subjectId,
+        lessonId: lecture.id,
+        data: {
+          title,
+          youtubeUrl: link,
+          durationMin,
+          orderNum: lecture.orderNum,
+          access: 'PUBLIC',
+        },
+      },
+      {
+        onSuccess: () => {
+          setTimeout(() => {
+            showSuccess('Cập nhật bài giảng thành công!');
+            onClose();
+          }, 500);
+        },
+        onError: () => {
+          setTimeout(() => {
+            showError('Đã xảy ra lỗi khi cập nhật bài giảng!');
+          }, 500);
+        },
+      }
+    );
   };
 
   const labelClass = 'block font-[family-name:var(--font-heading)] font-bold text-[11px] tracking-widest uppercase text-[var(--text-secondary)] mb-1.5';
   const inputClass = 'w-full px-4 py-2.5 rounded-[var(--radius-sm)] border-[1.5px] border-[var(--border-default)] font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-primary)] outline-none box-border bg-transparent focus:border-[var(--brand-400)] transition-colors';
-  const selectClass = 'w-full px-4 py-2.5 rounded-[var(--radius-sm)] border-[1.5px] border-[var(--border-default)] font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-primary)] outline-none box-border bg-[var(--surface-card)] focus:border-[var(--brand-400)] transition-colors cursor-pointer';
   const disabledClass = 'w-full px-4 py-2.5 rounded-[var(--radius-sm)] border-[1.5px] border-[var(--border-default)] font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-tertiary)] bg-[var(--surface-muted)] cursor-not-allowed flex items-center gap-2';
 
   return (
@@ -70,32 +117,39 @@ export default function AssistantEditLecturePopup({ course, subjects, lecture, o
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                     <path d="M7 11V7a5 5 0 0110 0v4"></path>
                   </svg>
-                  {course}
+                  {courseName}
                 </div>
               </div>
               <div>
                 <label className={labelClass}>Môn học</label>
-                <select className={selectClass} value={subject} onChange={(e) => setSubject(e.target.value)}>
-                  <option value="">— Chọn môn học —</option>
-                  {subjects.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
+                <div className={disabledClass}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                  </svg>
+                  {subjectName}
+                </div>
               </div>
             </div>
-
-
 
             <div>
               <label className={labelClass}>Tiêu đề bài giảng</label>
               <input type="text" placeholder="Nhập tiêu đề bài giảng..." value={title} onChange={(e) => setTitle(e.target.value)} className={inputClass} />
             </div>
 
-            <div>
-              <label className={labelClass}>Link bài giảng</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-tertiary)]"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                </span>
-                <input type="url" placeholder="https://..." value={link} onChange={(e) => setLink(e.target.value)} className={`${inputClass} pl-9`} />
+            <div className="grid grid-cols-[1fr_120px] gap-3">
+              <div>
+                <label className={labelClass}>Link bài giảng</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-tertiary)]"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                  </span>
+                  <input type="url" placeholder="https://..." value={link} onChange={(e) => setLink(e.target.value)} className={`${inputClass} pl-9`} />
+                </div>
+              </div>
+              <div>
+                <label className={labelClass}>Thời lượng</label>
+                <input type="number" min={1} value={durationMin} onChange={(e) => setDurationMin(Number(e.target.value))} className={inputClass} />
               </div>
             </div>
           </div>
@@ -104,9 +158,13 @@ export default function AssistantEditLecturePopup({ course, subjects, lecture, o
             <div onClick={onClose} className="flex-1 p-3 flex justify-center items-center rounded-[var(--radius-md)] border-[1.5px] border-[var(--border-default)] bg-[var(--surface-card)] text-[var(--text-primary)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors">
               Hủy
             </div>
-            <div onClick={handleSaveRequest} className="flex-[2] p-3 flex justify-center items-center rounded-[var(--radius-md)] border-none bg-[var(--brand-500)] text-[var(--text-inverse)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--brand-600)] transition-colors">
-              Lưu thay đổi
-            </div>
+            <button
+              onClick={handleSaveRequest}
+              disabled={updateMutation.isPending}
+              className="!flex-[2] !p-3 !flex !justify-center !items-center !rounded-[var(--radius-md)] !border-none !bg-[var(--brand-500)] !text-[var(--text-inverse)] !font-[family-name:var(--font-heading)] !font-bold !text-[length:var(--text-body-sm)] !cursor-pointer !hover:bg-[var(--brand-600)] !transition-colors disabled:opacity-70 !disabled:cursor-not-allowed"
+            >
+              {updateMutation.isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
+            </button>
           </div>
         </div>
       </div>
@@ -115,7 +173,7 @@ export default function AssistantEditLecturePopup({ course, subjects, lecture, o
         <AssistantConfirmPopup
           title="Xác nhận chỉnh sửa"
           message="Bạn có chắc chắn muốn lưu các thay đổi cho bài giảng này không?"
-          confirmLabel="Lưu"
+          confirmLabel={updateMutation.isPending ? "Đang lưu..." : "Lưu"}
           variant="warning"
           onConfirm={handleSaveConfirm}
           onCancel={() => setShowConfirm(false)}

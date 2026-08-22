@@ -1,9 +1,11 @@
 import { useRef, useState, useEffect } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantExerciseFormPanel, { type AssistantExerciseFormPanelHandle } from '../../components/assistant/course/AssistantExerciseFormPanel';
-import { DEMO_COURSES } from '../../types/assistant/mockData';
 import { ROUTES } from '../../utils/routes';
+import { useNotification } from '../../components/common/NotificationProvider';
+import { useCreateAssessmentMutation } from '../../hooks/queries/useAssessments';
+import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
 
 export default function AssistantCreateExercise() {
   const { courseKey } = useParams<{ courseKey: string }>();
@@ -15,8 +17,15 @@ export default function AssistantCreateExercise() {
   const [file, setFile] = useState<File | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
 
-  const course = DEMO_COURSES.find((c) => c.key === courseKey);
+  const { showSuccess, showError } = useNotification();
+  const createMutation = useCreateAssessmentMutation();
+
+  const { data: coursesData } = useGetCoursesQuery({ size: 100 });
+  const course = coursesData?.data.find((c) => c.id === courseKey);
   const key = courseKey ?? '';
+
+  const { data: courseDetail } = useGetCourseDetailQuery(key);
+  const subjects = courseDetail?.data.subjects || [];
 
   useEffect(() => {
     if (!file) {
@@ -38,8 +47,52 @@ export default function AssistantCreateExercise() {
 
   const handleSubmit = () => {
     const data = formRef.current?.getData();
-    console.log('Create exercise:', { ...data, fileName: file?.name });
-    handleBack();
+    if (!data) return; // Validation failed inside form panel
+    
+    if (!file) {
+      showError('Vui lòng tải lên file bài tập');
+      return;
+    }
+
+    const matchedSubject = subjects.find(s => s.name === data.subject);
+    if (!matchedSubject) {
+      showError('Không tìm thấy ID của môn học đã chọn');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('assessmentType', 'HOMEWORK');
+    formData.append('title', data.title);
+    formData.append('file', file);
+    formData.append('subjectId', matchedSubject.id);
+    formData.append('numQuestions', data.questionCount.toString());
+    if (data.solutionLink) {
+      formData.append('explanationUrl', data.solutionLink);
+    }
+    formData.append('status', data.status === 'draft' ? 'DRAFT' : 'PUBLISHED');
+    
+    // answers format: [{"questionNumber":1,"correctAnswer":"A"}]
+    const answerKeysStr = JSON.stringify(data.answers);
+    formData.append('answerKeys', answerKeysStr);
+
+    createMutation.mutate(
+      { courseId: key, data: formData },
+      {
+        onSuccess: () => {
+          setTimeout(() => {
+            showSuccess('Tạo bài tập thành công');
+            handleBack();
+          }, 500);
+        },
+        onError: (error: any) => {
+          console.error("API Error:", error?.response?.data);
+          setTimeout(() => {
+            const msg = error?.response?.data?.message || 'Có lỗi xảy ra khi tạo bài tập';
+            showError(`Lỗi: ${msg}`);
+          }, 500);
+        }
+      }
+    );
   };
 
   const handleFile = (selectedFile: File) => {
@@ -55,12 +108,12 @@ export default function AssistantCreateExercise() {
       <AssistantCoursePageHeader
         breadcrumbs={[
           { label: 'Quản lý khóa học', onClick: () => navigate(ROUTES.ASSISTANT.COURSES) },
-          { label: course?.name ?? key, onClick: () => navigate(ROUTES.ASSISTANT.COURSE_DETAIL(key)) },
-          ...(subjectNameParam ? [{ label: subjectNameParam, onClick: () => navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, subjectNameParam)) }] : []),
+          { label: course?.title ?? key, onClick: () => navigate(ROUTES.ASSISTANT.COURSE_DETAIL(key)) },
+          ...(subjectNameParam ? [{ label: subjectNameParam, onClick: () => navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, subjects.find(s => s.name === subjectNameParam)?.id ?? '')) }] : []),
           { label: 'Tạo bài tập' },
         ]}
         title="Tạo bài tập"
-        subtitle={`Khóa ${course?.name ?? key}`}
+        subtitle={`Khóa ${course?.title ?? key}`}
       />
 
       <div className="flex gap-6 flex-1 min-h-0">
@@ -141,11 +194,10 @@ export default function AssistantCreateExercise() {
                 const dropped = e.dataTransfer.files[0];
                 if (dropped) handleFile(dropped);
               }}
-              className={`flex flex-col items-center justify-center gap-4 flex-1 min-h-[420px] rounded-[16px] border-2 border-dashed transition-all duration-200 ${
-                dragging
+              className={`flex flex-col items-center justify-center gap-4 flex-1 min-h-[420px] rounded-[16px] border-2 border-dashed transition-all duration-200 ${dragging
                   ? 'border-[var(--brand-500)] bg-[var(--brand-soft-300)]'
                   : 'border-[var(--border-default)] bg-[var(--surface-card)]'
-              }`}
+                }`}
             >
               <div className="w-14 h-14 rounded-full bg-[var(--surface-muted)] border border-[var(--border-default)] flex items-center justify-center">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-secondary)]">
@@ -181,10 +233,10 @@ export default function AssistantCreateExercise() {
 
         {/* Right: form panel */}
         <div className="flex flex-col w-[380px] shrink-0 border-l border-[var(--border-default)] pl-6 min-h-0">
-          <AssistantExerciseFormPanel 
-            ref={formRef} 
-            courseKey={key} 
-            mode="create" 
+          <AssistantExerciseFormPanel
+            ref={formRef}
+            courseKey={key}
+            mode="create"
             initialData={{ subject: subjectNameParam || '' }}
           >
             <div className="flex items-center gap-2 pt-3 border-t border-[var(--border-subtle)] mt-1 shrink-0">
@@ -196,9 +248,13 @@ export default function AssistantCreateExercise() {
               </div>
               <div
                 onClick={handleSubmit}
-                className="px-5 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white cursor-pointer transition-colors select-none shadow-sm"
+                className={`px-5 py-2 rounded-[8px] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white transition-colors select-none shadow-sm ${
+                  createMutation.isPending
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-[var(--brand-500)] hover:bg-[var(--brand-600)] cursor-pointer'
+                }`}
               >
-                Tạo bài tập
+                {createMutation.isPending ? 'Đang tạo...' : 'Tạo bài tập'}
               </div>
             </div>
           </AssistantExerciseFormPanel>

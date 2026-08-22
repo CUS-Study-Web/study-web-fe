@@ -1,8 +1,9 @@
 import { useState, useImperativeHandle, forwardRef, type ReactNode, useEffect } from 'react';
-import { DEMO_COURSE_SUBJECTS } from '../../../types/assistant/mockData';
+import { DEMO_COURSE_SUBJECTS } from '../../../types/mockData';
 
 export interface AssistantExerciseAnswer {
-  selected: string[];
+  questionNumber: number;
+  correctAnswer: string;
 }
 
 export interface ExerciseFormData {
@@ -16,7 +17,7 @@ export interface ExerciseFormData {
 }
 
 export interface AssistantExerciseFormPanelHandle {
-  getData: () => ExerciseFormData;
+  getData: () => ExerciseFormData | null;
 }
 
 interface AssistantExerciseFormPanelProps {
@@ -31,11 +32,14 @@ const OPTION_LABELS = ['A', 'B', 'C', 'D'];
 
 /** Tạo mảng answers với số câu cho trước */
 function buildAnswers(count: number, existing: AssistantExerciseAnswer[] = []): AssistantExerciseAnswer[] {
-  return Array.from({ length: count }, (_, i) => existing[i] ?? { selected: [] });
+  return Array.from({ length: count }, (_, i) => existing[i] ?? { questionNumber: i + 1, correctAnswer: '' });
 }
+
+import { useNotification } from '../../common/NotificationProvider';
 
 const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, AssistantExerciseFormPanelProps>(
   ({ courseKey, initialData, children }, ref) => {
+    const { showError } = useNotification();
     const subjects = DEMO_COURSE_SUBJECTS[courseKey] ?? [];
 
     const [subject, setSubject] = useState(initialData?.subject ?? (subjects.length > 0 ? subjects[0] : ''));
@@ -55,7 +59,14 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
     }, [questionCount]);
 
     useImperativeHandle(ref, () => ({
-      getData: () => ({ subject, questionCount, title, solutionLink, fileType, status, answers }),
+      getData: () => {
+        const incompleteIndex = answers.findIndex(a => !a.correctAnswer);
+        if (incompleteIndex !== -1) {
+          showError(`Vui lòng chọn đáp án cho câu ${incompleteIndex + 1}`);
+          return null;
+        }
+        return { subject, questionCount, title, solutionLink, fileType, status, answers };
+      },
     }));
 
     const updateAnswerSelected = (idx: number, opt: string) => {
@@ -63,7 +74,7 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
         prev.map((a, i) => {
           if (i !== idx) return a;
           // Always single-choice: toggle selection
-          return { ...a, selected: a.selected.includes(opt) ? [] : [opt] };
+          return { ...a, correctAnswer: a.correctAnswer === opt ? '' : opt };
         })
       );
     };
@@ -204,7 +215,7 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
                 </span>
                 <div className="flex items-center gap-3">
                   {OPTION_LABELS.map((opt) => {
-                    const isSelected = ans.selected.includes(opt);
+                    const isSelected = ans.correctAnswer === opt;
                     return (
                       <div
                         key={opt}

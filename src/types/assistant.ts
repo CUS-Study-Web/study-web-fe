@@ -120,10 +120,12 @@ export interface CourseExam {
   id: number;
   title: string;
   courseKey: string;
+  courseName?: string;
   questions: number;
   duration: string;
   date: string;
   status: 'published' | 'draft';
+  accessTier?: 'PUBLIC' | 'VIP';
   solutionLink?: string;
 }
 

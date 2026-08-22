@@ -1,6 +1,7 @@
-import { Routes, Route, Outlet, useLocation, useNavigate, Navigate } from "react-router-dom";
+import { Routes, Route, Outlet, useLocation, Navigate } from "react-router-dom";
 import { ROUTES } from "../utils/routes";
 import ProtectedRoute from "./ProtectedRoute";
+import { useAuth } from "../contexts/AuthContext";
 
 // Common Layouts
 import Header from "../components/guest/Header";
@@ -55,6 +56,18 @@ import AdminSystem from "../pages/admin/AdminSystem";
 import AdminWebsite from "../pages/admin/AdminWebsite";
 import AdminAsstActivities from "../pages/admin/AdminAsstActivities";
 
+function GuestRoute({ children }: { children?: React.ReactNode }) {
+  const { isLoggedIn, role } = useAuth();
+
+  if (isLoggedIn) {
+    if (role === "admin") return <Navigate to={ROUTES.ADMIN.DASHBOARD} replace />;
+    if (role === "assistant") return <Navigate to={ROUTES.ASSISTANT.DASHBOARD} replace />;
+    return <Navigate to={ROUTES.HOME} replace />;
+  }
+
+  return children ? <>{children}</> : <Outlet />;
+}
+
 function AppLayout() {
   const location = useLocation();
   const isHome = location.pathname === ROUTES.HOME;
@@ -82,24 +95,25 @@ function LearnerAppLayout() {
 }
 
 function AssistantAppLayout() {
-  const navigate = useNavigate();
+  const { logout } = useAuth();
   return (
-    <AssistantLayout onLogout={() => navigate(ROUTES.AUTH.LOGIN)}>
+    <AssistantLayout onLogout={logout}>
       <Outlet />
     </AssistantLayout>
   );
 }
 
 function AdminAppLayout() {
-  const navigate = useNavigate();
+  const { logout } = useAuth();
   return (
-    <AdminLayout onLogout={() => navigate(ROUTES.AUTH.LOGIN)}>
+    <AdminLayout onLogout={logout}>
       <Outlet />
     </AdminLayout>
   );
 }
 
 export default function AppRoutes() {
+  const { isLoggedIn, role } = useAuth();
   return (
     <Routes>
       {/* Guest Public Layout */}
@@ -117,7 +131,7 @@ export default function AppRoutes() {
       {/* Protected Learner Pages using standard AppLayout (Header + Footer) */}
       <Route
         element={
-          <ProtectedRoute allowedRoles={["student", "learner", "assistant", "admin"]} userRole="student">
+          <ProtectedRoute isAuthenticated={isLoggedIn} allowedRoles={["student", "learner", "assistant", "admin"]} userRole={role || "guest"}>
             <AppLayout />
           </ProtectedRoute>
         }
@@ -132,7 +146,7 @@ export default function AppRoutes() {
       {/* Full-screen Learner Pages (No Footer) */}
       <Route
         element={
-          <ProtectedRoute allowedRoles={["student", "learner", "assistant", "admin"]} userRole="student">
+          <ProtectedRoute isAuthenticated={isLoggedIn} allowedRoles={["student", "learner", "assistant", "admin"]} userRole={role || "guest"}>
             <Outlet />
           </ProtectedRoute>
         }
@@ -144,15 +158,17 @@ export default function AppRoutes() {
       </Route>
 
       {/* Full-screen Auth & System Pages */}
-      <Route path={ROUTES.AUTH.LOGIN} element={<LoginPage />} />
-      <Route path={ROUTES.AUTH.REGISTER} element={<RegisterPage />} />
+      <Route element={<GuestRoute />}>
+        <Route path={ROUTES.AUTH.LOGIN} element={<LoginPage />} />
+        <Route path={ROUTES.AUTH.REGISTER} element={<RegisterPage />} />
+      </Route>
       <Route path={ROUTES.UNDER_DEVELOPMENT} element={<UnderDevelopmentPage />} />
       <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
 
       {/* Learner Protected Routes (dashboard uses separate layout) */}
       <Route
         element={
-          <ProtectedRoute allowedRoles={["student", "learner", "assistant", "admin"]} userRole="student">
+          <ProtectedRoute isAuthenticated={isLoggedIn} allowedRoles={["student", "learner", "assistant", "admin"]} userRole={role || "guest"}>
             <LearnerAppLayout />
           </ProtectedRoute>
         }
@@ -164,7 +180,7 @@ export default function AppRoutes() {
       {/* Assistant Protected Routes */}
       <Route
         element={
-          <ProtectedRoute allowedRoles={["assistant", "admin"]} userRole="assistant">
+          <ProtectedRoute isAuthenticated={isLoggedIn} allowedRoles={["assistant", "admin"]} userRole={role || "guest"}>
             <AssistantAppLayout />
           </ProtectedRoute>
         }
@@ -186,7 +202,7 @@ export default function AppRoutes() {
       {/* Admin Protected Routes */}
       <Route
         element={
-          <ProtectedRoute allowedRoles={["admin"]} userRole="admin">
+          <ProtectedRoute isAuthenticated={isLoggedIn} allowedRoles={["admin"]} userRole={role || "guest"}>
             <AdminAppLayout />
           </ProtectedRoute>
         }

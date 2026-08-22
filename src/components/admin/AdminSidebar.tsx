@@ -8,8 +8,8 @@ type AdminNavBarProps = {
 
 const NAV = [
   { to: ROUTES.ADMIN.DASHBOARD, label: 'Trang Chủ' },
-  { to: ROUTES.ADMIN.SYSTEM,    label: 'Quản Trị Hệ Thống' },
-  { to: ROUTES.ADMIN.WEBSITE,   label: 'Quản Lý Website' },
+  { to: ROUTES.ADMIN.SYSTEM, label: 'Quản Trị Hệ Thống' },
+  { to: ROUTES.ADMIN.WEBSITE, label: 'Quản Lý Website' },
 ]
 
 export default function AdminNavBar({ onLogout }: AdminNavBarProps) {
@@ -30,10 +30,9 @@ export default function AdminNavBar({ onLogout }: AdminNavBarProps) {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `[font-family:var(--font-heading)] font-semibold text-sm px-4 py-2 rounded-[var(--radius-sm)] transition-colors duration-[var(--motion-fast)] no-underline ${
-                  isActive
-                    ? 'bg-[var(--success-50)]'
-                    : 'hover:bg-[var(--surface-500)]'
+                `[font-family:var(--font-heading)] font-semibold text-sm px-4 py-2 rounded-[var(--radius-sm)] transition-colors duration-[var(--motion-fast)] no-underline ${isActive
+                  ? 'bg-[var(--success-50)]'
+                  : 'hover:bg-[var(--surface-500)]'
                 }`
               }
             >
@@ -52,7 +51,7 @@ export default function AdminNavBar({ onLogout }: AdminNavBarProps) {
             </div>
             <span className="[font-family:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)]">Quản trị viên</span>
           </div>
-          <button
+          <div
             onClick={onLogout}
             className="flex items-center gap-1.5 [font-family:var(--font-heading)] font-semibold text-[13px] px-4 py-[7px] rounded-[var(--radius-sm)] border border-[var(--border-500)] bg-white text-[var(--text-secondary-600)] cursor-pointer transition-colors duration-[var(--motion-fast)] hover:bg-[var(--surface-500)]"
           >
@@ -60,9 +59,8 @@ export default function AdminNavBar({ onLogout }: AdminNavBarProps) {
               <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
             </svg>
             Đăng Xuất
-          </button>
+          </div>
         </div>
-
       </div>
     </header>
   )

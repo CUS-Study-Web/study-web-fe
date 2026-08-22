@@ -55,15 +55,9 @@ type DayStats = {
   vip: ChartDataPoint[]
 }
 
-type Course = {
-  id: number
-  title: string
-  subtitle: string
-  unit: string
-  desc: string
-  subjects?: string[]
-  image?: string
-}
+import type { CourseSummaryResponse } from './api/course.api'
+
+export type Course = CourseSummaryResponse
 
 type Instructor = {
   id: number
@@ -119,7 +113,6 @@ export type {
   StatItem,
   ChartDataPoint,
   DayStats,
-  Course,
   Instructor,
   Achievement,
   Review,

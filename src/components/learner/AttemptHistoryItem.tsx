@@ -42,7 +42,7 @@ export default function AttemptHistoryItem({ attempt, index, totalAttempts, isLa
         </span>
         <div className="text-right">
           <div className={`font-[family:var(--font-heading)] font-extrabold text-lg leading-none ${sc.text}`}>
-            {attempt.score}
+            {Number.isInteger(attempt.score) ? attempt.score : Number(attempt.score).toFixed(2).replace('.', ',')}
           </div>
           <div className="font-[family:var(--font-body)] text-[10px] text-[#D4DCD5]">/10</div>
         </div>

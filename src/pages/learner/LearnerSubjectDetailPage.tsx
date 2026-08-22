@@ -5,18 +5,8 @@ import { COURSES_DATA } from "../../utils/coursesData";
 import ProgressBar from "../../components/learner/ProgressBar";
 import LessonItem from "../../components/learner/LessonItem";
 import ExerciseItem from "../../components/learner/ExerciseItem";
-
-// Mock data matching screenshots
-const MOCK_LESSONS = [
-  { id: 1, title: "Giới thiệu kỳ thi V-ACT & cấu trúc đề", duration: "42:10", isLocked: false },
-  { id: 2, title: "Tư duy ngôn ngữ – Đọc hiểu nhanh", duration: "55:20", isLocked: false },
-  { id: 3, title: "Tư duy logic – Suy luận và phân tích", duration: "68:00", isLocked: true },
-  { id: 4, title: "Toán học ứng dụng – Đại số và xác suất", duration: "72:15", isLocked: true },
-  { id: 5, title: "Khoa học tự nhiên – Vật lý & Hóa học", duration: "65:30", isLocked: true },
-  { id: 6, title: "Khoa học xã hội – Lịch sử & Địa lý", duration: "58:45", isLocked: true },
-  { id: 7, title: "Kỹ năng làm bài thi trên giấy hiệu quả", duration: "38:00", isLocked: true },
-  { id: 8, title: "Ôn tập tổng hợp & đề thi thử toàn diện", duration: "90:00", isLocked: true },
-];
+import { useGetCoursesQuery, useGetCourseDetailQuery } from "../../hooks/queries/useCourses";
+import { useGetLessonsQuery } from "../../hooks/queries/useLessons";
 
 const MOCK_EXERCISES = [
   { id: 1, title: "Bài tập Tư duy logic – Tuần 1", size: "1.4 MB", date: "15/07/2024", completed: true },
@@ -29,10 +19,43 @@ export default function LearnerSubjectDetailPage() {
   const { courseId, subjectId } = useParams<{ courseId: string; subjectId: string }>();
   const [activeTab, setActiveTab] = useState<"lessons" | "exercises">("lessons");
 
-  // Fallback to defaults if not found
-  const courseKey = courseId && COURSES_DATA[courseId.toLowerCase()] ? courseId.toLowerCase() : "v-act";
-  const course = COURSES_DATA[courseKey];
-  const subject = course?.subjects?.find((s) => s.id === subjectId) || { title: "Tiếng Anh" };
+  const courseKey = courseId ?? "";
+  const subId = subjectId ?? "";
+
+  const { data: coursesData, isLoading: isLoadingCourses } = useGetCoursesQuery({ size: 100 });
+  const course = coursesData?.data.find((c) => c.id === courseKey);
+  
+  const { data: detailData, isLoading: isLoadingDetail } = useGetCourseDetailQuery(courseKey);
+  const subject = detailData?.data.subjects.find((s) => s.id === subId);
+
+  const { data: lessonsData, isLoading: isLoadingLessons } = useGetLessonsQuery(courseKey, subId);
+  const lessons = lessonsData?.data || [];
+
+  // Fallback styles from COURSES_DATA using course title matching or index
+  const styleSource = Object.values(COURSES_DATA).find(c => c.title.toLowerCase() === course?.title?.toLowerCase()) 
+    || Object.values(COURSES_DATA)[0];
+
+  const isLoading = isLoadingCourses || isLoadingDetail || isLoadingLessons;
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#F9FAFB]">
+        <div className="text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+          Đang tải thông tin môn học...
+        </div>
+      </div>
+    );
+  }
+
+  if (!course || !subject) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#F9FAFB]">
+        <div className="text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+          Không tìm thấy thông tin môn học.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#F9FAFB] min-h-screen pb-20 select-none">
@@ -40,8 +63,8 @@ export default function LearnerSubjectDetailPage() {
       <section className="relative w-full h-[280px] bg-[#0d160f] overflow-hidden">
         {/* Ảnh nền */}
         <img
-          src={course?.img || "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070"}
-          alt={course?.title}
+          src={styleSource.img || "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070"}
+          alt={course.title}
           className="absolute inset-0 w-full h-full object-cover"
         />
         
@@ -59,7 +82,7 @@ export default function LearnerSubjectDetailPage() {
                 <path d="M10 12L6 8l4-4" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="font-[family:var(--font-heading)] font-semibold text-xs text-white">
-                {course?.title || "V-ACT"} — Môn học
+                {course.title} — Môn học
               </span>
             </Link>
 
@@ -70,7 +93,7 @@ export default function LearnerSubjectDetailPage() {
                   <span className="font-[family:var(--font-heading)] font-bold text-[11px] text-[var(--brand-soft-500)] tracking-[0.3px]">Chi tiết môn học</span>
                 </div>
                 <div className="font-[family:var(--font-heading)] font-extrabold text-4xl !text-white m-0 tracking-tight">
-                  {subject.title}
+                  {subject.name}
                 </div>
               </div>
 
@@ -102,7 +125,7 @@ export default function LearnerSubjectDetailPage() {
             onClick={() => setActiveTab("lessons")}
             className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "lessons" ? "bg-[var(--brand-base-500)] !text-white" : "bg-transparent text-[#6B746D]"}`}
           >
-            📖 Bài giảng ({MOCK_LESSONS.length})
+            📖 Bài giảng ({lessons.length})
           </button>
           <button
             onClick={() => setActiveTab("exercises")}
@@ -119,13 +142,24 @@ export default function LearnerSubjectDetailPage() {
         {/* TAB 1: BÀI GIẢNG */}
         {activeTab === "lessons" && (
           <div className="flex flex-col bg-white rounded-[18px] border border-[#E4EBE5] shadow-sm overflow-hidden">
-            {MOCK_LESSONS.map((lesson, i) => (
-              <LessonItem
-                key={lesson.id}
-                lesson={lesson}
-                isLast={i === MOCK_LESSONS.length - 1}
-              />
-            ))}
+            {lessons.length === 0 ? (
+              <div className="py-12 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                Chưa có bài giảng nào.
+              </div>
+            ) : (
+              lessons.map((lesson, i) => (
+                <LessonItem
+                  key={lesson.id}
+                  lesson={{
+                    id: i, // LessonItem expects number
+                    title: lesson.title,
+                    duration: `${lesson.durationMin} phút`,
+                    isLocked: false // or derived from access if we had access rules in frontend
+                  }}
+                  isLast={i === lessons.length - 1}
+                />
+              ))
+            )}
           </div>
         )}
 

@@ -62,13 +62,13 @@ export function AssistantSidebar({ sideOpen, setSideOpen, onLogout }: AssistantS
 
       {/* Sidebar Footer (Logout) */}
       <div className="py-3 px-2 border-t border-white/10">
-        <button
+        <div
           onClick={onLogout}
           className="flex items-center w-full px-3 py-[11px] rounded-xl border-none transition-colors duration-140 font-[family-name:var(--font-heading)] text-[length:var(--text-body-sm)] cursor-pointer bg-transparent !text-[var(--error-200)] font-medium hover:bg-[rgba(201,75,75,0.15)]"
         >
           <span className="text-[18px] mr-3">🚪</span>
           {sideOpen && <span className="whitespace-nowrap">Đăng xuất</span>}
-        </button>
+        </div>
       </div>
     </aside>
   );

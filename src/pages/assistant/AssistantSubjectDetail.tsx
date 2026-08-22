@@ -6,11 +6,10 @@ import AssistantCreateLecturePopup from '../../components/assistant/course/Assis
 import AssistantEditLecturePopup from '../../components/assistant/course/AssistantEditLecturePopup';
 import AssistantViewExercisePopup from '../../components/assistant/course/AssistantViewExercisePopup';
 import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
-import {
-  DEMO_COURSES,
-  DEMO_SUBJECT_TOPICS,
-} from '../../types/assistant/mockData';
-import type { SubjectLecture, SubjectExercise } from '../../types/assistant/models';
+import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
+import { useGetLessonsQuery, useDeleteLessonMutation } from '../../hooks/queries/useLessons';
+import { useGetHomeworkQuery, useDeleteAssessmentMutation } from '../../hooks/queries/useAssessments';
+import { useNotification } from '../../components/common/NotificationProvider';
 import { ROUTES } from '../../utils/routes';
 
 const TABS = [
@@ -217,18 +216,71 @@ export default function AssistantSubjectDetail() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('bai-giang');
   const [isLecturePopupOpen, setIsLecturePopupOpen] = useState(false);
-  const [editLecture, setEditLecture] = useState<SubjectLecture | null>(null);
-  const [viewExercise, setViewExercise] = useState<SubjectExercise | null>(null);
-  const [deleteLectureId, setDeleteLectureId] = useState<number | null>(null);
-  const [deleteExerciseId, setDeleteExerciseId] = useState<number | null>(null);
+  const [editLecture, setEditLecture] = useState<any>(null);
+  const [viewExercise, setViewExercise] = useState<any | null>(null);
+  const [deleteLectureId, setDeleteLectureId] = useState<string | null>(null);
+  const [deleteExerciseId, setDeleteExerciseId] = useState<string | null>(null);
 
-  const decodedSubject = decodeURIComponent(subjectName ?? '');
-  const course = DEMO_COURSES.find((c) => c.key === courseKey);
+  const subjectId = subjectName ?? '';
 
-  // Flatten all lectures / exercises from topics into a single list
-  const topicsRaw = DEMO_SUBJECT_TOPICS[decodedSubject] ?? [];
-  const lectures: SubjectLecture[] = topicsRaw.flatMap((t) => t.lectures);
-  const exercises: SubjectExercise[] = topicsRaw.flatMap((t) => t.exercises);
+  const { showSuccess, showError } = useNotification();
+  const deleteMutation = useDeleteLessonMutation();
+  const deleteExerciseMutation = useDeleteAssessmentMutation();
+
+  const { data: coursesData } = useGetCoursesQuery({ size: 100 });
+  const course = coursesData?.data.find((c) => c.id === courseKey);
+
+  const { data: detailData } = useGetCourseDetailQuery(courseKey ?? '');
+  const subject = detailData?.data.subjects.find(s => s.id === subjectId);
+  const decodedSubject = subject?.name || 'Môn học';
+
+  // Fetch lectures (lessons)
+  const { data: lessonsData, isLoading: isLoadingLessons } = useGetLessonsQuery(courseKey ?? '', subjectId);
+  const lectures = lessonsData?.data || [];
+
+  // Fetch exercises (homework)
+  const { data: homeworkData, isLoading: isLoadingHomework } = useGetHomeworkQuery(courseKey ?? '', { subjectId, size: 100 });
+  const exercises = homeworkData?.data || [];
+
+  const handleDeleteLectureConfirm = () => {
+    if (!deleteLectureId) return;
+    deleteMutation.mutate(
+      { courseId: courseKey ?? '', subjectId, lessonId: deleteLectureId },
+      {
+        onSuccess: () => {
+          setTimeout(() => {
+            showSuccess('Xóa bài giảng thành công!');
+            setDeleteLectureId(null);
+          }, 500);
+        },
+        onError: () => {
+          setTimeout(() => {
+            showError('Đã xảy ra lỗi khi xóa bài giảng!');
+          }, 500);
+        }
+      }
+    );
+  };
+
+  const handleDeleteExerciseConfirm = () => {
+    if (!deleteExerciseId) return;
+    deleteExerciseMutation.mutate(
+      { courseId: courseKey ?? '', assessmentId: deleteExerciseId },
+      {
+        onSuccess: () => {
+          setTimeout(() => {
+            showSuccess('Xóa bài tập thành công!');
+            setDeleteExerciseId(null);
+          }, 500);
+        },
+        onError: () => {
+          setTimeout(() => {
+            showError('Đã xảy ra lỗi khi xóa bài tập!');
+          }, 500);
+        }
+      }
+    );
+  };
 
   return (
     <div className="flex flex-col h-full w-full">
@@ -236,13 +288,13 @@ export default function AssistantSubjectDetail() {
         breadcrumbs={[
           { label: 'Quản lý khóa học', onClick: () => navigate(ROUTES.ASSISTANT.COURSES) },
           {
-            label: course?.name ?? courseKey ?? '',
+            label: course?.title ?? courseKey ?? '',
             onClick: () => navigate(ROUTES.ASSISTANT.COURSE_DETAIL(courseKey ?? '')),
           },
           { label: decodedSubject },
         ]}
         title={decodedSubject}
-        subtitle={`Quản lý nội dung môn học · Khóa ${course?.name ?? courseKey}`}
+        subtitle={`Quản lý nội dung môn học · Khóa ${course?.title ?? courseKey}`}
         rightSlot={
           <div
             onClick={() => {
@@ -281,7 +333,7 @@ export default function AssistantSubjectDetail() {
                       Link
                     </th>
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
-                      Tải lên lúc
+                      Thời lượng
                     </th>
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]" />
                   </tr>
@@ -299,17 +351,17 @@ export default function AssistantSubjectDetail() {
                       </td>
                       <td className="py-3.5 px-5">
                         <a
-                          href={lec.link}
+                          href={lec.youtubeUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="font-[family-name:var(--font-body)] text-[13px] text-[var(--brand-500)] hover:underline"
                         >
-                          {lec.link}
+                          {lec.youtubeUrl}
                         </a>
                       </td>
                       <td className="py-3.5 px-5">
                         <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-secondary)]">
-                          Hôm nay
+                          {lec.durationMin} phút
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
@@ -322,7 +374,14 @@ export default function AssistantSubjectDetail() {
                       </td>
                     </tr>
                   ))}
-                  {lectures.length === 0 && (
+                  {isLoadingLessons && (
+                    <tr>
+                      <td colSpan={4} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                        Đang tải bài giảng...
+                      </td>
+                    </tr>
+                  )}
+                  {!isLoadingLessons && lectures.length === 0 && (
                     <tr>
                       <td colSpan={4} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Chưa có bài giảng nào. Hãy tải lên bài giảng đầu tiên.
@@ -373,7 +432,7 @@ export default function AssistantSubjectDetail() {
                       </td>
                       <td className="py-3.5 px-5">
                         <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-secondary)]">
-                          {ex.questions} câu
+                          {ex.numQuestions} câu
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
@@ -382,26 +441,15 @@ export default function AssistantSubjectDetail() {
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
-                        <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${ex.status === 'draft' ? 'bg-[var(--warning-100)] text-[var(--warning-700)]' : 'bg-[var(--success-100)] text-[var(--success-700)]'
+                        <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${ex.status === 'DRAFT' ? 'bg-[var(--warning-100)] text-[var(--warning-700)]' : 'bg-[var(--success-100)] text-[var(--success-700)]'
                           }`}>
-                          {ex.status === 'draft' ? 'Nháp' : 'Đã xuất bản'}
+                          {ex.status === 'DRAFT' ? 'Nháp' : (ex.status === 'PUBLISHED' ? 'Đã xuất bản' : ex.status)}
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
-                        {ex.solutionLink ? (
-                          <a
-                            href={ex.solutionLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-[family-name:var(--font-body)] text-[13px] text-[var(--brand-500)] hover:underline"
-                          >
-                            {ex.solutionLink}
-                          </a>
-                        ) : (
-                          <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-tertiary)]">
-                            Chưa có
-                          </span>
-                        )}
+                        <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-tertiary)]">
+                          —
+                        </span>
                       </td>
                       <td className="py-3.5 px-5">
                         <div className="flex justify-end">
@@ -415,7 +463,14 @@ export default function AssistantSubjectDetail() {
                       </td>
                     </tr>
                   ))}
-                  {exercises.length === 0 && (
+                  {isLoadingHomework && (
+                    <tr>
+                      <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                        Đang tải bài tập...
+                      </td>
+                    </tr>
+                  )}
+                  {!isLoadingHomework && exercises.length === 0 && (
                     <tr>
                       <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Chưa có bài tập nào. Hãy tải lên bài tập đầu tiên.
@@ -430,23 +485,35 @@ export default function AssistantSubjectDetail() {
       </div>
 
       {isLecturePopupOpen && (
-        <AssistantCreateLecturePopup courseKey={courseKey ?? ''} onClose={() => setIsLecturePopupOpen(false)} />
+        <AssistantCreateLecturePopup 
+          courseKey={courseKey ?? ''} 
+          courseName={course?.title}
+          defaultSubjectId={subjectId}
+          onClose={() => setIsLecturePopupOpen(false)} 
+        />
       )}
 
       {/* Edit / View Popups */}
       {editLecture && (
         <AssistantEditLecturePopup
-          course={course?.name ?? courseKey ?? ''}
-          subjects={[decodedSubject]}
-          lecture={editLecture}
+          courseKey={courseKey ?? ''}
+          courseName={course?.title ?? courseKey ?? ''}
+          subjectId={subjectId}
+          subjectName={subject?.name || decodedSubject}
+          lecture={{
+            id: editLecture.id,
+            title: editLecture.title,
+            link: editLecture.youtubeUrl,
+            durationMin: editLecture.durationMin,
+            orderNum: editLecture.orderNum || 1
+          }}
           onClose={() => setEditLecture(null)}
-          onSave={() => console.log('Saved lecture', editLecture.id)}
         />
       )}
 
       {viewExercise && (
         <AssistantViewExercisePopup
-          course={course?.name ?? courseKey ?? ''}
+          course={course?.title ?? courseKey ?? ''}
           subject={decodedSubject}
           exercise={viewExercise}
           onClose={() => setViewExercise(null)}
@@ -458,9 +525,9 @@ export default function AssistantSubjectDetail() {
         <AssistantConfirmPopup
           title="Xóa bài giảng"
           message={`Bạn có chắc muốn xóa bài giảng này?`}
-          confirmLabel="Xóa"
+          confirmLabel={deleteMutation.isPending ? "Đang xóa..." : "Xóa"}
           variant="danger"
-          onConfirm={() => setDeleteLectureId(null)}
+          onConfirm={handleDeleteLectureConfirm}
           onCancel={() => setDeleteLectureId(null)}
         />
       )}
@@ -469,9 +536,9 @@ export default function AssistantSubjectDetail() {
         <AssistantConfirmPopup
           title="Xóa bài tập"
           message={`Bạn có chắc muốn xóa bài tập này?`}
-          confirmLabel="Xóa"
+          confirmLabel={deleteExerciseMutation.isPending ? "Đang xóa..." : "Xóa"}
           variant="danger"
-          onConfirm={() => setDeleteExerciseId(null)}
+          onConfirm={handleDeleteExerciseConfirm}
           onCancel={() => setDeleteExerciseId(null)}
         />
       )}

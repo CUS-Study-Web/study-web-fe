@@ -1,22 +1,62 @@
 import { useState } from 'react';
-import { DEMO_COURSE_SUBJECTS } from '../../../types/assistant/mockData';
+import { useGetCourseDetailQuery } from '../../../hooks/queries/useCourses';
+import { useCreateLessonMutation } from '../../../hooks/queries/useLessons';
+import { useNotification } from '../../../components/common/NotificationProvider';
+import type { LessonRequest } from '../../../types/api/lesson.api';
 
-interface AssistantCreateLecturePopup {
+interface AssistantCreateLecturePopupProps {
   courseKey: string;
+  courseName?: string;
+  defaultSubjectId?: string;
   onClose: () => void;
 }
 
-export default function AssistantCreateLecturePopup({ courseKey, onClose }: AssistantCreateLecturePopup) {
-  const [subject, setSubject] = useState('');
-  const [order, setOrder] = useState(1);
+export default function AssistantCreateLecturePopup({ courseKey, courseName, defaultSubjectId, onClose }: AssistantCreateLecturePopupProps) {
+  const [subject, setSubject] = useState(defaultSubjectId || '');
   const [title, setTitle] = useState('');
-  const [link, setLink] = useState('');
+  const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [durationMin, setDurationMin] = useState(30);
 
-  const subjects = DEMO_COURSE_SUBJECTS[courseKey] ?? [];
+  const { data: detailData } = useGetCourseDetailQuery(courseKey);
+  const subjects = detailData?.data.subjects || [];
+
+  const { showSuccess, showError } = useNotification();
+  const createMutation = useCreateLessonMutation();
 
   const handleCreate = () => {
-    console.log('Create lecture:', { courseKey, subject, order, title, link });
-    onClose();
+    if (!subject) {
+      showError('Vui lòng chọn môn học!');
+      return;
+    }
+    if (!title || !youtubeUrl) {
+      showError('Vui lòng nhập đầy đủ thông tin bài giảng!');
+      return;
+    }
+
+    const payload: LessonRequest = {
+      title,
+      orderNum: 1,
+      youtubeUrl,
+      durationMin,
+      access: 'PUBLIC' // default for now
+    };
+
+    createMutation.mutate(
+      { courseId: courseKey, subjectId: subject, data: payload },
+      {
+        onSuccess: () => {
+          setTimeout(() => {
+            showSuccess('Tạo bài giảng thành công!');
+            onClose();
+          }, 500);
+        },
+        onError: () => {
+          setTimeout(() => {
+            showError('Tạo bài giảng thất bại!');
+          }, 500);
+        }
+      }
+    );
   };
 
   return (
@@ -62,7 +102,7 @@ export default function AssistantCreateLecturePopup({ courseKey, onClose }: Assi
                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
               <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-secondary)]">
-                {courseKey}
+                {courseName || courseKey}
               </span>
             </div>
           </div>
@@ -76,21 +116,21 @@ export default function AssistantCreateLecturePopup({ courseKey, onClose }: Assi
               className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none cursor-pointer"
             >
               <option value="">— Chọn môn học —</option>
-              {subjects.map((s) => <option key={s} value={s}>{s}</option>)}
+              {subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
         </div>
 
-        {/* Số thứ tự */}
+        {/* Thời lượng */}
         <div className="mb-4">
           <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
-            Số thứ tự
+            Thời lượng (phút)
           </div>
           <input
             type="number"
             min={1}
-            value={order}
-            onChange={(e) => setOrder(Number(e.target.value))}
+            value={durationMin}
+            onChange={(e) => setDurationMin(Number(e.target.value))}
             className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)] transition-colors"
           />
         </div>
@@ -121,8 +161,8 @@ export default function AssistantCreateLecturePopup({ courseKey, onClose }: Assi
             </svg>
             <input
               type="url"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
+              value={youtubeUrl}
+              onChange={(e) => setYoutubeUrl(e.target.value)}
               placeholder="https://..."
               className="flex-1 bg-transparent font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)]"
             />
@@ -131,18 +171,21 @@ export default function AssistantCreateLecturePopup({ courseKey, onClose }: Assi
 
         {/* Buttons */}
         <div className="flex gap-3">
-          <div
+          <button
+            type="button"
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-[8px] border border-[var(--border-default)] text-center font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
+            className="!flex-1 !py-2.5 !rounded-[8px] !border !border-[var(--border-default)] !text-center !font-[family-name:var(--font-heading)] !font-semibold !text-[14px] !text-[var(--text-primary)] !cursor-pointer hover:!bg-[var(--surface-muted)] !transition-colors !select-none"
           >
             Hủy
-          </div>
-          <div
+          </button>
+          <button
+            type="button"
             onClick={handleCreate}
-            className="flex-[2] py-2.5 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] text-center font-[family-name:var(--font-heading)] font-semibold text-[14px] text-white cursor-pointer transition-colors select-none"
+            disabled={createMutation.isPending}
+            className="!flex-[2] !py-2.5 !rounded-[8px] !bg-[var(--brand-500)] hover:!bg-[var(--brand-600)] disabled:!bg-[var(--brand-500)]/70 !text-center !font-[family-name:var(--font-heading)] !font-semibold !text-[14px] !text-white !cursor-pointer !transition-colors !select-none"
           >
-            Tạo bài giảng
-          </div>
+            {createMutation.isPending ? 'Đang tạo...' : 'Tạo bài giảng'}
+          </button>
         </div>
       </div>
     </div>

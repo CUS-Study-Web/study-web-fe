@@ -2,57 +2,85 @@ import { useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantExamFormPanel, { type AssistantExamFormPanelHandle } from '../../components/assistant/course/AssistantExamFormPanel';
-import { DEMO_COURSES, DEMO_COURSE_EXAMS } from '../../types/assistant/mockData';
 import { ROUTES } from '../../utils/routes';
+import { useNotification } from '../../components/common/NotificationProvider';
+import { useGetAssessmentDetailQuery, useUpdateAssessmentMutation } from '../../hooks/queries/useAssessments';
+import { useGetCoursesQuery } from '../../hooks/queries/useCourses';
 
-// Simulated exam question lines for the PDF preview
-const PREVIEW_QUESTIONS = [
-  'Câu 1: Trong các mệnh đề sau, mệnh đề nào đúng?',
-  'Câu 2: Tính giới hạn của dãy số sau đây:',
-  'Câu 3: Tìm tập nghiệm của bất phương trình:',
-  'Câu 4: Cho hàm số f(x) = 2x² – 3x + 1. Đạo hàm f\'(x) là:',
-  'Câu 5: Số phần/x = 2 + 1⁄6 có mẫu thức bằng:',
-  'Câu 6: Tính tổng S = 1 + 2 + 3 + ... + 100:',
-  'Câu 7: Cho cấp số nhân có công bội q = 2, số hạng đầu u = 3:',
-  'Câu 8: Tính tích phân không định đúng theo công thức:',
-];
 
-const MOCK_OPTIONS = [
-  { label: 'A. Đáp án mẫu 1', col: 'left' },
-  { label: 'B. Phương án B', col: 'right' },
-  { label: 'C. Lựa chọn 3', col: 'left' },
-  { label: 'D. Tùy chọn 4', col: 'right' },
-];
 
 export default function AssistantEditExam() {
   const { courseKey, examId } = useParams<{ courseKey: string; examId: string }>();
   const navigate = useNavigate();
   const formRef = useRef<AssistantExamFormPanelHandle>(null);
 
-  const course = DEMO_COURSES.find((c) => c.key === courseKey);
-  const exams = DEMO_COURSE_EXAMS[courseKey ?? ''] ?? [];
-  const exam = exams.find((e) => String(e.id) === examId);
+  const { showSuccess, showError } = useNotification();
+  const updateMutation = useUpdateAssessmentMutation();
 
+  const { data: coursesData } = useGetCoursesQuery({ size: 100 });
+  const course = coursesData?.data.find((c) => c.id === courseKey);
   const key = courseKey ?? '';
 
-  const handleBackWithState = () => navigate(ROUTES.ASSISTANT.COURSE_DETAIL(key));
+  const { data: detailData, isLoading } = useGetAssessmentDetailQuery(key, examId ?? '');
+  const exam = detailData?.data;
+
+  const handleBackWithState = () => navigate(ROUTES.ASSISTANT.COURSE_DETAIL(key), { state: { tab: 'de-thi' } });
 
   const handleConfirm = () => {
     const data = formRef.current?.getData();
-    console.log('Update exam:', data);
-    handleBackWithState();
+    if (!data) return;
+
+    const formData = new FormData();
+    formData.append('assessmentType', 'EXAM');
+    formData.append('title', data.title);
+    formData.append('numQuestions', data.questions);
+    formData.append('durationMin', data.duration);
+    formData.append('accessTier', data.accessTier);
+    if (data.solutionLink) {
+      formData.append('explanationUrl', data.solutionLink);
+    }
+    formData.append('status', data.status === 'draft' ? 'DRAFT' : 'PUBLISHED');
+    const cleanAnswers = data.answers.map(a => ({
+      questionNumber: a.questionNumber,
+      correctAnswer: a.correctAnswer
+    }));
+    formData.append('answerKeys', JSON.stringify(cleanAnswers));
+
+    // Note: PDF update not supported directly via this edit page since there's no file input in EditExam currently.
+
+    updateMutation.mutate(
+      { courseId: key, assessmentId: examId ?? '', data: formData },
+      {
+        onSuccess: () => {
+          setTimeout(() => {
+            showSuccess('Cập nhật đề thi thành công');
+            handleBackWithState();
+          }, 500);
+        },
+        onError: (error: any) => {
+          console.error("API Error:", error?.response?.data);
+          setTimeout(() => {
+            const msg = error?.response?.data?.message || 'Có lỗi xảy ra khi cập nhật đề thi';
+            showError(`Lỗi: ${msg}`);
+          }, 500);
+        }
+      }
+    );
   };
 
   // Build initialData for the form
   const initialData = exam
     ? {
-        title: exam.title,
-        courseKey: exam.courseKey,
-        questions: String(exam.questions),
-        duration: exam.duration.replace(' phút', ''),
-        date: exam.date,
-        status: exam.status,
-      }
+      title: exam.title,
+      courseKey: key,
+      questions: String(exam.numQuestions),
+      duration: String(exam.durationMin ?? 90),
+      date: exam.createdAt ? new Date(exam.createdAt).toLocaleDateString('en-GB') : '',
+      status: exam.status === 'DRAFT' ? 'draft' : 'published' as any,
+      accessTier: exam.accessTier || 'PUBLIC',
+      solutionLink: exam.explanationUrl || '',
+      answers: exam.answerKeys,
+    } as any
     : undefined;
 
   return (
@@ -63,11 +91,11 @@ export default function AssistantEditExam() {
           <AssistantCoursePageHeader
             breadcrumbs={[
               { label: 'Quản lý khóa học', onClick: () => navigate(ROUTES.ASSISTANT.COURSES) },
-              { label: course?.name ?? key, onClick: handleBackWithState },
+              { label: course?.title ?? key, onClick: handleBackWithState },
               { label: exam?.title ?? 'Đề thi' },
             ]}
             title="Chỉnh sửa đề thi"
-            subtitle={`Khóa ${course?.name ?? key} · ${exam?.title ?? ''}`}
+            subtitle={`Khóa ${course?.title ?? key} · ${exam?.title ?? ''}`}
           />
         </div>
         <div className="flex items-center gap-2 shrink-0 mt-1">
@@ -124,41 +152,27 @@ export default function AssistantEditExam() {
           </div>
 
           {/* PDF content area */}
-          <div className="flex-1 overflow-y-auto bg-[var(--surface-muted)] rounded-b-[12px] p-6">
-            <div className="bg-white rounded-[8px] shadow-md p-8 max-w-[600px] mx-auto">
-              {/* Exam header */}
-              <div className="text-center mb-6 border-b border-gray-200 pb-4">
-                <div className="font-bold text-[13px] text-gray-800 uppercase tracking-wide mb-1">
-                  TRUNG TÂM CUS – ĐỀ THI THỬ
-                </div>
-                <div className="font-semibold text-[14px] text-gray-800 mb-1">
-                  {exam?.title ?? 'Đề thi thử'}
-                </div>
-                <div className="text-[12px] text-gray-500">
-                  Thời gian: {exam?.duration ?? '75 phút'} · {exam?.questions ?? 45} câu · Ngày: {exam?.date ?? ''}
-                </div>
-              </div>
-
-              {/* Questions */}
-              <div className="flex flex-col gap-5">
-                {PREVIEW_QUESTIONS.map((q, idx) => (
-                  <div key={idx}>
-                    <div className="font-semibold text-[13px] text-gray-800 mb-2">{q}</div>
-                    <div className="grid grid-cols-2 gap-x-6 gap-y-1">
-                      {MOCK_OPTIONS.map((opt) => (
-                        <div key={opt.label} className="text-[12px] text-gray-600">{opt.label}</div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {exam?.fileUrl ? (
+            <iframe
+              src={`${exam.fileUrl}#toolbar=0&navpanes=0&scrollbar=1`}
+              className="flex-1 w-full border-none rounded-b-[12px] bg-[var(--surface-muted)]"
+              title="PDF Preview"
+            />
+          ) : (
+            <div className="flex-1 flex items-center justify-center bg-[var(--surface-muted)] rounded-b-[12px] text-[var(--text-secondary)] font-[family-name:var(--font-body)] font-medium text-[13px]">
+              Không có file đính kèm
             </div>
-          </div>
+          )}
         </div>
 
         {/* Right: form panel */}
         <div className="w-[380px] shrink-0 flex flex-col min-h-0">
-          <AssistantExamFormPanel ref={formRef} courseKey={key} mode="edit" initialData={initialData}>
+          {isLoading ? (
+            <div className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+              Đang tải thông tin đề thi...
+            </div>
+          ) : exam ? (
+          <AssistantExamFormPanel ref={formRef} courseKey={key} courseName={course?.title} mode="edit" initialData={initialData}>
             <div className="flex items-center gap-3 pt-3 border-t border-[var(--border-subtle)] mt-1 shrink-0">
               <div
                 onClick={handleBackWithState}
@@ -168,12 +182,17 @@ export default function AssistantEditExam() {
               </div>
               <div
                 onClick={handleConfirm}
-                className="px-5 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white cursor-pointer transition-colors select-none shadow-sm"
+                className={`px-5 py-2 rounded-[8px] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white transition-colors select-none shadow-sm ${
+                  updateMutation.isPending
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-[var(--brand-500)] hover:bg-[var(--brand-600)] cursor-pointer'
+                }`}
               >
-                Xác nhận chỉnh sửa
+                {updateMutation.isPending ? 'Đang lưu...' : 'Xác nhận chỉnh sửa'}
               </div>
             </div>
           </AssistantExamFormPanel>
+          ) : null}
         </div>
       </div>
     </div>

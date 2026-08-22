@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import type { CourseExam } from '../../../types/assistant/models';
+import type { CourseExam } from '../../../types/assistant';
 import AssistantConfirmPopup from '../AssistantConfirmPopup';
 import AssistantViewExamPopup from './AssistantViewExamPopup';
 import AssistantFeatureInDevPopup from '../AssistantFeatureInDevPopup';
+import { useDeleteAssessmentMutation } from '../../../hooks/queries/useAssessments';
+import { useNotification } from '../../common/NotificationProvider';
 
 interface ExamActionMenuProps {
   onView: () => void;
@@ -121,9 +123,8 @@ export default function AssistantExamCard({ exam, onEdit }: AssistantExamCardPro
   const [showViewPopup, setShowViewPopup] = useState(false);
   const [showDevPopup, setShowDevPopup] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [isDeleted, setIsDeleted] = useState(false);
-
-  if (isDeleted) return null;
+  const { showSuccess, showError } = useNotification();
+  const deleteMutation = useDeleteAssessmentMutation();
 
   return (
     <>
@@ -137,64 +138,73 @@ export default function AssistantExamCard({ exam, onEdit }: AssistantExamCardPro
           onDownload={() => setShowDevPopup(true)}
           onDelete={() => setShowDeleteConfirm(true)}
         />
-      {/* Title */}
-      <div className="font-[family-name:var(--font-heading)] font-bold text-[14px] text-[var(--text-primary)] mb-3 pr-8 leading-tight line-clamp-2">
-        {exam.title}
-      </div>
-
-      {/* Metadata list */}
-      <div className="flex flex-col gap-2 mb-3.5">
-        <div className="flex flex-wrap items-center text-[12px] text-[var(--text-secondary)] gap-x-4 gap-y-1.5">
-          <div className="flex items-center gap-1.5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
-            <span className="font-medium text-[var(--text-primary)]">{exam.courseKey}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            <span className="font-medium text-[var(--text-primary)]">{exam.questions} câu</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span className="font-medium text-[var(--text-primary)]">{exam.duration} phút</span>
-          </div>
-        </div>
-        
-        <div className="flex items-center text-[12px] text-[var(--text-secondary)] gap-1.5">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          <span>Đăng ngày <span className="font-medium text-[var(--text-primary)]">{exam.date}</span></span>
+        {/* Title */}
+        <div className="font-[family-name:var(--font-heading)] font-bold text-[14px] text-[var(--text-primary)] mb-3 pr-8 leading-tight line-clamp-2">
+          {exam.title}
         </div>
 
-        <div className="flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
-          <svg className="shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          <div className="flex-1 min-w-0">
-            {exam.solutionLink ? (
-              <a
-                href={exam.solutionLink}
-                target="_blank"
-                rel="noreferrer"
-                className="text-[var(--brand-600)] font-medium hover:underline block truncate"
-                onClick={e => e.stopPropagation()}
-                title={exam.solutionLink}
-              >
-                {exam.solutionLink}
-              </a>
-            ) : (
-              <span className="italic">Chưa có lời giải</span>
-            )}
+        {/* Metadata list */}
+        <div className="flex flex-col gap-2 mb-3.5">
+          <div className="flex flex-wrap items-center text-[12px] text-[var(--text-secondary)] gap-x-4 gap-y-1.5">
+            <div className="flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" /></svg>
+              <span className="font-medium text-[var(--text-primary)]">{exam.courseName || exam.courseKey}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" /></svg>
+              <span className="font-medium text-[var(--text-primary)]">{exam.questions} câu</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+              <span className="font-medium text-[var(--text-primary)]">{exam.duration} phút</span>
+            </div>
+          </div>
+
+          <div className="flex items-center text-[12px] text-[var(--text-secondary)] gap-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+            <span>Đăng ngày <span className="font-medium text-[var(--text-primary)]">{exam.date}</span></span>
+          </div>
+
+          <div className="flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
+            <svg className="shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+            <div className="flex-1 min-w-0">
+              {exam.solutionLink ? (
+                <a
+                  href={exam.solutionLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[var(--brand-600)] font-medium hover:underline block truncate"
+                  onClick={e => e.stopPropagation()}
+                  title={exam.solutionLink}
+                >
+                  {exam.solutionLink}
+                </a>
+              ) : (
+                <span className="italic">Chưa có lời giải</span>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Status badge */}
-      <div>
-        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-[family-name:var(--font-heading)] font-semibold text-[11px] ${isPublished
-          ? 'bg-[var(--success-100)] text-[var(--success-700)]'
-          : 'bg-[var(--warning-100)] text-[var(--warning-700)]'
-          }`}
-        >
-          {isPublished ? 'Đã xuất bản' : 'Nháp'}
-        </span>
-      </div>
+        {/* Status & Access badges */}
+        <div className="flex items-center gap-2">
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-[family-name:var(--font-heading)] font-semibold text-[11px] ${isPublished
+            ? 'bg-[var(--success-100)] text-[var(--success-700)]'
+            : 'bg-[var(--warning-100)] text-[var(--warning-700)]'
+            }`}
+          >
+            {isPublished ? 'Đã xuất bản' : 'Nháp'}
+          </span>
+          {exam.accessTier && (
+            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-[family-name:var(--font-heading)] font-semibold text-[11px] ${exam.accessTier === 'VIP'
+              ? 'bg-amber-100 text-amber-700'
+              : 'bg-blue-100 text-blue-700'
+              }`}
+            >
+              {exam.accessTier === 'VIP' ? 'Vip' : 'Public'}
+            </span>
+          )}
+        </div>
       </div>
 
       {showViewPopup && (
@@ -208,11 +218,25 @@ export default function AssistantExamCard({ exam, onEdit }: AssistantExamCardPro
         <AssistantConfirmPopup
           title="Xác nhận xóa"
           message={`Bạn có chắc chắn muốn xóa đề thi "${exam.title}" không?`}
-          confirmLabel="Xóa"
+          confirmLabel={deleteMutation.isPending ? "Đang xóa..." : "Xóa"}
           variant="danger"
           onConfirm={() => {
-            setIsDeleted(true);
-            setShowDeleteConfirm(false);
+            deleteMutation.mutate(
+              { courseId: exam.courseKey, assessmentId: String(exam.id) },
+              {
+                onSuccess: () => {
+                  setTimeout(() => {
+                    showSuccess('Xóa đề thi thành công!');
+                    setShowDeleteConfirm(false);
+                  }, 500);
+                },
+                onError: (error: any) => {
+                  setTimeout(() => {
+                    showError(error?.response?.data?.message || 'Đã xảy ra lỗi khi xóa đề thi!');
+                  }, 500);
+                }
+              }
+            );
           }}
           onCancel={() => setShowDeleteConfirm(false)}
         />

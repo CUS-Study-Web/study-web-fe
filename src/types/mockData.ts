@@ -12,7 +12,7 @@ import type {
   SubjectTopic,
   FlashcardTopic,
   VocabularyWord,
-} from './models';
+} from './assistant';
 
 
 export const ASST_STAT_CARDS: AssistantStatCard[] = [

@@ -74,7 +74,7 @@ export default function UserMenuPopup() {
               {user.name}
             </div>
             <div className="text-xs text-[var(--text-secondary-400)] font-medium mt-0.5">
-              {user.email}
+              {user.gmail}
             </div>
           </div>
 

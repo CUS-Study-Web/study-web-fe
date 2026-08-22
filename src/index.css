@@ -405,3 +405,9 @@ button {
   }
 }
 
+/* Hide default Edge/IE password reveal button */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+

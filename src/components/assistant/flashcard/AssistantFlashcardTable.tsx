@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import type { FlashcardTopic } from '../../../types/assistant/models';
+import type { FlashcardTopic } from '../../../types/assistant';
 
 // ─── Summary Chips ────────────────────────────────────────────────────────────
 
@@ -270,11 +270,10 @@ export function AssistantTopicTable({
             </div>
             {/* Status */}
             <div className="px-5 py-3.5 flex items-center">
-              <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${
-                topic.status === 'published'
-                  ? 'bg-[var(--success-100)] text-[var(--success-700)]'
-                  : 'bg-[var(--warning-100)] text-[var(--warning-700)]'
-              }`}>
+              <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${topic.status === 'published'
+                ? 'bg-[var(--success-100)] text-[var(--success-700)]'
+                : 'bg-[var(--warning-100)] text-[var(--warning-700)]'
+                }`}>
                 {topic.status === 'published' ? 'Đã xuất bản' : 'Nháp'}
               </span>
             </div>
