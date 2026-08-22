@@ -3,17 +3,17 @@ import { ROUTES } from "../../utils/routes";
 import { useAuth } from "../../contexts/AuthContext";
 
 interface ExamCardProps {
-  id: number;
+  id: string;
+  courseId?: string;
   subject: string;
-  difficulty: string;
   title: string;
   time: string;
   questions: string;
-  attempts: string;
+  attempts?: string;
   isVip: boolean;
 }
 
-export default function ExamCard({ id, subject, difficulty, title, time, questions, attempts, isVip }: ExamCardProps) {
+export default function ExamCard({ id, courseId, subject, title, time, questions, attempts, isVip }: ExamCardProps) {
   const { isLoggedIn, user } = useAuth();
   const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ export default function ExamCard({ id, subject, difficulty, title, time, questio
     if (!isLoggedIn) {
       navigate(ROUTES.AUTH.LOGIN);
     } else {
-      navigate(ROUTES.LEARNER.EXAM_START("trial", "trial", id));
+      navigate(ROUTES.LEARNER.EXAM_START(courseId || "trial", "exam", id));
     }
   };
   return (
@@ -60,9 +60,6 @@ export default function ExamCard({ id, subject, difficulty, title, time, questio
             <span className="px-3 py-1 bg-[var(--brand-soft-300)] !text-[var(--brand-base-600)] text-caption font-extrabold uppercase rounded-full tracking-wider">
               {subject}
             </span>
-            <span className="px-3 py-1 bg-[var(--error-50)] !text-[var(--error-600)] text-caption font-extrabold rounded-full">
-              {difficulty}
-            </span>
           </div>
 
           {/* Title */}
@@ -90,7 +87,7 @@ export default function ExamCard({ id, subject, difficulty, title, time, questio
               <svg className="w-4 h-4 text-[var(--info-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              <span className="text-caption font-semibold text-[var(--text-secondary-500)]">{attempts}</span>
+              <span className="text-caption font-semibold text-[var(--text-secondary-500)]">{attempts || '0 (đang phát triển)'}</span>
             </div>
           </div>
           
