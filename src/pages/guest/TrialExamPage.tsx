@@ -47,16 +47,19 @@ export default function TrialExamPage() {
 
   const categories = ["Tất cả", ...courses.map((c) => c.title)];
 
-  const filteredExams = allExams.filter((exam) => {
-    const matchesCategory = selectedCategory === "Tất cả" || exam.subject === selectedCategory;
+  const filteredExams = allExams
+    .filter((exam) => {
+      const matchesCategory = selectedCategory === "Tất cả" || exam.subject === selectedCategory;
 
-    const matchesSearch =
-      searchQuery.trim() === "" ||
-      exam.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      exam.subject.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch =
+        searchQuery.trim() === "" ||
+        exam.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        exam.subject.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesCategory && matchesSearch;
-  });
+      return matchesCategory && matchesSearch;
+    })
+    // Public exams first, VIP-locked exams last
+    .sort((a, b) => Number(a.isVip) - Number(b.isVip));
 
   return (
     <GuestPageLayout
