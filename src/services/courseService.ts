@@ -17,12 +17,16 @@ export const courseService = {
   },
 
   createCourse: async (data: FormData) => {
-    const response = await apiClient.post<SingleResponse<CourseSummaryResponse>>('/api/courses', data);
+    const response = await apiClient.post<SingleResponse<CourseSummaryResponse>>('/api/courses', data, {
+      headers: { 'Content-Type': undefined }
+    });
     return response.data;
   },
 
   updateCourse: async (id: string, data: FormData) => {
-    const response = await apiClient.patch<SingleResponse<CourseSummaryResponse>>(`/api/courses/${id}`, data);
+    const response = await apiClient.patch<SingleResponse<CourseSummaryResponse>>(`/api/courses/${id}`, data, {
+      headers: { 'Content-Type': undefined }
+    });
     return response.data;
   },
 

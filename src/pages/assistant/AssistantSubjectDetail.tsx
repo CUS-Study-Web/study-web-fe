@@ -6,12 +6,9 @@ import AssistantCreateLecturePopup from '../../components/assistant/course/Assis
 import AssistantEditLecturePopup from '../../components/assistant/course/AssistantEditLecturePopup';
 import AssistantViewExercisePopup from '../../components/assistant/course/AssistantViewExercisePopup';
 import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
-import {
-  DEMO_SUBJECT_TOPICS,
-} from '../../types/mockData';
-import type { SubjectExercise } from '../../types/assistant';
 import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
 import { useGetLessonsQuery, useDeleteLessonMutation } from '../../hooks/queries/useLessons';
+import { useGetHomeworkQuery, useDeleteAssessmentMutation } from '../../hooks/queries/useAssessments';
 import { useNotification } from '../../components/common/NotificationProvider';
 import { ROUTES } from '../../utils/routes';
 
@@ -220,14 +217,15 @@ export default function AssistantSubjectDetail() {
   const [activeTab, setActiveTab] = useState('bai-giang');
   const [isLecturePopupOpen, setIsLecturePopupOpen] = useState(false);
   const [editLecture, setEditLecture] = useState<any>(null);
-  const [viewExercise, setViewExercise] = useState<SubjectExercise | null>(null);
+  const [viewExercise, setViewExercise] = useState<any | null>(null);
   const [deleteLectureId, setDeleteLectureId] = useState<string | null>(null);
-  const [deleteExerciseId, setDeleteExerciseId] = useState<number | null>(null);
+  const [deleteExerciseId, setDeleteExerciseId] = useState<string | null>(null);
 
   const subjectId = subjectName ?? '';
 
   const { showSuccess, showError } = useNotification();
   const deleteMutation = useDeleteLessonMutation();
+  const deleteExerciseMutation = useDeleteAssessmentMutation();
 
   const { data: coursesData } = useGetCoursesQuery({ size: 100 });
   const course = coursesData?.data.find((c) => c.id === courseKey);
@@ -240,9 +238,9 @@ export default function AssistantSubjectDetail() {
   const { data: lessonsData, isLoading: isLoadingLessons } = useGetLessonsQuery(courseKey ?? '', subjectId);
   const lectures = lessonsData?.data || [];
 
-  // Exercises are still mocked
-  const topicsRaw = DEMO_SUBJECT_TOPICS[decodedSubject] ?? [];
-  const exercises: SubjectExercise[] = topicsRaw.flatMap((t) => t.exercises);
+  // Fetch exercises (homework)
+  const { data: homeworkData, isLoading: isLoadingHomework } = useGetHomeworkQuery(courseKey ?? '', { subjectId, size: 100 });
+  const exercises = homeworkData?.data || [];
 
   const handleDeleteLectureConfirm = () => {
     if (!deleteLectureId) return;
@@ -258,6 +256,26 @@ export default function AssistantSubjectDetail() {
         onError: () => {
           setTimeout(() => {
             showError('Đã xảy ra lỗi khi xóa bài giảng!');
+          }, 500);
+        }
+      }
+    );
+  };
+
+  const handleDeleteExerciseConfirm = () => {
+    if (!deleteExerciseId) return;
+    deleteExerciseMutation.mutate(
+      { courseId: courseKey ?? '', assessmentId: deleteExerciseId },
+      {
+        onSuccess: () => {
+          setTimeout(() => {
+            showSuccess('Xóa bài tập thành công!');
+            setDeleteExerciseId(null);
+          }, 500);
+        },
+        onError: () => {
+          setTimeout(() => {
+            showError('Đã xảy ra lỗi khi xóa bài tập!');
           }, 500);
         }
       }
@@ -414,7 +432,7 @@ export default function AssistantSubjectDetail() {
                       </td>
                       <td className="py-3.5 px-5">
                         <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-secondary)]">
-                          {ex.questions} câu
+                          {ex.numQuestions} câu
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
@@ -423,26 +441,15 @@ export default function AssistantSubjectDetail() {
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
-                        <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${ex.status === 'draft' ? 'bg-[var(--warning-100)] text-[var(--warning-700)]' : 'bg-[var(--success-100)] text-[var(--success-700)]'
+                        <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${ex.status === 'DRAFT' ? 'bg-[var(--warning-100)] text-[var(--warning-700)]' : 'bg-[var(--success-100)] text-[var(--success-700)]'
                           }`}>
-                          {ex.status === 'draft' ? 'Nháp' : 'Đã xuất bản'}
+                          {ex.status === 'DRAFT' ? 'Nháp' : (ex.status === 'PUBLISHED' ? 'Đã xuất bản' : ex.status)}
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
-                        {ex.solutionLink ? (
-                          <a
-                            href={ex.solutionLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-[family-name:var(--font-body)] text-[13px] text-[var(--brand-500)] hover:underline"
-                          >
-                            {ex.solutionLink}
-                          </a>
-                        ) : (
-                          <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-tertiary)]">
-                            Chưa có
-                          </span>
-                        )}
+                        <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-tertiary)]">
+                          —
+                        </span>
                       </td>
                       <td className="py-3.5 px-5">
                         <div className="flex justify-end">
@@ -456,7 +463,14 @@ export default function AssistantSubjectDetail() {
                       </td>
                     </tr>
                   ))}
-                  {exercises.length === 0 && (
+                  {isLoadingHomework && (
+                    <tr>
+                      <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                        Đang tải bài tập...
+                      </td>
+                    </tr>
+                  )}
+                  {!isLoadingHomework && exercises.length === 0 && (
                     <tr>
                       <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Chưa có bài tập nào. Hãy tải lên bài tập đầu tiên.
@@ -522,9 +536,9 @@ export default function AssistantSubjectDetail() {
         <AssistantConfirmPopup
           title="Xóa bài tập"
           message={`Bạn có chắc muốn xóa bài tập này?`}
-          confirmLabel="Xóa"
+          confirmLabel={deleteExerciseMutation.isPending ? "Đang xóa..." : "Xóa"}
           variant="danger"
-          onConfirm={() => setDeleteExerciseId(null)}
+          onConfirm={handleDeleteExerciseConfirm}
           onCancel={() => setDeleteExerciseId(null)}
         />
       )}

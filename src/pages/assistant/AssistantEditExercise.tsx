@@ -2,8 +2,10 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantExerciseFormPanel, { type AssistantExerciseFormPanelHandle } from '../../components/assistant/course/AssistantExerciseFormPanel';
-import { DEMO_COURSES, DEMO_SUBJECT_TOPICS } from '../../types/mockData';
 import { ROUTES } from '../../utils/routes';
+import { useNotification } from '../../components/common/NotificationProvider';
+import { useGetAssessmentDetailQuery, useUpdateAssessmentMutation } from '../../hooks/queries/useAssessments';
+import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
 
 export default function AssistantEditExercise() {
   const { courseKey, exerciseId } = useParams<{ courseKey: string; exerciseId: string }>();
@@ -12,13 +14,18 @@ export default function AssistantEditExercise() {
   const navigate = useNavigate();
   const formRef = useRef<AssistantExerciseFormPanelHandle>(null);
 
-  const course = DEMO_COURSES.find((c) => c.key === courseKey);
+  const { showSuccess, showError } = useNotification();
+  const updateMutation = useUpdateAssessmentMutation();
+
+  const { data: coursesData } = useGetCoursesQuery({ size: 100 });
+  const course = coursesData?.data.find((c) => c.id === courseKey);
   const key = courseKey ?? '';
 
-  // Tìm thông tin bài tập (trong mockData) để set initial values
-  const allTopics = Object.values(DEMO_SUBJECT_TOPICS).flat();
-  const allExercises = allTopics.flatMap((t) => t.exercises);
-  const exercise = allExercises.find((e) => e.id === Number(exerciseId));
+  const { data: courseDetail } = useGetCourseDetailQuery(key);
+  const subjects = courseDetail?.data.subjects || [];
+
+  const { data: detailData, isLoading } = useGetAssessmentDetailQuery(key, exerciseId ?? '');
+  const exercise = detailData?.data;
 
   const [dragging, setDragging] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -44,8 +51,50 @@ export default function AssistantEditExercise() {
 
   const handleSubmit = () => {
     const data = formRef.current?.getData();
-    console.log('Update exercise:', { ...data, fileName: file?.name, id: exerciseId });
-    handleBack();
+    if (!data) return;
+
+    const matchedSubject = subjects.find(s => s.name === data.subject);
+    if (!matchedSubject) {
+      showError('Không tìm thấy ID của môn học đã chọn');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('assessmentType', 'HOMEWORK');
+    formData.append('title', data.title);
+    if (file) {
+      formData.append('file', file);
+    }
+    formData.append('subjectId', matchedSubject.id);
+    formData.append('numQuestions', data.questionCount.toString());
+    if (data.solutionLink) {
+      formData.append('explanationUrl', data.solutionLink);
+    }
+    formData.append('status', data.status === 'draft' ? 'DRAFT' : 'PUBLISHED');
+    const cleanAnswers = data.answers.map(a => ({
+      questionNumber: a.questionNumber,
+      correctAnswer: a.correctAnswer
+    }));
+    formData.append('answerKeys', JSON.stringify(cleanAnswers));
+
+    updateMutation.mutate(
+      { courseId: key, assessmentId: exerciseId ?? '', data: formData },
+      {
+        onSuccess: () => {
+          setTimeout(() => {
+            showSuccess('Cập nhật bài tập thành công');
+            handleBack();
+          }, 500);
+        },
+        onError: (error: any) => {
+          console.error("API Error:", error?.response?.data);
+          setTimeout(() => {
+            const msg = error?.response?.data?.message || 'Có lỗi xảy ra khi cập nhật bài tập';
+            showError(`Lỗi: ${msg}`);
+          }, 500);
+        }
+      }
+    );
   };
 
   const handleFile = (selectedFile: File) => {
@@ -54,21 +103,22 @@ export default function AssistantEditExercise() {
 
   const handleRemoveFile = () => setFile(null);
 
-  const isPdf = file?.type === 'application/pdf';
-  // Mock file name if not chosen
-  const displayFileName = file?.name || 'File đã tải lên trước đó.pdf';
+  // Use fileUrl from backend if no new file is uploaded
+  const previewUrl = fileUrl || exercise?.fileUrl;
+  const isPdf = file ? file.type === 'application/pdf' : exercise?.fileUrl?.endsWith('.pdf');
+  const displayFileName = file?.name || (exercise?.fileUrl ? exercise.fileUrl.split('/').pop() : 'File đã tải lên trước đó.pdf');
 
   return (
     <div className="flex flex-col h-full w-full">
       <AssistantCoursePageHeader
         breadcrumbs={[
           { label: 'Quản lý khóa học', onClick: () => navigate(ROUTES.ASSISTANT.COURSES) },
-          { label: course?.name ?? key, onClick: () => navigate(ROUTES.ASSISTANT.COURSE_DETAIL(key)) },
-          ...(subjectNameParam ? [{ label: subjectNameParam, onClick: () => navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, subjectNameParam)) }] : []),
+          { label: course?.title ?? key, onClick: () => navigate(ROUTES.ASSISTANT.COURSE_DETAIL(key)) },
+          ...(subjectNameParam ? [{ label: subjectNameParam, onClick: () => navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, subjects.find(s => s.name === subjectNameParam)?.id ?? '')) }] : []),
           { label: 'Sửa bài tập' },
         ]}
         title="Sửa bài tập"
-        subtitle={`Khóa ${course?.name ?? key}`}
+        subtitle={`Khóa ${course?.title ?? key}`}
       />
 
       <div className="flex gap-6 flex-1 min-h-0">
@@ -117,9 +167,9 @@ export default function AssistantEditExercise() {
               )}
             </div>
 
-            {isPdf && fileUrl ? (
+            {isPdf && previewUrl ? (
               <iframe
-                src={`${fileUrl}#toolbar=0&navpanes=0&scrollbar=1`}
+                src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=1`}
                 className="flex-1 w-full border-none"
                 title="PDF Preview"
               />
@@ -155,19 +205,25 @@ export default function AssistantEditExercise() {
 
         {/* Right: form panel */}
         <div className="flex flex-col w-[380px] shrink-0 border-l border-[var(--border-default)] pl-6 min-h-0">
-          <AssistantExerciseFormPanel
-            ref={formRef}
-            courseKey={key}
-            mode="edit"
-            initialData={{
-              subject: subjectNameParam || '',
-              title: exercise?.title || '',
-              questionCount: exercise?.questions || 20,
-              fileType: exercise?.fileType || 'PDF',
-              solutionLink: exercise?.solutionLink || '',
-              status: exercise?.status || 'published',
-            }}
-          >
+          {isLoading ? (
+            <div className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+              Đang tải thông tin bài tập...
+            </div>
+          ) : exercise ? (
+            <AssistantExerciseFormPanel
+              ref={formRef}
+              courseKey={key}
+              mode="edit"
+              initialData={{
+                subject: subjectNameParam || '',
+                title: exercise.title || '',
+                questionCount: exercise.numQuestions || 20,
+                fileType: 'PDF',
+                solutionLink: exercise.explanationUrl || '',
+                status: exercise.status === 'DRAFT' ? 'draft' : 'published',
+                answers: exercise.answerKeys,
+              }}
+            >
             <div className="flex items-center gap-2 pt-3 border-t border-[var(--border-subtle)] mt-1 shrink-0">
               <div
                 onClick={handleBack}
@@ -177,12 +233,17 @@ export default function AssistantEditExercise() {
               </div>
               <div
                 onClick={handleSubmit}
-                className="px-5 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white cursor-pointer transition-colors select-none shadow-sm"
+                className={`px-5 py-2 rounded-[8px] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-white transition-colors select-none shadow-sm ${
+                  updateMutation.isPending
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-[var(--brand-500)] hover:bg-[var(--brand-600)] cursor-pointer'
+                }`}
               >
-                Lưu thay đổi
+                {updateMutation.isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
               </div>
             </div>
           </AssistantExerciseFormPanel>
+          ) : null}
         </div>
       </div>
     </div>
