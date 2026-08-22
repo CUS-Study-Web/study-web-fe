@@ -8,6 +8,7 @@ import {
 import WebsiteTabsNav from '../../components/admin/WebsiteTabsNav'
 import {
   CourseModal,
+  AddCourseModal,
   InstructorModal,
   AchievementModal,
   ReviewModal,
@@ -569,6 +570,9 @@ const AdminWebsite = () => {
       </div>
 
       {/* Modals Container */}
+      {showModal === "add-course" && (
+        <AddCourseModal onClose={() => setShowModal(null)} />
+      )}
       {showModal === "edit-course" && editingCourse && (
         <CourseModal course={editingCourse} onClose={() => setShowModal(null)} />
       )}
