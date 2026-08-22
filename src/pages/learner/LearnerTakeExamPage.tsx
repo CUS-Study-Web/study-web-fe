@@ -19,7 +19,7 @@ export default function LearnerTakeExamPage() {
 
   const { data: startData, isLoading } = useStartAssessmentQuery(key, assessmentId);
   const examDetails = startData?.data;
-  
+
   const exam = {
     title: examDetails?.title ?? (isExercise ? "Bài tập thực hành" : "Đề thi thử THPT Quốc gia 2026"),
     duration: isExercise ? "--:--" : `${examDetails?.durationMin ?? 90} phút`,
@@ -31,7 +31,7 @@ export default function LearnerTakeExamPage() {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [submitResult, setSubmitResult] = useState<AssessmentSubmitResponse | null>(null);
-  
+
   // Initialize timer to duration
   const [secondsLeft, setSecondsLeft] = useState((examDetails?.durationMin ?? 90) * 60);
 
@@ -56,19 +56,19 @@ export default function LearnerTakeExamPage() {
   const total = EXAM_QUESTIONS.length;
 
   const rawScore = submitResult ? submitResult.score : 0;
-  const score10 = submitResult && submitResult.totalQuestions > 0 
-    ? (submitResult.numCorrect / submitResult.totalQuestions) * 10 
+  const score10 = submitResult && submitResult.totalQuestions > 0
+    ? (submitResult.numCorrect / submitResult.totalQuestions) * 10
     : (rawScore / 10);
   const formattedScore = Number.isInteger(score10) ? score10.toString() : score10.toFixed(2).replace('.', ',');
-  
+
   const percentage = score10 * 10;
   const formattedPercentage = Number.isInteger(percentage) ? percentage.toString() : percentage.toFixed(2).replace('.', ',');
-  
+
   const handleSubmit = () => {
     if (!examDetails) return;
     const timeSpentMin = examDetails.durationMin ? Math.max(0, Math.ceil((examDetails.durationMin * 60 - secondsLeft) / 60)) : 0;
     const answersPayload = Object.entries(answers).map(([q, a]) => ({ questionNumber: Number(q), selectedAnswer: a }));
-    
+
     submitMutation.mutate({
       courseId: key,
       assessmentId,
@@ -109,7 +109,7 @@ export default function LearnerTakeExamPage() {
             {isLoading && (
               <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10 font-bold text-gray-700">Đang tải đề thi...</div>
             )}
-            
+
             {examDetails?.fileUrl ? (
               <iframe
                 src={`${examDetails.fileUrl}#toolbar=0&navpanes=0&scrollbar=1`}
@@ -145,7 +145,7 @@ export default function LearnerTakeExamPage() {
               <div className="p-5 border-b border-[#F0F4F1] shrink-0">
                 <div className="flex items-center gap-3.5 mb-4">
                   <div className="w-12 h-12 rounded-full bg-[var(--brand-soft-500)] flex items-center justify-center shrink-0">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="var(--brand-base-500)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="var(--brand-base-500)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   </div>
                   <div>
                     <div className="font-[family:var(--font-heading)] font-bold text-lg text-[var(--text-primary-500)] leading-tight">Đã nộp bài!</div>
@@ -158,8 +158,8 @@ export default function LearnerTakeExamPage() {
                     <div className="font-[family:var(--font-body)] text-xs text-[#6B746D] mt-1">Điểm ước tính</div>
                   </div>
                   <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                    <circle cx="20" cy="20" r="18" stroke="var(--brand-base-500)" strokeWidth="2" opacity="0.3"/>
-                    <circle cx="20" cy="20" r="18" stroke="var(--brand-base-500)" strokeWidth="2" strokeDasharray={`${(percentage / 100) * 113} 113`} strokeLinecap="round" style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%" }}/>
+                    <circle cx="20" cy="20" r="18" stroke="var(--brand-base-500)" strokeWidth="2" opacity="0.3" />
+                    <circle cx="20" cy="20" r="18" stroke="var(--brand-base-500)" strokeWidth="2" strokeDasharray={`${(percentage / 100) * 113} 113`} strokeLinecap="round" style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%" }} />
                     <text x="20" y="24" textAnchor="middle" className="font-[family:var(--font-heading)] font-bold text-[9.5px] fill-[var(--brand-base-500)]">{formattedPercentage}%</text>
                   </svg>
                 </div>
@@ -178,7 +178,7 @@ export default function LearnerTakeExamPage() {
                     <div key={q.id} className="flex items-center gap-2 px-4 py-2 border-b border-[var(--surface-500)]">
                       <div className="font-[family:var(--font-heading)] font-semibold text-xs text-[#6B746D] min-w-[44px]">Câu {q.id}</div>
                       <div className="flex gap-1.5 flex-1 justify-end">
-                        {["A","B","C","D"].map((opt) => {
+                        {["A", "B", "C", "D"].map((opt) => {
                           const isUser = userAns === opt;
                           const isCorrect = correct === opt;
                           const bg = isUser && isCorrect ? "bg-[var(--brand-base-500)]" : isUser && !isCorrect ? "bg-[var(--error-500)]" : "bg-white";
@@ -193,8 +193,8 @@ export default function LearnerTakeExamPage() {
                       </div>
                       <div className="w-4 shrink-0 flex items-center justify-center">
                         {userAns && (isCorrectQuestion
-                          ? <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="var(--brand-base-500)"/><path d="M4 7l2.5 2.5L10 4.5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                          : <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="var(--error-500)"/><path d="M5 5l4 4M9 5l-4 4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                          ? <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="var(--brand-base-500)" /><path d="M4 7l2.5 2.5L10 4.5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                          : <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="var(--error-500)" /><path d="M5 5l4 4M9 5l-4 4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" /></svg>
                         )}
                       </div>
                     </div>
@@ -204,87 +204,86 @@ export default function LearnerTakeExamPage() {
 
               {/* Sticky footer actions */}
               <div className="px-4 py-3.5 border-t border-[#F0F4F1] flex gap-2 shrink-0">
-                <button 
+                <div
                   onClick={() => navigate(ROUTES.LEARNER.SUBJECT_DETAIL(courseId, subjectId))}
-                  className="flex-1 font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-[1.5px] border-[#D4DCD5] bg-white !text-[#3D4540] cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="flex flex-1 items-center justify-center font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-[1.5px] border-[#D4DCD5] bg-white !text-[#3D4540] cursor-pointer hover:bg-gray-50 transition-colors"
                 >
                   Thoát
-                </button>
-                <button 
+                </div>
+                <div
                   onClick={() => {
                     setSubmitted(false);
                     setAnswers({});
                     setSecondsLeft((examDetails?.durationMin ?? 90) * 60);
                   }}
-                  className="flex-1 font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-none bg-[var(--brand-base-500)] !text-white cursor-pointer hover:opacity-90 transition-opacity"
+                  className="flex flex-1 items-center justify-center font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-none bg-[var(--brand-base-500)] !text-white cursor-pointer hover:opacity-90 transition-opacity"
                 >
                   Làm lại
-                </button>
-                <button 
+                </div>
+                <div
                   onClick={() => alert("Hệ thống đang cập nhật lời giải chi tiết. Bạn vui lòng quay lại sau nhé!")}
-                  className="flex-[1.15] whitespace-nowrap font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-none bg-[#F5C518] !text-[var(--text-primary-900)] cursor-pointer hover:brightness-95 transition-all"
+                  className="flex flex-1 items-center justify-center font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-none bg-[#F5C518] !text-[var(--text-primary-900)] cursor-pointer hover:brightness-95 transition-all"
                 >
                   Xem lời giải
-                </button>
+                </div>
               </div>
             </div>
           ) : (
             <div className="bg-white rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-[#E4EBE5] overflow-hidden flex flex-col h-full">
-            {/* Timer */}
-            <div className={`shrink-0 p-5 pb-4 ${!isExercise && secondsLeft < 300 ? "bg-gradient-to-br from-[var(--error-500)] to-[#a83434]" : "bg-gradient-to-br from-[var(--brand-base-500)] to-[#1e4023]"}`}>
-              <div className="font-[family:var(--font-body)] text-xs text-white/75 mb-1.5 text-center">Thời gian còn lại</div>
-              <div className="font-[family:var(--font-heading)] font-extrabold text-[40px] text-white text-center tracking-[2px] leading-none">
-                {isExercise ? "--:--" : `${mm}:${ss}`}
-              </div>
-              <div className="flex justify-center gap-4 mt-3">
-                <div className="text-center">
-                  <div className="font-[family:var(--font-heading)] font-bold text-base text-white">{answered}</div>
-                  <div className="font-[family:var(--font-body)] text-[11px] text-white/70">Đã trả lời</div>
+              {/* Timer */}
+              <div className={`shrink-0 p-5 pb-4 ${!isExercise && secondsLeft < 300 ? "bg-gradient-to-br from-[var(--error-500)] to-[#a83434]" : "bg-gradient-to-br from-[var(--brand-base-500)] to-[#1e4023]"}`}>
+                <div className="font-[family:var(--font-body)] text-xs text-white/75 mb-1.5 text-center">Thời gian còn lại</div>
+                <div className="font-[family:var(--font-heading)] font-extrabold text-[40px] text-white text-center tracking-[2px] leading-none">
+                  {isExercise ? "--:--" : `${mm}:${ss}`}
                 </div>
-                <div className="w-[1px] bg-white/20" />
-                <div className="text-center">
-                  <div className="font-[family:var(--font-heading)] font-bold text-base text-white">{total - answered}</div>
-                  <div className="font-[family:var(--font-body)] text-[11px] text-white/70">Chưa trả lời</div>
+                <div className="flex justify-center gap-4 mt-3">
+                  <div className="text-center">
+                    <div className="font-[family:var(--font-heading)] font-bold text-base text-white">{answered}</div>
+                    <div className="font-[family:var(--font-body)] text-[11px] text-white/70">Đã trả lời</div>
+                  </div>
+                  <div className="w-[1px] bg-white/20" />
+                  <div className="text-center">
+                    <div className="font-[family:var(--font-heading)] font-bold text-base text-white">{total - answered}</div>
+                    <div className="font-[family:var(--font-body)] text-[11px] text-white/70">Chưa trả lời</div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Question list */}
-            <div className="custom-scrollbar overflow-y-auto flex-1 py-3">
-              {EXAM_QUESTIONS.map((q) => (
-                <ExamAnswerSelector
-                  key={q.id}
-                  question={q}
-                  selectedAnswer={answers[q.id]}
-                  onSelect={(opt) => setAnswers((prev: Record<number, string>) => ({ ...prev, [q.id]: opt }))}
-                />
-              ))}
-            </div>
+              {/* Question list */}
+              <div className="custom-scrollbar overflow-y-auto flex-1 py-3">
+                {EXAM_QUESTIONS.map((q) => (
+                  <ExamAnswerSelector
+                    key={q.id}
+                    question={q}
+                    selectedAnswer={answers[q.id]}
+                    onSelect={(opt) => setAnswers((prev: Record<number, string>) => ({ ...prev, [q.id]: opt }))}
+                  />
+                ))}
+              </div>
 
-            {/* Submit */}
-            <div className="shrink-0 py-3.5 px-4 border-t border-[#E4EBE5]">
-              <button onClick={handleSubmit}
-                disabled={submitMutation.isPending}
-                className={`w-full font-[family:var(--font-heading)] !font-bold text-[15px] py-3.5 rounded-[14px] border-none !text-white shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-150 ease-out ${
-                  submitMutation.isPending ? "bg-gray-400 cursor-not-allowed" : "bg-[var(--brand-base-500)] cursor-pointer hover:bg-[#234A28]"
-                }`}
-              >
-                {submitMutation.isPending ? "Đang nộp..." : "Nộp bài"}
-              </button>
-              <button 
-                onClick={() => {
-                  if (isExercise) {
-                    navigate(ROUTES.LEARNER.EXERCISE_START(courseId, subjectId, exerciseId));
-                  } else {
-                    navigate(ROUTES.LEARNER.EXAM_START(courseId, subjectId, examId));
-                  }
-                }} 
-                className="w-full font-[family:var(--font-body)] text-[13px] py-2 mt-2 rounded-[12px] border-none bg-transparent !text-[#6B746D] cursor-pointer transition-all duration-150 ease-out hover:bg-[var(--surface-500)]"
-              >
-                Thoát
-              </button>
+              {/* Submit */}
+              <div className="shrink-0 py-3.5 px-4 border-t border-[#E4EBE5]">
+                <button onClick={handleSubmit}
+                  disabled={submitMutation.isPending}
+                  className={`w-full font-[family:var(--font-heading)] !font-bold text-[15px] py-3.5 rounded-[14px] border-none !text-white shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-150 ease-out ${submitMutation.isPending ? "bg-gray-400 cursor-not-allowed" : "bg-[var(--brand-base-500)] cursor-pointer hover:bg-[#234A28]"
+                    }`}
+                >
+                  {submitMutation.isPending ? "Đang nộp..." : "Nộp bài"}
+                </button>
+                <button
+                  onClick={() => {
+                    if (isExercise) {
+                      navigate(ROUTES.LEARNER.EXERCISE_START(courseId, subjectId, exerciseId));
+                    } else {
+                      navigate(ROUTES.LEARNER.EXAM_START(courseId, subjectId, examId));
+                    }
+                  }}
+                  className="w-full font-[family:var(--font-body)] text-[13px] py-2 mt-2 rounded-[12px] border-none bg-transparent !text-[#6B746D] cursor-pointer transition-all duration-150 ease-out hover:bg-[var(--surface-500)]"
+                >
+                  Thoát
+                </button>
+              </div>
             </div>
-          </div>
           )}
         </div>
       </div>

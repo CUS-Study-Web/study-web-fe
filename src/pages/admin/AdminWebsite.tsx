@@ -11,7 +11,6 @@ import {
   InstructorModal,
   AchievementModal,
   ReviewModal,
-  type SubjectForm
 } from '../../components/admin/modals/WebsiteModals'
 import TrangChuTab from '../../components/admin/website/TrangChuTab'
 import FooterTab from '../../components/admin/website/FooterTab'
@@ -20,12 +19,7 @@ import GoiCuocTab from '../../components/admin/website/GoiCuocTab'
 // API Hooks
 import {
   useGetCoursesQuery,
-  useCreateCourseMutation,
-  useUpdateCourseMutation,
   useDeleteCourseMutation,
-  useCreateSubjectMutation,
-  useUpdateSubjectMutation,
-  useDeleteSubjectMutation
 } from '../../hooks/queries/useCourses'
 import { useNotification } from '../../components/common/NotificationProvider'
 
@@ -37,12 +31,7 @@ const AdminWebsite = () => {
   const { data: coursesData, isLoading: isLoadingCourses } = useGetCoursesQuery({ size: 100 })
   const courses = coursesData?.data || []
 
-  const createCourse = useCreateCourseMutation()
-  const updateCourse = useUpdateCourseMutation()
   const deleteCourse = useDeleteCourseMutation()
-  const createSubject = useCreateSubjectMutation()
-  const updateSubject = useUpdateSubjectMutation()
-  const deleteSubject = useDeleteSubjectMutation()
 
   // Local list states (mocked ones)
   const [instructors, setInstructors] = useState<Instructor[]>(WEBSITE_INSTRUCTORS)
@@ -90,61 +79,7 @@ const AdminWebsite = () => {
   const currentTab = tabsConfig[activeTab]
 
   // Add / Edit Handlers
-  const handleSaveCourse = async (formData: FormData, newSubjects: SubjectForm[], updatedSubjects: SubjectForm[], deletedSubjectIds: string[], hasCourseChanges: boolean) => {
-    let courseId = editingCourse?.id;
-    if (editingCourse) {
-      // Only call PATCH course when course-level fields actually changed
-      if (hasCourseChanges) {
-        await updateCourse.mutateAsync({ id: editingCourse.id, data: formData })
-      }
-    } else {
-      const result = await createCourse.mutateAsync(formData)
-      courseId = result.data.id;
-    }
-
-    if (courseId) {
-      // 1. Delete subjects
-      if (deletedSubjectIds.length > 0) {
-        for (const subjectId of deletedSubjectIds) {
-          await deleteSubject.mutateAsync({ courseId, subjectId })
-        }
-      }
-
-      // 2. Update existing subjects
-      if (updatedSubjects.length > 0) {
-        for (const subject of updatedSubjects) {
-          if (subject.id) {
-            const payload = {
-              title: subject.title,
-              maxScores: 0,
-              durationHour: subject.durationHour
-            }
-            console.log('[updateSubject] Sending PATCH:', { courseId, subjectId: subject.id, payload })
-            const result = await updateSubject.mutateAsync({
-              courseId,
-              subjectId: subject.id,
-              data: payload
-            })
-            console.log('[updateSubject] Response:', result)
-          }
-        }
-      }
-
-      // 3. Create new subjects
-      if (newSubjects.length > 0) {
-        for (const subject of newSubjects) {
-          await createSubject.mutateAsync({
-            courseId,
-            data: {
-              title: subject.title,
-              maxScores: 0,
-              durationHour: subject.durationHour
-            }
-          })
-        }
-      }
-    }
-  }
+  // handleSaveCourse removed — CourseModal now handles all course/subject mutations internally.
 
   const handleSaveInstructor = (data: Partial<Instructor>) => {
     if (editingInstructor) {
@@ -634,11 +569,8 @@ const AdminWebsite = () => {
       </div>
 
       {/* Modals Container */}
-      {showModal === "add-course" && (
-        <CourseModal onSave={handleSaveCourse} onClose={() => setShowModal(null)} />
-      )}
-      {showModal === "edit-course" && (
-        <CourseModal course={editingCourse} onSave={handleSaveCourse} onClose={() => setShowModal(null)} />
+      {showModal === "edit-course" && editingCourse && (
+        <CourseModal course={editingCourse} onClose={() => setShowModal(null)} />
       )}
 
       {showModal === "add-instructor" && (
