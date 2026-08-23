@@ -36,7 +36,7 @@ export default function AssistantCourseCard({ course, onViewDetail }: AssistantC
       <div className="flex gap-3 px-5 py-4">
         <div className="flex-1 py-3 text-center bg-[#F4F6F8] rounded-[12px]">
           <div className="font-[family-name:var(--font-heading)] font-bold text-[22px] text-[var(--text-primary)]">
-            0
+            {course.subjectCount || 0}
           </div>
           <div className="font-[family-name:var(--font-body)] text-[12px] text-[var(--text-secondary)] mt-0.5">
             Môn học
@@ -44,7 +44,7 @@ export default function AssistantCourseCard({ course, onViewDetail }: AssistantC
         </div>
         <div className="flex-1 py-3 text-center bg-[#F4F6F8] rounded-[12px]">
           <div className="font-[family-name:var(--font-heading)] font-bold text-[22px] text-[var(--text-primary)]">
-            0
+            {course.examCount || 0}
           </div>
           <div className="font-[family-name:var(--font-body)] text-[12px] text-[var(--text-secondary)] mt-0.5">
             Đề thi

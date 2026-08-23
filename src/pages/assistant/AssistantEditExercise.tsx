@@ -53,9 +53,8 @@ export default function AssistantEditExercise() {
     const data = formRef.current?.getData();
     if (!data) return;
 
-    const matchedSubject = subjects.find(s => s.name === data.subject);
-    if (!matchedSubject) {
-      showError('Không tìm thấy ID của môn học đã chọn');
+    if (!data.subject) {
+      showError('Vui lòng chọn môn học');
       return;
     }
 
@@ -65,7 +64,7 @@ export default function AssistantEditExercise() {
     if (file) {
       formData.append('file', file);
     }
-    formData.append('subjectId', matchedSubject.id);
+    formData.append('subjectId', data.subject);
     formData.append('numQuestions', data.questionCount.toString());
     if (data.solutionLink) {
       formData.append('explanationUrl', data.solutionLink);
@@ -213,9 +212,11 @@ export default function AssistantEditExercise() {
             <AssistantExerciseFormPanel
               ref={formRef}
               courseKey={key}
+              courseName={course?.title}
+              courseSubjects={subjects}
               mode="edit"
               initialData={{
-                subject: subjectNameParam || '',
+                subject: exercise.subjectId || '',
                 title: exercise.title || '',
                 questionCount: exercise.numQuestions || 20,
                 fileType: 'PDF',
