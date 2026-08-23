@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../utils/routes";
+import PendingSolutionPopup from "../common/PendingSolutionPopup";
 
 type Exercise = {
-  id: number;
+  id: string;
   title: string;
-  size: string;
+  fileType?: string;
   date: string;
   completed?: boolean;
 };
@@ -12,12 +14,14 @@ type Exercise = {
 type ExerciseItemProps = {
   exercise: Exercise;
   isLast: boolean;
+  isLocked?: boolean;
 };
 
-export default function ExerciseItem({ exercise, isLast }: ExerciseItemProps) {
+export default function ExerciseItem({ exercise, isLast, isLocked }: ExerciseItemProps) {
   const navigate = useNavigate();
   const { courseId, subjectId } = useParams<{ courseId: string; subjectId: string }>();
   const completed = exercise.completed;
+  const [showPendingPopup, setShowPendingPopup] = useState(false);
 
   return (
     <div
@@ -27,8 +31,13 @@ export default function ExerciseItem({ exercise, isLast }: ExerciseItemProps) {
     >
       <div className="flex items-center gap-4 flex-1 min-w-0">
         {/* Icon Left */}
-        <div className={`w-[42px] h-[42px] rounded-xl flex items-center justify-center shrink-0 ${completed ? "bg-[var(--brand-soft-500)]" : "bg-[var(--surface-500)]"}`}>
-          {completed ? (
+        <div className={`w-[42px] h-[42px] rounded-xl flex items-center justify-center shrink-0 ${isLocked ? "bg-[var(--surface-500)]" : completed ? "bg-[var(--brand-soft-500)]" : "bg-[var(--surface-500)]"}`}>
+          {isLocked ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="11" width="18" height="11" rx="3" fill="#A0AAA2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#A0AAA2" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          ) : completed ? (
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <circle cx="12" cy="12" r="10" fill="var(--brand-base-500)"/>
               <path d="M7 12l3.5 3.5L17 8" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -43,26 +52,34 @@ export default function ExerciseItem({ exercise, isLast }: ExerciseItemProps) {
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <div className="font-[family:var(--font-heading)] font-bold text-sm text-[var(--text-primary-500)] leading-snug truncate">
+            <div className={`font-[family:var(--font-heading)] font-bold text-sm leading-snug truncate ${isLocked ? "text-[#A0AAA2]" : "text-[var(--text-primary-500)]"}`}>
               {exercise.title}
             </div>
-            {completed && (
+            {completed && !isLocked && (
               <span className="bg-[var(--brand-soft-500)] text-[var(--brand-base-500)] rounded-full px-2 py-0.5 font-[family:var(--font-heading)] font-bold text-[10px] whitespace-nowrap">
                 ✓ Đã hoàn thành
               </span>
             )}
           </div>
           <div className="font-[family:var(--font-body)] text-xs text-[#A0AAA2] mt-1">
-            PDF · {exercise.size} · Đăng ngày {exercise.date}
+            {exercise.fileType ? `${exercise.fileType} · ` : ''}Đăng ngày {exercise.date}
           </div>
         </div>
       </div>
       {/* Action Right */}
       <div className="flex gap-2 shrink-0">
-        {completed ? (
+        {isLocked ? (
+          <div className="flex items-center gap-1 font-bold text-[11px] text-[#A8761C] uppercase bg-[#FFFDF5] px-2 py-1 rounded">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="11" width="18" height="11" rx="3" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+            VIP
+          </div>
+        ) : completed ? (
           <>
             <button 
-              onClick={() => alert("Hệ thống đang cập nhật lời giải. Bạn vui lòng quay lại sau nhé!")}
+              onClick={() => setShowPendingPopup(true)}
               className="font-[family:var(--font-heading)] !font-semibold text-[11px] px-4 py-1.5 rounded-full border-[1.5px] border-[var(--brand-base-500)] bg-white !text-[var(--brand-base-500)] cursor-pointer whitespace-nowrap transition-all hover:bg-[var(--brand-soft-500)]"
             >
               Xem lời giải
@@ -83,6 +100,11 @@ export default function ExerciseItem({ exercise, isLast }: ExerciseItemProps) {
           </button>
         )}
       </div>
+      
+      <PendingSolutionPopup 
+        isOpen={showPendingPopup} 
+        onClose={() => setShowPendingPopup(false)} 
+      />
     </div>
   );
 }

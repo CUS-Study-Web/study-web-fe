@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function VipPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isVip = !!user?.isVip;
 
   return (
     <div className="pb-24 bg-[#f8faf8] select-none">
@@ -52,7 +55,7 @@ export default function VipPage() {
             disabled
             className="w-full py-3.5 bg-[#f4f7f4] border border-[var(--border-500)] text-[#79807a] font-extrabold text-sm rounded-[var(--radius-lg)] text-center cursor-default"
           >
-            Đang sử dụng
+            {isVip ? "Gói miễn phí" : "Đang sử dụng"}
           </button>
         </div>
 
@@ -82,10 +85,14 @@ export default function VipPage() {
           </div>
 
           <button
-            onClick={() => navigate("/register")}
-            className="w-full py-3.5 bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] font-black text-base rounded-[var(--radius-lg)] shadow-lg shadow-[#e6a800]/30 active:scale-95 transition-all text-center cursor-pointer flex items-center justify-center gap-1.5"
+            onClick={!isVip ? () => navigate("/register") : undefined}
+            className={`w-full py-3.5 font-black text-base rounded-[var(--radius-lg)] transition-all text-center flex items-center justify-center gap-1.5 ${
+              isVip
+                ? "bg-[#2d422a] !text-[#beccbf] cursor-default"
+                : "bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] shadow-lg shadow-[#e6a800]/30 active:scale-95 cursor-pointer"
+            }`}
           >
-            Nâng cấp ngay <span>✦</span>
+            {isVip ? "Đang sử dụng" : <>Nâng cấp ngay <span>✦</span></>}
           </button>
         </div>
       </section>
@@ -214,17 +221,19 @@ export default function VipPage() {
         </div>
 
         {/* Bottom Large Action Button */}
-        <div className="text-center">
-          <button
-            onClick={() => navigate("/register")}
-            className="px-10 py-4 bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] font-black text-lg rounded-[16px] shadow-xl shadow-[#e6a800]/40 hover:scale-105 active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2"
-          >
-            Bắt đầu dùng VIP ngay <span>✦</span>
-          </button>
-          <p className="text-xs font-semibold text-[#7d827f] mt-3">
-            Hủy bất kỳ lúc nào · Hỗ trợ 24/7 · Thanh toán an toàn
-          </p>
-        </div>
+        {!isVip && (
+          <div className="text-center">
+            <button
+              onClick={() => navigate("/register")}
+              className="px-10 py-4 bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] font-black text-lg rounded-[16px] shadow-xl shadow-[#e6a800]/40 hover:scale-105 active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2"
+            >
+              Bắt đầu dùng VIP ngay <span>✦</span>
+            </button>
+            <p className="text-xs font-semibold text-[#7d827f] mt-3">
+              Hủy bất kỳ lúc nào · Hỗ trợ 24/7 · Thanh toán an toàn
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );

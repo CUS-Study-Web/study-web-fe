@@ -7,17 +7,14 @@ import LessonItem from "../../components/learner/LessonItem";
 import ExerciseItem from "../../components/learner/ExerciseItem";
 import { useGetCoursesQuery, useGetCourseDetailQuery } from "../../hooks/queries/useCourses";
 import { useGetLessonsQuery } from "../../hooks/queries/useLessons";
-
-const MOCK_EXERCISES = [
-  { id: 1, title: "Bài tập Tư duy logic – Tuần 1", size: "1.4 MB", date: "15/07/2024", completed: true },
-  { id: 2, title: "Bài tập Toán ứng dụng – Tuần 2", size: "2.1 MB", date: "22/07/2024" },
-  { id: 3, title: "Bài tập Toán tư duy logic – Tuần 3", size: "2.4 MB", date: "29/07/2024" },
-  { id: 4, title: "Bài tập Ngữ văn nghị luận xã hội", size: "1.2 MB", date: "05/08/2024" },
-];
+import { useGetHomeworkQuery } from "../../hooks/queries/useAssessments";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function LearnerSubjectDetailPage() {
   const { courseId, subjectId } = useParams<{ courseId: string; subjectId: string }>();
   const [activeTab, setActiveTab] = useState<"lessons" | "exercises">("lessons");
+  const { user } = useAuth();
+  const isVip = !!user?.isVip;
 
   const courseKey = courseId ?? "";
   const subId = subjectId ?? "";
@@ -29,13 +26,16 @@ export default function LearnerSubjectDetailPage() {
   const subject = detailData?.data.subjects.find((s) => s.id === subId);
 
   const { data: lessonsData, isLoading: isLoadingLessons } = useGetLessonsQuery(courseKey, subId);
-  const lessons = lessonsData?.data || [];
+  const lessons = lessonsData?.data?.lessons || [];
+
+  const { data: homeworksData, isLoading: isLoadingHomeworks } = useGetHomeworkQuery(courseKey, { subjectId: subId, size: 100 });
+  const exercises = homeworksData?.data || [];
 
   // Fallback styles from COURSES_DATA using course title matching or index
   const styleSource = Object.values(COURSES_DATA).find(c => c.title.toLowerCase() === course?.title?.toLowerCase()) 
     || Object.values(COURSES_DATA)[0];
 
-  const isLoading = isLoadingCourses || isLoadingDetail || isLoadingLessons;
+  const isLoading = isLoadingCourses || isLoadingDetail || isLoadingLessons || isLoadingHomeworks;
 
   if (isLoading) {
     return (
@@ -131,7 +131,7 @@ export default function LearnerSubjectDetailPage() {
             onClick={() => setActiveTab("exercises")}
             className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "exercises" ? "bg-[var(--brand-base-500)] !text-white" : "bg-transparent text-[#6B746D]"}`}
           >
-            📎 Bài tập ({MOCK_EXERCISES.length})
+            📎 Bài tập ({exercises.length})
           </button>
         </div>
       </div>
@@ -154,7 +154,8 @@ export default function LearnerSubjectDetailPage() {
                     id: i, // LessonItem expects number
                     title: lesson.title,
                     duration: `${lesson.durationMin} phút`,
-                    isLocked: false // or derived from access if we had access rules in frontend
+                    isLocked: !isVip && i >= 2,
+                    url: lesson.youtubeUrl
                   }}
                   isLast={i === lessons.length - 1}
                 />
@@ -166,13 +167,26 @@ export default function LearnerSubjectDetailPage() {
         {/* TAB 2: BÀI TẬP */}
         {activeTab === "exercises" && (
           <div className="flex flex-col bg-white rounded-[18px] border border-[#E4EBE5] shadow-sm overflow-hidden">
-            {MOCK_EXERCISES.map((ex, i) => (
-              <ExerciseItem
-                key={ex.id}
-                exercise={ex}
-                isLast={i === MOCK_EXERCISES.length - 1}
-              />
-            ))}
+            {exercises.length === 0 ? (
+              <div className="py-12 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                Chưa có bài tập nào.
+              </div>
+            ) : (
+              exercises.map((ex, i) => (
+                <ExerciseItem
+                  key={ex.id}
+                  exercise={{
+                    id: ex.id,
+                    title: ex.title,
+                    fileType: ex.fileType,
+                    date: ex.createdAt ? new Date(ex.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : "",
+                    completed: false, // Default to false for now
+                  }}
+                  isLast={i === exercises.length - 1}
+                  isLocked={!isVip}
+                />
+              ))
+            )}
           </div>
         )}
       </section>
