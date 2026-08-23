@@ -1,6 +1,6 @@
 import apiClient from './apiClient';
-import type { PageResponse, SingleResponse, SuccessResponse } from '../types/api/common.api';
-import type { LessonRequest, LessonSummaryResponse } from '../types/api/lesson.api';
+import type { PagedResponse, SingleResponse, SuccessResponse } from '../types/api/common.api';
+import type { LessonRequest, LessonSummaryResponse, LessonListResponse } from '../types/api/lesson.api';
 
 export const lessonService = {
   getLessons: async (
@@ -8,7 +8,7 @@ export const lessonService = {
     subjectId: string,
     params?: { page?: number; size?: number; sort?: string[] }
   ) => {
-    const response = await apiClient.get<PageResponse<LessonSummaryResponse>>(
+    const response = await apiClient.get<PagedResponse<LessonListResponse>>(
       `/api/courses/${courseId}/subjects/${subjectId}/lessons`,
       { params }
     );

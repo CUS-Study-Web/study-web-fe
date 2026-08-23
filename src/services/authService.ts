@@ -22,12 +22,22 @@ export const authService = {
   },
 
   refreshToken: async (): Promise<SingleResponse<AuthResponse>> => {
-    const response = await apiClient.post<SingleResponse<AuthResponse>>('/api/auth/refresh-token', null);
+    const token = localStorage.getItem('refreshToken');
+    const response = await apiClient.post<SingleResponse<AuthResponse>>('/api/auth/refresh-token', null, {
+      headers: {
+        'X-Refresh-Token': token || ''
+      }
+    });
     return response.data;
   },
 
   signout: async (): Promise<SuccessResponse> => {
-    const response = await apiClient.post<SuccessResponse>('/api/auth/signout', null);
+    const token = localStorage.getItem('refreshToken');
+    const response = await apiClient.post<SuccessResponse>('/api/auth/signout', null, {
+      headers: {
+        'X-Refresh-Token': token || ''
+      }
+    });
     return response.data;
   },
 

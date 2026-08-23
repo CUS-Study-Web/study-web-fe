@@ -7,7 +7,16 @@ import UserMenuPopup from "../learner/UserMenuPopup";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
+  
+  const isVip = user?.isVip;
+
+  const vipButtonClass = isVip
+    ? "flex items-center gap-2 px-5 py-2.5 text-sm font-extrabold bg-[#1f1f1c] hover:bg-[#33332d] !text-[#ffcf33] rounded-[var(--radius-lg)] shadow-md shadow-[#1f1f1c]/30 active:scale-95 transition-all duration-150 cursor-pointer"
+    : "flex items-center gap-2 px-5 py-2.5 text-sm font-extrabold bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] rounded-[var(--radius-lg)] shadow-md shadow-[#e6a800]/30 active:scale-95 transition-all duration-150 cursor-pointer";
+
+  const vipIconClass = isVip ? "w-4 h-4 fill-current text-[#ffcf33]" : "w-4 h-4 fill-current text-[#1f1f1c]";
+  const vipButtonText = isVip ? "Vip" : "Tài khoản VIP";
 
   // Helper for NavLink classes to reuse active styling logic without layout shift
   const getNavClasses = ({ isActive }: { isActive: boolean }) =>
@@ -54,12 +63,12 @@ export default function Header() {
               {/* VIP Badge + User Menu when logged in */}
               <Link
                 to={ROUTES.VIP}
-                className="flex items-center gap-2 px-5 py-2.5 text-sm font-extrabold bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] rounded-[var(--radius-lg)] shadow-md shadow-[#e6a800]/30 active:scale-95 transition-all duration-150 cursor-pointer"
+                className={vipButtonClass}
               >
-                <svg className="w-4 h-4 fill-current text-[#1f1f1c]" viewBox="0 0 24 24">
+                <svg className={vipIconClass} viewBox="0 0 24 24">
                   <path d="M2 22h20v-2H2v2zm1-3h18l-2-9-5 4-2-6-2 6-5-4-2 9z" />
                 </svg>
-                Tài khoản VIP
+                {vipButtonText}
               </Link>
               <UserMenuPopup />
             </>
@@ -79,13 +88,13 @@ export default function Header() {
               </Link>
               <Link
                 to={ROUTES.VIP}
-                className="flex items-center gap-2 px-5 py-2.5 text-sm font-extrabold bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] rounded-[var(--radius-lg)] shadow-md shadow-[#e6a800]/30 active:scale-95 transition-all duration-150 cursor-pointer"
+                className={vipButtonClass}
               >
                 {/* Crown Icon */}
-                <svg className="w-4 h-4 fill-current text-[#1f1f1c]" viewBox="0 0 24 24">
+                <svg className={vipIconClass} viewBox="0 0 24 24">
                   <path d="M2 22h20v-2H2v2zm1-3h18l-2-9-5 4-2-6-2 6-5-4-2 9z" />
                 </svg>
-                Tài khoản VIP
+                {vipButtonText}
               </Link>
             </>
           )}
@@ -165,12 +174,12 @@ export default function Header() {
               <Link
                 to={ROUTES.VIP}
                 onClick={() => setIsOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-extrabold bg-gradient-to-b from-[#ffcf33] to-[#e6a800] !text-[#1f1f1c] rounded-[var(--radius-lg)] shadow-sm shadow-[#e6a800]/30"
+                className={vipButtonClass + " w-full justify-center"}
               >
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <svg className={vipIconClass} viewBox="0 0 24 24">
                   <path d="M2 22h20v-2H2v2zm1-3h18l-2-9-5 4-2-6-2 6-5-4-2 9z" />
                 </svg>
-                Tài khoản VIP
+                {vipButtonText}
               </Link>
             </div>
           )}

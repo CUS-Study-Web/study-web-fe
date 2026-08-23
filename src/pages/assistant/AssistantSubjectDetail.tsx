@@ -235,8 +235,8 @@ export default function AssistantSubjectDetail() {
   const decodedSubject = subject?.name || 'Môn học';
 
   // Fetch lectures (lessons)
-  const { data: lessonsData, isLoading: isLoadingLessons } = useGetLessonsQuery(courseKey ?? '', subjectId);
-  const lectures = lessonsData?.data || [];
+  const { data: lessonsData, isLoading: isLoadingLessons } = useGetLessonsQuery(courseKey ?? '', subjectId, { size: 100 });
+  const lectures = lessonsData?.data?.lessons || [];
 
   // Fetch exercises (homework)
   const { data: homeworkData, isLoading: isLoadingHomework } = useGetHomeworkQuery(courseKey ?? '', { subjectId, size: 100 });
@@ -301,7 +301,7 @@ export default function AssistantSubjectDetail() {
               if (activeTab === 'bai-giang') {
                 setIsLecturePopupOpen(true);
               } else {
-                navigate(`${ROUTES.ASSISTANT.COURSE_CREATE_EXERCISE(courseKey ?? '')}?subject=${encodeURIComponent(decodedSubject)}`);
+                navigate(`${ROUTES.ASSISTANT.COURSE_CREATE_EXERCISE(courseKey ?? '')}?subject=${encodeURIComponent(subjectId)}`);
               }
             }}
             className="flex items-center gap-2 px-5 py-2 rounded-[8px] bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-white cursor-pointer active:scale-95 transition-all duration-150 select-none shadow-sm"
@@ -327,6 +327,9 @@ export default function AssistantSubjectDetail() {
                 <thead>
                   <tr className="bg-[var(--surface-500)]">
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
+                      STT
+                    </th>
+                    <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
                       Tiêu đề
                     </th>
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
@@ -344,6 +347,11 @@ export default function AssistantSubjectDetail() {
                       key={lec.id}
                       className="hover:bg-[var(--surface-400)] transition-colors duration-140 border-t border-[var(--surface-500)]"
                     >
+                      <td className="py-3.5 px-5">
+                        <span className="font-[family-name:var(--font-body)] font-medium text-[13px] text-[var(--text-secondary)]">
+                          {String(lec.orderNum || 0).padStart(2, '0')}
+                        </span>
+                      </td>
                       <td className="py-3.5 px-5">
                         <span className="font-[family-name:var(--font-body)] font-semibold text-[13px] text-[var(--text-primary)]">
                           {lec.title}
@@ -376,14 +384,14 @@ export default function AssistantSubjectDetail() {
                   ))}
                   {isLoadingLessons && (
                     <tr>
-                      <td colSpan={4} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                      <td colSpan={5} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Đang tải bài giảng...
                       </td>
                     </tr>
                   )}
                   {!isLoadingLessons && lectures.length === 0 && (
                     <tr>
-                      <td colSpan={4} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                      <td colSpan={5} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Chưa có bài giảng nào. Hãy tải lên bài giảng đầu tiên.
                       </td>
                     </tr>
@@ -456,7 +464,7 @@ export default function AssistantSubjectDetail() {
                           <ExerciseActionMenu
                             onView={() => setViewExercise(ex)}
                             onDownload={() => console.log('Download exercise', ex.id)}
-                            onEdit={() => navigate(`${ROUTES.ASSISTANT.COURSE_EDIT_EXERCISE(courseKey ?? '', String(ex.id))}?subject=${encodeURIComponent(decodedSubject)}`)}
+                            onEdit={() => navigate(`${ROUTES.ASSISTANT.COURSE_EDIT_EXERCISE(courseKey ?? '', String(ex.id))}?subject=${encodeURIComponent(subjectId)}`)}
                             onDelete={() => setDeleteExerciseId(ex.id)}
                           />
                         </div>
@@ -489,6 +497,7 @@ export default function AssistantSubjectDetail() {
           courseKey={courseKey ?? ''} 
           courseName={course?.title}
           defaultSubjectId={subjectId}
+          existingLessons={lectures}
           onClose={() => setIsLecturePopupOpen(false)} 
         />
       )}
@@ -507,12 +516,14 @@ export default function AssistantSubjectDetail() {
             durationMin: editLecture.durationMin,
             orderNum: editLecture.orderNum || 1
           }}
+          existingLessons={lectures}
           onClose={() => setEditLecture(null)}
         />
       )}
 
       {viewExercise && (
         <AssistantViewExercisePopup
+          courseId={courseKey ?? ''}
           course={course?.title ?? courseKey ?? ''}
           subject={decodedSubject}
           exercise={viewExercise}

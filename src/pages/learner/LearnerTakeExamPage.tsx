@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { ROUTES } from "../../utils/routes";
 import Header from "../../components/guest/Header";
 import ExamQuestionViewerItem from "../../components/learner/ExamQuestionViewerItem";
 import ExamAnswerSelector from "../../components/learner/ExamAnswerSelector";
 import { useStartAssessmentQuery, useSubmitAssessmentMutation } from "../../hooks/queries/useAssessments";
 import type { AssessmentSubmitResponse } from "../../types/api/assessment.api";
+import { ROUTES } from "../../utils/routes";
+import PendingSolutionPopup from "../../components/common/PendingSolutionPopup";
 
 
 
@@ -34,6 +35,8 @@ export default function LearnerTakeExamPage() {
 
   // Initialize timer to duration
   const [secondsLeft, setSecondsLeft] = useState((examDetails?.durationMin ?? 90) * 60);
+
+  const [showPendingPopup, setShowPendingPopup] = useState(false);
 
   // Sync timer when duration loaded
   useEffect(() => {
@@ -82,6 +85,14 @@ export default function LearnerTakeExamPage() {
         setSubmitted(true);
       }
     });
+  };
+
+  const handleExit = () => {
+    if (isExercise) {
+      navigate(ROUTES.LEARNER.EXERCISE_START(courseId as string, subjectId as string, exerciseId as string));
+    } else {
+      navigate(ROUTES.LEARNER.EXAM_START(courseId as string, subjectId as string, examId as string));
+    }
   };
 
   return (
@@ -205,7 +216,7 @@ export default function LearnerTakeExamPage() {
               {/* Sticky footer actions */}
               <div className="px-4 py-3.5 border-t border-[#F0F4F1] flex gap-2 shrink-0">
                 <div
-                  onClick={() => navigate(ROUTES.LEARNER.SUBJECT_DETAIL(courseId, subjectId))}
+                  onClick={handleExit}
                   className="flex flex-1 items-center justify-center font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-[1.5px] border-[#D4DCD5] bg-white !text-[#3D4540] cursor-pointer hover:bg-gray-50 transition-colors"
                 >
                   Thoát
@@ -221,7 +232,14 @@ export default function LearnerTakeExamPage() {
                   Làm lại
                 </div>
                 <div
-                  onClick={() => alert("Hệ thống đang cập nhật lời giải chi tiết. Bạn vui lòng quay lại sau nhé!")}
+                  onClick={() => {
+                    const url = examDetails?.explanationUrl || submitResult?.explanationUrl;
+                    if (url) {
+                      window.open(url, '_blank');
+                    } else {
+                      setShowPendingPopup(true);
+                    }
+                  }}
                   className="flex flex-1 items-center justify-center font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-none bg-[#F5C518] !text-[var(--text-primary-900)] cursor-pointer hover:brightness-95 transition-all"
                 >
                   Xem lời giải
@@ -271,13 +289,7 @@ export default function LearnerTakeExamPage() {
                   {submitMutation.isPending ? "Đang nộp..." : "Nộp bài"}
                 </button>
                 <button
-                  onClick={() => {
-                    if (isExercise) {
-                      navigate(ROUTES.LEARNER.EXERCISE_START(courseId, subjectId, exerciseId));
-                    } else {
-                      navigate(ROUTES.LEARNER.EXAM_START(courseId, subjectId, examId));
-                    }
-                  }}
+                  onClick={handleExit}
                   className="w-full font-[family:var(--font-body)] text-[13px] py-2 mt-2 rounded-[12px] border-none bg-transparent !text-[#6B746D] cursor-pointer transition-all duration-150 ease-out hover:bg-[var(--surface-500)]"
                 >
                   Thoát
@@ -287,6 +299,11 @@ export default function LearnerTakeExamPage() {
           )}
         </div>
       </div>
+
+      <PendingSolutionPopup 
+        isOpen={showPendingPopup} 
+        onClose={() => setShowPendingPopup(false)} 
+      />
     </div>
   );
 }

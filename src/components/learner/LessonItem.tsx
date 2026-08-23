@@ -1,8 +1,12 @@
+import { useState } from "react";
+import PendingSolutionPopup from "../common/PendingSolutionPopup";
+
 type Lesson = {
   id: number;
   title: string;
   duration: string;
   isLocked: boolean;
+  url?: string;
 };
 
 type LessonItemProps = {
@@ -11,6 +15,8 @@ type LessonItemProps = {
 };
 
 export default function LessonItem({ lesson, isLast }: LessonItemProps) {
+  const [showPendingPopup, setShowPendingPopup] = useState(false);
+
   return (
     <div
       className={`hover:bg-[#FAFCFA] flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors px-5.5 py-4.5 ${
@@ -56,11 +62,27 @@ export default function LessonItem({ lesson, isLast }: LessonItemProps) {
             🔒 VIP
           </span>
         ) : (
-          <button className="transition-all cursor-pointer whitespace-nowrap hover:bg-[#1B1F1C] font-[family:var(--font-heading)] !font-semibold text-[11px] px-4 py-1.5 rounded-full border-none bg-[var(--brand-base-500)] !text-white">
+          <button 
+            onClick={() => {
+              if (lesson.url) {
+                window.open(lesson.url, '_blank');
+              } else {
+                setShowPendingPopup(true);
+              }
+            }}
+            className="transition-all cursor-pointer whitespace-nowrap hover:bg-[#1B1F1C] font-[family:var(--font-heading)] !font-semibold text-[11px] px-4 py-1.5 rounded-full border-none bg-[var(--brand-base-500)] !text-white"
+          >
             Xem bài
           </button>
         )}
       </div>
+
+      <PendingSolutionPopup 
+        isOpen={showPendingPopup} 
+        onClose={() => setShowPendingPopup(false)} 
+        title="Link bài giảng đang cập nhật"
+        message="Link bài giảng đang được cập nhập. Bạn vui lòng quay lại sau nhé!"
+      />
     </div>
   );
 }

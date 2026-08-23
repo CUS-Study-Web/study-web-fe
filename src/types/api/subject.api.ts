@@ -3,6 +3,7 @@ export interface SubjectSummaryResponse {
   name: string;
   durationHours: number;
   lessonCount: number;
+  exerciseCount: number;
 }
 
 export interface SubjectRequest {

@@ -90,7 +90,7 @@ export default function Programs() {
                       {c.title}
                     </h3>
                   <Link
-                    to={ROUTES.COURSES}
+                    to={ROUTES.COURSE_DETAIL(c.id)}
                     className="text-xs font-extrabold !text-white hover:underline flex items-center gap-1 transition drop-shadow-sm"
                   >
                     Xem chi tiết khóa học <span className="transform group-hover/card:translate-x-1 transition-transform">→</span>

@@ -8,14 +8,18 @@ interface AssistantCreateLecturePopupProps {
   courseKey: string;
   courseName?: string;
   defaultSubjectId?: string;
+  existingLessons?: any[];
   onClose: () => void;
 }
 
-export default function AssistantCreateLecturePopup({ courseKey, courseName, defaultSubjectId, onClose }: AssistantCreateLecturePopupProps) {
+import { isValidUrl } from '../../../utils/urlUtils';
+
+export default function AssistantCreateLecturePopup({ courseKey, courseName, defaultSubjectId, existingLessons = [], onClose }: AssistantCreateLecturePopupProps) {
   const [subject, setSubject] = useState(defaultSubjectId || '');
   const [title, setTitle] = useState('');
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [durationMin, setDurationMin] = useState(30);
+  const [orderNum, setOrderNum] = useState(1);
 
   const { data: detailData } = useGetCourseDetailQuery(courseKey);
   const subjects = detailData?.data.subjects || [];
@@ -32,10 +36,23 @@ export default function AssistantCreateLecturePopup({ courseKey, courseName, def
       showError('Vui lòng nhập đầy đủ thông tin bài giảng!');
       return;
     }
+    if (!isValidUrl(youtubeUrl)) {
+      showError('Đường link không hợp lệ!');
+      return;
+    }
+    if (orderNum <= 0 || orderNum > 100) {
+      showError('Số thứ tự phải từ 1 đến 100!');
+      return;
+    }
+    const isDuplicateOrder = existingLessons.some(l => l.orderNum === orderNum);
+    if (isDuplicateOrder) {
+      showError(`Số thứ tự ${orderNum} đã bị trùng với bài giảng khác!`);
+      return;
+    }
 
     const payload: LessonRequest = {
       title,
-      orderNum: 1,
+      orderNum,
       youtubeUrl,
       durationMin,
       access: 'PUBLIC' // default for now
@@ -121,18 +138,33 @@ export default function AssistantCreateLecturePopup({ courseKey, courseName, def
           </div>
         </div>
 
-        {/* Thời lượng */}
-        <div className="mb-4">
-          <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
-            Thời lượng (phút)
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          {/* Thời lượng */}
+          <div>
+            <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
+              Thời lượng (phút)
+            </div>
+            <input
+              type="number"
+              min={1}
+              value={durationMin}
+              onChange={(e) => setDurationMin(Number(e.target.value))}
+              className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)] transition-colors"
+            />
           </div>
-          <input
-            type="number"
-            min={1}
-            value={durationMin}
-            onChange={(e) => setDurationMin(Number(e.target.value))}
-            className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)] transition-colors"
-          />
+          {/* Số thứ tự */}
+          <div>
+            <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
+              Số thứ tự
+            </div>
+            <input
+              type="number"
+              min={1}
+              value={orderNum}
+              onChange={(e) => setOrderNum(Number(e.target.value))}
+              className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)] transition-colors"
+            />
+          </div>
         </div>
 
         {/* Tiêu đề */}

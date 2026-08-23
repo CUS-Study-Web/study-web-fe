@@ -104,7 +104,7 @@ export default function AssistantCourseDetail() {
                     key={subject.id}
                     name={subject.name}
                     lectures={subject.lessonCount}
-                    exercises={0}
+                    exercises={subject.exerciseCount ?? 0}
                     onViewDetail={() =>
                       // we encode subject id and name in URL is up to routing, we will pass id
                       navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, subject.id))

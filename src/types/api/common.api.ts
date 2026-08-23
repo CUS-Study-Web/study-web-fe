@@ -22,3 +22,10 @@ export interface PageResponse<T> {
   data: T[];
   paging: PagingInfo;
 }
+
+export interface PagedResponse<T> {
+  statusCode: number;
+  message: string;
+  data: T;
+  paging: PagingInfo;
+}

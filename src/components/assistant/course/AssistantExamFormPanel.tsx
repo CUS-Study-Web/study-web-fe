@@ -42,6 +42,7 @@ function buildAnswers(count: number, existing: AssistantExamAnswer[] = []): Assi
 }
 
 import { useNotification } from '../../common/NotificationProvider';
+import { isValidUrl } from '../../../utils/urlUtils';
 
 const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, AssistantExamFormPanelProps>(
   ({ courseKey, courseName, initialData, children }, ref) => {
@@ -68,6 +69,10 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
         const incompleteIndex = answers.findIndex(a => !a.correctAnswer);
         if (incompleteIndex !== -1) {
           showError(`Vui lòng chọn đáp án cho câu ${incompleteIndex + 1}`);
+          return null;
+        }
+        if (solutionLink && !isValidUrl(solutionLink)) {
+          showError('Link lời giải không hợp lệ.');
           return null;
         }
         return { title, courseKey, questions, duration, date, status, solutionLink, answers, accessTier };

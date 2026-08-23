@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserQuery } from "../hooks/queries/useAuth";
 import { ROUTES } from "../utils/routes";
 import { parseJwt } from "../utils/jwt";
+import { authService } from "../services/authService";
 import type { AuthResponse, UserResponse } from "../types/api/auth.api";
 
 type UserInfo = UserResponse & {
@@ -32,18 +33,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data: userResponse, isLoading } = useUserQuery(isLoggedIn);
   const user = userResponse?.data || null;
 
-  // Cast to UserInfo to include optional fields that should come from Backend (coursesCount, isVip)
-  const userInfo = user as UserInfo | null;
-
-  const role = useMemo(() => {
-    if (!token) return null;
+  const { role, isVipFromToken } = useMemo(() => {
+    if (!token) return { role: null, isVipFromToken: false };
     const decoded = parseJwt(token);
-    return decoded?.role?.toLowerCase() || 'learner';
+    return {
+      role: decoded?.role?.toLowerCase() || 'learner',
+      isVipFromToken: !!decoded?.isVip
+    };
   }, [token]);
+
+  // Cast to UserInfo to include optional fields that should come from Backend (coursesCount, isVip)
+  const userInfo = user ? ({
+    ...user,
+    isVip: (user as any).isVip ?? isVipFromToken
+  } as UserInfo) : null;
 
   const login = useCallback(
     (authData: AuthResponse, redirectPath?: string) => {
       localStorage.setItem("accessToken", authData.accessToken);
+      localStorage.setItem("refreshToken", authData.refreshToken);
       
       // Update query cache immediately so it doesn't need to refetch instantly
       queryClient.setQueryData(['currentUser'], { data: authData.user });
@@ -70,8 +78,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [navigate, queryClient]
   );
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    try {
+      await authService.signout();
+    } catch (error) {
+      console.error("Signout failed", error);
+    }
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     queryClient.removeQueries({ queryKey: ['currentUser'] });
     navigate(ROUTES.AUTH.LOGIN);
   }, [navigate, queryClient]);

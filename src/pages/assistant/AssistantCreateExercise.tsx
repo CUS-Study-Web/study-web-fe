@@ -54,9 +54,8 @@ export default function AssistantCreateExercise() {
       return;
     }
 
-    const matchedSubject = subjects.find(s => s.name === data.subject);
-    if (!matchedSubject) {
-      showError('Không tìm thấy ID của môn học đã chọn');
+    if (!data.subject) {
+      showError('Vui lòng chọn môn học');
       return;
     }
 
@@ -64,7 +63,7 @@ export default function AssistantCreateExercise() {
     formData.append('assessmentType', 'HOMEWORK');
     formData.append('title', data.title);
     formData.append('file', file);
-    formData.append('subjectId', matchedSubject.id);
+    formData.append('subjectId', data.subject);
     formData.append('numQuestions', data.questionCount.toString());
     if (data.solutionLink) {
       formData.append('explanationUrl', data.solutionLink);
@@ -236,6 +235,8 @@ export default function AssistantCreateExercise() {
           <AssistantExerciseFormPanel
             ref={formRef}
             courseKey={key}
+            courseName={course?.title}
+            courseSubjects={subjects}
             mode="create"
             initialData={{ subject: subjectNameParam || '' }}
           >
