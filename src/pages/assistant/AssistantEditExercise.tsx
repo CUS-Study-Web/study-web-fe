@@ -104,8 +104,8 @@ export default function AssistantEditExercise() {
 
   // Use fileUrl from backend if no new file is uploaded
   const previewUrl = fileUrl || exercise?.fileUrl;
-  const isPdf = file ? file.type === 'application/pdf' : exercise?.fileUrl?.endsWith('.pdf');
-  const displayFileName = file?.name || (exercise?.fileUrl ? exercise.fileUrl.split('/').pop() : 'File đã tải lên trước đó.pdf');
+  const isPdf = file ? file.type === 'application/pdf' : exercise?.fileType?.toUpperCase() === 'PDF';
+  const displayFileName = file?.name || (exercise?.fileUrl ? exercise.fileUrl.split('/').pop()?.split('?')[0] : 'File đã tải lên trước đó.pdf');
 
   return (
     <div className="flex flex-col h-full w-full">
