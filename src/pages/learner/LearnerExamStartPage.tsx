@@ -52,7 +52,13 @@ export default function LearnerExamStartPage() {
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#1B1F1C] to-[#2C3A1E] pt-[52px] pb-[80px] px-6 relative">
         <div
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            if (subjectId === "exam") {
+              navigate(ROUTES.TRIAL);
+            } else {
+              navigate(ROUTES.LEARNER.SUBJECT_DETAIL(courseId, subjectId));
+            }
+          }}
           className="absolute top-6 left-6 md:top-8 md:left-8 p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors cursor-pointer border-none flex items-center justify-center text-white"
           aria-label="Quay lại"
         >
