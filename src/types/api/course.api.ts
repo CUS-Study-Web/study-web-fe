@@ -7,6 +7,8 @@ export interface CourseSummaryResponse {
   badgeTitle: string;
   description: string;
   imageUrl: string;
+  subjectCount: number;
+  examCount: number;
 }
 
 export interface CourseDetailResponse {

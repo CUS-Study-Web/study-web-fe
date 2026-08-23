@@ -46,6 +46,7 @@ export interface AssessmentStartResponse {
   durationMin: number | null;
   fileType: 'PDF' | 'DOC' | 'DOCX' | 'XLS' | 'XLSX' | 'PPTX';
   fileUrl: string;
+  explanationUrl?: string | null;
 }
 
 export interface StudentAnswerItem {
@@ -73,6 +74,7 @@ export interface AssessmentSubmitResponse {
   score: number;
   completedAt: string;
   details: AnswerDetailResponse[];
+  explanationUrl?: string | null;
 }
 
 export interface AssessmentAttemptResponse {
