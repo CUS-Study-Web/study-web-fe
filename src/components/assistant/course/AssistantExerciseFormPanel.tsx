@@ -1,5 +1,4 @@
 import { useState, useImperativeHandle, forwardRef, type ReactNode, useEffect } from 'react';
-import { DEMO_COURSE_SUBJECTS } from '../../../types/mockData';
 
 export interface AssistantExerciseAnswer {
   questionNumber: number;
@@ -22,6 +21,8 @@ export interface AssistantExerciseFormPanelHandle {
 
 interface AssistantExerciseFormPanelProps {
   courseKey: string;
+  courseName?: string;
+  courseSubjects?: { id: string, name: string }[];
   mode: 'create' | 'edit';
   initialData?: Partial<ExerciseFormData>;
   children?: ReactNode;
@@ -36,13 +37,14 @@ function buildAnswers(count: number, existing: AssistantExerciseAnswer[] = []): 
 }
 
 import { useNotification } from '../../common/NotificationProvider';
+import { isValidUrl } from '../../../utils/urlUtils';
 
 const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, AssistantExerciseFormPanelProps>(
-  ({ courseKey, initialData, children }, ref) => {
+  ({ courseKey, courseName, courseSubjects, initialData, children }, ref) => {
     const { showError } = useNotification();
-    const subjects = DEMO_COURSE_SUBJECTS[courseKey] ?? [];
+    const subjects = courseSubjects ?? [];
 
-    const [subject, setSubject] = useState(initialData?.subject ?? (subjects.length > 0 ? subjects[0] : ''));
+    const [subject, setSubject] = useState(initialData?.subject ?? (subjects.length > 0 ? subjects[0].id : ''));
     const [questionCount, setQuestionCount] = useState(initialData?.questionCount ?? 20);
     const [title, setTitle] = useState(initialData?.title ?? '');
     const [solutionLink, setSolutionLink] = useState(initialData?.solutionLink ?? '');
@@ -63,6 +65,10 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
         const incompleteIndex = answers.findIndex(a => !a.correctAnswer);
         if (incompleteIndex !== -1) {
           showError(`Vui lòng chọn đáp án cho câu ${incompleteIndex + 1}`);
+          return null;
+        }
+        if (solutionLink && !isValidUrl(solutionLink)) {
+          showError('Link lời giải không hợp lệ.');
           return null;
         }
         return { subject, questionCount, title, solutionLink, fileType, status, answers };
@@ -95,7 +101,7 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
               <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)]">
-              {courseKey}
+              {courseName || courseKey}
             </span>
           </div>
         </div>
@@ -111,7 +117,7 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
             className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none cursor-pointer focus:border-[var(--brand-500)] transition-colors"
           >
             <option value="">— Chọn môn học —</option>
-            {subjects.map((s) => <option key={s} value={s}>{s}</option>)}
+            {subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
         </div>
 
