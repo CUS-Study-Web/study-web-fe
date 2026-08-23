@@ -59,7 +59,7 @@ export default function LearnerCourseCard({
 
         {/* Action Button */}
         <Link
-          to={ROUTES.LEARNER.SUBJECT_DETAIL(id)}
+          to={ROUTES.COURSE_DETAIL(id)}
           className="w-full inline-flex items-center justify-center py-3.5 bg-white/5 hover:bg-white/10 border border-[var(--brand-base-300)] !text-white text-sm font-black rounded-[16px] transition-all cursor-pointer font-[family:var(--font-heading)]"
         >
           Tiếp tục học →
