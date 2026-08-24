@@ -95,6 +95,10 @@ export default function AssistantCreateExercise() {
   };
 
   const handleFile = (selectedFile: File) => {
+    if (selectedFile.size > 50 * 1024 * 1024) {
+      showError('Kích thước file tải lên không được vượt quá 50MB');
+      return;
+    }
     setFile(selectedFile);
   };
 
@@ -224,7 +228,7 @@ export default function AssistantCreateExercise() {
               </label>
 
               <div className="font-[family-name:var(--font-body)] text-[12px] text-[var(--text-tertiary)] italic text-center max-w-[320px]">
-                Hỗ trợ file PDF, DOCX, XLSX
+                Hỗ trợ file PDF, DOCX, XLSX (Tối đa 50MB)
               </div>
             </div>
           )}

@@ -45,6 +45,7 @@ export const RectDropzone = ({ preview, onChange, id }: { preview: string | unde
           </svg>
           <div className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
             Kéo thả hoặc <span className="text-[var(--brand-500)] font-semibold">chọn ảnh đại diện</span>
+            <div className="text-[11px] mt-1 opacity-80">(Tối đa 10MB)</div>
           </div>
         </>
       )}

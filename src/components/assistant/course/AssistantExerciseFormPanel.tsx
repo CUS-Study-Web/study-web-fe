@@ -91,6 +91,20 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
           Thông tin bài tập
         </div>
 
+        {/* Tiêu đề */}
+        <div>
+          <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
+            Tiêu đề
+          </div>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Nhập tiêu đề bài tập..."
+            className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] outline-none focus:border-[var(--brand-500)] transition-colors placeholder:text-[var(--text-tertiary)]"
+          />
+        </div>
+
         {/* Khóa học */}
         <div>
           <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
@@ -132,20 +146,6 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
             value={questionCount}
             onChange={(e) => setQuestionCount(Number(e.target.value))}
             className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] outline-none focus:border-[var(--brand-500)] transition-colors"
-          />
-        </div>
-
-        {/* Tiêu đề */}
-        <div>
-          <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
-            Tiêu đề
-          </div>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Nhập tiêu đề bài tập..."
-            className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] outline-none focus:border-[var(--brand-500)] transition-colors placeholder:text-[var(--text-tertiary)]"
           />
         </div>
 
