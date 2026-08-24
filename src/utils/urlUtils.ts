@@ -6,7 +6,7 @@ export const isValidUrl = (url: string): boolean => {
     const parsed = new URL(url);
     if (!parsed.protocol) return false;
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 };

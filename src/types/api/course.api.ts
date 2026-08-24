@@ -7,24 +7,23 @@ export interface CourseSummaryResponse {
   badgeTitle: string;
   description: string;
   imageUrl: string;
+  status: 'DRAFT' | 'PUBLISH';
   subjectCount: number;
   examCount: number;
+  learningProgress?: number;
 }
 
 export interface CourseDetailResponse {
-  page: number;
-  size: number;
-  totalElements: number;
-  totalPages: number;
-  totalSubjects: number;
+  subjectCount: number;
   learningProgress: number;
   subjects: SubjectSummaryResponse[];
 }
 
 export interface CourseRequest {
-  title: string;
-  subtitle: string;
-  badgeTitle: string;
-  description: string;
-  thumbnailImage: File;
+  title?: string;
+  subtitle?: string;
+  badgeTitle?: string;
+  description?: string;
+  thumbnailImage?: File;
+  status?: 'DRAFT' | 'PUBLISH';
 }

@@ -20,17 +20,18 @@ import GoiCuocTab from '../../components/admin/website/GoiCuocTab'
 
 // API Hooks
 import {
-  useGetCoursesQuery,
+  useGetAdminCoursesQuery,
   useDeleteCourseMutation,
 } from '../../hooks/queries/useCourses'
 import { useNotification } from '../../components/common/NotificationProvider'
 
 const AdminWebsite = () => {
-  const [activeTab, setActiveTab] = useState<WTab>("trang-chu")
+  const [activeTab, setActiveTab] = useState<WTab>("courses")
   const [showModal, setShowModal] = useState<ModalKey | null>(null)
+  const [showDevPopup, setShowDevPopup] = useState(false)
 
   // API state for courses
-  const { data: coursesData, isLoading: isLoadingCourses } = useGetCoursesQuery({ size: 100 })
+  const { data: coursesData, isLoading: isLoadingCourses } = useGetAdminCoursesQuery({ size: 100 })
   const courses = coursesData?.data || []
 
   const deleteCourse = useDeleteCourseMutation()
@@ -65,6 +66,10 @@ const AdminWebsite = () => {
   }, [])
 
   const handleTabChange = (tab: WTab) => {
+    if (tab !== "courses") {
+      setShowDevPopup(true)
+      return
+    }
     setActiveTab(tab)
     setActiveDropdownId(null)
   }
@@ -237,7 +242,7 @@ const AdminWebsite = () => {
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
-                        {["Tiêu đề", "Tiêu đề phụ", "Mô tả", ""].map((h) => (
+                        {["Tiêu đề", "Tiêu đề phụ", "Mô tả", "Trạng thái", ""].map((h) => (
                           <th key={h} className={thClass}>{h}</th>
                         ))}
                       </tr>
@@ -259,6 +264,11 @@ const AdminWebsite = () => {
                           <td className={tdBoldClass}>{c.title}</td>
                           <td className={tdCellClass}>{c.subTitle}</td>
                           <td className={`${tdCellClass} max-w-[260px] truncate`}>{c.description}</td>
+                          <td className={tdCellClass}>
+                            <span className={`px-2 py-1 rounded-[var(--radius-sm)] text-[11px] font-bold ${c.status === 'PUBLISH' ? 'bg-[#E3F5E7] text-[#1D9A44]' : 'bg-[var(--surface-500)] text-[var(--text-secondary-400)]'}`}>
+                              {c.status === 'PUBLISH' ? 'Công khai' : 'Bản nháp'}
+                            </span>
+                          </td>
                           <td className={`${tdCellClass} relative whitespace-nowrap`}>
                             {deletingId === `course-${c.id}` ? (
                               <div className="flex justify-end pr-2">
@@ -613,6 +623,16 @@ const AdminWebsite = () => {
           isSubmitting={deletingId === `course-${courseToDelete.id}`}
           onConfirm={() => handleDeleteCourse(courseToDelete.id)}
           onClose={() => setCourseToDelete(null)}
+        />
+      )}
+      
+      {showDevPopup && (
+        <ConfirmMiniModal
+          title="Đang phát triển"
+          message="Tính năng đang được phát triển. Vui lòng quay lại sau!"
+          confirmText="Đóng"
+          onConfirm={() => setShowDevPopup(false)}
+          onClose={() => setShowDevPopup(false)}
         />
       )}
     </div>

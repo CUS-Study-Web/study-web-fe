@@ -16,6 +16,11 @@ export default function AssistantCourseCard({ course, onViewDetail }: AssistantC
         className="px-5 py-4 flex items-center gap-3 relative overflow-hidden"
         style={{ backgroundImage: 'linear-gradient(to right, #2B5830, #1F4224)' }}
       >
+        <div className="absolute top-2 right-2">
+           <span className={`px-2 py-0.5 rounded-[var(--radius-sm)] text-[10px] font-bold ${course.status === 'PUBLISH' ? 'bg-[#E3F5E7] text-[#1D9A44]' : 'bg-[var(--surface-500)] text-[var(--text-secondary-400)]'}`}>
+             {course.status === 'PUBLISH' ? 'Công khai' : 'Bản nháp'}
+           </span>
+        </div>
         <div className="relative z-10 w-8 h-8 rounded-[8px] bg-white/15 flex items-center justify-center shrink-0">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />

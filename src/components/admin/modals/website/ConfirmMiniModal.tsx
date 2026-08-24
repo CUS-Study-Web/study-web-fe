@@ -5,6 +5,7 @@ import {
   useCreateSubjectMutation,
   useUpdateSubjectMutation,
   useDeleteSubjectMutation,
+  useGetCourseDetailQuery,
 } from '../../../../hooks/queries/useCourses'
 
 // ─── Shared Spinner ───────────────────────────────────────────────────────────
@@ -53,6 +54,7 @@ export type ConfirmMiniModalProps = {
   message: React.ReactNode
   confirmText?: string
   cancelText?: string
+  hideCancel?: boolean
   isDanger?: boolean
   isSubmitting?: boolean
   onConfirm: () => void
@@ -64,6 +66,7 @@ export const ConfirmMiniModal = ({
   message,
   confirmText = 'Xác nhận',
   cancelText = 'Hủy',
+  hideCancel = false,
   isDanger,
   isSubmitting,
   onConfirm,
@@ -74,13 +77,15 @@ export const ConfirmMiniModal = ({
       <p className={miniTitle}>{title}</p>
       <div className={miniSub}>{message}</div>
       <div className="flex gap-3">
-        <button
-          onClick={onClose}
-          disabled={isSubmitting}
-          className={`${btnBase} !bg-[var(--surface-500)] !text-[var(--text-secondary-600)] !hover:bg-[var(--surface-600)]`}
-        >
-          {cancelText}
-        </button>
+        {!hideCancel && (
+          <button
+            onClick={onClose}
+            disabled={isSubmitting}
+            className={`${btnBase} !bg-[var(--surface-500)] !text-[var(--text-secondary-600)] !hover:bg-[var(--surface-600)]`}
+          >
+            {cancelText}
+          </button>
+        )}
         <button
           onClick={onConfirm}
           disabled={isSubmitting}
@@ -107,9 +112,18 @@ type ConfirmUpdateProps = {
 export const ConfirmUpdateSubjectModal = ({ courseId, subjectId, newTitle, newDuration, onClose }: ConfirmUpdateProps) => {
   const { showSuccess, showError } = useNotification()
   const updateSubject = useUpdateSubjectMutation()
+  const { data: detailData } = useGetCourseDetailQuery(courseId)
+  const existingSubjects = detailData?.data?.subjects || []
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showDuplicateAlert, setShowDuplicateAlert] = useState(false)
 
   const handleConfirm = async () => {
+    const isDuplicate = existingSubjects.some(s => s.id !== subjectId && s.name.toLowerCase() === newTitle.trim().toLowerCase())
+    if (isDuplicate) {
+      setShowDuplicateAlert(true)
+      return
+    }
+
     setIsSubmitting(true)
     const start = Date.now()
     try {
@@ -153,6 +167,17 @@ export const ConfirmUpdateSubjectModal = ({ courseId, subjectId, newTitle, newDu
           Xác nhận
         </button>
       </div>
+
+      {showDuplicateAlert && (
+        <ConfirmMiniModal
+          title="Tên môn học đã tồn tại"
+          message={<span>Môn học <strong>"{newTitle}"</strong> đã tồn tại trong khóa học này. Vui lòng chọn tên khác.</span>}
+          confirmText="Đóng"
+          hideCancel
+          onConfirm={() => setShowDuplicateAlert(false)}
+          onClose={() => setShowDuplicateAlert(false)}
+        />
+      )}
     </MiniModalBackdrop>
   )
 }
@@ -225,12 +250,22 @@ type AddSubjectProps = {
 export const AddSubjectModal = ({ courseId, onClose }: AddSubjectProps) => {
   const { showSuccess, showError } = useNotification()
   const createSubject = useCreateSubjectMutation()
+  const { data: detailData } = useGetCourseDetailQuery(courseId)
+  const existingSubjects = detailData?.data?.subjects || []
   const [title, setTitle] = useState('')
   const [durationHour, setDurationHour] = useState<number | ''>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showDuplicateAlert, setShowDuplicateAlert] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    const isDuplicate = existingSubjects.some(s => s.name.toLowerCase() === title.trim().toLowerCase())
+    if (isDuplicate) {
+      setShowDuplicateAlert(true)
+      return
+    }
+
     if (!title.trim()) return
     setIsSubmitting(true)
     const start = Date.now()
@@ -302,6 +337,17 @@ export const AddSubjectModal = ({ courseId, onClose }: AddSubjectProps) => {
           </button>
         </div>
       </form>
+
+      {showDuplicateAlert && (
+        <ConfirmMiniModal
+          title="Tên môn học đã tồn tại"
+          message={<span>Môn học <strong>"{title}"</strong> đã tồn tại trong khóa học này. Vui lòng chọn tên khác.</span>}
+          confirmText="Đóng"
+          hideCancel
+          onConfirm={() => setShowDuplicateAlert(false)}
+          onClose={() => setShowDuplicateAlert(false)}
+        />
+      )}
     </MiniModalBackdrop>
   )
 }

@@ -68,9 +68,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       if (role === 'admin') {
-        navigate(ROUTES.ADMIN.DASHBOARD);
+        navigate(ROUTES.ADMIN.WEBSITE);
       } else if (role === 'assistant') {
-        navigate(ROUTES.ASSISTANT.DASHBOARD);
+        navigate(ROUTES.ASSISTANT.COURSES);
       } else {
         navigate(ROUTES.LEARNER.MY_COURSES);
       }

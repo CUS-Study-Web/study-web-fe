@@ -60,8 +60,8 @@ function GuestRoute({ children }: { children?: React.ReactNode }) {
   const { isLoggedIn, role } = useAuth();
 
   if (isLoggedIn) {
-    if (role === "admin") return <Navigate to={ROUTES.ADMIN.DASHBOARD} replace />;
-    if (role === "assistant") return <Navigate to={ROUTES.ASSISTANT.DASHBOARD} replace />;
+    if (role === "admin") return <Navigate to={ROUTES.ADMIN.WEBSITE} replace />;
+    if (role === "assistant") return <Navigate to={ROUTES.ASSISTANT.COURSES} replace />;
     return <Navigate to={ROUTES.HOME} replace />;
   }
 
@@ -185,7 +185,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route path={ROUTES.ASSISTANT.ROOT} element={<Navigate to={ROUTES.ASSISTANT.DASHBOARD} replace />} />
+        <Route path={ROUTES.ASSISTANT.ROOT} element={<Navigate to={ROUTES.ASSISTANT.COURSES} replace />} />
         <Route path={ROUTES.ASSISTANT.DASHBOARD} element={<AssistantDashboard />} />
         <Route path={ROUTES.ASSISTANT.COURSES} element={<AssistantCourses />} />
         <Route path={ROUTES.ASSISTANT.COURSE_DETAIL()} element={<AssistantCourseDetail />} />
@@ -207,7 +207,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route path={ROUTES.ADMIN.ROOT} element={<Navigate to={ROUTES.ADMIN.DASHBOARD} replace />} />
+        <Route path={ROUTES.ADMIN.ROOT} element={<Navigate to={ROUTES.ADMIN.WEBSITE} replace />} />
         <Route path={ROUTES.ADMIN.DASHBOARD} element={<AdminDashboard />} />
         <Route path={ROUTES.ADMIN.SYSTEM} element={<AdminSystem />} />
         <Route path={ROUTES.ADMIN.WEBSITE} element={<AdminWebsite />} />

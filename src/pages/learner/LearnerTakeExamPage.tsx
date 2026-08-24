@@ -3,7 +3,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/guest/Header";
 import ExamQuestionViewerItem from "../../components/learner/ExamQuestionViewerItem";
 import ExamAnswerSelector from "../../components/learner/ExamAnswerSelector";
-import { useStartAssessmentQuery, useSubmitAssessmentMutation } from "../../hooks/queries/useAssessments";
+import { useStartAssessmentQuery, useSubmitAssessmentMutation, useGetAssessmentDetailQuery } from "../../hooks/queries/useAssessments";
 import type { AssessmentSubmitResponse } from "../../types/api/assessment.api";
 import { ROUTES } from "../../utils/routes";
 import PendingSolutionPopup from "../../components/common/PendingSolutionPopup";
@@ -20,6 +20,7 @@ export default function LearnerTakeExamPage() {
 
   const { data: startData, isLoading } = useStartAssessmentQuery(key, assessmentId);
   const examDetails = startData?.data;
+  const { data: detailData } = useGetAssessmentDetailQuery(key, assessmentId);
 
   const exam = {
     title: examDetails?.title ?? (isExercise ? "Bài tập thực hành" : "Đề thi thử THPT Quốc gia 2026"),
@@ -233,7 +234,7 @@ export default function LearnerTakeExamPage() {
                 </div>
                 <div
                   onClick={() => {
-                    const url = examDetails?.explanationUrl || submitResult?.explanationUrl;
+                    const url = detailData?.data?.explanationUrl || examDetails?.explanationUrl || submitResult?.explanationUrl;
                     if (url) {
                       window.open(url, '_blank');
                     } else {

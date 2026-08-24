@@ -6,7 +6,7 @@ import ProgressBar from "../../components/learner/ProgressBar";
 import LessonItem from "../../components/learner/LessonItem";
 import ExerciseItem from "../../components/learner/ExerciseItem";
 import { useGetCoursesQuery, useGetCourseDetailQuery } from "../../hooks/queries/useCourses";
-import { useGetLessonsQuery } from "../../hooks/queries/useLessons";
+import { useGetLessonsQuery, useMarkLessonDoneMutation } from "../../hooks/queries/useLessons";
 import { useGetHomeworkQuery } from "../../hooks/queries/useAssessments";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -27,6 +27,8 @@ export default function LearnerSubjectDetailPage() {
 
   const { data: lessonsData, isLoading: isLoadingLessons } = useGetLessonsQuery(courseKey, subId);
   const lessons = lessonsData?.data?.lessons || [];
+
+  const markLessonDone = useMarkLessonDoneMutation();
 
   const { data: homeworksData, isLoading: isLoadingHomeworks } = useGetHomeworkQuery(courseKey, { subjectId: subId, size: 100 });
   const exercises = homeworksData?.data || [];
@@ -101,16 +103,16 @@ export default function LearnerSubjectDetailPage() {
               <div className="shrink-0 min-w-[200px]">
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="font-[family:var(--font-heading)] font-semibold text-xs text-[var(--brand-soft-500)]/85">Tiến độ học</span>
-                  <span className="font-[family:var(--font-heading)] font-bold text-xs text-[#A8D5A2]">38%</span>
+                  <span className="font-[family:var(--font-heading)] font-bold text-xs text-[#A8D5A2]">{subject.learningProgress || 0}%</span>
                 </div>
                 <ProgressBar
-                  progress={38}
+                  progress={subject.learningProgress || 0}
                   heightClass="h-2"
                   bgClass="bg-white/20"
                   fillStyle={{ background: "linear-gradient(90deg, #5EA85A, #A8D5A2)" }}
                 />
                 <div className="font-[family:var(--font-body)] text-[11px] text-[var(--brand-soft-500)]/70 mt-1.5">
-                  2/8 bài học hoàn thành
+                  {Math.round(((subject.learningProgress || 0) * (subject.lessonCount || 0)) / 100)}/{subject.lessonCount || 0} bài học hoàn thành
                 </div>
               </div>
             </div>
@@ -151,13 +153,19 @@ export default function LearnerSubjectDetailPage() {
                 <LessonItem
                   key={lesson.id}
                   lesson={{
-                    id: i, // LessonItem expects number
+                    id: lesson.orderNum || i + 1,
                     title: lesson.title,
                     duration: `${lesson.durationMin} phút`,
-                    isLocked: !isVip && i >= 2,
-                    url: lesson.youtubeUrl
+                    isLocked: !isVip && lesson.isVip,
+                    url: lesson.youtubeUrl,
+                    isClicked: lesson.isClicked
                   }}
                   isLast={i === lessons.length - 1}
+                  onWatch={() => {
+                    if (!lesson.isClicked) {
+                      markLessonDone.mutate({ courseId: courseKey, subjectId: subId, lessonId: lesson.id });
+                    }
+                  }}
                 />
               ))
             )}

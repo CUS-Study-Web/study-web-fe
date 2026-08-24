@@ -1,11 +1,24 @@
+import { useQueries } from "@tanstack/react-query";
 import LearnerCourseCard from "../../components/learner/LearnerCourseCard";
 import GuestPageLayout from "../../components/guest/GuestPageLayout";
-
-import { useGetCoursesQuery } from "../../hooks/queries/useCourses";
+import { useGetCoursesQuery, courseKeys } from "../../hooks/queries/useCourses";
+import { courseService } from "../../services/courseService";
 
 export default function LearnerMyCoursesPage() {
   const { data, isLoading } = useGetCoursesQuery({ size: 100 });
   const courses = data?.data || [];
+
+  // Fetch course details in parallel to get learningProgress for each course
+  const detailQueries = useQueries({
+    queries: courses.map((course) => ({
+      queryKey: courseKeys.detail(course.id),
+      queryFn: () => courseService.getCourseDetail(course.id),
+      enabled: !!course.id,
+      staleTime: 1000 * 60 * 5, // cache for 5 minutes
+    })),
+  });
+
+  const isLoadingDetails = detailQueries.some((q) => q.isLoading);
 
   return (
     <GuestPageLayout
@@ -27,9 +40,14 @@ export default function LearnerMyCoursesPage() {
           <div className="text-center py-10 font-[family:var(--font-body)] text-gray-500">Đang tải...</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {courses.map((course) => (
-              <LearnerCourseCard key={course.id} {...course} progress={0} />
-            ))}
+            {courses.map((course, index) => {
+              const detail = detailQueries[index]?.data?.data;
+              // Use learningProgress from detail (GET /api/courses/{id}) since the list API doesn't return it
+              const progress = isLoadingDetails ? 0 : (detail?.learningProgress ?? 0);
+              return (
+                <LearnerCourseCard key={course.id} {...course} progress={progress} />
+              );
+            })}
           </div>
         )}
       </section>
