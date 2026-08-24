@@ -93,3 +93,31 @@ export const useDeleteLessonMutation = () => {
     },
   });
 };
+
+export const useMarkLessonDoneMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      courseId,
+      subjectId,
+      lessonId,
+    }: {
+      courseId: string;
+      subjectId: string;
+      lessonId: string;
+    }) => lessonService.markLessonDone(courseId, subjectId, lessonId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: lessonKeys.lists(variables.courseId, variables.subjectId),
+      });
+      // Invalidate course detail to update progress
+      queryClient.invalidateQueries({
+        queryKey: courseKeys.detail(variables.courseId),
+      });
+      // Invalidate course list to update overall course progress
+      queryClient.invalidateQueries({
+        queryKey: courseKeys.lists(),
+      });
+    },
+  });
+};

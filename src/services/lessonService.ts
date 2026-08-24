@@ -1,6 +1,6 @@
 import apiClient from './apiClient';
 import type { PagedResponse, SingleResponse, SuccessResponse } from '../types/api/common.api';
-import type { LessonRequest, LessonSummaryResponse, LessonListResponse } from '../types/api/lesson.api';
+import type { LessonRequest, LessonCardResponse, LessonListResponse } from '../types/api/lesson.api';
 
 export const lessonService = {
   getLessons: async (
@@ -16,7 +16,7 @@ export const lessonService = {
   },
 
   createLesson: async (courseId: string, subjectId: string, data: LessonRequest) => {
-    const response = await apiClient.post<SingleResponse<LessonSummaryResponse>>(
+    const response = await apiClient.post<SingleResponse<LessonCardResponse>>(
       `/api/courses/${courseId}/subjects/${subjectId}/lessons`,
       data
     );
@@ -29,7 +29,7 @@ export const lessonService = {
     lessonId: string,
     data: Partial<LessonRequest>
   ) => {
-    const response = await apiClient.patch<SingleResponse<LessonSummaryResponse>>(
+    const response = await apiClient.patch<SingleResponse<LessonCardResponse>>(
       `/api/courses/${courseId}/subjects/${subjectId}/lessons/${lessonId}`,
       data
     );
@@ -39,6 +39,13 @@ export const lessonService = {
   deleteLesson: async (courseId: string, subjectId: string, lessonId: string) => {
     const response = await apiClient.delete<SuccessResponse>(
       `/api/courses/${courseId}/subjects/${subjectId}/lessons/${lessonId}`
+    );
+    return response.data;
+  },
+
+  markLessonDone: async (courseId: string, subjectId: string, lessonId: string) => {
+    const response = await apiClient.post<SuccessResponse>(
+      `/api/courses/${courseId}/subjects/${subjectId}/lessons/${lessonId}/done`
     );
     return response.data;
   },

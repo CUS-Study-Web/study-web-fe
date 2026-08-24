@@ -7,14 +7,16 @@ type Lesson = {
   duration: string;
   isLocked: boolean;
   url?: string;
+  isClicked?: boolean;
 };
 
 type LessonItemProps = {
   lesson: Lesson;
   isLast: boolean;
+  onWatch?: () => void;
 };
 
-export default function LessonItem({ lesson, isLast }: LessonItemProps) {
+export default function LessonItem({ lesson, isLast, onWatch }: LessonItemProps) {
   const [showPendingPopup, setShowPendingPopup] = useState(false);
 
   return (
@@ -44,11 +46,16 @@ export default function LessonItem({ lesson, isLast }: LessonItemProps) {
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div
-            className={`font-[family:var(--font-heading)] text-sm leading-snug ${
+            className={`font-[family:var(--font-heading)] text-sm leading-snug flex items-center gap-2 ${
               lesson.isLocked ? "font-medium text-[#A0AAA2]" : "font-bold text-[#1B1F1C]"
             }`}
           >
-            {lesson.title}
+            <span>{lesson.title}</span>
+            {lesson.isClicked && (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="stroke-[#1D9A44]" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            )}
           </div>
           <div className="font-[family:var(--font-body)] text-xs text-[#A0AAA2] mt-1">
             ⏱ {lesson.duration}
@@ -64,15 +71,20 @@ export default function LessonItem({ lesson, isLast }: LessonItemProps) {
         ) : (
           <button 
             onClick={() => {
+              onWatch?.();
               if (lesson.url) {
                 window.open(lesson.url, '_blank');
               } else {
                 setShowPendingPopup(true);
               }
             }}
-            className="transition-all cursor-pointer whitespace-nowrap hover:bg-[#1B1F1C] font-[family:var(--font-heading)] !font-semibold text-[11px] px-4 py-1.5 rounded-full border-none bg-[var(--brand-base-500)] !text-white"
+            className={`transition-all cursor-pointer whitespace-nowrap font-[family:var(--font-heading)] !font-semibold text-[11px] px-4 py-1.5 rounded-full border-none ${
+              lesson.isClicked 
+                ? "bg-[var(--surface-500)] text-[var(--text-secondary-600)] hover:bg-[var(--surface-600)] hover:text-[var(--text-primary)]" 
+                : "bg-[var(--brand-base-500)] !text-white hover:bg-[#1B1F1C]"
+            }`}
           >
-            Xem bài
+            {lesson.isClicked ? 'Xem lại' : 'Xem bài'}
           </button>
         )}
       </div>
