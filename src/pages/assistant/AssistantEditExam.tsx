@@ -154,7 +154,7 @@ export default function AssistantEditExam() {
           {/* PDF content area */}
           {exam?.fileUrl ? (
             <iframe
-              src={`${exam.fileUrl}#toolbar=0&navpanes=0&scrollbar=1`}
+              src={`${exam.fileUrl}#toolbar=1&navpanes=0&scrollbar=1`}
               className="flex-1 w-full border-none rounded-b-[12px] bg-[var(--surface-muted)]"
               title="PDF Preview"
             />

@@ -19,14 +19,14 @@ export default function LearnerExamStartPage() {
 
   const { data: attemptsData, isLoading: isLoadingAttempts } = useGetAttemptsQuery(key, assessmentId, { size: 5 });
   const attempts = attemptsData?.data || [];
-
-  const state = location.state as { totalTake?: string | number } | null;
+  
+  const state = location.state as { totalTakes?: number } | null;
 
   const exam = {
     title: assessment?.title ?? (isExercise ? "Bài tập thực hành" : "Đề thi thử"),
     duration: isExercise ? "--:--" : `${assessment?.durationMin ?? 90} phút`,
     questions: assessment?.numQuestions ?? 40,
-    attempts: state?.totalTake ?? assessment?.totalTakes ?? 0,
+    attempts: state?.totalTakes ?? assessment?.totalTakes ?? 0,
   };
 
   const chartData = attempts.map((a) => a.totalQuestions > 0 ? (a.numCorrect / a.totalQuestions) * 10 : (a.score / 10));
@@ -42,9 +42,9 @@ export default function LearnerExamStartPage() {
 
   const handleTakeExam = () => {
     if (isExercise) {
-      navigate(ROUTES.LEARNER.TAKE_EXERCISE(courseId, subjectId, exerciseId));
+      navigate(ROUTES.LEARNER.TAKE_EXERCISE(courseId, subjectId, exerciseId), { state: { totalTakes: exam.attempts } });
     } else {
-      navigate(ROUTES.LEARNER.TAKE_EXAM(courseId, subjectId, examId));
+      navigate(ROUTES.LEARNER.TAKE_EXAM(courseId, subjectId, examId), { state: { totalTakes: exam.attempts } });
     }
   };
 
