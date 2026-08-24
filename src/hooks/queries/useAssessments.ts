@@ -107,8 +107,12 @@ export const useSubmitAssessmentMutation = () => {
     mutationFn: ({ courseId, assessmentId, data }: { courseId: string; assessmentId: string; data: AssessmentSubmitRequest }) => 
       assessmentService.submitAssessment(courseId, assessmentId, data),
     onSuccess: (_, variables) => {
-      // We don't have access to params here easily, so we might want to invalidate all attempts list for this assessment
+      // Invalidate attempts list so history refreshes
       queryClient.invalidateQueries({ queryKey: assessmentKeys.attemptsList(variables.courseId, variables.assessmentId, undefined).slice(0, -1) });
+      // Invalidate assessment detail so totalTakes counter is updated on the start page
+      queryClient.invalidateQueries({ queryKey: assessmentKeys.detail(variables.courseId, variables.assessmentId) });
+      // Invalidate exams list so totalTakes is also up-to-date on the course/exam list page
+      queryClient.invalidateQueries({ queryKey: assessmentKeys.exams(variables.courseId, undefined) });
     },
   });
 };

@@ -168,7 +168,7 @@ export default function AssistantEditExercise() {
 
             {isPdf && previewUrl ? (
               <iframe
-                src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=1`}
+                src={`${previewUrl}#toolbar=1&navpanes=0&scrollbar=1`}
                 className="flex-1 w-full border-none"
                 title="PDF Preview"
               />

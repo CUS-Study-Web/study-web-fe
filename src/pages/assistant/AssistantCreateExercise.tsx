@@ -166,7 +166,7 @@ export default function AssistantCreateExercise() {
 
               {isPdf && fileUrl ? (
                 <iframe
-                  src={`${fileUrl}#toolbar=0&navpanes=0&scrollbar=1`}
+                  src={`${fileUrl}#toolbar=1&navpanes=0&scrollbar=1`}
                   className="flex-1 w-full border-none"
                   title="PDF Preview"
                 />

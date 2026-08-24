@@ -17,6 +17,7 @@ export default function LearnerTakeExamPage() {
   const isExercise = location.pathname.includes('/exercises/');
   const assessmentId = (isExercise ? exerciseId : examId) ?? '';
   const key = courseId ?? '';
+  const state = location.state as { totalTakes?: number } | null;
 
   const { data: startData, isLoading } = useStartAssessmentQuery(key, assessmentId);
   const examDetails = startData?.data;
@@ -34,10 +35,10 @@ export default function LearnerTakeExamPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitResult, setSubmitResult] = useState<AssessmentSubmitResponse | null>(null);
 
-  // Initialize timer to duration
   const [secondsLeft, setSecondsLeft] = useState((examDetails?.durationMin ?? 90) * 60);
 
   const [showPendingPopup, setShowPendingPopup] = useState(false);
+  const [submissionCount, setSubmissionCount] = useState(0);
 
   // Sync timer when duration loaded
   useEffect(() => {
@@ -84,15 +85,17 @@ export default function LearnerTakeExamPage() {
       onSuccess: (res) => {
         setSubmitResult(res.data);
         setSubmitted(true);
+        setSubmissionCount(prev => prev + 1);
       }
     });
   };
 
   const handleExit = () => {
+    const updatedTotalTakes = (state?.totalTakes ?? 0) + submissionCount;
     if (isExercise) {
-      navigate(ROUTES.LEARNER.EXERCISE_START(courseId as string, subjectId as string, exerciseId as string));
+      navigate(ROUTES.LEARNER.EXERCISE_START(courseId as string, subjectId as string, exerciseId as string), { state: { totalTakes: updatedTotalTakes } });
     } else {
-      navigate(ROUTES.LEARNER.EXAM_START(courseId as string, subjectId as string, examId as string));
+      navigate(ROUTES.LEARNER.EXAM_START(courseId as string, subjectId as string, examId as string), { state: { totalTakes: updatedTotalTakes } });
     }
   };
 
@@ -101,35 +104,24 @@ export default function LearnerTakeExamPage() {
       <Header />
       <div className="max-w-[1536px] mx-auto pt-7 px-6 pb-20 grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-7 items-start flex-grow w-full">
         {/* Left: PDF viewer */}
-        <div className="bg-white rounded-[20px] shadow-[0_2px_8px_rgba(0,0,0,0.05)] border border-[#E4EBE5] overflow-hidden">
-          {/* Toolbar */}
-          <div className="bg-[var(--surface-500)] border-b border-[#E4EBE5] py-2.5 px-4 flex items-center justify-between gap-3">
-            <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-[#FF5F57]" />
-              <div className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
-              <div className="w-3 h-3 rounded-full bg-[#28C840]" />
-            </div>
-            <div className="font-[family:var(--font-body)] text-[13px] text-[#6B746D] font-medium">📄 {exam.title}</div>
-            <div className="flex gap-2">
-              <button className="font-[family:var(--font-body)] text-[12px] px-2.5 py-1 rounded-lg border border-[#D4DCD5] bg-white text-[#3D4540] cursor-pointer">−</button>
-              <span className="font-[family:var(--font-body)] text-[12px] text-[#3D4540] self-center">100%</span>
-              <button className="font-[family:var(--font-body)] text-[12px] px-2.5 py-1 rounded-lg border border-[#D4DCD5] bg-white text-[#3D4540] cursor-pointer">+</button>
-            </div>
+        <div className="flex flex-col h-[calc(100vh-100px)] min-h-[700px]">
+          <div className="mb-4">
+            <div className="font-[family:var(--font-heading)] font-bold text-xl text-[#1B1F1C]">📄 {exam.title}</div>
           </div>
-          {/* Paper */}
-          <div className="bg-[#6B746D] p-4 md:p-6 h-[calc(100vh-140px)] min-h-[700px] overflow-y-auto relative">
+          
+          <div className="flex-1 relative rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-[#E4EBE5] overflow-hidden bg-white">
             {isLoading && (
               <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10 font-bold text-gray-700">Đang tải đề thi...</div>
             )}
 
             {examDetails?.fileUrl ? (
               <iframe
-                src={`${examDetails.fileUrl}#toolbar=0&navpanes=0&scrollbar=1`}
-                className="w-full h-full rounded-md shadow-[0_4px_20px_rgba(0,0,0,0.25)] border-none"
+                src={`${examDetails.fileUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                className="w-full h-full border-none"
                 title="PDF Preview"
               />
             ) : (
-              <div className="bg-white max-w-[680px] mx-auto rounded-md pt-12 px-14 pb-12 shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
+              <div className="bg-white max-w-[680px] mx-auto rounded-md pt-12 px-14 pb-12 shadow-[0_4px_20px_rgba(0,0,0,0.25)] mt-8 border border-gray-100">
                 <div className="text-center mb-8 pb-6 border-b-2 border-[#1B1F1C]">
                   <div className="font-[family:var(--font-heading)] font-bold text-[13px] uppercase tracking-[1px] text-[#1B1F1C] mb-2">BỘ GIÁO DỤC VÀ ĐÀO TẠO</div>
                   <div className="font-[family:var(--font-heading)] font-bold text-lg text-[#1B1F1C]">
