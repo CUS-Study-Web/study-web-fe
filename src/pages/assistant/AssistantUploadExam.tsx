@@ -78,7 +78,12 @@ export default function AssistantUploadExam() {
   };
 
   const handleFile = (file: File) => {
-    if (file.type === 'application/pdf') setPdfFile(file);
+    if (file.type !== 'application/pdf') return;
+    if (file.size > 50 * 1024 * 1024) {
+      showError('Kích thước file tải lên không được vượt quá 50MB');
+      return;
+    }
+    setPdfFile(file);
   };
 
   const handleRemoveFile = () => setPdfFile(null);
@@ -196,7 +201,7 @@ export default function AssistantUploadExam() {
               </label>
 
               <div className="font-[family-name:var(--font-body)] text-[12px] text-[var(--text-tertiary)] italic text-center max-w-[320px]">
-                Hỗ trợ file .pdf · Sau khi chọn, bạn có thể xem trước nội dung đề thi ngay tại đây
+                Hỗ trợ file .pdf (Tối đa 50MB) · Sau khi chọn, bạn có thể xem trước nội dung đề thi ngay tại đây
               </div>
             </div>
           )}
