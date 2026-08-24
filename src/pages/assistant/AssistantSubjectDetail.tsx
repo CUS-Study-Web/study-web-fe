@@ -318,7 +318,7 @@ export default function AssistantSubjectDetail() {
 
       <AssistantTabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="mt-5">
+      <div className="mt-5 mb-18">
         {/* ── Bài giảng tab ── */}
         {activeTab === 'bai-giang' && (
           <div className="bg-[var(--surface-card)] rounded-[18px] border border-[var(--border-default)] shadow-[var(--shadow-clay-sm)] overflow-hidden flex flex-col">
@@ -421,9 +421,7 @@ export default function AssistantSubjectDetail() {
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
                       Trạng thái
                     </th>
-                    <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
-                      Link giải
-                    </th>
+
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]" />
                   </tr>
                 </thead>
@@ -454,11 +452,7 @@ export default function AssistantSubjectDetail() {
                           {ex.status === 'DRAFT' ? 'Nháp' : (ex.status === 'PUBLISHED' ? 'Đã xuất bản' : ex.status)}
                         </span>
                       </td>
-                      <td className="py-3.5 px-5">
-                        <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-tertiary)]">
-                          —
-                        </span>
-                      </td>
+
                       <td className="py-3.5 px-5">
                         <div className="flex justify-end">
                           <ExerciseActionMenu
@@ -473,14 +467,14 @@ export default function AssistantSubjectDetail() {
                   ))}
                   {isLoadingHomework && (
                     <tr>
-                      <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                      <td colSpan={5} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Đang tải bài tập...
                       </td>
                     </tr>
                   )}
                   {!isLoadingHomework && exercises.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                      <td colSpan={5} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Chưa có bài tập nào. Hãy tải lên bài tập đầu tiên.
                       </td>
                     </tr>
@@ -493,12 +487,12 @@ export default function AssistantSubjectDetail() {
       </div>
 
       {isLecturePopupOpen && (
-        <AssistantCreateLecturePopup 
-          courseKey={courseKey ?? ''} 
+        <AssistantCreateLecturePopup
+          courseKey={courseKey ?? ''}
           courseName={course?.title}
           defaultSubjectId={subjectId}
           existingLessons={lectures}
-          onClose={() => setIsLecturePopupOpen(false)} 
+          onClose={() => setIsLecturePopupOpen(false)}
         />
       )}
 

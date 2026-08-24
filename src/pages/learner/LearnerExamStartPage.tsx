@@ -20,12 +20,13 @@ export default function LearnerExamStartPage() {
   const { data: attemptsData, isLoading: isLoadingAttempts } = useGetAttemptsQuery(key, assessmentId, { size: 5 });
   const attempts = attemptsData?.data || [];
 
+  const state = location.state as { totalTake?: string | number } | null;
+
   const exam = {
     title: assessment?.title ?? (isExercise ? "Bài tập thực hành" : "Đề thi thử"),
-    level: "Nâng cao", // MOCK
     duration: isExercise ? "--:--" : `${assessment?.durationMin ?? 90} phút`,
     questions: assessment?.numQuestions ?? 40,
-    attempts: 1240, // MOCK
+    attempts: state?.totalTake ?? assessment?.totalTakes ?? 0,
   };
 
   const chartData = attempts.map((a) => a.totalQuestions > 0 ? (a.numCorrect / a.totalQuestions) * 10 : (a.score / 10));

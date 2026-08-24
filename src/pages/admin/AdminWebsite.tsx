@@ -13,6 +13,7 @@ import {
   AchievementModal,
   ReviewModal,
 } from '../../components/admin/modals/WebsiteModals'
+import { ConfirmMiniModal } from '../../components/admin/modals/website/ConfirmMiniModal'
 import TrangChuTab from '../../components/admin/website/TrangChuTab'
 import FooterTab from '../../components/admin/website/FooterTab'
 import GoiCuocTab from '../../components/admin/website/GoiCuocTab'
@@ -49,6 +50,7 @@ const AdminWebsite = () => {
   const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null)
 
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [courseToDelete, setCourseToDelete] = useState<Course | null>(null)
   const { showSuccess, showError } = useNotification()
 
   // Close dropdown on click outside
@@ -130,21 +132,20 @@ const AdminWebsite = () => {
 
   // Delete Handlers
   const handleDeleteCourse = async (id: string) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa khóa học này?")) {
-      setDeletingId(`course-${id}`)
-      const startTime = Date.now()
-      try {
-        await deleteCourse.mutateAsync(id)
-        const elapsed = Date.now() - startTime
-        if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
-        showSuccess("Xóa khóa học thành công!")
-      } catch {
-        const elapsed = Date.now() - startTime
-        if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
-        showError("Lỗi khi xóa khóa học!")
-      } finally {
-        setDeletingId(null)
-      }
+    setDeletingId(`course-${id}`)
+    const startTime = Date.now()
+    try {
+      await deleteCourse.mutateAsync(id)
+      const elapsed = Date.now() - startTime
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
+      showSuccess("Xóa khóa học thành công!")
+    } catch {
+      const elapsed = Date.now() - startTime
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
+      showError("Lỗi khi xóa khóa học!")
+    } finally {
+      setDeletingId(null)
+      setCourseToDelete(null)
     }
   }
 
@@ -185,7 +186,7 @@ const AdminWebsite = () => {
 
   return (
     <div className="max-w-[1280px] mx-auto pt-[8px] pb-[80px]">
-      <div className="mb-[28px]">
+      <div className="mb-[48px]">
         <h1 className="[font-family:var(--font-heading)] font-[800] text-[30px] text-[var(--text-primary)] mb-[6px] tracking-[-0.5px]">
           Quản Lý Website
         </h1>
@@ -295,7 +296,7 @@ const AdminWebsite = () => {
                                     </button>
                                     <button
                                       onClick={() => {
-                                        handleDeleteCourse(c.id)
+                                        setCourseToDelete(c)
                                         setActiveDropdownId(null)
                                       }}
                                       className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
@@ -596,6 +597,23 @@ const AdminWebsite = () => {
       )}
       {showModal === "edit-review" && (
         <ReviewModal review={editingReview} onSave={handleSaveReview} onClose={() => setShowModal(null)} />
+      )}
+
+      {/* Delete Confirm Modal for Course */}
+      {courseToDelete && (
+        <ConfirmMiniModal
+          title="Xác nhận xóa khóa học"
+          message={
+            <span>
+              Bạn có chắc chắn muốn xóa khóa học <strong>"{courseToDelete.title}"</strong>? Tất cả dữ liệu liên quan sẽ bị xóa.
+            </span>
+          }
+          isDanger
+          confirmText="Xóa khóa học"
+          isSubmitting={deletingId === `course-${courseToDelete.id}`}
+          onConfirm={() => handleDeleteCourse(courseToDelete.id)}
+          onClose={() => setCourseToDelete(null)}
+        />
       )}
     </div>
   )

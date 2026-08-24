@@ -25,26 +25,24 @@ export default function DocumentsPage() {
       <section className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-8 xl:px-10 mt-10">
         {/* Tabs: Lý thuyết / Bài tập */}
         <div className="flex items-center gap-3 mb-12">
-          <button
+          <div
             onClick={() => setActiveTab("Lý thuyết")}
-            className={`px-8 py-2.5 font-extrabold rounded-full transition-all text-sm cursor-pointer shadow-xs ${
-              activeTab === "Lý thuyết"
-                ? "bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] shadow-sm"
-                : "bg-white text-[#333a35] border border-[var(--border-500)] hover:bg-[#edf4ee] hover:text-[var(--brand-base-600)]"
-            }`}
+            className={`px-8 py-2.5 font-extrabold rounded-full transition-all text-sm cursor-pointer shadow-xs ${activeTab === "Lý thuyết"
+              ? "bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] shadow-sm"
+              : "bg-white text-[#333a35] border border-[var(--border-500)] hover:bg-[#edf4ee] hover:text-[var(--brand-base-600)]"
+              }`}
           >
             Lý thuyết
-          </button>
-          <button
+          </div>
+          <div
             onClick={() => setActiveTab("Bài tập")}
-            className={`px-8 py-2.5 font-extrabold rounded-full transition-all text-sm cursor-pointer shadow-xs ${
-              activeTab === "Bài tập"
-                ? "bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] shadow-sm"
-                : "bg-white text-[#333a35] border border-[var(--border-500)] hover:bg-[#edf4ee] hover:text-[var(--brand-base-600)]"
-            }`}
+            className={`px-8 py-2.5 font-extrabold rounded-full transition-all text-sm cursor-pointer shadow-xs ${activeTab === "Bài tập"
+              ? "bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] shadow-sm"
+              : "bg-white text-[#333a35] border border-[var(--border-500)] hover:bg-[#edf4ee] hover:text-[var(--brand-base-600)]"
+              }`}
           >
             Bài tập
-          </button>
+          </div>
         </div>
 
         {/* Section Header */}

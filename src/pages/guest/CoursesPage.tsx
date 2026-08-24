@@ -42,7 +42,7 @@ export default function CoursesPage() {
     <GuestPageLayout
       eyebrow="CHƯƠNG TRÌNH LUYỆN THI"
       title="Khóa học tại CUS"
-      description="5 chương trình luyện thi được thiết kế chuyên biệt cho từng kỳ thi — lộ trình bài bản, lớp học tinh gọn và đội ngũ giảng viên tận tâm."
+      description={`${courses.length} chương trình luyện thi được thiết kế chuyên biệt cho từng kỳ thi — lộ trình bài bản, lớp học tinh gọn và đội ngũ giảng viên tận tâm.`}
       heroExtra={myCoursesBtn}
     >
       <section className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-8 xl:px-10 mt-12 md:mt-16">

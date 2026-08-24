@@ -165,25 +165,7 @@ export default function AssistantExamCard({ exam, onEdit }: AssistantExamCardPro
             <span>Đăng ngày <span className="font-medium text-[var(--text-primary)]">{exam.date}</span></span>
           </div>
 
-          <div className="flex items-start gap-1.5 text-[12px] text-[var(--text-secondary)]">
-            <svg className="shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
-            <div className="flex-1 min-w-0">
-              {exam.solutionLink ? (
-                <a
-                  href={exam.solutionLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[var(--brand-600)] font-medium hover:underline block truncate"
-                  onClick={e => e.stopPropagation()}
-                  title={exam.solutionLink}
-                >
-                  {exam.solutionLink}
-                </a>
-              ) : (
-                <span className="italic">Chưa có lời giải</span>
-              )}
-            </div>
-          </div>
+
         </div>
 
         {/* Status & Access badges */}

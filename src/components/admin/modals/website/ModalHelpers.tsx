@@ -64,16 +64,16 @@ export const RectDropzone = ({ preview, onChange, id }: { preview: string | unde
 
 export const ModalHeader = ({ title, onClose }: { title: string; onClose: () => void }) => {
   return (
-    <div className="flex items-center justify-between mb-[22px]">
+    <div className="flex items-center justify-between mb-3">
       <div className="[font-family:var(--font-heading)] font-extrabold text-lg text-[var(--text-primary)]">
         {title}
       </div>
-      <button
+      <div
         onClick={onClose}
         className="bg-transparent border-none cursor-pointer text-[22px] text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] outline-none"
       >
         ×
-      </button>
+      </div>
     </div>
   )
 }

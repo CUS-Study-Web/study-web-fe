@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { lessonService } from '../../services/lessonService';
 import type { LessonRequest } from '../../types/api/lesson.api';
+import { courseKeys } from './useCourses';
 
 export const lessonKeys = {
   all: ['lessons'] as const,
@@ -38,6 +39,9 @@ export const useCreateLessonMutation = () => {
       queryClient.invalidateQueries({
         queryKey: lessonKeys.lists(variables.courseId, variables.subjectId),
       });
+      queryClient.invalidateQueries({
+        queryKey: courseKeys.detail(variables.courseId),
+      });
     },
   });
 };
@@ -60,6 +64,9 @@ export const useUpdateLessonMutation = () => {
       queryClient.invalidateQueries({
         queryKey: lessonKeys.lists(variables.courseId, variables.subjectId),
       });
+      queryClient.invalidateQueries({
+        queryKey: courseKeys.detail(variables.courseId),
+      });
     },
   });
 };
@@ -79,6 +86,9 @@ export const useDeleteLessonMutation = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: lessonKeys.lists(variables.courseId, variables.subjectId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: courseKeys.detail(variables.courseId),
       });
     },
   });

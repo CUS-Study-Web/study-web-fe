@@ -46,6 +46,54 @@ const miniTitle = '[font-family:var(--font-heading)] font-extrabold text-[16px] 
 const miniSub = '[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)] mb-5'
 const btnBase = 'flex-1 py-[10px] rounded-[var(--radius-md)] font-bold text-[13px] [font-family:var(--font-heading)] cursor-pointer border-none transition-colors duration-[var(--motion-fast)] flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed'
 
+// ─── Generic Confirm Modal ───────────────────────────────────────────────────
+
+export type ConfirmMiniModalProps = {
+  title: string
+  message: React.ReactNode
+  confirmText?: string
+  cancelText?: string
+  isDanger?: boolean
+  isSubmitting?: boolean
+  onConfirm: () => void
+  onClose: () => void
+}
+
+export const ConfirmMiniModal = ({
+  title,
+  message,
+  confirmText = 'Xác nhận',
+  cancelText = 'Hủy',
+  isDanger,
+  isSubmitting,
+  onConfirm,
+  onClose
+}: ConfirmMiniModalProps) => {
+  return (
+    <MiniModalBackdrop onClose={onClose}>
+      <p className={miniTitle}>{title}</p>
+      <div className={miniSub}>{message}</div>
+      <div className="flex gap-3">
+        <button
+          onClick={onClose}
+          disabled={isSubmitting}
+          className={`${btnBase} !bg-[var(--surface-500)] !text-[var(--text-secondary-600)] !hover:bg-[var(--surface-600)]`}
+        >
+          {cancelText}
+        </button>
+        <button
+          onClick={onConfirm}
+          disabled={isSubmitting}
+          className={`${btnBase} ${isDanger ? '!bg-[var(--error-500)] !hover:bg-[var(--error-600)]' : '!bg-[var(--brand-500)] !hover:bg-[var(--brand-600)]'} !text-white`}
+        >
+          {isSubmitting && <Spinner />}
+          {confirmText}
+        </button>
+      </div>
+    </MiniModalBackdrop>
+  )
+}
+
 // ─── 1. Confirm Update Modal ──────────────────────────────────────────────────
 
 type ConfirmUpdateProps = {
@@ -92,14 +140,14 @@ export const ConfirmUpdateSubjectModal = ({ courseId, subjectId, newTitle, newDu
         <button
           onClick={onClose}
           disabled={isSubmitting}
-          className={`${btnBase} bg-[var(--surface-500)] text-[var(--text-secondary-600)] hover:bg-[var(--surface-600)]`}
+          className={`${btnBase} !bg-[var(--surface-500)] !text-[var(--text-secondary-600)] !hover:bg-[var(--surface-600)]`}
         >
           Hủy
         </button>
         <button
           onClick={handleConfirm}
           disabled={isSubmitting}
-          className={`${btnBase} bg-[var(--brand-500)] text-white hover:bg-[var(--brand-600)]`}
+          className={`${btnBase} !bg-[var(--brand-500)] !text-white !hover:bg-[var(--brand-600)]`}
         >
           {isSubmitting && <Spinner />}
           Xác nhận

@@ -35,17 +35,17 @@ export default function LoginPage() {
     try {
       const sanitizedEmail = sanitizeEmail(email);
       const data = await loginMutationAsync({ gmail: sanitizedEmail, password });
-      
       const elapsed = Date.now() - startTime;
+
       if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed));
-      
       showSuccess("Đăng nhập thành công!");
       login(data.data);
     } catch (err: any) {
       const elapsed = Date.now() - startTime;
+
       if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed));
-      
       console.error("Login failed", err);
+
       if (axios.isAxiosError(err)) {
         if (err.response?.data?.message) {
           showError(err.response.data.message);

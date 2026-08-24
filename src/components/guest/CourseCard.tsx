@@ -17,7 +17,7 @@ export default function CourseCard({ id, title, tag, subtitle, desc, img, btnCol
   return (
     <div className="bg-white rounded-[var(--radius-xl)] overflow-hidden shadow-lg border border-[var(--border-300)] flex flex-col group hover:shadow-xl transition-all duration-300">
       {/* Top Image Section */}
-      <div className="relative h-56 w-full">
+      <div className="relative h-56 w-full overflow-hidden">
         <img src={img} alt={title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/20"></div>
         

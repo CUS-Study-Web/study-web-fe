@@ -33,10 +33,11 @@ export default function TrialExamPage() {
           combined.push({
             id: exam.id,
             courseId: course.id,
-            subject: course.title,
+            course: course.title,
             title: exam.title,
             time: exam.durationMin ? `${exam.durationMin} phút` : "Không giới hạn",
             questions: exam.numQuestions ? `${exam.numQuestions} câu` : "0 câu",
+            attempts: String(exam.totalTakes ?? 0),
             isVip: exam.accessTier === "VIP",
           });
         }
@@ -49,12 +50,12 @@ export default function TrialExamPage() {
 
   const filteredExams = allExams
     .filter((exam) => {
-      const matchesCategory = selectedCategory === "Tất cả" || exam.subject === selectedCategory;
+      const matchesCategory = selectedCategory === "Tất cả" || exam.course === selectedCategory;
 
       const matchesSearch =
         searchQuery.trim() === "" ||
         exam.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        exam.subject.toLowerCase().includes(searchQuery.toLowerCase());
+        exam.course.toLowerCase().includes(searchQuery.toLowerCase());
 
       return matchesCategory && matchesSearch;
     })
@@ -89,17 +90,16 @@ export default function TrialExamPage() {
           {categories.map((cat) => {
             const isActive = selectedCategory === cat;
             return (
-              <button
+              <div
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-xs cursor-pointer active:scale-95 ${
-                  isActive
+                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-xs cursor-pointer active:scale-95 ${isActive
                     ? "bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] shadow-sm"
                     : "bg-white text-[#333a35] border border-[var(--border-500)] hover:bg-[#edf4ee] hover:text-[var(--brand-base-600)]"
-                }`}
+                  }`}
               >
                 {cat}
-              </button>
+              </div>
             );
           })}
         </div>
