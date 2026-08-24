@@ -8,7 +8,8 @@ import {
   ConfirmUpdateSubjectModal,
   ConfirmDeleteSubjectModal,
   AddSubjectModal,
-} from './SubjectMiniModal'
+  ConfirmMiniModal
+} from './ConfirmMiniModal'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -77,6 +78,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
   const [previewImage, setPreviewImage] = useState<string | undefined>(course.imageUrl)
   const [thumbnailImage, setThumbnailImage] = useState<File | undefined>()
   const [isSavingCourse, setIsSavingCourse] = useState(false)
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false)
 
   const originalCourseRef = useRef({
     title: course.title,
@@ -192,7 +194,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="px-8 pt-7 pb-5 border-b border-[var(--border-200)] shrink-0">
+          <div className="px-8 pt-7 pb-3 border-b border-[var(--border-200)] shrink-0">
             <ModalHeader title="Sửa khóa học" onClose={onClose} />
           </div>
 
@@ -250,7 +252,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
               <div className="mt-auto pt-3">
                 <button
                   type="button"
-                  onClick={handleSaveCourse}
+                  onClick={() => setShowSaveConfirm(true)}
                   disabled={!hasCourseChanges || isSavingCourse}
                   className={`
                     !w-full !py-[11px] !rounded-[var(--radius-md)] !border-none !font-bold !text-sm ![font-family:var(--font-heading)]
@@ -391,6 +393,22 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
       )}
       {miniModal?.type === 'add' && (
         <AddSubjectModal courseId={course.id} onClose={() => setMiniModal(null)} />
+      )}
+      {showSaveConfirm && (
+        <ConfirmMiniModal
+          title="Xác nhận lưu thay đổi"
+          message={
+            <span>
+              Lưu thay đổi thông tin cho khóa học <strong>"{course.title}"</strong>?
+            </span>
+          }
+          isSubmitting={isSavingCourse}
+          onConfirm={async () => {
+            await handleSaveCourse()
+            setShowSaveConfirm(false)
+          }}
+          onClose={() => setShowSaveConfirm(false)}
+        />
       )}
     </>
   )
