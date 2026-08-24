@@ -181,6 +181,7 @@ export default function LearnerSubjectDetailPage() {
                     fileType: ex.fileType,
                     date: ex.createdAt ? new Date(ex.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : "",
                     completed: false, // Default to false for now
+                    attempts: ex.totalTakes,
                   }}
                   isLast={i === exercises.length - 1}
                   isLocked={!isVip}

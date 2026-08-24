@@ -23,7 +23,7 @@ export default function ExamCard({ id, courseId, course, title, time, questions,
     if (!isLoggedIn) {
       navigate(ROUTES.AUTH.LOGIN);
     } else {
-      navigate(ROUTES.LEARNER.EXAM_START(courseId || "trial", "exam", id));
+      navigate(ROUTES.LEARNER.EXAM_START(courseId || "trial", "exam", id), { state: { totalTake: attempts } });
     }
   };
   return (

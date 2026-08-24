@@ -9,6 +9,7 @@ type Exercise = {
   fileType?: string;
   date: string;
   completed?: boolean;
+  attempts?: number | string;
 };
 
 type ExerciseItemProps = {
@@ -85,7 +86,7 @@ export default function ExerciseItem({ exercise, isLast, isLocked }: ExerciseIte
               Xem lời giải
             </button>
             <button 
-              onClick={() => navigate(ROUTES.LEARNER.EXERCISE_START(courseId, subjectId, String(exercise.id)))}
+              onClick={() => navigate(ROUTES.LEARNER.EXERCISE_START(courseId, subjectId, String(exercise.id)), { state: { totalTake: exercise.attempts } })}
               className="font-[family:var(--font-heading)] !font-semibold text-[11px] px-4 py-1.5 rounded-full border-none bg-[var(--brand-base-500)] !text-white cursor-pointer whitespace-nowrap transition-all hover:opacity-90"
             >
               Làm lại
@@ -93,7 +94,7 @@ export default function ExerciseItem({ exercise, isLast, isLocked }: ExerciseIte
           </>
         ) : (
           <button 
-            onClick={() => navigate(ROUTES.LEARNER.EXERCISE_START(courseId, subjectId, String(exercise.id)))}
+            onClick={() => navigate(ROUTES.LEARNER.EXERCISE_START(courseId, subjectId, String(exercise.id)), { state: { totalTake: exercise.attempts } })}
             className="font-[family:var(--font-heading)] !font-semibold text-[11px] px-4 py-1.5 rounded-full border-none bg-[var(--brand-base-500)] !text-white cursor-pointer whitespace-nowrap transition-all hover:opacity-90"
           >
             Bắt đầu làm bài
