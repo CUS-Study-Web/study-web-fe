@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { authService } from "../../../services/authService";
 import { useNotification } from "../../../components/common/NotificationProvider";
 import axios from "axios";
+import ConfirmMiniModal from "../../admin/modals/website/ConfirmMiniModal";
 
 interface ForgotPasswordModalProps {
   isOpen: boolean;
@@ -23,31 +24,32 @@ export default function ForgotPasswordModal({
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [resendTimer, setResendTimer] = useState(60);
+  const [showDevPopup, setShowDevPopup] = useState(false);
 
   const otpInputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const { showSuccess, showError } = useNotification();
 
   // Mutations
-  const forgetPasswordMutation = useMutation({
-    mutationFn: authService.forgetPassword,
-    onSuccess: () => {
-      setStep(2);
-      setResendTimer(60);
-    },
-    onError: (error) => {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.data?.message) {
-          showError(error.response.data.message);
-        } else if (error.code === 'ECONNABORTED' || !error.response) {
-          showError("Lỗi máy chủ, vui lòng thử lại sau.");
-        } else {
-          showError("Đã có lỗi xảy ra. Vui lòng thử lại.");
-        }
-      } else {
-        showError("Lỗi không xác định.");
-      }
-    }
-  });
+  // const forgetPasswordMutation = useMutation({
+  //   mutationFn: authService.forgetPassword,
+  //   onSuccess: () => {
+  //     setStep(2);
+  //     setResendTimer(60);
+  //   },
+  //   onError: (error) => {
+  //     if (axios.isAxiosError(error)) {
+  //       if (error.response?.data?.message) {
+  //         showError(error.response.data.message);
+  //       } else if (error.code === 'ECONNABORTED' || !error.response) {
+  //         showError("Lỗi máy chủ, vui lòng thử lại sau.");
+  //       } else {
+  //         showError("Đã có lỗi xảy ra. Vui lòng thử lại.");
+  //       }
+  //     } else {
+  //       showError("Lỗi không xác định.");
+  //     }
+  //   }
+  // });
 
   const resetPasswordMutation = useMutation({
     mutationFn: authService.resetPassword,
@@ -104,7 +106,8 @@ export default function ForgotPasswordModal({
       setErrorMsg("Vui lòng nhập địa chỉ email hợp lệ.");
       return;
     }
-    forgetPasswordMutation.mutate({ gmail: email });
+    setShowDevPopup(true);
+    // forgetPasswordMutation.mutate({ gmail: email });
   };
 
   // OTP Input handlers
@@ -407,6 +410,16 @@ export default function ForgotPasswordModal({
         )}
 
       </div>
+
+      {showDevPopup && (
+        <ConfirmMiniModal
+          title="Đang phát triển"
+          message="Tính năng đang được phát triển. Vui lòng quay lại sau!"
+          confirmText="Đóng"
+          onConfirm={() => setShowDevPopup(false)}
+          onClose={() => setShowDevPopup(false)}
+        />
+      )}
     </div>
   );
 }
