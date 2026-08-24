@@ -318,7 +318,7 @@ export default function AssistantSubjectDetail() {
 
       <AssistantTabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="mt-5">
+      <div className="mt-5 mb-18">
         {/* ── Bài giảng tab ── */}
         {activeTab === 'bai-giang' && (
           <div className="bg-[var(--surface-card)] rounded-[18px] border border-[var(--border-default)] shadow-[var(--shadow-clay-sm)] overflow-hidden flex flex-col">
@@ -455,9 +455,21 @@ export default function AssistantSubjectDetail() {
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
-                        <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-tertiary)]">
-                          —
-                        </span>
+                        {ex.explanationUrl ? (
+                          <a
+                            href={ex.explanationUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-[family-name:var(--font-body)] text-[13px] text-[var(--brand-500)] hover:underline inline-block max-w-[200px] truncate align-bottom"
+                            title={ex.explanationUrl}
+                          >
+                            {ex.explanationUrl}
+                          </a>
+                        ) : (
+                          <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-tertiary)]">
+                            —
+                          </span>
+                        )}
                       </td>
                       <td className="py-3.5 px-5">
                         <div className="flex justify-end">
@@ -493,12 +505,12 @@ export default function AssistantSubjectDetail() {
       </div>
 
       {isLecturePopupOpen && (
-        <AssistantCreateLecturePopup 
-          courseKey={courseKey ?? ''} 
+        <AssistantCreateLecturePopup
+          courseKey={courseKey ?? ''}
           courseName={course?.title}
           defaultSubjectId={subjectId}
           existingLessons={lectures}
-          onClose={() => setIsLecturePopupOpen(false)} 
+          onClose={() => setIsLecturePopupOpen(false)}
         />
       )}
 

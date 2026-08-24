@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { AssistantSidebar } from './AssistantSidebar';
 import { ASSISTANT_MENU } from './constants';
 
@@ -11,6 +12,7 @@ interface AssistantLayoutProps {
 export default function AssistantLayout({ children, onLogout }: AssistantLayoutProps) {
   const [sideOpen, setSideOpen] = useState(true);
   const location = useLocation();
+  const { user } = useAuth();
 
   const currentMenu = ASSISTANT_MENU.find((m) => location.pathname.startsWith(m.path));
   const pageTitle = currentMenu?.label || 'Trợ giảng';
@@ -35,10 +37,10 @@ export default function AssistantLayout({ children, onLogout }: AssistantLayoutP
           <div className="flex items-center gap-2.5">
             <div className="text-right">
               <div className="font-[family-name:var(--font-heading)] font-semibold text-[length:var(--text-body-sm)] leading-[var(--lh-body-sm)] text-[var(--text-primary)]">
-                Trợ giảng CUS
+                {user?.name || 'Trợ giảng CUS'}
               </div>
               <div className="font-[family-name:var(--font-body)] font-normal text-[length:var(--text-caption)] leading-[var(--lh-caption)] text-[var(--text-secondary)]">
-                assistant@gmail.com
+                {user?.gmail || 'assistant@gmail.com'}
               </div>
             </div>
             <div className="w-9.5 h-9.5 rounded-full bg-gradient-to-br from-[var(--brand-500)] to-[var(--success-400)] border-2 border-[var(--brand-soft-500)] flex items-center justify-center shrink-0">
