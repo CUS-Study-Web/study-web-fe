@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import type { CourseSummaryResponse } from '../../../../types/api/course.api'
-import { useGetCourseDetailQuery, useUpdateCourseMutation } from '../../../../hooks/queries/useCourses'
+import { useGetCourseDetailQuery, useUpdateCourseMutation, useGetAdminCoursesQuery } from '../../../../hooks/queries/useCourses'
 import { RectDropzone, ModalHeader, mLabel, mInput } from './ModalHelpers'
 import { validateImageFile } from '../../../../utils/fileUtils'
 import { useNotification } from '../../../../components/common/NotificationProvider'
@@ -74,21 +74,26 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
   const [title, setTitle] = useState(course.title)
   const [subtitle, setSubtitle] = useState(course.subTitle || '')
   const [badgeTitle, setBadgeTitle] = useState(course.badgeTitle || '')
+  const [status, setStatus] = useState<'DRAFT' | 'PUBLISH'>(course.status || 'DRAFT')
   const [description, setDescription] = useState(course.description || '')
   const [previewImage, setPreviewImage] = useState<string | undefined>(course.imageUrl)
   const [thumbnailImage, setThumbnailImage] = useState<File | undefined>()
   const [isSavingCourse, setIsSavingCourse] = useState(false)
   const [showSaveConfirm, setShowSaveConfirm] = useState(false)
+  const [showDuplicateAlert, setShowDuplicateAlert] = useState(false)
 
   const originalCourseRef = useRef({
     title: course.title,
     subtitle: course.subTitle || '',
     badgeTitle: course.badgeTitle || '',
+    status: course.status || 'DRAFT',
     description: course.description || '',
   })
 
   const { showSuccess, showError } = useNotification()
   const updateCourse = useUpdateCourseMutation()
+  const { data: coursesData } = useGetAdminCoursesQuery({ size: 100 })
+  const existingCourses = coursesData?.data || []
 
   // ── Subject-level state
   const { data: courseDetail } = useGetCourseDetailQuery(course.id)
@@ -116,6 +121,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
     title !== orig.title ||
     subtitle !== orig.subtitle ||
     badgeTitle !== orig.badgeTitle ||
+    status !== orig.status ||
     description !== orig.description
 
   // ── Course image handler
@@ -137,12 +143,20 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
   // ── Save course info
   const handleSaveCourse = async () => {
     if (!hasCourseChanges) return
+
+    const isDuplicate = existingCourses.some(c => c.id !== course.id && c.title.toLowerCase() === title.trim().toLowerCase())
+    if (isDuplicate) {
+      setShowDuplicateAlert(true)
+      return
+    }
+
     setIsSavingCourse(true)
     const start = Date.now()
     const formData = new FormData()
     formData.append('title', title)
     formData.append('subtitle', subtitle)
     formData.append('badgeTitle', badgeTitle)
+    formData.append('status', status)
     formData.append('description', description)
     if (thumbnailImage) formData.append('thumbnailImage', thumbnailImage)
 
@@ -151,7 +165,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
       const elapsed = Date.now() - start
       if (elapsed < 500) await new Promise((r) => setTimeout(r, 500 - elapsed))
       // Update snapshot so button goes back to disabled
-      originalCourseRef.current = { title, subtitle, badgeTitle, description }
+      originalCourseRef.current = { title, subtitle, badgeTitle, status, description }
       setThumbnailImage(undefined)
       showSuccess('Cập nhật thông tin khóa học thành công!')
     } catch (err: any) {
@@ -236,6 +250,18 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
                   className={mInput}
                   placeholder="VD: Dành cho học sinh cấp 3"
                 />
+              </div>
+
+              <div className="mb-3.5">
+                <label className={mLabel}>Trạng thái</label>
+                <select
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value as 'DRAFT' | 'PUBLISH')}
+                  className={mInput}
+                >
+                  <option value="DRAFT">Bản nháp (DRAFT)</option>
+                  <option value="PUBLISH">Công khai (PUBLISH)</option>
+                </select>
               </div>
 
               <div className="mb-5">
@@ -408,6 +434,16 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
             setShowSaveConfirm(false)
           }}
           onClose={() => setShowSaveConfirm(false)}
+        />
+      )}
+      {showDuplicateAlert && (
+        <ConfirmMiniModal
+          title="Tên khóa học đã tồn tại"
+          message={<span>Khóa học <strong>"{title}"</strong> đã tồn tại. Vui lòng chọn tên khác.</span>}
+          confirmText="Đóng"
+          hideCancel
+          onConfirm={() => setShowDuplicateAlert(false)}
+          onClose={() => setShowDuplicateAlert(false)}
         />
       )}
     </>

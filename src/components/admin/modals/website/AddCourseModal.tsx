@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { RectDropzone, ModalHeader, mLabel, mInput, mSubmitBtnClass } from './ModalHelpers'
 import { validateImageFile } from '../../../../utils/fileUtils'
 import { useNotification } from '../../../../components/common/NotificationProvider'
-import { useCreateCourseMutation } from '../../../../hooks/queries/useCourses'
+import { useCreateCourseMutation, useGetAdminCoursesQuery } from '../../../../hooks/queries/useCourses'
+import { ConfirmMiniModal } from './ConfirmMiniModal'
 
 const Spinner = () => (
   <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -19,13 +20,17 @@ export const AddCourseModal = ({ onClose }: AddCourseModalProps) => {
   const [title, setTitle] = useState('')
   const [subtitle, setSubtitle] = useState('')
   const [badgeTitle, setBadgeTitle] = useState('')
+  const [status, setStatus] = useState<'DRAFT' | 'PUBLISH'>('DRAFT')
   const [description, setDescription] = useState('')
   const [previewImage, setPreviewImage] = useState<string | undefined>()
   const [thumbnailImage, setThumbnailImage] = useState<File | undefined>()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showDuplicateAlert, setShowDuplicateAlert] = useState(false)
 
   const { showSuccess, showError } = useNotification()
   const createCourse = useCreateCourseMutation()
+  const { data: coursesData } = useGetAdminCoursesQuery({ size: 100 })
+  const existingCourses = coursesData?.data || []
 
   const handleImageChange = (url: string | undefined, file?: File) => {
     if (file) {
@@ -41,6 +46,13 @@ export const AddCourseModal = ({ onClose }: AddCourseModalProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    const isDuplicate = existingCourses.some(c => c.title.toLowerCase() === title.trim().toLowerCase())
+    if (isDuplicate) {
+      setShowDuplicateAlert(true)
+      return
+    }
+
     setIsSubmitting(true)
     const start = Date.now()
 
@@ -48,6 +60,7 @@ export const AddCourseModal = ({ onClose }: AddCourseModalProps) => {
     formData.append('title', title)
     formData.append('subtitle', subtitle)
     formData.append('badgeTitle', badgeTitle)
+    formData.append('status', status)
     formData.append('description', description)
     if (thumbnailImage) formData.append('thumbnailImage', thumbnailImage)
 
@@ -87,6 +100,14 @@ export const AddCourseModal = ({ onClose }: AddCourseModalProps) => {
             <input value={badgeTitle} onChange={(e) => setBadgeTitle(e.target.value)} className={mInput} placeholder="VD: Dành cho học sinh cấp 3" required />
           </div>
 
+          <div className="mb-3.5">
+            <label className={mLabel}>Trạng thái</label>
+            <select value={status} onChange={(e) => setStatus(e.target.value as 'DRAFT' | 'PUBLISH')} className={mInput}>
+              <option value="DRAFT">Bản nháp (DRAFT)</option>
+              <option value="PUBLISH">Công khai (PUBLISH)</option>
+            </select>
+          </div>
+
           <div className="mb-5">
             <label className={mLabel}>Mô tả khóa học</label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} className={`${mInput} resize-y min-h-[72px]`} placeholder="Mô tả ngắn về khóa học..." required />
@@ -105,6 +126,17 @@ export const AddCourseModal = ({ onClose }: AddCourseModalProps) => {
           </div>
         </form>
       </div>
+
+      {showDuplicateAlert && (
+        <ConfirmMiniModal
+          title="Tên khóa học đã tồn tại"
+          message={<span>Khóa học <strong>"{title}"</strong> đã tồn tại. Vui lòng chọn tên khác.</span>}
+          confirmText="Đóng"
+          hideCancel
+          onConfirm={() => setShowDuplicateAlert(false)}
+          onClose={() => setShowDuplicateAlert(false)}
+        />
+      )}
     </div>
   )
 }
