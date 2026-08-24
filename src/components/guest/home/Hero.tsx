@@ -14,7 +14,7 @@ export default function Hero() {
             <span className="w-2.5 h-2.5 rounded-full bg-[var(--brand-base-600)]"></span>
             LUYỆN THI ĐGNL - CUS
           </div>
-          
+
           {/* H1 Headline */}
           <h1
             className="text-5xl sm:text-6xl lg:text-[72px] xl:text-[80px] font-black leading-[1.08] tracking-tight !text-[var(--text-primary-500)]"
@@ -40,14 +40,14 @@ export default function Hero() {
               </svg>
             </span>
           </h1>
-          
+
           {/* Subtitle Paragraph */}
           <p
             className="mt-6 text-body-lg max-w-xl leading-relaxed font-medium !text-[var(--text-secondary-600)]"
           >
             Đội ngũ giảng viên chuyên gia, lộ trình cá nhân hóa và hơn 3.400 học viên đã đỗ vào các trường đại học hàng đầu Việt Nam.
           </p>
-          
+
           {/* Action Buttons */}
           <div className="mt-8 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Link
@@ -56,12 +56,12 @@ export default function Hero() {
             >
               Bắt đầu ngay
             </Link>
-            <button
+            <div
               onClick={() => document.getElementById("courses")?.scrollIntoView({ behavior: "smooth" })}
               className="px-8 py-3.5 bg-[var(--surface-300)] border border-[var(--brand-base-600)] hover:bg-[var(--brand-soft-300)] !text-[var(--brand-base-600)] font-extrabold rounded-[var(--radius-md)] active:scale-95 transition-all text-center text-base cursor-pointer inline-flex items-center justify-center"
             >
               Xem khóa học
-            </button>
+            </div>
           </div>
 
           {/* Social Proof */}

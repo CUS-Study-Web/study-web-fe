@@ -42,28 +42,31 @@ export default function LearnerCourseCard({
       </div>
 
       {/* Card Body */}
-      <div className="p-5 md:p-6 flex-1 flex flex-col justify-between gap-5">
+      <div className="p-5 md:p-6 flex-1 flex flex-col">
         {/* Description */}
         <div className="text-sm leading-relaxed font-medium line-clamp-3 !text-[var(--brand-base-100)]">
           {_description}
         </div>
 
-        {/* Progress Bar Section */}
-        <div className="space-y-2 pt-1">
-          <div className="flex items-center justify-between font-bold text-[15px] font-[family:var(--font-heading)]">
-            <span className="!text-[var(--brand-base-50)]">Tiến độ</span>
-            <span className="!text-[var(--success-300)]">{progress}%</span>
+        {/* Bottom Section (Sticks to bottom) */}
+        <div className="mt-auto flex flex-col gap-5 pt-5">
+          {/* Progress Bar Section */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between font-bold text-[15px] font-[family:var(--font-heading)]">
+              <span className="!text-[var(--brand-base-50)]">Tiến độ</span>
+              <span className="!text-[var(--success-300)]">{progress}%</span>
+            </div>
+            <ProgressBar progress={progress} />
           </div>
-          <ProgressBar progress={progress} />
-        </div>
 
-        {/* Action Button */}
-        <Link
-          to={ROUTES.COURSE_DETAIL(id)}
-          className="w-full inline-flex items-center justify-center py-3.5 bg-white/5 hover:bg-white/10 border border-[var(--brand-base-300)] !text-white text-sm font-black rounded-[16px] transition-all cursor-pointer font-[family:var(--font-heading)]"
-        >
-          Tiếp tục học →
-        </Link>
+          {/* Action Button */}
+          <Link
+            to={ROUTES.COURSE_DETAIL(id)}
+            className="w-full inline-flex items-center justify-center py-3.5 bg-white/5 hover:bg-white/10 border border-[var(--brand-base-300)] !text-white text-sm font-black rounded-[16px] transition-all cursor-pointer font-[family:var(--font-heading)]"
+          >
+            Tiếp tục học →
+          </Link>
+        </div>
       </div>
     </div>
   );

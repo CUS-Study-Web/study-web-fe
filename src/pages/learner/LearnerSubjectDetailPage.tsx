@@ -21,7 +21,7 @@ export default function LearnerSubjectDetailPage() {
 
   const { data: coursesData, isLoading: isLoadingCourses } = useGetCoursesQuery({ size: 100 });
   const course = coursesData?.data.find((c) => c.id === courseKey);
-  
+
   const { data: detailData, isLoading: isLoadingDetail } = useGetCourseDetailQuery(courseKey);
   const subject = detailData?.data.subjects.find((s) => s.id === subId);
 
@@ -32,7 +32,7 @@ export default function LearnerSubjectDetailPage() {
   const exercises = homeworksData?.data || [];
 
   // Fallback styles from COURSES_DATA using course title matching or index
-  const styleSource = Object.values(COURSES_DATA).find(c => c.title.toLowerCase() === course?.title?.toLowerCase()) 
+  const styleSource = Object.values(COURSES_DATA).find(c => c.title.toLowerCase() === course?.title?.toLowerCase())
     || Object.values(COURSES_DATA)[0];
 
   const isLoading = isLoadingCourses || isLoadingDetail || isLoadingLessons || isLoadingHomeworks;
@@ -59,7 +59,7 @@ export default function LearnerSubjectDetailPage() {
 
   return (
     <div className="bg-[#F9FAFB] min-h-screen pb-20 select-none">
-    {/* ── Hero Banner ── */}
+      {/* ── Hero Banner ── */}
       <section className="relative w-full h-[280px] bg-[#0d160f] overflow-hidden">
         {/* Ảnh nền */}
         <img
@@ -67,7 +67,7 @@ export default function LearnerSubjectDetailPage() {
           alt={course.title}
           className="absolute inset-0 w-full h-full object-cover"
         />
-        
+
         {/* Lớp gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/25 to-[#142d18]/90" />
 
@@ -121,24 +121,24 @@ export default function LearnerSubjectDetailPage() {
       {/* ── Sticky Tab Bar ── */}
       <div className="sticky top-[64px] z-40 bg-white border-b border-[#E4EBE5] px-6">
         <div className="mx-auto flex gap-1 overflow-x-auto hide-scrollbar w-full max-w-[1160px] py-2">
-          <button
+          <div
             onClick={() => setActiveTab("lessons")}
             className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "lessons" ? "bg-[var(--brand-base-500)] !text-white" : "bg-transparent text-[#6B746D]"}`}
           >
             📖 Bài giảng ({lessons.length})
-          </button>
-          <button
+          </div>
+          <div
             onClick={() => setActiveTab("exercises")}
             className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "exercises" ? "bg-[var(--brand-base-500)] !text-white" : "bg-transparent text-[#6B746D]"}`}
           >
             📎 Bài tập ({exercises.length})
-          </button>
+          </div>
         </div>
       </div>
 
       {/* ── Main Content Area ── */}
       <section className="mx-auto w-full max-w-[1160px] pt-9 px-6 pb-20">
-        
+
         {/* TAB 1: BÀI GIẢNG */}
         {activeTab === "lessons" && (
           <div className="flex flex-col bg-white rounded-[18px] border border-[#E4EBE5] shadow-sm overflow-hidden">

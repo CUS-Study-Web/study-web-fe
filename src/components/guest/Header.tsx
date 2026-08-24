@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import Logo from "./Logo";
 import { ROUTES } from "../../utils/routes";
 import { useAuth } from "../../contexts/AuthContext";
@@ -8,6 +8,9 @@ import UserMenuPopup from "../learner/UserMenuPopup";
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { isLoggedIn, user } = useAuth();
+  const location = useLocation();
+  
+  const isTrialActive = location.pathname.startsWith('/trial') || location.pathname.includes('/courses/trial/subjects/exam');
   
   const isVip = user?.isVip;
 
@@ -45,7 +48,7 @@ export default function Header() {
           <NavLink to={ROUTES.COURSES} className={getNavClasses}>
             Khóa học
           </NavLink>
-          <NavLink to={ROUTES.TRIAL} className={getNavClasses}>
+          <NavLink to={ROUTES.TRIAL} className={() => getNavClasses({ isActive: isTrialActive })}>
             Thi thử
           </NavLink>
           <NavLink to={ROUTES.DOCUMENTS} className={getNavClasses}>
@@ -145,7 +148,7 @@ export default function Header() {
             <NavLink to={ROUTES.COURSES} className={getMobileNavClasses} onClick={() => setIsOpen(false)}>
               Khóa học
             </NavLink>
-            <NavLink to={ROUTES.TRIAL} className={getMobileNavClasses} onClick={() => setIsOpen(false)}>
+            <NavLink to={ROUTES.TRIAL} className={() => getMobileNavClasses({ isActive: isTrialActive })} onClick={() => setIsOpen(false)}>
               Thi thử
             </NavLink>
             <NavLink to={ROUTES.DOCUMENTS} className={getMobileNavClasses} onClick={() => setIsOpen(false)}>

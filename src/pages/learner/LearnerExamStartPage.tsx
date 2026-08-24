@@ -22,10 +22,9 @@ export default function LearnerExamStartPage() {
 
   const exam = {
     title: assessment?.title ?? (isExercise ? "Bài tập thực hành" : "Đề thi thử"),
-    level: "Nâng cao", // MOCK
     duration: isExercise ? "--:--" : `${assessment?.durationMin ?? 90} phút`,
     questions: assessment?.numQuestions ?? 40,
-    attempts: 1240, // MOCK
+    attempts: assessment?.totalTakes ?? 0,
   };
 
   const chartData = attempts.map((a) => a.totalQuestions > 0 ? (a.numCorrect / a.totalQuestions) * 10 : (a.score / 10));

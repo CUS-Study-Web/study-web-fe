@@ -107,12 +107,12 @@ export default function UserMenuPopup() {
 
           {/* Logout */}
           <div className="border-t border-[var(--border-200)] py-1.5">
-            <button
+            <div
               onClick={handleLogout}
               className="flex items-center gap-3 w-full px-5 py-2.5 text-sm font-semibold text-[#DC2626] hover:bg-[#FEF2F2] transition-colors duration-100 cursor-pointer border-none bg-transparent text-left"
             >
               🚪Đăng xuất
-            </button>
+            </div>
           </div>
         </div>
       )}
