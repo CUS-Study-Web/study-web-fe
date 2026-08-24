@@ -11,7 +11,7 @@ export default function TrialExamPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: coursesData, isLoading: isCoursesLoading } = useGetCoursesQuery({ size: 100 });
-  const courses = coursesData?.data || [];
+  const courses = useMemo(() => coursesData?.data || [], [coursesData?.data]);
 
   const examQueries = useQueries({
     queries: courses.map((course) => ({
