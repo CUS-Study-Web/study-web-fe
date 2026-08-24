@@ -107,7 +107,7 @@ export default function CourseDetailPage() {
         {/* Tab Content */}
         {activeTab === "subjects" ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {subjects.map((sub, index) => {
+            {subjects.map((sub) => {
               const progress = isLoggedIn ? (sub.learningProgress || 0) : undefined;
 
               return (
