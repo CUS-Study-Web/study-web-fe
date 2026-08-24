@@ -48,10 +48,10 @@ export default function Header() {
           <NavLink to={ROUTES.COURSES} className={getNavClasses}>
             Khóa học
           </NavLink>
-          <NavLink to={ROUTES.UNDER_DEVELOPMENT} className={() => getNavClasses({ isActive: isTrialActive })}>
+          <NavLink to={ROUTES.TRIAL} className={() => getNavClasses({ isActive: isTrialActive })}>
             Thi thử
           </NavLink>
-          <NavLink to={ROUTES.DOCUMENTS} className={getNavClasses}>
+          <NavLink to={ROUTES.UNDER_DEVELOPMENT} className={getNavClasses}>
             Tài liệu
           </NavLink>
           <NavLink to={ROUTES.ABOUT} className={getNavClasses}>
@@ -148,10 +148,10 @@ export default function Header() {
             <NavLink to={ROUTES.COURSES} className={getMobileNavClasses} onClick={() => setIsOpen(false)}>
               Khóa học
             </NavLink>
-            <NavLink to={ROUTES.UNDER_DEVELOPMENT} className={() => getMobileNavClasses({ isActive: isTrialActive })} onClick={() => setIsOpen(false)}>
+            <NavLink to={ROUTES.TRIAL} className={() => getMobileNavClasses({ isActive: isTrialActive })} onClick={() => setIsOpen(false)}>
               Thi thử
             </NavLink>
-            <NavLink to={ROUTES.DOCUMENTS} className={getMobileNavClasses} onClick={() => setIsOpen(false)}>
+            <NavLink to={ROUTES.UNDER_DEVELOPMENT} className={getMobileNavClasses} onClick={() => setIsOpen(false)}>
               Tài liệu
             </NavLink>
             <NavLink to={ROUTES.ABOUT} className={getMobileNavClasses} onClick={() => setIsOpen(false)}>
