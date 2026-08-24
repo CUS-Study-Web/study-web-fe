@@ -11,6 +11,13 @@ export const courseService = {
     return response.data;
   },
 
+  getAdminCourses: async (params?: { page?: number; size?: number; sort?: string[] }) => {
+    const response = await apiClient.get<PageResponse<CourseSummaryResponse>>('/api/courses/admin', {
+      params,
+    });
+    return response.data;
+  },
+
   getCourseDetail: async (id: string) => {
     const response = await apiClient.get<SingleResponse<CourseDetailResponse>>(`/api/courses/${id}`);
     return response.data;

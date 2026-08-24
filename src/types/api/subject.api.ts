@@ -4,10 +4,11 @@ export interface SubjectSummaryResponse {
   durationHours: number;
   lessonCount: number;
   exerciseCount: number;
+  learningProgress: number;
 }
 
 export interface SubjectRequest {
   title: string;
-  maxScores: number;
-  durationHour: number;
+  maxScores?: number;
+  durationHour?: number;
 }
