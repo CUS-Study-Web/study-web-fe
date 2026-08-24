@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { assessmentService } from '../../services/assessmentService';
 import type { AssessmentSubmitRequest } from '../../types/api/assessment.api';
+import { courseKeys } from './useCourses';
 
 export const assessmentKeys = {
   all: ['assessments'] as const,
@@ -68,8 +69,9 @@ export const useCreateAssessmentMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ courseId, data }: { courseId: string; data: FormData }) => assessmentService.createAssessment(courseId, data),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: assessmentKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: courseKeys.detail(variables.courseId) });
     },
   });
 };
@@ -82,6 +84,7 @@ export const useUpdateAssessmentMutation = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: assessmentKeys.lists() });
       queryClient.invalidateQueries({ queryKey: assessmentKeys.detail(variables.courseId, variables.assessmentId) });
+      queryClient.invalidateQueries({ queryKey: courseKeys.detail(variables.courseId) });
     },
   });
 };
@@ -91,8 +94,9 @@ export const useDeleteAssessmentMutation = () => {
   return useMutation({
     mutationFn: ({ courseId, assessmentId }: { courseId: string; assessmentId: string }) => 
       assessmentService.deleteAssessment(courseId, assessmentId),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: assessmentKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: courseKeys.detail(variables.courseId) });
     },
   });
 };

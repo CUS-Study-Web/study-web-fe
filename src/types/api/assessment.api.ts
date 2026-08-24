@@ -8,7 +8,9 @@ export interface AssessmentSummaryResponse {
   maxScore: number | null;
   accessTier: 'PUBLIC' | 'VIP' | null;
   fileType: string;
+  explanationUrl?: string | null;
   createdAt: string;
+  totalTakes: number;
 }
 
 export interface AnswerKeyResponse {
@@ -36,6 +38,7 @@ export interface AssessmentDetailResponse {
   publishedAt: string | null;
   createdAt: string;
   answerKeys: AnswerKeyResponse[];
+  totalTakes: number;
 }
 
 export interface AssessmentStartResponse {
