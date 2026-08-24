@@ -26,8 +26,9 @@ import {
 import { useNotification } from '../../components/common/NotificationProvider'
 
 const AdminWebsite = () => {
-  const [activeTab, setActiveTab] = useState<WTab>("trang-chu")
+  const [activeTab, setActiveTab] = useState<WTab>("courses")
   const [showModal, setShowModal] = useState<ModalKey | null>(null)
+  const [showDevPopup, setShowDevPopup] = useState(false)
 
   // API state for courses
   const { data: coursesData, isLoading: isLoadingCourses } = useGetCoursesQuery({ size: 100 })
@@ -65,6 +66,10 @@ const AdminWebsite = () => {
   }, [])
 
   const handleTabChange = (tab: WTab) => {
+    if (tab !== "courses") {
+      setShowDevPopup(true)
+      return
+    }
     setActiveTab(tab)
     setActiveDropdownId(null)
   }
@@ -613,6 +618,16 @@ const AdminWebsite = () => {
           isSubmitting={deletingId === `course-${courseToDelete.id}`}
           onConfirm={() => handleDeleteCourse(courseToDelete.id)}
           onClose={() => setCourseToDelete(null)}
+        />
+      )}
+      
+      {showDevPopup && (
+        <ConfirmMiniModal
+          title="Đang phát triển"
+          message="Tính năng đang được phát triển. Vui lòng quay lại sau!"
+          confirmText="Đóng"
+          onConfirm={() => setShowDevPopup(false)}
+          onClose={() => setShowDevPopup(false)}
         />
       )}
     </div>

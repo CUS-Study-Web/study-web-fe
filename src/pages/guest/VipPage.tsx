@@ -1,10 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { ROUTES } from "../../utils/routes";
 
 export default function VipPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
   const isVip = !!user?.isVip;
+
+  const handleUpgradeClick = () => {
+    if (!isVip) {
+      if (isLoggedIn) {
+        navigate(ROUTES.UNDER_DEVELOPMENT);
+      } else {
+        navigate(ROUTES.AUTH.REGISTER);
+      }
+    }
+  };
 
   return (
     <div className="pb-24 bg-[#f8faf8] select-none">
@@ -85,7 +96,7 @@ export default function VipPage() {
           </div>
 
           <button
-            onClick={!isVip ? () => navigate("/register") : undefined}
+            onClick={!isVip ? handleUpgradeClick : undefined}
             className={`!w-full !py-3.5 !font-black !text-base !rounded-[var(--radius-lg)] !transition-all !text-center !flex !items-center !justify-center !gap-1.5 ${isVip
               ? "!bg-[#2d422a] !text-[#beccbf] !cursor-default"
               : "!bg-gradient-to-b !from-[#ffcf33] !to-[#e6a800] !hover:from-[#ffd54f] !hover:to-[#ebaf0a] !text-[#1f1f1c] !shadow-lg !shadow-[#e6a800]/30 !active:scale-95 !cursor-pointer"
@@ -223,7 +234,7 @@ export default function VipPage() {
         {!isVip && (
           <div className="text-center">
             <div
-              onClick={() => navigate("/register")}
+              onClick={handleUpgradeClick}
               className="px-10 py-4 bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] font-black text-lg rounded-[16px] shadow-xl shadow-[#e6a800]/40 hover:scale-105 active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2"
             >
               Bắt đầu dùng VIP ngay <span>✦</span>
