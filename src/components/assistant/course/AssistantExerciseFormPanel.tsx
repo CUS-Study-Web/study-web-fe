@@ -52,7 +52,7 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
     const [questionCount, setQuestionCount] = useState(initialData?.questionCount ?? 20);
     const [title, setTitle] = useState(initialData?.title ?? '');
     const [solutionLink, setSolutionLink] = useState(initialData?.solutionLink ?? '');
-    const [fileType, setFileType] = useState(initialData?.fileType ?? 'PDF');
+    const [fileType, setFileType] = useState(initialData?.fileType ?? '');
     const [status, setStatus] = useState<'published' | 'draft'>(initialData?.status ?? 'published');
     const [accessTier, setAccessTier] = useState<'PUBLIC' | 'VIP'>(initialData?.accessTier ?? 'VIP');
     const [answers, setAnswers] = useState<AssistantExerciseAnswer[]>(
@@ -192,7 +192,7 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
             Loại file
           </div>
           <div className="w-full px-3 py-1.5 rounded-[8px] bg-[var(--surface-muted)] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] cursor-not-allowed">
-            {fileType}
+            {fileType || <span className="text-[var(--text-tertiary)]">Chưa upload file</span>}
           </div>
         </div>
 
