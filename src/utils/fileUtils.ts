@@ -148,5 +148,24 @@ export const getDisplayFileType = (fileType?: string | null, fileUrl?: string | 
   return 'PDF';
 };
 
-
-
+/**
+ * Forces a download of a file from a URL by fetching it as a Blob.
+ * This prevents the browser from navigating to the URL or opening it in a new tab.
+ */
+export const downloadFileFromUrl = async (url: string, filename: string): Promise<void> => {
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error("Download failed", error);
+    window.open(url, '_blank');
+  }
+};
