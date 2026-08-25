@@ -29,11 +29,9 @@ interface AssistantExerciseFormPanelProps {
   mode: 'create' | 'edit';
   initialData?: Partial<ExerciseFormData>;
   uploadedFile?: File | string | null;
-  onFileTypeChange?: (fileType: string) => void;
   children?: ReactNode;
 }
 
-const FILE_TYPES = ['PDF', 'DOCX', 'XLSX'];
 const OPTION_LABELS = ['A', 'B', 'C', 'D'];
 
 /** Tạo mảng answers với số câu cho trước */
@@ -46,7 +44,7 @@ import { isValidUrl } from '../../../utils/urlUtils';
 import { validateFileTypeMatch } from '../../../utils/fileUtils';
 
 const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, AssistantExerciseFormPanelProps>(
-  ({ courseKey, courseName, courseSubjects, initialData, uploadedFile, onFileTypeChange, children }, ref) => {
+  ({ courseKey, courseName, courseSubjects, initialData, uploadedFile, children }, ref) => {
     const { showError } = useNotification();
     const subjects = courseSubjects ?? [];
 
@@ -99,19 +97,6 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
       setFileType: (ft: string) => setFileType(ft),
     }));
 
-    const handleFileTypeSelect = (newType: string) => {
-      setFileType(newType);
-      if (onFileTypeChange) {
-        onFileTypeChange(newType);
-      }
-      if (uploadedFile) {
-        try {
-          validateFileTypeMatch(uploadedFile, newType);
-        } catch (err: any) {
-          showError(err.message);
-        }
-      }
-    };
 
     const updateAnswerSelected = (idx: number, opt: string) => {
       setAnswers((prev) =>
