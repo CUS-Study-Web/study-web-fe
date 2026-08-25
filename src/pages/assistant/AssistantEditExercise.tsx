@@ -75,6 +75,7 @@ export default function AssistantEditExercise() {
     if (file) {
       formData.append('file', file);
     }
+    formData.append('fileType', data.fileType);
     formData.append('subjectId', data.subject);
     formData.append('numQuestions', data.questionCount.toString());
     if (data.solutionLink) {

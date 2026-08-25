@@ -5,6 +5,7 @@ import {
   validateFileTypeMatch,
   validateDocumentFile,
   validateImageFile,
+  getDisplayFileType,
   MAX_DOCUMENT_SIZE_MB,
   MAX_IMAGE_SIZE_MB,
   FILE_SIZE_ERROR_MESSAGE,
@@ -124,6 +125,28 @@ describe('fileUtils', () => {
       expect(() => validateImageFile(invalidTypeFile)).toThrow(
         /Định dạng không hợp lệ/
       );
+    });
+  });
+
+  describe('getDisplayFileType', () => {
+    it('should normalize known file types', () => {
+      expect(getDisplayFileType('PDF')).toBe('PDF');
+      expect(getDisplayFileType('docx')).toBe('DOCX');
+      expect(getDisplayFileType('word')).toBe('DOCX');
+      expect(getDisplayFileType('xlsx')).toBe('XLSX');
+      expect(getDisplayFileType('excel')).toBe('XLSX');
+      expect(getDisplayFileType('csv')).toBe('XLSX');
+      expect(getDisplayFileType('pptx')).toBe('PPTX');
+    });
+
+    it('should derive file type from fileUrl if fileType is missing', () => {
+      expect(getDisplayFileType(null, 'https://cdn.example.com/homework.docx?v=1')).toBe('DOCX');
+      expect(getDisplayFileType('', 'https://cdn.example.com/homework.xlsx')).toBe('XLSX');
+      expect(getDisplayFileType(undefined, 'https://cdn.example.com/exam.pdf')).toBe('PDF');
+    });
+
+    it('should fallback to PDF if neither is available', () => {
+      expect(getDisplayFileType(null, null)).toBe('PDF');
     });
   });
 });

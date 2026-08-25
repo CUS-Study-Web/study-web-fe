@@ -64,6 +64,7 @@ export default function AssistantCreateExercise() {
     formData.append('assessmentType', 'HOMEWORK');
     formData.append('title', data.title);
     formData.append('file', file);
+    formData.append('fileType', data.fileType);
     formData.append('subjectId', data.subject);
     formData.append('numQuestions', data.questionCount.toString());
     if (data.solutionLink) {

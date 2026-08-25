@@ -110,4 +110,43 @@ export const validateImageFile = (file: File) => {
   }
 };
 
+export const FILE_TYPE_COLORS: Record<string, string> = {
+  PDF: 'bg-[#FEE2E2] text-[#DC2626]',
+  DOCX: 'bg-[#DBEAFE] text-[#1D4ED8]',
+  DOC: 'bg-[#DBEAFE] text-[#1D4ED8]',
+  WORD: 'bg-[#DBEAFE] text-[#1D4ED8]',
+  XLSX: 'bg-[#D1FAE5] text-[#065F46]',
+  XLS: 'bg-[#D1FAE5] text-[#065F46]',
+  EXCEL: 'bg-[#D1FAE5] text-[#065F46]',
+  CSV: 'bg-[#D1FAE5] text-[#065F46]',
+  PPTX: 'bg-[#FFEDD5] text-[#C2410C]',
+  PPT: 'bg-[#FFEDD5] text-[#C2410C]',
+};
+
+/**
+ * Normalizes and formats the file type (e.g. PDF, DOCX, XLSX).
+ * Derives from fileType or fileUrl/fileName if needed.
+ */
+export const getDisplayFileType = (fileType?: string | null, fileUrl?: string | null): string => {
+  if (fileType) {
+    const upper = fileType.trim().toUpperCase();
+    if (upper === 'DOC' || upper === 'DOCX' || upper === 'WORD') return 'DOCX';
+    if (upper === 'XLS' || upper === 'XLSX' || upper === 'EXCEL' || upper === 'CSV') return 'XLSX';
+    if (upper === 'PPT' || upper === 'PPTX') return 'PPTX';
+    if (upper === 'PDF') return 'PDF';
+    return upper;
+  }
+  if (fileUrl) {
+    const cleanUrl = fileUrl.split('?')[0];
+    const ext = cleanUrl.split('.').pop()?.toUpperCase();
+    if (ext === 'DOC' || ext === 'DOCX') return 'DOCX';
+    if (ext === 'XLS' || ext === 'XLSX' || ext === 'CSV') return 'XLSX';
+    if (ext === 'PPT' || ext === 'PPTX') return 'PPTX';
+    if (ext === 'PDF') return 'PDF';
+    if (ext && ext.length <= 5) return ext;
+  }
+  return 'PDF';
+};
+
+
 
