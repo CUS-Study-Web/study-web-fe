@@ -72,7 +72,7 @@ export default function AssistantEditExercise() {
 
   const handleBack = () => {
     if (subjectNameParam) {
-      navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, subjectNameParam));
+      navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, subjectNameParam), { state: { activeTab: 'bai-tap' } });
     } else {
       navigate(ROUTES.ASSISTANT.COURSE_DETAIL(key));
     }
@@ -100,6 +100,7 @@ export default function AssistantEditExercise() {
     const formData = new FormData();
     formData.append('assessmentType', 'HOMEWORK');
     formData.append('title', data.title);
+    formData.append('tier', data.accessTier);
     if (file) {
       formData.append('file', file);
     }
@@ -110,7 +111,6 @@ export default function AssistantEditExercise() {
       formData.append('explanationUrl', data.solutionLink);
     }
     formData.append('status', data.status === 'draft' ? 'DRAFT' : 'PUBLISHED');
-    formData.append('accessTier', data.accessTier);
     const cleanAnswers = data.answers.map(a => ({
       questionNumber: a.questionNumber,
       correctAnswer: a.correctAnswer
@@ -339,7 +339,7 @@ export default function AssistantEditExercise() {
                 fileType: exercise.fileType || 'PDF',
                 solutionLink: exercise.explanationUrl || '',
                 status: exercise.status === 'DRAFT' ? 'draft' : 'published',
-                accessTier: exercise.accessTier || 'PUBLIC',
+                accessTier: ((exercise as any).tier || exercise.accessTier || 'PUBLIC') as 'PUBLIC' | 'VIP',
                 answers: exercise.answerKeys,
               }}
               uploadedFile={file || displayFileName}
