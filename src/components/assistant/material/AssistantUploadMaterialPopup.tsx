@@ -1,4 +1,6 @@
 import { useState, useRef } from 'react';
+import { useNotification } from '../../common/NotificationProvider';
+import { validateDocumentFile } from '../../../utils/fileUtils';
 
 interface AssistantUploadMaterialPopupProps {
   onClose: () => void;
@@ -14,6 +16,7 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { showError } = useNotification();
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -24,16 +27,25 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
     setIsDragOver(false);
   };
 
+  const handleFile = (file: File) => {
+    try {
+      validateDocumentFile(file);
+      setSelectedFile(file);
+    } catch (err: any) {
+      showError(err.message);
+    }
+  };
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
     const file = e.dataTransfer.files?.[0];
-    if (file) setSelectedFile(file);
+    if (file) handleFile(file);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) setSelectedFile(file);
+    if (file) handleFile(file);
   };
 
   const labelClass =

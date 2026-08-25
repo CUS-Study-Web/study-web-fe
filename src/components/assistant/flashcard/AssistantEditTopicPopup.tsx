@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
 import type { FlashcardTopic, VocabularyWord } from '../../../types/assistant';
 import AssistantConfirmPopup from '../AssistantConfirmPopup';
+import { useNotification } from '../../common/NotificationProvider';
+import { validateDocumentFile } from '../../../utils/fileUtils';
 
 const EDIT_PER_PAGE = 20;
 
@@ -73,6 +75,7 @@ export function AssistantEditTopicPopup({
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const { showError } = useNotification();
 
   // ─── Derived state ──────────────────────────────────────────────────────────
   const filteredWords = editWords.filter(
@@ -109,8 +112,13 @@ export function AssistantEditTopicPopup({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // TODO: Handle file parsing here
-      console.log('File selected:', file.name);
+      try {
+        validateDocumentFile(file);
+        // TODO: Handle file parsing here
+        console.log('File selected:', file.name);
+      } catch (err: any) {
+        showError(err.message);
+      }
       e.target.value = ''; // reset
     }
   };

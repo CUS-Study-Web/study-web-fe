@@ -6,6 +6,7 @@ import { ROUTES } from '../../utils/routes';
 import { useNotification } from '../../components/common/NotificationProvider';
 import { useCreateAssessmentMutation } from '../../hooks/queries/useAssessments';
 import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
+import { validateDocumentFile } from '../../utils/fileUtils';
 
 export default function AssistantCreateExercise() {
   const { courseKey } = useParams<{ courseKey: string }>();
@@ -87,7 +88,7 @@ export default function AssistantCreateExercise() {
           console.error("API Error:", error?.response?.data);
           setTimeout(() => {
             const msg = error?.response?.data?.message || 'Có lỗi xảy ra khi tạo bài tập';
-            showError(`Lỗi: ${msg}`);
+            showError(msg);
           }, 500);
         }
       }
@@ -95,11 +96,12 @@ export default function AssistantCreateExercise() {
   };
 
   const handleFile = (selectedFile: File) => {
-    if (selectedFile.size > 50 * 1024 * 1024) {
-      showError('Kích thước file tải lên không được vượt quá 50MB');
-      return;
+    try {
+      validateDocumentFile(selectedFile);
+      setFile(selectedFile);
+    } catch (err: any) {
+      showError(err.message);
     }
-    setFile(selectedFile);
   };
 
   const handleRemoveFile = () => setFile(null);

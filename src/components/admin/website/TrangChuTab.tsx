@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { mLabel, mInput } from '../modals/website/ModalHelpers'
+import { useNotification } from '../../common/NotificationProvider'
+import { validateImageFile } from '../../../utils/fileUtils'
 
 const SectionCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div className="bg-[var(--surface-500)] rounded-2xl border border-[var(--border-300)] p-6 mb-4">
@@ -34,31 +36,45 @@ const SmallCircle = ({
   preview: string | null
   setPreview: (v: string | null) => void
   id: string
-}) => (
-  <div className="flex flex-col items-center gap-2">
-    <div
-      className="w-[72px] h-[72px] rounded-full border-2 border-dashed border-[var(--border-600)] bg-[var(--surface-100)] cursor-pointer overflow-hidden flex items-center justify-center hover:bg-[var(--border-300)] transition-colors duration-140"
-      onClick={() => document.getElementById(id)?.click()}
-    >
-      {preview ? (
-        <img src={preview} alt={label} className="w-full h-full object-cover" />
-      ) : (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" className="stroke-[var(--text-secondary-300)]">
-          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-          <circle cx="12" cy="7" r="4" />
-        </svg>
-      )}
-      <input
-        id={id}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={(e) => { const f = e.target.files?.[0]; if (f) setPreview(URL.createObjectURL(f)) }}
-      />
+}) => {
+  const { showError } = useNotification()
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div
+        className="w-[72px] h-[72px] rounded-full border-2 border-dashed border-[var(--border-600)] bg-[var(--surface-100)] cursor-pointer overflow-hidden flex items-center justify-center hover:bg-[var(--border-300)] transition-colors duration-140"
+        onClick={() => document.getElementById(id)?.click()}
+      >
+        {preview ? (
+          <img src={preview} alt={label} className="w-full h-full object-cover" />
+        ) : (
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" className="stroke-[var(--text-secondary-300)]">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        )}
+        <input
+          id={id}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0]
+            if (f) {
+              try {
+                validateImageFile(f)
+                setPreview(URL.createObjectURL(f))
+              } catch (err: any) {
+                showError(err.message)
+              }
+            }
+            e.target.value = ''
+          }}
+        />
+      </div>
+      <span className="[font-family:var(--font-body)] text-xs text-[var(--text-secondary-300)]">{label}</span>
     </div>
-    <span className="[font-family:var(--font-body)] text-xs text-[var(--text-secondary-300)]">{label}</span>
-  </div>
-)
+  )
+}
 
 const BigDropzone = ({
   preview,
@@ -68,37 +84,51 @@ const BigDropzone = ({
   preview: string | null
   setPreview: (v: string | null) => void
   id: string
-}) => (
-  <div
-    className="border-2 border-dashed border-[var(--border-600)] rounded-[var(--radius-md)] p-9 text-center cursor-pointer bg-[var(--surface-100)] min-h-[160px] flex flex-col items-center justify-center gap-2.5 hover:bg-[var(--border-300)] transition-colors duration-140"
-    onClick={() => document.getElementById(id)?.click()}
-  >
-    {preview ? (
-      <img src={preview} alt="preview" className="max-h-[140px] rounded-[var(--radius-sm)] object-cover" />
-    ) : (
-      <>
-        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" className="stroke-[var(--text-secondary-300)]">
-          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-          <polyline points="17 8 12 3 7 8" />
-          <line x1="12" y1="3" x2="12" y2="15" />
-        </svg>
-        <div className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
-          Kéo thả hoặc <span className="text-[var(--brand-500)] font-semibold">chọn ảnh</span>
-        </div>
-        <div className="[font-family:var(--font-body)] text-[11px] text-[var(--text-secondary-300)]">
-          PNG, JPG, WEBP · tối đa 5MB
-        </div>
-      </>
-    )}
-    <input
-      id={id}
-      type="file"
-      accept="image/*"
-      className="hidden"
-      onChange={(e) => { const f = e.target.files?.[0]; if (f) setPreview(URL.createObjectURL(f)) }}
-    />
-  </div>
-)
+}) => {
+  const { showError } = useNotification()
+  return (
+    <div
+      className="border-2 border-dashed border-[var(--border-600)] rounded-[var(--radius-md)] p-9 text-center cursor-pointer bg-[var(--surface-100)] min-h-[160px] flex flex-col items-center justify-center gap-2.5 hover:bg-[var(--border-300)] transition-colors duration-140"
+      onClick={() => document.getElementById(id)?.click()}
+    >
+      {preview ? (
+        <img src={preview} alt="preview" className="max-h-[140px] rounded-[var(--radius-sm)] object-cover" />
+      ) : (
+        <>
+          <svg width="38" height="38" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" className="stroke-[var(--text-secondary-300)]">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          <div className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+            Kéo thả hoặc <span className="text-[var(--brand-500)] font-semibold">chọn ảnh</span>
+          </div>
+          <div className="[font-family:var(--font-body)] text-[11px] text-[var(--text-secondary-300)]">
+            PNG, JPG, WEBP · tối đa 10MB
+          </div>
+        </>
+      )}
+      <input
+        id={id}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0]
+          if (f) {
+            try {
+              validateImageFile(f)
+              setPreview(URL.createObjectURL(f))
+            } catch (err: any) {
+              showError(err.message)
+            }
+          }
+          e.target.value = ''
+        }}
+      />
+    </div>
+  )
+}
 
 const TrangChuTab = () => {
   const [heroPreview, setHeroPreview] = useState<string | null>(null)

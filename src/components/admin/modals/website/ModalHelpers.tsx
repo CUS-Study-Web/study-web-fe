@@ -1,4 +1,8 @@
+import { useNotification } from '../../../../components/common/NotificationProvider'
+import { validateImageFile } from '../../../../utils/fileUtils'
+
 export const CircularDropzone = ({ preview, onChange, id }: { preview: string | undefined; onChange: (url: string | undefined, file?: File) => void; id: string }) => {
+  const { showError } = useNotification()
   return (
     <div className="flex justify-center mb-[22px]">
       <div
@@ -20,7 +24,15 @@ export const CircularDropzone = ({ preview, onChange, id }: { preview: string | 
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0]
-            if (f) onChange(URL.createObjectURL(f), f)
+            if (f) {
+              try {
+                validateImageFile(f)
+                onChange(URL.createObjectURL(f), f)
+              } catch (err: any) {
+                showError(err.message)
+              }
+            }
+            e.target.value = ''
           }}
         />
       </div>
@@ -29,6 +41,7 @@ export const CircularDropzone = ({ preview, onChange, id }: { preview: string | 
 }
 
 export const RectDropzone = ({ preview, onChange, id }: { preview: string | undefined; onChange: (url: string | undefined, file?: File) => void; id: string }) => {
+  const { showError } = useNotification()
   return (
     <div
       className="border-2 border-dashed border-[var(--border-600)] rounded-[var(--radius-md)] p-7 text-center mb-5 cursor-pointer bg-[var(--surface-500)] hover:bg-[var(--surface-600)] transition-colors duration-140"
@@ -56,7 +69,15 @@ export const RectDropzone = ({ preview, onChange, id }: { preview: string | unde
         className="hidden"
         onChange={(e) => {
           const f = e.target.files?.[0]
-          if (f) onChange(URL.createObjectURL(f), f)
+          if (f) {
+            try {
+              validateImageFile(f)
+              onChange(URL.createObjectURL(f), f)
+            } catch (err: any) {
+              showError(err.message)
+            }
+          }
+          e.target.value = ''
         }}
       />
     </div>

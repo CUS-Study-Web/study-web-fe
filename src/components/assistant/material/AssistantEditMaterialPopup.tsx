@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import type { AssistantDocument } from '../../../types/assistant';
 import AssistantConfirmPopup from '../AssistantConfirmPopup';
+import { useNotification } from '../../common/NotificationProvider';
+import { validateDocumentFile } from '../../../utils/fileUtils';
 
 interface AssistantEditMaterialPopupProps {
   material: AssistantDocument | null;
@@ -18,6 +20,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showConfirm, setShowConfirm] = useState(false);
+  const { showError } = useNotification();
 
   useEffect(() => {
     if (material) {
@@ -37,16 +40,25 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
     setIsDragOver(false);
   };
 
+  const handleFile = (file: File) => {
+    try {
+      validateDocumentFile(file);
+      setSelectedFile(file);
+    } catch (err: any) {
+      showError(err.message);
+    }
+  };
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
     const file = e.dataTransfer.files?.[0];
-    if (file) setSelectedFile(file);
+    if (file) handleFile(file);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) setSelectedFile(file);
+    if (file) handleFile(file);
   };
 
   const labelClass =

@@ -6,6 +6,7 @@ import { ROUTES } from '../../utils/routes';
 import { useNotification } from '../../components/common/NotificationProvider';
 import { useGetAssessmentDetailQuery, useUpdateAssessmentMutation } from '../../hooks/queries/useAssessments';
 import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
+import { validateDocumentFile } from '../../utils/fileUtils';
 
 export default function AssistantEditExercise() {
   const { courseKey, exerciseId } = useParams<{ courseKey: string; exerciseId: string }>();
@@ -89,7 +90,7 @@ export default function AssistantEditExercise() {
           console.error("API Error:", error?.response?.data);
           setTimeout(() => {
             const msg = error?.response?.data?.message || 'Có lỗi xảy ra khi cập nhật bài tập';
-            showError(`Lỗi: ${msg}`);
+            showError(msg);
           }, 500);
         }
       }
@@ -97,7 +98,12 @@ export default function AssistantEditExercise() {
   };
 
   const handleFile = (selectedFile: File) => {
-    setFile(selectedFile);
+    try {
+      validateDocumentFile(selectedFile);
+      setFile(selectedFile);
+    } catch (err: any) {
+      showError(err.message);
+    }
   };
 
   const handleRemoveFile = () => setFile(null);
