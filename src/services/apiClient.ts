@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_CONFIG } from '../config/api.config';
+import { FILE_SIZE_ERROR_MESSAGE } from '../utils/fileUtils';
 
 const apiClient = axios.create({
   baseURL: API_CONFIG.BASE_URL,
@@ -44,6 +45,16 @@ apiClient.interceptors.response.use(
     return response;
   },
   async (error) => {
+    if (error.response?.status === 413) {
+      if (!error.response.data || typeof error.response.data !== 'object') {
+        error.response.data = { message: FILE_SIZE_ERROR_MESSAGE };
+      } else {
+        error.response.data.message = FILE_SIZE_ERROR_MESSAGE;
+      }
+      error.message = FILE_SIZE_ERROR_MESSAGE;
+      return Promise.reject(error);
+    }
+
     const originalRequest = error.config;
     const requestUrl = originalRequest?.url || '';
     const isAuthEndpoint = requestUrl.startsWith('/api/auth/');

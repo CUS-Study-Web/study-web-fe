@@ -7,6 +7,7 @@ import AssistantEditMaterialPopup from '../../components/assistant/material/Assi
 import AssistantViewMaterialPopup from '../../components/assistant/material/AssistantViewMaterialPopup';
 import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
 import AssistantFeatureInDevPopup from '../../components/assistant/AssistantFeatureInDevPopup';
+import { getDisplayFileType, FILE_TYPE_COLORS } from '../../utils/fileUtils';
 
 const SUBJECT_COLORS: Record<string, string> = {
   "Toán": "var(--brand-500)",
@@ -29,11 +30,14 @@ const SubjectBadge = ({ subject }: { subject: string }) => {
   );
 };
 
-const FileTypeBadge = ({ type }: { type: string }) => (
-  <span className="px-2.5 py-1 rounded-md bg-[var(--surface-muted)] text-[var(--text-secondary)] font-[family-name:var(--font-heading)] font-semibold text-[11px]">
-    {type}
-  </span>
-);
+const FileTypeBadge = ({ type }: { type: string }) => {
+  const displayType = getDisplayFileType(type);
+  return (
+    <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${FILE_TYPE_COLORS[displayType] ?? 'bg-[var(--surface-muted)] text-[var(--text-secondary)]'}`}>
+      {displayType}
+    </span>
+  );
+};
 
 const AccessBadge = ({ access }: { access: string }) => {
   const isPublic = access === "Public";

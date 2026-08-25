@@ -6,6 +6,7 @@ import { ROUTES } from '../../utils/routes';
 import { useNotification } from '../../components/common/NotificationProvider';
 import { useCreateAssessmentMutation } from '../../hooks/queries/useAssessments';
 import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
+import { validateDocumentFile, validateFileTypeMatch } from '../../utils/fileUtils';
 
 export default function AssistantCreateExercise() {
   const { courseKey } = useParams<{ courseKey: string }>();
@@ -63,6 +64,7 @@ export default function AssistantCreateExercise() {
     formData.append('assessmentType', 'HOMEWORK');
     formData.append('title', data.title);
     formData.append('file', file);
+    formData.append('fileType', data.fileType);
     formData.append('subjectId', data.subject);
     formData.append('numQuestions', data.questionCount.toString());
     if (data.solutionLink) {
@@ -87,7 +89,7 @@ export default function AssistantCreateExercise() {
           console.error("API Error:", error?.response?.data);
           setTimeout(() => {
             const msg = error?.response?.data?.message || 'Có lỗi xảy ra khi tạo bài tập';
-            showError(`Lỗi: ${msg}`);
+            showError(msg);
           }, 500);
         }
       }
@@ -95,11 +97,14 @@ export default function AssistantCreateExercise() {
   };
 
   const handleFile = (selectedFile: File) => {
-    if (selectedFile.size > 50 * 1024 * 1024) {
-      showError('Kích thước file tải lên không được vượt quá 50MB');
-      return;
+    try {
+      validateDocumentFile(selectedFile);
+      const currentFileType = formRef.current?.getFileType() || 'PDF';
+      validateFileTypeMatch(selectedFile, currentFileType);
+      setFile(selectedFile);
+    } catch (err: any) {
+      showError(err.message);
     }
-    setFile(selectedFile);
   };
 
   const handleRemoveFile = () => setFile(null);
@@ -243,6 +248,7 @@ export default function AssistantCreateExercise() {
             courseSubjects={subjects}
             mode="create"
             initialData={{ subject: subjectNameParam || '' }}
+            uploadedFile={file}
           >
             <div className="flex items-center gap-2 pt-3 border-t border-[var(--border-subtle)] mt-1 shrink-0">
               <div

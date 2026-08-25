@@ -6,6 +6,7 @@ import { useGetCoursesQuery } from '../../hooks/queries/useCourses';
 import { ROUTES } from '../../utils/routes';
 import { useNotification } from '../../components/common/NotificationProvider';
 import { useCreateAssessmentMutation } from '../../hooks/queries/useAssessments';
+import { validateDocumentFile } from '../../utils/fileUtils';
 
 export default function AssistantUploadExam() {
   const { courseKey } = useParams<{ courseKey: string }>();
@@ -70,7 +71,7 @@ export default function AssistantUploadExam() {
           console.error("API Error Response:", error?.response?.data);
           setTimeout(() => {
             const msg = error?.response?.data?.message || 'Có lỗi xảy ra khi upload đề thi';
-            showError(`Lỗi: ${msg}`);
+            showError(msg);
           }, 500);
         }
       }
@@ -79,11 +80,12 @@ export default function AssistantUploadExam() {
 
   const handleFile = (file: File) => {
     if (file.type !== 'application/pdf') return;
-    if (file.size > 50 * 1024 * 1024) {
-      showError('Kích thước file tải lên không được vượt quá 50MB');
-      return;
+    try {
+      validateDocumentFile(file);
+      setPdfFile(file);
+    } catch (err: any) {
+      showError(err.message);
     }
-    setPdfFile(file);
   };
 
   const handleRemoveFile = () => setPdfFile(null);
