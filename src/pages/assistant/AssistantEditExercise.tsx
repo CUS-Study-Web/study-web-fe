@@ -110,6 +110,7 @@ export default function AssistantEditExercise() {
       formData.append('explanationUrl', data.solutionLink);
     }
     formData.append('status', data.status === 'draft' ? 'DRAFT' : 'PUBLISHED');
+    formData.append('accessTier', data.accessTier);
     const cleanAnswers = data.answers.map(a => ({
       questionNumber: a.questionNumber,
       correctAnswer: a.correctAnswer
@@ -338,6 +339,7 @@ export default function AssistantEditExercise() {
                 fileType: exercise.fileType || 'PDF',
                 solutionLink: exercise.explanationUrl || '',
                 status: exercise.status === 'DRAFT' ? 'draft' : 'published',
+                accessTier: exercise.accessTier || 'PUBLIC',
                 answers: exercise.answerKeys,
               }}
               uploadedFile={file || displayFileName}

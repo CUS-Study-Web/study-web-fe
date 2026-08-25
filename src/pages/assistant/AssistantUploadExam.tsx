@@ -113,6 +113,11 @@ export default function AssistantUploadExam() {
         return;
       }
       validateDocumentFile(selectedFile);
+      
+      let newFileType = 'PDF';
+      if (ext === 'DOCX') newFileType = 'DOCX';
+      formRef.current?.setFileType(newFileType);
+      
       setFile(selectedFile);
     } catch (err: any) {
       showError(err.message);

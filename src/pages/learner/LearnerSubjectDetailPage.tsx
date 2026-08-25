@@ -192,7 +192,7 @@ export default function LearnerSubjectDetailPage() {
                     attempts: ex.totalTakes,
                   }}
                   isLast={i === exercises.length - 1}
-                  isLocked={!isVip}
+                  isLocked={!isVip && ex.accessTier === 'VIP'}
                 />
               ))
             )}

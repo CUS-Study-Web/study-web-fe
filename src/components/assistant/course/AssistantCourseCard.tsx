@@ -17,8 +17,12 @@ export default function AssistantCourseCard({ course, onViewDetail }: AssistantC
         style={{ backgroundImage: 'linear-gradient(to right, #2B5830, #1F4224)' }}
       >
         <div className="absolute top-2 right-2">
-           <span className={`px-2 py-0.5 rounded-[var(--radius-sm)] text-[10px] font-bold ${course.status === 'PUBLISH' ? 'bg-[#E3F5E7] text-[#1D9A44]' : 'bg-[var(--surface-500)] text-[var(--text-secondary-400)]'}`}>
-             {course.status === 'PUBLISH' ? 'Công khai' : 'Bản nháp'}
+           <span className={`px-2 py-0.5 rounded-[var(--radius-sm)] text-[10px] font-bold ${
+             course.status === 'PUBLISH' ? 'bg-[#E3F5E7] text-[#1D9A44]' : 
+             course.status === 'DEVELOPING' ? 'bg-[#E3F2FD] text-[#1976D2]' : 
+             'bg-[var(--surface-500)] text-[var(--text-secondary-400)]'
+           }`}>
+             {course.status === 'PUBLISH' ? 'Công khai' : course.status === 'DEVELOPING' ? 'Đang cập nhật' : 'Bản nháp'}
            </span>
         </div>
         <div className="relative z-10 w-8 h-8 rounded-[8px] bg-white/15 flex items-center justify-center shrink-0">

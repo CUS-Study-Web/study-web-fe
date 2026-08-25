@@ -125,6 +125,11 @@ export default function AssistantEditExam() {
         return;
       }
       validateDocumentFile(selectedFile);
+      
+      let newFileType = 'PDF';
+      if (ext === 'DOCX') newFileType = 'DOCX';
+      formRef.current?.setFileType(newFileType);
+      
       setFile(selectedFile);
     } catch (err: any) {
       showError(err.message);
@@ -142,6 +147,7 @@ export default function AssistantEditExam() {
       duration: String(exam.durationMin ?? 90),
       date: exam.createdAt ? new Date(exam.createdAt).toLocaleDateString('en-GB') : '',
       status: exam.status === 'DRAFT' ? 'draft' : 'published' as any,
+      fileType: exam.fileType || 'PDF',
       accessTier: exam.accessTier || 'PUBLIC',
       solutionLink: exam.explanationUrl || '',
       answers: exam.answerKeys,

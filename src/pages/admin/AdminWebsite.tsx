@@ -265,8 +265,12 @@ const AdminWebsite = () => {
                           <td className={tdCellClass}>{c.subTitle}</td>
                           <td className={`${tdCellClass} max-w-[260px] truncate`}>{c.description}</td>
                           <td className={tdCellClass}>
-                            <span className={`px-2 py-1 rounded-[var(--radius-sm)] text-[11px] font-bold ${c.status === 'PUBLISH' ? 'bg-[#E3F5E7] text-[#1D9A44]' : 'bg-[var(--surface-500)] text-[var(--text-secondary-400)]'}`}>
-                              {c.status === 'PUBLISH' ? 'Công khai' : 'Bản nháp'}
+                            <span className={`px-2 py-1 rounded-[var(--radius-sm)] text-[11px] font-bold ${
+                              c.status === 'PUBLISH' ? 'bg-[#E3F5E7] text-[#1D9A44]' : 
+                              c.status === 'DEVELOPING' ? 'bg-[#E3F2FD] text-[#1976D2]' : 
+                              'bg-[var(--surface-500)] text-[var(--text-secondary-400)]'
+                            }`}>
+                              {c.status === 'PUBLISH' ? 'Công khai' : c.status === 'DEVELOPING' ? 'Đang cập nhật' : 'Bản nháp'}
                             </span>
                           </td>
                           <td className={`${tdCellClass} relative whitespace-nowrap`}>

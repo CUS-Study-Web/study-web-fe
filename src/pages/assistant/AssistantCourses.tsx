@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import AssistantCourseCard from '../../components/assistant/course/AssistantCourseCard';
-import { useGetCoursesQuery } from '../../hooks/queries/useCourses';
+import { useGetAssistantCoursesQuery } from '../../hooks/queries/useCourses';
 import { ROUTES } from '../../utils/routes';
 
 export default function AssistantCourses() {
-  const { data, isLoading } = useGetCoursesQuery({ size: 100 });
+  const { data, isLoading } = useGetAssistantCoursesQuery({ size: 100 });
   const courses = data?.data || [];
   const navigate = useNavigate();
 

@@ -74,7 +74,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
   const [title, setTitle] = useState(course.title)
   const [subtitle, setSubtitle] = useState(course.subTitle || '')
   const [badgeTitle, setBadgeTitle] = useState(course.badgeTitle || '')
-  const [status, setStatus] = useState<'DRAFT' | 'PUBLISH'>(course.status || 'DRAFT')
+  const [status, setStatus] = useState<'DRAFT' | 'DEVELOPING' | 'PUBLISH'>(course.status || 'DRAFT')
   const [description, setDescription] = useState(course.description || '')
   const [previewImage, setPreviewImage] = useState<string | undefined>(course.imageUrl)
   const [thumbnailImage, setThumbnailImage] = useState<File | undefined>()
@@ -256,10 +256,11 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
                 <label className={mLabel}>Trạng thái</label>
                 <select
                   value={status}
-                  onChange={(e) => setStatus(e.target.value as 'DRAFT' | 'PUBLISH')}
+                  onChange={(e) => setStatus(e.target.value as 'DRAFT' | 'DEVELOPING' | 'PUBLISH')}
                   className={mInput}
                 >
                   <option value="DRAFT">Bản nháp (DRAFT)</option>
+                  <option value="DEVELOPING">Đang cập nhật (DEVELOPING)</option>
                   <option value="PUBLISH">Công khai (PUBLISH)</option>
                 </select>
               </div>

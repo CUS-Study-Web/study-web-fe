@@ -88,9 +88,10 @@ export default function AssistantCreateExercise() {
     formData.append('subjectId', data.subject);
     formData.append('numQuestions', data.questionCount.toString());
     if (data.solutionLink) {
-      formData.append('explanationUrl', data.solutionLink);
+    formData.append('explanationUrl', data.solutionLink);
     }
     formData.append('status', data.status === 'draft' ? 'DRAFT' : 'PUBLISHED');
+    formData.append('accessTier', data.accessTier);
 
     // answers format: [{"questionNumber":1,"correctAnswer":"A"}]
     const answerKeysStr = JSON.stringify(data.answers);
