@@ -1,6 +1,7 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
+import React, { Suspense } from "react";
 import { ROUTES } from "../../utils/routes";
-import { LineChart } from "../../components/Charts";
+const LineChart = React.lazy(() => import("../../components/Charts").then(module => ({ default: module.LineChart })));
 import AttemptHistoryItem from "../../components/learner/AttemptHistoryItem";
 import { useGetAssessmentDetailQuery, useGetAttemptsQuery } from "../../hooks/queries/useAssessments";
 
@@ -148,7 +149,9 @@ export default function LearnerExamStartPage() {
           <div className="px-4 pt-5 pb-4">
             <div className="h-64">
               {reversedData.length > 0 ? (
-                <LineChart title="Điểm qua các lần thi" label="Điểm số" labels={chartLabels} data={reversedData} color="#2F6FAE" />
+                <Suspense fallback={<div className="flex items-center justify-center h-full text-sm text-gray-400">Đang tải biểu đồ...</div>}>
+                  <LineChart title="Điểm qua các lần thi" label="Điểm số" labels={chartLabels} data={reversedData} color="#2F6FAE" />
+                </Suspense>
               ) : (
                 <div className="flex items-center justify-center h-full text-sm text-gray-400">Chưa có dữ liệu biểu đồ</div>
               )}

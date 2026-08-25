@@ -177,7 +177,7 @@ export default function AssistantCourseDetail() {
                         } else {
                           showError('Không tìm thấy file để tải xuống');
                         }
-                      } catch (_error) {
+                      } catch {
                         showError('Đã có lỗi xảy ra khi tải file. Vui lòng thử lại.');
                       }
                     }}
