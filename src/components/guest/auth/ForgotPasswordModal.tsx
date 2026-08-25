@@ -28,7 +28,8 @@ export default function ForgotPasswordModal({
   const { showSuccess, showError } = useNotification();
 
   // Mutations
-  const forgetPasswordMutation = useMutation({
+  // @ts-ignore
+  const _forgetPasswordMutation = useMutation({
     mutationFn: authService.forgetPassword,
     onSuccess: () => {
       setStep(2);
@@ -104,7 +105,10 @@ export default function ForgotPasswordModal({
       setErrorMsg("Vui lòng nhập địa chỉ email hợp lệ.");
       return;
     }
-    forgetPasswordMutation.mutate({ gmail: email });
+    // Temporarily disabled as per request
+    showError("Tính năng đang được phát triển");
+    return;
+    // forgetPasswordMutation.mutate({ gmail: email });
   };
 
   // OTP Input handlers
