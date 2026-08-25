@@ -6,7 +6,7 @@ import { ROUTES } from '../../utils/routes';
 import { useNotification } from '../../components/common/NotificationProvider';
 import { useGetAssessmentDetailQuery, useUpdateAssessmentMutation } from '../../hooks/queries/useAssessments';
 import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
-import { validateDocumentFile } from '../../utils/fileUtils';
+import { validateDocumentFile, validateFileTypeMatch } from '../../utils/fileUtils';
 
 export default function AssistantEditExercise() {
   const { courseKey, exerciseId } = useParams<{ courseKey: string; exerciseId: string }>();
@@ -59,6 +59,16 @@ export default function AssistantEditExercise() {
       return;
     }
 
+    const targetFile = file || displayFileName;
+    if (targetFile) {
+      try {
+        validateFileTypeMatch(targetFile, data.fileType);
+      } catch (err: any) {
+        showError(err.message);
+        return;
+      }
+    }
+
     const formData = new FormData();
     formData.append('assessmentType', 'HOMEWORK');
     formData.append('title', data.title);
@@ -100,6 +110,8 @@ export default function AssistantEditExercise() {
   const handleFile = (selectedFile: File) => {
     try {
       validateDocumentFile(selectedFile);
+      const currentFileType = formRef.current?.getFileType() || 'PDF';
+      validateFileTypeMatch(selectedFile, currentFileType);
       setFile(selectedFile);
     } catch (err: any) {
       showError(err.message);
@@ -225,11 +237,12 @@ export default function AssistantEditExercise() {
                 subject: exercise.subjectId || '',
                 title: exercise.title || '',
                 questionCount: exercise.numQuestions || 20,
-                fileType: 'PDF',
+                fileType: exercise.fileType || 'PDF',
                 solutionLink: exercise.explanationUrl || '',
                 status: exercise.status === 'DRAFT' ? 'draft' : 'published',
                 answers: exercise.answerKeys,
               }}
+              uploadedFile={file || displayFileName}
             >
             <div className="flex items-center gap-2 pt-3 border-t border-[var(--border-subtle)] mt-1 shrink-0">
               <div

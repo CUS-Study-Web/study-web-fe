@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
+  getFileExtension,
+  matchFileType,
+  validateFileTypeMatch,
   validateDocumentFile,
   validateImageFile,
   MAX_DOCUMENT_SIZE_MB,
@@ -8,6 +11,63 @@ import {
 } from './fileUtils';
 
 describe('fileUtils', () => {
+  describe('getFileExtension', () => {
+    it('should extract correct extensions', () => {
+      expect(getFileExtension('test.pdf')).toBe('.pdf');
+      expect(getFileExtension('document.DOCX')).toBe('.docx');
+      expect(getFileExtension('archive.tar.gz')).toBe('.gz');
+      expect(getFileExtension('noextension')).toBe('');
+    });
+  });
+
+  describe('matchFileType & validateFileTypeMatch', () => {
+    it('should match PDF files correctly', () => {
+      const pdfFile = new File([''], 'exercise.pdf', { type: 'application/pdf' });
+      expect(matchFileType(pdfFile, 'PDF')).toBe(true);
+      expect(matchFileType('exercise.pdf', 'PDF')).toBe(true);
+      expect(() => validateFileTypeMatch(pdfFile, 'PDF')).not.toThrow();
+
+      // Mismatch
+      expect(matchFileType(pdfFile, 'DOCX')).toBe(false);
+      expect(matchFileType(pdfFile, 'XLSX')).toBe(false);
+      expect(() => validateFileTypeMatch(pdfFile, 'DOCX')).toThrow(
+        'Định dạng file không khớp với loại file đã chọn (DOCX)'
+      );
+    });
+
+    it('should match DOCX / Word files correctly', () => {
+      const docxFile = new File([''], 'exercise.docx', {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      });
+      expect(matchFileType(docxFile, 'DOCX')).toBe(true);
+      expect(matchFileType(docxFile, 'Word')).toBe(true);
+      expect(matchFileType('notes.doc', 'DOCX')).toBe(true);
+      expect(() => validateFileTypeMatch(docxFile, 'DOCX')).not.toThrow();
+
+      // Mismatch
+      expect(matchFileType(docxFile, 'PDF')).toBe(false);
+      expect(() => validateFileTypeMatch(docxFile, 'PDF')).toThrow(
+        'Định dạng file không khớp với loại file đã chọn (PDF)'
+      );
+    });
+
+    it('should match XLSX / Excel files correctly', () => {
+      const xlsxFile = new File([''], 'data.xlsx', {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      expect(matchFileType(xlsxFile, 'XLSX')).toBe(true);
+      expect(matchFileType('vocab.xls', 'XLSX')).toBe(true);
+      expect(() => validateFileTypeMatch(xlsxFile, 'XLSX')).not.toThrow();
+
+      // Mismatch
+      expect(matchFileType(xlsxFile, 'PDF')).toBe(false);
+      expect(matchFileType(xlsxFile, 'DOCX')).toBe(false);
+      expect(() => validateFileTypeMatch(xlsxFile, 'PDF')).toThrow(
+        'Định dạng file không khớp với loại file đã chọn (PDF)'
+      );
+    });
+  });
+
   describe('validateDocumentFile', () => {
     it('should allow document files under or equal to 50MB', () => {
       const validFile = new File(['a'.repeat(1024)], 'test.pdf', {

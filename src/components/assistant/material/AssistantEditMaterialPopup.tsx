@@ -27,6 +27,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
       setTitle(material.title);
       setSubject(material.subject);
       setDocType(material.cat === 'ly-thuyet' ? 'Lý thuyết' : 'Bài tập');
+      setFileType(material.fileType || 'PDF');
       setAccess(material.access === 'VIP' ? 'vip' : 'public');
     }
   }, [material]);
