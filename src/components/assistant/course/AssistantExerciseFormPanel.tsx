@@ -12,6 +12,7 @@ export interface ExerciseFormData {
   solutionLink: string;
   fileType: string;
   status: 'published' | 'draft';
+  accessTier: 'PUBLIC' | 'VIP';
   answers: AssistantExerciseAnswer[];
 }
 
@@ -28,11 +29,9 @@ interface AssistantExerciseFormPanelProps {
   mode: 'create' | 'edit';
   initialData?: Partial<ExerciseFormData>;
   uploadedFile?: File | string | null;
-  onFileTypeChange?: (fileType: string) => void;
   children?: ReactNode;
 }
 
-const FILE_TYPES = ['PDF', 'DOCX', 'XLSX'];
 const OPTION_LABELS = ['A', 'B', 'C', 'D'];
 
 /** Tạo mảng answers với số câu cho trước */
@@ -45,7 +44,7 @@ import { isValidUrl } from '../../../utils/urlUtils';
 import { validateFileTypeMatch } from '../../../utils/fileUtils';
 
 const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, AssistantExerciseFormPanelProps>(
-  ({ courseKey, courseName, courseSubjects, initialData, uploadedFile, onFileTypeChange, children }, ref) => {
+  ({ courseKey, courseName, courseSubjects, initialData, uploadedFile, children }, ref) => {
     const { showError } = useNotification();
     const subjects = courseSubjects ?? [];
 
@@ -55,6 +54,7 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
     const [solutionLink, setSolutionLink] = useState(initialData?.solutionLink ?? '');
     const [fileType, setFileType] = useState(initialData?.fileType ?? 'PDF');
     const [status, setStatus] = useState<'published' | 'draft'>(initialData?.status ?? 'published');
+    const [accessTier, setAccessTier] = useState<'PUBLIC' | 'VIP'>(initialData?.accessTier ?? 'VIP');
     const [answers, setAnswers] = useState<AssistantExerciseAnswer[]>(
       initialData?.answers ?? buildAnswers(initialData?.questionCount ?? 20)
     );
@@ -91,25 +91,12 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
             return null;
           }
         }
-        return { subject, questionCount, title, solutionLink, fileType, status, answers };
+        return { subject, questionCount, title, solutionLink, fileType, status, accessTier, answers };
       },
       getFileType: () => fileType,
       setFileType: (ft: string) => setFileType(ft),
     }));
 
-    const handleFileTypeSelect = (newType: string) => {
-      setFileType(newType);
-      if (onFileTypeChange) {
-        onFileTypeChange(newType);
-      }
-      if (uploadedFile) {
-        try {
-          validateFileTypeMatch(uploadedFile, newType);
-        } catch (err: any) {
-          showError(err.message);
-        }
-      }
-    };
 
     const updateAnswerSelected = (idx: number, opt: string) => {
       setAnswers((prev) =>
@@ -204,12 +191,23 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
           <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
             Loại file
           </div>
+          <div className="w-full px-3 py-1.5 rounded-[8px] bg-[var(--surface-muted)] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] cursor-not-allowed">
+            {fileType}
+          </div>
+        </div>
+
+        {/* Quyền truy cập */}
+        <div>
+          <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
+            Quyền truy cập
+          </div>
           <select
-            value={fileType}
-            onChange={(e) => handleFileTypeSelect(e.target.value)}
+            value={accessTier}
+            onChange={(e) => setAccessTier(e.target.value as 'PUBLIC' | 'VIP')}
             className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none cursor-pointer focus:border-[var(--brand-500)] transition-colors"
           >
-            {FILE_TYPES.map((ft) => <option key={ft} value={ft}>{ft}</option>)}
+            <option value="PUBLIC">Public</option>
+            <option value="VIP">VIP</option>
           </select>
         </div>
 

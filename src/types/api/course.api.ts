@@ -7,7 +7,7 @@ export interface CourseSummaryResponse {
   badgeTitle: string;
   description: string;
   imageUrl: string;
-  status: 'DRAFT' | 'PUBLISH';
+  status: 'DRAFT' | 'DEVELOPING' | 'PUBLISH';
   subjectCount: number;
   examCount: number;
   learningProgress?: number;
@@ -25,5 +25,5 @@ export interface CourseRequest {
   badgeTitle?: string;
   description?: string;
   thumbnailImage?: File;
-  status?: 'DRAFT' | 'PUBLISH';
+  status?: 'DRAFT' | 'DEVELOPING' | 'PUBLISH';
 }

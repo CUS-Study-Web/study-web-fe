@@ -12,6 +12,7 @@ export interface ExamFormData {
   duration: string;
   date: string;
   status: 'published' | 'draft';
+  fileType: string;
   accessTier: 'PUBLIC' | 'VIP';
   solutionLink?: string;
   answers: AssistantExamAnswer[];
@@ -19,6 +20,8 @@ export interface ExamFormData {
 
 export interface AssistantExamFormPanelHandle {
   getData: () => ExamFormData | null;
+  getFileType: () => string;
+  setFileType: (fileType: string) => void;
 }
 
 interface AssistantExamFormPanelProps {
@@ -52,11 +55,18 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
     const [duration, setDuration] = useState(initialData?.duration ?? '90');
     const [date, setDate] = useState(initialData?.date ?? todayString());
     const [status, setStatus] = useState<'published' | 'draft'>(initialData?.status ?? 'published');
-    const [accessTier, setAccessTier] = useState<'PUBLIC' | 'VIP'>(initialData?.accessTier ?? 'PUBLIC');
+    const [fileType, setFileType] = useState(initialData?.fileType ?? 'PDF');
+    const [accessTier, setAccessTier] = useState<'PUBLIC' | 'VIP'>(initialData?.accessTier ?? 'VIP');
     const [solutionLink, setSolutionLink] = useState(initialData?.solutionLink ?? '');
     const [answers, setAnswers] = useState<AssistantExamAnswer[]>(
       initialData?.answers ?? buildAnswers(Number(initialData?.questions ?? 50))
     );
+
+    useEffect(() => {
+      if (initialData?.fileType) {
+        setFileType(initialData.fileType);
+      }
+    }, [initialData?.fileType]);
 
     // Sync số câu trắc nghiệm khi người dùng thay đổi field "Số câu"
     useEffect(() => {
@@ -75,8 +85,10 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
           showError('Link lời giải không hợp lệ.');
           return null;
         }
-        return { title, courseKey, questions, duration, date, status, solutionLink, answers, accessTier };
+        return { title, courseKey, questions, duration, date, status, fileType, solutionLink, answers, accessTier };
       },
+      getFileType: () => fileType,
+      setFileType: (ft: string) => setFileType(ft),
     }));
 
     const updateAnswerSelected = (idx: number, opt: string) => {
@@ -174,6 +186,16 @@ const AssistantExamFormPanel = forwardRef<AssistantExamFormPanelHandle, Assistan
             placeholder="Nhập link lời giải..."
             className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--brand-base-600)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-base-600)] transition-colors placeholder:text-[var(--text-tertiary)] bg-white"
           />
+        </div>
+
+        {/* Loại file */}
+        <div>
+          <div className="font-[family-name:var(--font-heading)] font-semibold text-[10px] uppercase tracking-wide text-[var(--text-secondary)] mb-1">
+            Loại file
+          </div>
+          <div className="w-full px-3 py-1.5 rounded-[8px] bg-[var(--surface-muted)] border border-[var(--brand-base-600)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] cursor-not-allowed">
+            {fileType}
+          </div>
         </div>
 
         {/* Quyền truy cập */}

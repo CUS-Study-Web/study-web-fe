@@ -20,7 +20,7 @@ export const AddCourseModal = ({ onClose }: AddCourseModalProps) => {
   const [title, setTitle] = useState('')
   const [subtitle, setSubtitle] = useState('')
   const [badgeTitle, setBadgeTitle] = useState('')
-  const [status, setStatus] = useState<'DRAFT' | 'PUBLISH'>('DRAFT')
+  const [status, setStatus] = useState<'DRAFT' | 'DEVELOPING' | 'PUBLISH'>('DRAFT')
   const [description, setDescription] = useState('')
   const [previewImage, setPreviewImage] = useState<string | undefined>()
   const [thumbnailImage, setThumbnailImage] = useState<File | undefined>()
@@ -102,8 +102,9 @@ export const AddCourseModal = ({ onClose }: AddCourseModalProps) => {
 
           <div className="mb-3.5">
             <label className={mLabel}>Trạng thái</label>
-            <select value={status} onChange={(e) => setStatus(e.target.value as 'DRAFT' | 'PUBLISH')} className={mInput}>
+            <select value={status} onChange={(e) => setStatus(e.target.value as 'DRAFT' | 'DEVELOPING' | 'PUBLISH')} className={mInput}>
               <option value="DRAFT">Bản nháp (DRAFT)</option>
+              <option value="DEVELOPING">Đang cập nhật (DEVELOPING)</option>
               <option value="PUBLISH">Công khai (PUBLISH)</option>
             </select>
           </div>

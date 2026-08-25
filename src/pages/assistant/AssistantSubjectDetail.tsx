@@ -11,7 +11,8 @@ import { useGetLessonsQuery, useDeleteLessonMutation } from '../../hooks/queries
 import { useGetHomeworkQuery, useDeleteAssessmentMutation } from '../../hooks/queries/useAssessments';
 import { useNotification } from '../../components/common/NotificationProvider';
 import { ROUTES } from '../../utils/routes';
-import { getDisplayFileType, FILE_TYPE_COLORS } from '../../utils/fileUtils';
+import { getDisplayFileType, FILE_TYPE_COLORS, downloadFileFromUrl } from '../../utils/fileUtils';
+import { assessmentService } from '../../services/assessmentService';
 
 const TABS = [
   { key: 'bai-giang', label: 'Bài giảng' },
@@ -333,6 +334,9 @@ export default function AssistantSubjectDetail() {
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
                       Thời lượng
                     </th>
+                    <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
+                      Trạng thái
+                    </th>
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]" />
                   </tr>
                 </thead>
@@ -368,6 +372,11 @@ export default function AssistantSubjectDetail() {
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
+                        <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${lec.isVip ? 'bg-[#FFFBEB] text-[#D97706]' : 'bg-[var(--success-100)] text-[var(--success-700)]'}`}>
+                          {lec.isVip ? 'VIP' : 'Public'}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-5">
                         <div className="flex justify-end">
                           <LectureActionMenu
                             onEdit={() => setEditLecture(lec)}
@@ -379,14 +388,14 @@ export default function AssistantSubjectDetail() {
                   ))}
                   {isLoadingLessons && (
                     <tr>
-                      <td colSpan={5} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                      <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Đang tải bài giảng...
                       </td>
                     </tr>
                   )}
                   {!isLoadingLessons && lectures.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                      <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Chưa có bài giảng nào. Hãy tải lên bài giảng đầu tiên.
                       </td>
                     </tr>
@@ -457,7 +466,22 @@ export default function AssistantSubjectDetail() {
                         <div className="flex justify-end">
                           <ExerciseActionMenu
                             onView={() => setViewExercise(ex)}
-                            onDownload={() => console.log('Download exercise', ex.id)}
+                            onDownload={async () => {
+                              try {
+                                showSuccess('Đang tải về...');
+                                const res = await assessmentService.getAssessmentDetail(courseKey ?? '', String(ex.id));
+                                if (res.data?.fileUrl) {
+                                  downloadFileFromUrl(
+                                    res.data.fileUrl, 
+                                    ex.title ? `${ex.title}.${getDisplayFileType(ex.fileType, res.data.fileUrl).toLowerCase()}` : `tai_lieu.${getDisplayFileType(ex.fileType, res.data.fileUrl).toLowerCase()}`
+                                  );
+                                } else {
+                                  showError('Không tìm thấy file để tải xuống');
+                                }
+                              } catch {
+                                showError('Đã có lỗi xảy ra khi tải file. Vui lòng thử lại.');
+                              }
+                            }}
                             onEdit={() => navigate(`${ROUTES.ASSISTANT.COURSE_EDIT_EXERCISE(courseKey ?? '', String(ex.id))}?subject=${encodeURIComponent(subjectId)}`)}
                             onDelete={() => setDeleteExerciseId(ex.id)}
                           />
@@ -508,7 +532,8 @@ export default function AssistantSubjectDetail() {
             title: editLecture.title,
             link: editLecture.youtubeUrl,
             durationMin: editLecture.durationMin,
-            orderNum: editLecture.orderNum || 1
+            orderNum: editLecture.orderNum || 1,
+            isVip: editLecture.isVip
           }}
           existingLessons={lectures}
           onClose={() => setEditLecture(null)}

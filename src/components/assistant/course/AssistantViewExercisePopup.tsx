@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AssistantFeatureInDevPopup from '../AssistantFeatureInDevPopup';
 import { useGetAssessmentDetailQuery } from '../../../hooks/queries/useAssessments';
 import { getDisplayFileType } from '../../../utils/fileUtils';
+import * as mammoth from 'mammoth';
 
 interface AssistantViewExercisePopupProps {
   courseId: string;
@@ -16,9 +17,57 @@ export default function AssistantViewExercisePopup({ courseId, course, subject, 
   const { data: detailData, isLoading } = useGetAssessmentDetailQuery(courseId, exercise.id);
   const fileUrl = detailData?.data?.fileUrl;
   const displayFileType = getDisplayFileType(exercise?.fileType, fileUrl);
+  const isDocx = displayFileType.toLowerCase() === 'docx';
+  const isPdf = displayFileType.toLowerCase() === 'pdf';
+  
+  const [docxHtml, setDocxHtml] = useState<string | null>(null);
+  const [isConvertingDocx, setIsConvertingDocx] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  useEffect(() => {
+    if (isDocx && fileUrl) {
+      setIsConvertingDocx(true);
+      fetch(fileUrl)
+        .then(res => res.arrayBuffer())
+        .then(arrayBuffer => mammoth.convertToHtml({ arrayBuffer }))
+        .then(result => {
+          setDocxHtml(result.value);
+          setIsConvertingDocx(false);
+        })
+        .catch(err => {
+          console.error("Mammoth error:", err);
+          setIsConvertingDocx(false);
+        });
+    }
+  }, [isDocx, fileUrl]);
 
   const labelClass = 'font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] uppercase tracking-[0.4px]';
   const valueClass = 'font-[family-name:var(--font-body)] font-semibold text-[13px] text-[var(--text-primary)] mt-1';
+
+  const handleDownload = async () => {
+    if (!fileUrl) {
+      setShowDevPopup(true);
+      return;
+    }
+    try {
+      setIsDownloading(true);
+      const res = await fetch(fileUrl);
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = exercise?.title ? `${exercise.title}.${displayFileType.toLowerCase()}` : `tai_lieu.${displayFileType.toLowerCase()}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed", error);
+      window.open(fileUrl, '_blank');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
     <div
@@ -60,11 +109,30 @@ export default function AssistantViewExercisePopup({ courseId, course, subject, 
         </div>
 
         {/* Preview Area */}
-        <div className="flex-1 bg-[#F4F7F4] rounded-xl flex flex-col items-center justify-center gap-2.5 min-h-[260px] border-[1.5px] border-[#E4EBE5] overflow-hidden">
-          {isLoading ? (
+        <div className="flex-1 bg-[#F4F7F4] rounded-xl flex flex-col items-center justify-center min-h-[60vh] border-[1.5px] border-[#E4EBE5] overflow-hidden">
+          {isLoading || isConvertingDocx ? (
             <div className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-secondary)]">Đang tải tài liệu...</div>
           ) : fileUrl ? (
-            <iframe src={fileUrl} className="w-full h-full min-h-[400px] border-none" title="Preview" />
+            isPdf ? (
+              <iframe src={`${fileUrl}#toolbar=0&navpanes=0&scrollbar=1`} className="w-full h-full min-h-[60vh] border-none" title="Preview" />
+            ) : isDocx && docxHtml ? (
+              <div className="w-full h-full min-h-[60vh] overflow-auto p-4 bg-[#f3f4f6] flex justify-center items-start">
+                 <div
+                   className="bg-white shadow-sm border border-gray-200"
+                   style={{ width: '800px', minHeight: '1131px', padding: '40px', zoom: '70%' }}
+                 >
+                   <div dangerouslySetInnerHTML={{ __html: docxHtml }} />
+                 </div>
+              </div>
+            ) : (
+               <div className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-secondary)] flex flex-col items-center gap-2">
+                 <svg width="52" height="52" viewBox="0 0 24 24" fill="none">
+                   <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#A0AAA2" strokeWidth="1.5" />
+                   <polyline points="14 2 14 8 20 8" stroke="#A0AAA2" strokeWidth="1.5" />
+                 </svg>
+                 Không có bản xem trước. Hãy tải về để xem chi tiết.
+               </div>
+            )
           ) : (
             <>
               <svg width="52" height="52" viewBox="0 0 24 24" fill="none">
@@ -88,18 +156,16 @@ export default function AssistantViewExercisePopup({ courseId, course, subject, 
           <div onClick={onClose} className="flex-1 flex justify-center items-center p-3 rounded-[var(--radius-md)] border-[1.5px] border-[var(--border-default)] bg-[var(--surface-card)] text-[var(--text-primary)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors">
             Đóng
           </div>
-          <button 
-            onClick={() => {
-              if (fileUrl) {
-                window.open(fileUrl, '_blank');
-              } else {
-                setShowDevPopup(true);
-              }
-            }} 
-            className="flex-[2] flex justify-center items-center p-3 rounded-[var(--radius-md)] border-none bg-[var(--brand-500)] text-[var(--text-inverse)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--brand-600)] transition-colors"
+          <div
+            onClick={!isDownloading ? handleDownload : undefined}
+            className={`flex-[2] flex justify-center items-center p-3 rounded-[var(--radius-md)] border-none font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] select-none transition-colors ${
+              isDownloading 
+                ? 'bg-[var(--surface-muted)] text-[var(--text-tertiary)] cursor-not-allowed' 
+                : 'bg-[var(--brand-500)] text-[var(--text-inverse)] hover:bg-[var(--brand-600)] cursor-pointer'
+            }`}
           >
-            Tải về
-          </button>
+            {isDownloading ? 'Đang tải...' : 'Tải về'}
+          </div>
         </div>
       </div>
 

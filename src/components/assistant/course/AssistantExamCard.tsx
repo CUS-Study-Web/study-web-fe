@@ -8,12 +8,12 @@ import { useNotification } from '../../common/NotificationProvider';
 
 interface ExamActionMenuProps {
   onView: () => void;
-  onEdit: () => void;
   onDownload: () => void;
+  onEdit: () => void;
   onDelete: () => void;
 }
 
-function ExamActionMenu({ onView, onEdit, onDownload, onDelete }: ExamActionMenuProps) {
+function ExamActionMenu({ onView, onDownload, onEdit, onDelete }: ExamActionMenuProps) {
   const [open, setOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -115,10 +115,11 @@ function ExamActionMenu({ onView, onEdit, onDownload, onDelete }: ExamActionMenu
 
 interface AssistantExamCardProps {
   exam: CourseExam;
+  onDownload?: (exam: CourseExam) => void;
   onEdit?: (exam: CourseExam) => void;
 }
 
-export default function AssistantExamCard({ exam, onEdit }: AssistantExamCardProps) {
+export default function AssistantExamCard({ exam, onDownload, onEdit }: AssistantExamCardProps) {
   const isPublished = exam.status === 'published';
   const [showViewPopup, setShowViewPopup] = useState(false);
   const [showDevPopup, setShowDevPopup] = useState(false);
@@ -134,8 +135,8 @@ export default function AssistantExamCard({ exam, onEdit }: AssistantExamCardPro
       >
         <ExamActionMenu
           onView={() => setShowViewPopup(true)}
+          onDownload={() => onDownload ? onDownload(exam) : setShowDevPopup(true)}
           onEdit={() => onEdit?.(exam)}
-          onDownload={() => setShowDevPopup(true)}
           onDelete={() => setShowDeleteConfirm(true)}
         />
         {/* Title */}

@@ -14,6 +14,7 @@ interface AssistantEditLecturePopupProps {
     link: string;
     durationMin: number;
     orderNum: number;
+    isVip?: boolean;
   };
   existingLessons?: any[];
   onClose: () => void;
@@ -34,6 +35,7 @@ export default function AssistantEditLecturePopup({
   const [link, setLink] = useState(lecture.link);
   const [durationMin, setDurationMin] = useState(lecture.durationMin);
   const [orderNum, setOrderNum] = useState(lecture.orderNum);
+  const [access, setAccess] = useState<'PUBLIC' | 'VIP'>(lecture.isVip ? 'VIP' : 'PUBLIC');
 
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -73,7 +75,7 @@ export default function AssistantEditLecturePopup({
           youtubeUrl: link,
           durationMin,
           orderNum,
-          access: 'PUBLIC',
+          access,
         },
       },
       {
@@ -185,18 +187,33 @@ export default function AssistantEditLecturePopup({
             </div>
           </div>
 
-          {/* Tiêu đề */}
-          <div className="mb-4">
-            <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
-              Tiêu đề bài giảng
+          {/* Row: Tiêu đề + Quyền truy cập */}
+          <div className="grid grid-cols-[2fr_1fr] gap-3 mb-4">
+            <div>
+              <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
+                Tiêu đề bài giảng
+              </div>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Nhập tiêu đề bài giảng..."
+                className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)] transition-colors placeholder:text-[var(--text-tertiary)]"
+              />
             </div>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Nhập tiêu đề bài giảng..."
-              className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none focus:border-[var(--brand-500)] transition-colors placeholder:text-[var(--text-tertiary)]"
-            />
+            <div>
+              <div className="font-[family-name:var(--font-heading)] font-semibold text-[11px] uppercase tracking-wide text-[var(--text-secondary)] mb-1.5">
+                Quyền truy cập
+              </div>
+              <select
+                value={access}
+                onChange={(e) => setAccess(e.target.value as 'PUBLIC' | 'VIP')}
+                className="w-full px-3 py-2.5 rounded-[8px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none cursor-pointer"
+              >
+                <option value="PUBLIC">Public</option>
+                <option value="VIP">VIP</option>
+              </select>
+            </div>
           </div>
 
           {/* Link bài giảng */}

@@ -9,6 +9,9 @@ import AssistantCreateLecturePopup from '../../components/assistant/course/Assis
 import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
 import { useGetExamsQuery } from '../../hooks/queries/useAssessments';
 import { ROUTES } from '../../utils/routes';
+import { getDisplayFileType, downloadFileFromUrl } from '../../utils/fileUtils';
+import { assessmentService } from '../../services/assessmentService';
+import { useNotification } from '../../components/common/NotificationProvider';
 
 const TABS = [
   { key: 'mon-hoc', label: 'Môn học' },
@@ -21,6 +24,7 @@ export default function AssistantCourseDetail() {
   const { courseKey } = useParams<{ courseKey: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const { showSuccess, showError } = useNotification();
   const [activeTab, setActiveTab] = useState(location.state?.tab || 'mon-hoc');
   const [openModal, setOpenModal] = useState<ModalType>(null);
   
@@ -161,6 +165,22 @@ export default function AssistantCourseDetail() {
                   <AssistantExamCard 
                     key={exam.id} 
                     exam={mappedExam as any} 
+                    onDownload={async () => {
+                      try {
+                        showSuccess('Đang tải về...');
+                        const res = await assessmentService.getAssessmentDetail(key, String(exam.id));
+                        if (res.data?.fileUrl) {
+                          downloadFileFromUrl(
+                            res.data.fileUrl, 
+                            exam.title ? `${exam.title}.${getDisplayFileType(exam.fileType, res.data.fileUrl).toLowerCase()}` : `de_thi.${getDisplayFileType(exam.fileType, res.data.fileUrl).toLowerCase()}`
+                          );
+                        } else {
+                          showError('Không tìm thấy file để tải xuống');
+                        }
+                      } catch {
+                        showError('Đã có lỗi xảy ra khi tải file. Vui lòng thử lại.');
+                      }
+                    }}
                     onEdit={() => handleEditExam(exam as any)} 
                   />
                 );

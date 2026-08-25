@@ -24,6 +24,13 @@ export const useGetAdminCoursesQuery = (params?: { page?: number; size?: number;
   });
 };
 
+export const useGetAssistantCoursesQuery = (params?: { page?: number; size?: number; sort?: string[] }) => {
+  return useQuery({
+    queryKey: [...courseKeys.lists(), 'assistant', params],
+    queryFn: () => courseService.getAssistantCourses(params),
+  });
+};
+
 export const useGetCourseDetailQuery = (id: string) => {
   return useQuery({
     queryKey: courseKeys.detail(id),
