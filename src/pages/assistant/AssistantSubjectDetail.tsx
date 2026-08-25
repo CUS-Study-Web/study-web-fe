@@ -11,17 +11,12 @@ import { useGetLessonsQuery, useDeleteLessonMutation } from '../../hooks/queries
 import { useGetHomeworkQuery, useDeleteAssessmentMutation } from '../../hooks/queries/useAssessments';
 import { useNotification } from '../../components/common/NotificationProvider';
 import { ROUTES } from '../../utils/routes';
+import { getDisplayFileType, FILE_TYPE_COLORS } from '../../utils/fileUtils';
 
 const TABS = [
   { key: 'bai-giang', label: 'Bài giảng' },
   { key: 'bai-tap', label: 'Bài tập' },
 ];
-
-const FILE_TYPE_COLORS: Record<string, string> = {
-  PDF: 'bg-[#FEE2E2] text-[#DC2626]',
-  DOCX: 'bg-[#DBEAFE] text-[#1D4ED8]',
-  XLSX: 'bg-[#D1FAE5] text-[#065F46]',
-};
 
 // ── Action menu (dùng chung cho cả 2 tab) ──────────────────────────────────
 
@@ -442,9 +437,14 @@ export default function AssistantSubjectDetail() {
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
-                        <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${FILE_TYPE_COLORS[ex.fileType] ?? 'bg-[var(--surface-muted)] text-[var(--text-secondary)]'}`}>
-                          {ex.fileType}
-                        </span>
+                        {(() => {
+                          const displayFileType = getDisplayFileType(ex.fileType, (ex as any).fileUrl);
+                          return (
+                            <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${FILE_TYPE_COLORS[displayFileType] ?? 'bg-[var(--surface-muted)] text-[var(--text-secondary)]'}`}>
+                              {displayFileType}
+                            </span>
+                          );
+                        })()}
                       </td>
                       <td className="py-3.5 px-5">
                         <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${ex.status === 'DRAFT' ? 'bg-[var(--warning-100)] text-[var(--warning-700)]' : 'bg-[var(--success-100)] text-[var(--success-700)]'

@@ -17,6 +17,8 @@ export interface ExerciseFormData {
 
 export interface AssistantExerciseFormPanelHandle {
   getData: () => ExerciseFormData | null;
+  getFileType: () => string;
+  setFileType: (fileType: string) => void;
 }
 
 interface AssistantExerciseFormPanelProps {
@@ -25,6 +27,8 @@ interface AssistantExerciseFormPanelProps {
   courseSubjects?: { id: string, name: string }[];
   mode: 'create' | 'edit';
   initialData?: Partial<ExerciseFormData>;
+  uploadedFile?: File | string | null;
+  onFileTypeChange?: (fileType: string) => void;
   children?: ReactNode;
 }
 
@@ -38,9 +42,10 @@ function buildAnswers(count: number, existing: AssistantExerciseAnswer[] = []): 
 
 import { useNotification } from '../../common/NotificationProvider';
 import { isValidUrl } from '../../../utils/urlUtils';
+import { validateFileTypeMatch } from '../../../utils/fileUtils';
 
 const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, AssistantExerciseFormPanelProps>(
-  ({ courseKey, courseName, courseSubjects, initialData, children }, ref) => {
+  ({ courseKey, courseName, courseSubjects, initialData, uploadedFile, onFileTypeChange, children }, ref) => {
     const { showError } = useNotification();
     const subjects = courseSubjects ?? [];
 
@@ -53,6 +58,13 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
     const [answers, setAnswers] = useState<AssistantExerciseAnswer[]>(
       initialData?.answers ?? buildAnswers(initialData?.questionCount ?? 20)
     );
+
+    // Sync initialData changes when editing
+    useEffect(() => {
+      if (initialData?.fileType) {
+        setFileType(initialData.fileType);
+      }
+    }, [initialData?.fileType]);
 
     // Sync số câu trắc nghiệm khi người dùng thay đổi field "Số câu"
     useEffect(() => {
@@ -71,9 +83,33 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
           showError('Link lời giải không hợp lệ.');
           return null;
         }
+        if (uploadedFile) {
+          try {
+            validateFileTypeMatch(uploadedFile, fileType);
+          } catch (err: any) {
+            showError(err.message);
+            return null;
+          }
+        }
         return { subject, questionCount, title, solutionLink, fileType, status, answers };
       },
+      getFileType: () => fileType,
+      setFileType: (ft: string) => setFileType(ft),
     }));
+
+    const handleFileTypeSelect = (newType: string) => {
+      setFileType(newType);
+      if (onFileTypeChange) {
+        onFileTypeChange(newType);
+      }
+      if (uploadedFile) {
+        try {
+          validateFileTypeMatch(uploadedFile, newType);
+        } catch (err: any) {
+          showError(err.message);
+        }
+      }
+    };
 
     const updateAnswerSelected = (idx: number, opt: string) => {
       setAnswers((prev) =>
@@ -170,7 +206,7 @@ const AssistantExerciseFormPanel = forwardRef<AssistantExerciseFormPanelHandle, 
           </div>
           <select
             value={fileType}
-            onChange={(e) => setFileType(e.target.value)}
+            onChange={(e) => handleFileTypeSelect(e.target.value)}
             className="w-full px-3 py-1.5 rounded-[8px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] outline-none cursor-pointer focus:border-[var(--brand-500)] transition-colors"
           >
             {FILE_TYPES.map((ft) => <option key={ft} value={ft}>{ft}</option>)}

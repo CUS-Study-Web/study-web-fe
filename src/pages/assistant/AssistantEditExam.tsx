@@ -61,7 +61,7 @@ export default function AssistantEditExam() {
           console.error("API Error:", error?.response?.data);
           setTimeout(() => {
             const msg = error?.response?.data?.message || 'Có lỗi xảy ra khi cập nhật đề thi';
-            showError(`Lỗi: ${msg}`);
+            showError(msg);
           }, 500);
         }
       }

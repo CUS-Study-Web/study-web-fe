@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import AssistantFeatureInDevPopup from '../AssistantFeatureInDevPopup';
 import { useGetAssessmentDetailQuery } from '../../../hooks/queries/useAssessments';
+import { getDisplayFileType } from '../../../utils/fileUtils';
 
 interface AssistantViewExercisePopupProps {
   courseId: string;
@@ -14,6 +15,7 @@ export default function AssistantViewExercisePopup({ courseId, course, subject, 
   const [showDevPopup, setShowDevPopup] = useState(false);
   const { data: detailData, isLoading } = useGetAssessmentDetailQuery(courseId, exercise.id);
   const fileUrl = detailData?.data?.fileUrl;
+  const displayFileType = getDisplayFileType(exercise?.fileType, fileUrl);
 
   const labelClass = 'font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] uppercase tracking-[0.4px]';
   const valueClass = 'font-[family-name:var(--font-body)] font-semibold text-[13px] text-[var(--text-primary)] mt-1';
@@ -45,7 +47,7 @@ export default function AssistantViewExercisePopup({ courseId, course, subject, 
           </div>
           <div>
             <div className={labelClass}>Loại file</div>
-            <div className={valueClass}>{exercise?.fileType ?? "PDF"}</div>
+            <div className={valueClass}>{displayFileType}</div>
           </div>
           <div>
             <div className={labelClass}>Khóa học</div>
@@ -75,7 +77,7 @@ export default function AssistantViewExercisePopup({ courseId, course, subject, 
                 Không thể xem trước tài liệu này
               </div>
               <div className="font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)]">
-                {exercise?.title ?? "Bài tập"}.{exercise?.fileType?.toLowerCase() ?? "pdf"}
+                {exercise?.title ?? "Bài tập"}.{displayFileType.toLowerCase()}
               </div>
             </>
           )}

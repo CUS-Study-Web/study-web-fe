@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNotification } from '../../common/NotificationProvider';
+import { validateDocumentFile } from '../../../utils/fileUtils';
 
 interface AssistantCreateTopicPopupProps {
   onClose: () => void;
@@ -10,6 +12,16 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
   const [fileName, setFileName] = useState('');
   const [status, setStatus] = useState<'published' | 'draft'>('published');
   const [isDragOver, setIsDragOver] = useState(false);
+  const { showError } = useNotification();
+
+  const handleFile = (file: File) => {
+    try {
+      validateDocumentFile(file);
+      setFileName(file.name);
+    } catch (err: any) {
+      showError(err.message);
+    }
+  };
 
   // ─── Drag & Drop handlers ───────────────────────────────────────────────────
   const handleDragOver = (e: React.DragEvent) => {
@@ -21,7 +33,7 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
     e.preventDefault();
     setIsDragOver(false);
     const file = e.dataTransfer.files[0];
-    if (file) setFileName(file.name);
+    if (file) handleFile(file);
   };
   const handleDropzoneClick = () => {
     const input = document.createElement('input');
@@ -29,7 +41,7 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
     input.accept = '.xlsx,.xls,.csv';
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) setFileName(file.name);
+      if (file) handleFile(file);
     };
     input.click();
   };
