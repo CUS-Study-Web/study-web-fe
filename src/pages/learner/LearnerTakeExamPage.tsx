@@ -1,0 +1,375 @@
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import Header from "../../components/guest/Header";
+import ExamQuestionViewerItem from "../../components/learner/ExamQuestionViewerItem";
+import ExamAnswerSelector from "../../components/learner/ExamAnswerSelector";
+import { useStartAssessmentQuery, useSubmitAssessmentMutation, useGetAssessmentDetailQuery } from "../../hooks/queries/useAssessments";
+import type { AssessmentSubmitResponse } from "../../types/api/assessment.api";
+import { ROUTES } from "../../utils/routes";
+import PendingSolutionPopup from "../../components/common/PendingSolutionPopup";
+import { downloadFileFromUrl } from "../../utils/fileUtils";
+import { useNotification } from "../../components/common/NotificationProvider";
+import * as mammoth from 'mammoth';
+
+
+
+export default function LearnerTakeExamPage() {
+  const { courseId, subjectId, examId, exerciseId } = useParams<{ courseId: string; subjectId: string; examId: string; exerciseId: string }>();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isExercise = location.pathname.includes('/exercises/');
+  const assessmentId = (isExercise ? exerciseId : examId) ?? '';
+  const key = courseId ?? '';
+  const state = location.state as { totalTakes?: number } | null;
+
+  const { data: startData, isLoading } = useStartAssessmentQuery(key, assessmentId);
+  const examDetails = startData?.data;
+  const { data: detailData } = useGetAssessmentDetailQuery(key, assessmentId);
+  const { showSuccess } = useNotification();
+
+  const exam = {
+    title: examDetails?.title ?? (isExercise ? "Bài tập thực hành" : "Đề thi thử THPT Quốc gia 2026"),
+    duration: isExercise ? "--:--" : `${examDetails?.durationMin ?? 90} phút`,
+    questions: examDetails?.numQuestions ?? 40,
+  };
+
+  const EXAM_QUESTIONS = Array.from({ length: exam.questions }, (_, i) => ({ id: i + 1, text: `Câu ${i + 1}` }));
+
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const [submitResult, setSubmitResult] = useState<AssessmentSubmitResponse | null>(null);
+
+  const [secondsLeft, setSecondsLeft] = useState((examDetails?.durationMin ?? 90) * 60);
+
+  const [showPendingPopup, setShowPendingPopup] = useState(false);
+  const [submissionCount, setSubmissionCount] = useState(0);
+
+  const [docxHtml, setDocxHtml] = useState<string>('');
+  const [docxZoom, setDocxZoom] = useState(100);
+  const isDocx = examDetails?.fileType?.toUpperCase() === 'DOCX';
+  const isPdf = examDetails?.fileType?.toUpperCase() === 'PDF' || !examDetails?.fileType;
+
+  useEffect(() => {
+    if (examDetails?.fileUrl && isDocx) {
+      fetch(examDetails.fileUrl)
+        .then(res => res.arrayBuffer())
+        .then(arrayBuffer => mammoth.convertToHtml({ arrayBuffer }))
+        .then(result => setDocxHtml(result.value))
+        .catch(console.error);
+    } else {
+      setDocxHtml('');
+    }
+  }, [examDetails?.fileUrl, isDocx]);
+
+  // Sync timer when duration loaded
+  useEffect(() => {
+    if (examDetails?.durationMin) {
+      setSecondsLeft(examDetails.durationMin * 60);
+    }
+  }, [examDetails?.durationMin]);
+
+  const submitMutation = useSubmitAssessmentMutation();
+
+  useEffect(() => {
+    if (submitted || isExercise) return;
+    const t = setInterval(() => setSecondsLeft((s: number) => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(t);
+  }, [submitted, isExercise]);
+
+  const mm = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
+  const ss = String(secondsLeft % 60).padStart(2, "0");
+  const answered = Object.keys(answers).length;
+  const total = EXAM_QUESTIONS.length;
+
+  const rawScore = submitResult ? submitResult.score : 0;
+  const score10 = submitResult && submitResult.totalQuestions > 0
+    ? (submitResult.numCorrect / submitResult.totalQuestions) * 10
+    : (rawScore / 10);
+  const formattedScore = Number.isInteger(score10) ? score10.toString() : score10.toFixed(2).replace('.', ',');
+
+  const percentage = score10 * 10;
+  const formattedPercentage = Number.isInteger(percentage) ? percentage.toString() : percentage.toFixed(2).replace('.', ',');
+
+  const handleSubmit = () => {
+    if (!examDetails) return;
+    const timeSpentMin = examDetails.durationMin ? Math.max(0, Math.ceil((examDetails.durationMin * 60 - secondsLeft) / 60)) : 0;
+    const answersPayload = Object.entries(answers).map(([q, a]) => ({ questionNumber: Number(q), selectedAnswer: a }));
+
+    submitMutation.mutate({
+      courseId: key,
+      assessmentId,
+      data: {
+        durationMin: timeSpentMin,
+        answers: answersPayload
+      }
+    }, {
+      onSuccess: (res) => {
+        setSubmitResult(res.data);
+        setSubmitted(true);
+        setSubmissionCount(prev => prev + 1);
+      }
+    });
+  };
+
+  const handleExit = () => {
+    const updatedTotalTakes = (state?.totalTakes ?? 0) + submissionCount;
+    if (isExercise) {
+      navigate(ROUTES.LEARNER.EXERCISE_START(courseId as string, subjectId as string, exerciseId as string), { state: { totalTakes: updatedTotalTakes } });
+    } else {
+      navigate(ROUTES.LEARNER.EXAM_START(courseId as string, subjectId as string, examId as string), { state: { totalTakes: updatedTotalTakes } });
+    }
+  };
+
+  return (
+    <div className="bg-[#F9FAFB] min-h-screen select-none flex flex-col">
+      <Header />
+      <div className="max-w-[1536px] mx-auto pt-7 px-6 pb-20 grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-7 items-start flex-grow w-full">
+        {/* Left: PDF viewer */}
+        <div className="flex flex-col h-[calc(100vh-100px)] min-h-[700px]">
+          <div className="mb-4">
+            <div className="font-[family:var(--font-heading)] font-bold text-xl text-[#1B1F1C]">📄 {exam.title}</div>
+          </div>
+          
+          <div className="flex-1 relative rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-[#E4EBE5] overflow-hidden bg-white">
+            {isLoading && (
+              <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10 font-bold text-gray-700">Đang tải đề thi...</div>
+            )}
+
+            {isPdf && examDetails?.fileUrl ? (
+              <iframe
+                src={`${examDetails.fileUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                className="w-full h-full border-none"
+                title="PDF Preview"
+              />
+            ) : isDocx && examDetails?.fileUrl ? (
+              <div className="w-full h-full flex flex-col min-h-0 bg-[#f3f4f6]">
+                {/* Toolbar */}
+                <div className="flex items-center gap-2 px-4 py-2 border-b border-[var(--border-default)] bg-white shrink-0">
+                  <div className="text-[12px] font-semibold text-[var(--text-secondary)] mr-auto">
+                    Xem trước DOCX
+                  </div>
+                  <button
+                    onClick={() => setDocxZoom(z => Math.max(50, z - 10))}
+                    className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors"
+                    title="Thu nhỏ"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </button>
+                  <span className="text-[12px] font-medium text-gray-600 w-10 text-center">
+                    {docxZoom}%
+                  </span>
+                  <button
+                    onClick={() => setDocxZoom(z => Math.min(200, z + 10))}
+                    className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors"
+                    title="Phóng to"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </button>
+                  <div className="w-[1px] h-4 bg-gray-200 mx-1"></div>
+                  <button
+                    onClick={() => {
+                      showSuccess('Đang tải về...');
+                      downloadFileFromUrl(examDetails.fileUrl, exam.title ? `${exam.title}.docx` : 'tai_lieu.docx');
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-gray-50 text-[12px] font-medium text-[var(--brand-600)] border border-[var(--brand-200)] transition-colors"
+                    title="Tải xuống"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Tải về
+                  </button>
+                </div>
+                {/* Scrollable Document Area */}
+                <div className="flex-1 min-h-0 overflow-auto p-4 md:p-8 flex justify-center items-start bg-[#f3f4f6]">
+                  <div 
+                    className="bg-white shadow-sm border border-gray-200 document-preview docx-content"
+                    style={{ 
+                      width: '800px',
+                      minHeight: '1131px',
+                      padding: '40px',
+                      zoom: `${docxZoom}%`
+                    } as React.CSSProperties}
+                  >
+                    <div dangerouslySetInnerHTML={{ __html: docxHtml }} />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white max-w-[680px] mx-auto rounded-md pt-12 px-14 pb-12 shadow-[0_4px_20px_rgba(0,0,0,0.25)] mt-8 border border-gray-100">
+                <div className="text-center mb-8 pb-6 border-b-2 border-[#1B1F1C]">
+                  <div className="font-[family:var(--font-heading)] font-bold text-[13px] uppercase tracking-[1px] text-[#1B1F1C] mb-2">BỘ GIÁO DỤC VÀ ĐÀO TẠO</div>
+                  <div className="font-[family:var(--font-heading)] font-bold text-lg text-[#1B1F1C]">
+                    {isExercise ? "BÀI TẬP THỰC HÀNH" : "ĐỀ THI THỬ THPT QUỐC GIA"}
+                  </div>
+                  <div className="font-[family:var(--font-heading)] font-semibold text-sm text-[#3D4540] mt-1.5">{exam.title}</div>
+                  <div className="font-[family:var(--font-body)] text-xs text-[#6B746D] mt-1.5">
+                    Thời gian: {exam.duration} — {exam.questions} câu hỏi
+                  </div>
+                </div>
+                {EXAM_QUESTIONS.slice(0, 10).map((q) => (
+                  <ExamQuestionViewerItem key={q.id} question={q} />
+                ))}
+                <div className="text-center text-[#D4DCD5] font-[family:var(--font-body)] text-[13px] pt-6 pb-2">— Hết trang 1 / 4 —</div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right: sidebar */}
+        <div className="sticky top-[84px] h-[calc(100vh-100px)]">
+          {submitted ? (
+            <div className="bg-white rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-[#E4EBE5] overflow-hidden flex flex-col h-full">
+              {/* Result summary */}
+              <div className="p-5 border-b border-[#F0F4F1] shrink-0">
+                <div className="flex items-center gap-3.5 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[var(--brand-soft-500)] flex items-center justify-center shrink-0">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="var(--brand-base-500)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  </div>
+                  <div>
+                    <div className="font-[family:var(--font-heading)] font-bold text-lg text-[var(--text-primary-500)] leading-tight">Đã nộp bài!</div>
+                    <div className="font-[family:var(--font-body)] text-[13px] text-[var(--text-secondary-400)] mt-0.5">Bạn đã trả lời {answered}/{total} câu hỏi.</div>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-[var(--brand-soft-500)] to-[#EEF5EF] rounded-[14px] px-5 py-3.5 flex items-center justify-between">
+                  <div>
+                    <div className="font-[family:var(--font-heading)] font-extrabold text-4xl text-[var(--brand-base-500)] leading-none">{formattedScore}<span className="text-base text-[#6B746D] font-semibold">/10</span></div>
+                    <div className="font-[family:var(--font-body)] text-xs text-[#6B746D] mt-1">Điểm ước tính</div>
+                  </div>
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="var(--brand-base-500)" strokeWidth="2" opacity="0.3" />
+                    <circle cx="20" cy="20" r="18" stroke="var(--brand-base-500)" strokeWidth="2" strokeDasharray={`${(percentage / 100) * 113} 113`} strokeLinecap="round" style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%" }} />
+                    <text x="20" y="24" textAnchor="middle" className="font-[family:var(--font-heading)] font-bold text-[9.5px] fill-[var(--brand-base-500)]">{formattedPercentage}%</text>
+                  </svg>
+                </div>
+              </div>
+
+              {/* Scrollable answer review */}
+              <div className="custom-scrollbar overflow-y-auto flex-1 py-3">
+                <div className="px-5.5 py-2 font-[family:var(--font-heading)] font-bold text-[11px] text-[#6B746D] uppercase tracking-[0.4px]">Đáp án chi tiết</div>
+                {EXAM_QUESTIONS.map((q) => {
+                  const userAns = answers[q.id];
+                  const detail = submitResult?.details?.find((d: any) => d.questionNumber === q.id);
+                  const correct = detail?.correctAnswer;
+                  const isCorrectQuestion = correct === userAns;
+
+                  return (
+                    <div key={q.id} className="flex items-center gap-2 px-4 py-2 border-b border-[var(--surface-500)]">
+                      <div className="font-[family:var(--font-heading)] font-semibold text-xs text-[#6B746D] min-w-[44px]">Câu {q.id}</div>
+                      <div className="flex gap-1.5 flex-1 justify-end">
+                        {["A", "B", "C", "D"].map((opt) => {
+                          const isUser = userAns === opt;
+                          const isCorrect = correct === opt;
+                          const bg = isUser && isCorrect ? "bg-[var(--brand-base-500)]" : isUser && !isCorrect ? "bg-[var(--error-500)]" : "bg-white";
+                          const color = isUser ? "text-white" : "text-[#6B746D]";
+                          const border = isCorrect && !isUser ? "border-2 border-[var(--brand-base-500)]" : isUser ? "border-none" : "border-[1.5px] border-[#D4DCD5]";
+                          return (
+                            <div key={opt} className={`w-7 h-7 rounded-full ${border} ${bg} ${color} font-[family:var(--font-heading)] font-bold text-xs flex items-center justify-center shrink-0`}>
+                              {opt}
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <div className="w-4 shrink-0 flex items-center justify-center">
+                        {userAns && (isCorrectQuestion
+                          ? <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="var(--brand-base-500)" /><path d="M4 7l2.5 2.5L10 4.5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                          : <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="var(--error-500)" /><path d="M5 5l4 4M9 5l-4 4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" /></svg>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Sticky footer actions */}
+              <div className="px-4 py-3.5 border-t border-[#F0F4F1] flex gap-2 shrink-0">
+                <div
+                  onClick={handleExit}
+                  className="flex flex-1 items-center justify-center font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-[1.5px] border-[#D4DCD5] bg-white !text-[#3D4540] cursor-pointer hover:bg-gray-50 transition-colors"
+                >
+                  Thoát
+                </div>
+                <div
+                  onClick={() => {
+                    setSubmitted(false);
+                    setAnswers({});
+                    setSecondsLeft((examDetails?.durationMin ?? 90) * 60);
+                  }}
+                  className="flex flex-1 items-center justify-center font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-none bg-[var(--brand-base-500)] !text-white cursor-pointer hover:opacity-90 transition-opacity"
+                >
+                  Làm lại
+                </div>
+                <div
+                  onClick={() => {
+                    const url = detailData?.data?.explanationUrl || examDetails?.explanationUrl || submitResult?.explanationUrl;
+                    if (url) {
+                      window.open(url, '_blank');
+                    } else {
+                      setShowPendingPopup(true);
+                    }
+                  }}
+                  className="flex flex-1 items-center justify-center font-[family:var(--font-heading)] !font-bold text-[13px] py-2.5 rounded-xl border-none bg-[#F5C518] !text-[var(--text-primary-900)] cursor-pointer hover:brightness-95 transition-all"
+                >
+                  Xem lời giải
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-[#E4EBE5] overflow-hidden flex flex-col h-full">
+              {/* Timer */}
+              <div className={`shrink-0 p-5 pb-4 ${!isExercise && secondsLeft < 300 ? "bg-gradient-to-br from-[var(--error-500)] to-[#a83434]" : "bg-gradient-to-br from-[var(--brand-base-500)] to-[#1e4023]"}`}>
+                <div className="font-[family:var(--font-body)] text-xs text-white/75 mb-1.5 text-center">Thời gian còn lại</div>
+                <div className="font-[family:var(--font-heading)] font-extrabold text-[40px] text-white text-center tracking-[2px] leading-none">
+                  {isExercise ? "--:--" : `${mm}:${ss}`}
+                </div>
+                <div className="flex justify-center gap-4 mt-3">
+                  <div className="text-center">
+                    <div className="font-[family:var(--font-heading)] font-bold text-base text-white">{answered}</div>
+                    <div className="font-[family:var(--font-body)] text-[11px] text-white/70">Đã trả lời</div>
+                  </div>
+                  <div className="w-[1px] bg-white/20" />
+                  <div className="text-center">
+                    <div className="font-[family:var(--font-heading)] font-bold text-base text-white">{total - answered}</div>
+                    <div className="font-[family:var(--font-body)] text-[11px] text-white/70">Chưa trả lời</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Question list */}
+              <div className="custom-scrollbar overflow-y-auto flex-1 py-3">
+                {EXAM_QUESTIONS.map((q) => (
+                  <ExamAnswerSelector
+                    key={q.id}
+                    question={q}
+                    selectedAnswer={answers[q.id]}
+                    onSelect={(opt) => setAnswers((prev: Record<number, string>) => ({ ...prev, [q.id]: opt }))}
+                  />
+                ))}
+              </div>
+
+              {/* Submit */}
+              <div className="shrink-0 py-3.5 px-4 border-t border-[#E4EBE5]">
+                <button onClick={handleSubmit}
+                  disabled={submitMutation.isPending}
+                  className={`w-full font-[family:var(--font-heading)] !font-bold text-[15px] py-3.5 rounded-[14px] border-none !text-white shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-150 ease-out ${submitMutation.isPending ? "bg-gray-400 cursor-not-allowed" : "bg-[var(--brand-base-500)] cursor-pointer hover:bg-[#234A28]"
+                    }`}
+                >
+                  {submitMutation.isPending ? "Đang nộp..." : "Nộp bài"}
+                </button>
+                <button
+                  onClick={handleExit}
+                  className="w-full font-[family:var(--font-body)] text-[13px] py-2 mt-2 rounded-[12px] border-none bg-transparent !text-[#6B746D] cursor-pointer transition-all duration-150 ease-out hover:bg-[var(--surface-500)]"
+                >
+                  Thoát
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <PendingSolutionPopup 
+        isOpen={showPendingPopup} 
+        onClose={() => setShowPendingPopup(false)} 
+      />
+    </div>
+  );
+}

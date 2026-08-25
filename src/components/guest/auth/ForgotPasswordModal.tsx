@@ -1,4 +1,8 @@
 import { useState, useRef, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { authService } from "../../../services/authService";
+import { useNotification } from "../../../components/common/NotificationProvider";
+import axios from "axios";
 
 interface ForgotPasswordModalProps {
   isOpen: boolean;
@@ -21,6 +25,51 @@ export default function ForgotPasswordModal({
   const [resendTimer, setResendTimer] = useState(60);
 
   const otpInputsRef = useRef<(HTMLInputElement | null)[]>([]);
+  const { showSuccess, showError } = useNotification();
+
+  // Mutations
+  // @ts-ignore
+  const _forgetPasswordMutation = useMutation({
+    mutationFn: authService.forgetPassword,
+    onSuccess: () => {
+      setStep(2);
+      setResendTimer(60);
+    },
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data?.message) {
+          showError(error.response.data.message);
+        } else if (error.code === 'ECONNABORTED' || !error.response) {
+          showError("Lỗi máy chủ, vui lòng thử lại sau.");
+        } else {
+          showError("Đã có lỗi xảy ra. Vui lòng thử lại.");
+        }
+      } else {
+        showError("Lỗi không xác định.");
+      }
+    }
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: authService.resetPassword,
+    onSuccess: () => {
+      showSuccess("Đổi mật khẩu thành công!");
+      setStep(4);
+    },
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data?.message) {
+          showError(error.response.data.message);
+        } else if (error.code === 'ECONNABORTED' || !error.response) {
+          showError("Lỗi máy chủ, vui lòng thử lại sau.");
+        } else {
+          showError("Đã có lỗi xảy ra. Vui lòng thử lại.");
+        }
+      } else {
+        showError("Lỗi không xác định.");
+      }
+    }
+  });
 
   // Reset modal state when opened/closed
   useEffect(() => {
@@ -56,8 +105,10 @@ export default function ForgotPasswordModal({
       setErrorMsg("Vui lòng nhập địa chỉ email hợp lệ.");
       return;
     }
-    setStep(2);
-    setResendTimer(60);
+    // Temporarily disabled as per request
+    showError("Tính năng đang được phát triển");
+    return;
+    // forgetPasswordMutation.mutate({ gmail: email });
   };
 
   // OTP Input handlers
@@ -117,7 +168,11 @@ export default function ForgotPasswordModal({
       setErrorMsg("Mật khẩu xác nhận không khớp.");
       return;
     }
-    setStep(4);
+    resetPasswordMutation.mutate({
+      gmail: email,
+      otpCode: otp.join(""),
+      newPassword: newPassword
+    });
   };
 
   return (

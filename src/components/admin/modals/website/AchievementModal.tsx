@@ -2,6 +2,8 @@ import { useState } from 'react'
 import type { Achievement } from '../../../../types/admin'
 import { CircularDropzone, ModalHeader, mLabel, mInput, mSubmitBtnClass } from './ModalHelpers'
 
+import { useNotification } from '../../../../components/common/NotificationProvider'
+
 type AchievementModalProps = {
   achievement?: Achievement
   onSave: (data: Partial<Achievement>) => void
@@ -13,14 +15,18 @@ export const AchievementModal = ({ achievement, onSave, onClose }: AchievementMo
   const [exam, setExam] = useState(achievement?.exam || 'V-ACT')
   const [totalScore, setTotalScore] = useState(achievement?.totalScore || '')
   const [image, setImage] = useState<string | undefined>(achievement?.image)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { showSuccess } = useNotification()
   
   const initialSubScores = achievement?.subScores 
     ? achievement.subScores.split(' · ') 
     : ['']
   const [subScores, setSubScores] = useState<string[]>(initialSubScores)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsSubmitting(true)
+    await new Promise(r => setTimeout(r, 500))
     onSave({
       name,
       exam,
@@ -28,6 +34,8 @@ export const AchievementModal = ({ achievement, onSave, onClose }: AchievementMo
       image,
       subScores: subScores.filter(Boolean).join(' · ')
     })
+    showSuccess(achievement ? "Cập nhật thành tích thành công!" : "Thêm thành tích thành công!")
+    setIsSubmitting(false)
     onClose()
   }
 
@@ -73,7 +81,7 @@ export const AchievementModal = ({ achievement, onSave, onClose }: AchievementMo
                 <div key={idx} className="flex items-center gap-2">
                   <input
                     className={`${mInput} flex-1`}
-                    placeholder="Ví dụ: Ngôn ngữ: 39"
+                    placeholder="Ví dụ: Ngôn ngữ — 39/40"
                     value={score}
                     onChange={(e) => setSubScores((prev) => prev.map((s, i) => i === idx ? e.target.value : s))}
                   />
@@ -94,7 +102,13 @@ export const AchievementModal = ({ achievement, onSave, onClose }: AchievementMo
             </div>
           </div>
 
-          <button type="submit" className={mSubmitBtnClass}>
+          <button type="submit" className={`${mSubmitBtnClass} flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed`} disabled={isSubmitting}>
+            {isSubmitting && (
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            )}
             {achievement ? "Lưu thay đổi" : "Thêm thành tích"}
           </button>
         </form>

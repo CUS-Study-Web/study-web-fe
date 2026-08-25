@@ -35,7 +35,7 @@ export default function LearnerLayout({ children }: LearnerLayoutProps) {
 
             <button
               onClick={handleLogout}
-              className="px-4 py-2 text-xs font-extrabold bg-[#f4f7f4] hover:bg-[#e6efe8] border border-[var(--border-500)] text-[#333a35] rounded-[var(--radius-md)] active:scale-95 transition-all cursor-pointer"
+              className="px-4 py-2 text-xs font-extrabold bg-[var(--surface-500)] hover:bg-[#e6efe8] border border-[var(--border-500)] text-[#333a35] rounded-[var(--radius-md)] active:scale-95 transition-all cursor-pointer"
             >
               Đăng xuất
             </button>

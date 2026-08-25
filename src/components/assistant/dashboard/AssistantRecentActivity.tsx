@@ -1,4 +1,4 @@
-import { ASST_RECENT_ACTIVITIES } from '../../../types/assistant/mockData';
+import { ASST_RECENT_ACTIVITIES } from '../../../types/mockData';
 
 const AssistantRecentActivity = () => {
   return (
@@ -10,11 +10,10 @@ const AssistantRecentActivity = () => {
         {ASST_RECENT_ACTIVITIES.map((activity, index) => (
           <div
             key={activity.id}
-            className={`flex items-start gap-3 py-3 ${
-              index !== ASST_RECENT_ACTIVITIES.length - 1
+            className={`flex items-start gap-3 py-3 ${index !== ASST_RECENT_ACTIVITIES.length - 1
                 ? 'border-b border-[var(--border-subtle)]'
                 : ''
-            }`}
+              }`}
           >
             <div className="w-8.5 h-8.5 rounded-[var(--radius-sm)] bg-[var(--surface-muted)] flex items-center justify-center shrink-0 text-base">
               {activity.icon}

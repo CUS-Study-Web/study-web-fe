@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../utils/routes";
 import Logo from "../components/guest/Logo";
 
@@ -48,18 +48,12 @@ export default function UnderDevelopmentPage() {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 w-full">
-          <Link
-            to={ROUTES.HOME}
-            className="flex-1 py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-md shadow-[#28522d]/20 active:scale-95 transition-all text-sm cursor-pointer text-center"
+          <button
+            onClick={() => navigate(-1)}
+            className="flex-1 py-3.5 bg-[var(--brand-base-600)] hover:bg-[var(--brand-base-700)] !text-white font-extrabold rounded-[var(--radius-md)] shadow-md shadow-[#28522d]/20 active:scale-95 transition-all text-sm cursor-pointer text-center border-none"
           >
-            Khám phá trang chủ
-          </Link>
-          <Link
-            to={ROUTES.COURSES}
-            className="flex-1 py-3.5 bg-[#f4f7f4] hover:bg-[#e6efe8] border border-[var(--border-500)] !text-[#333a35] font-extrabold rounded-[var(--radius-md)] active:scale-95 transition-all text-sm cursor-pointer text-center"
-          >
-            Xem khóa học
-          </Link>
+            Quay lại
+          </button>
         </div>
       </div>
     </div>

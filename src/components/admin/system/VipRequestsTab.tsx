@@ -77,7 +77,7 @@ export const VipRequestsTab = ({ vipRequests, onApprove, onReject }: VipRequests
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div>
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-[var(--surface-500)]">
@@ -146,7 +146,7 @@ export const VipRequestsTab = ({ vipRequests, onApprove, onReject }: VipRequests
                               onApprove(r.id)
                               setActiveDropdownRowId(null)
                             }}
-                            className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--success-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                            className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--success-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                           >
                             Duyệt
                           </button>
@@ -155,7 +155,7 @@ export const VipRequestsTab = ({ vipRequests, onApprove, onReject }: VipRequests
                               onReject(r.id)
                               setActiveDropdownRowId(null)
                             }}
-                            className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                            className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                           >
                             Từ chối
                           </button>

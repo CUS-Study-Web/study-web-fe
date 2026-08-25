@@ -5,20 +5,20 @@ export default function LearnerDashboard() {
   return (
     <div className="space-y-8">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-br from-[#18321b] via-[#28522d] to-[#122615] rounded-[var(--radius-xl)] p-8 sm:p-10 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#18321b] via-[var(--brand-base-600)] to-[#122615] rounded-[var(--radius-xl)] p-8 sm:p-10 text-white shadow-lg relative overflow-hidden">
         <div className="relative z-10 max-w-2xl">
           <div className="inline-block px-3 py-1 bg-[#ffc107] text-[#1f1f1c] text-xs font-black rounded-full uppercase tracking-wider mb-4">
             ✦ Dành cho Học viên
           </div>
-          <h1
+          <div
             className="text-3xl sm:text-4xl font-black tracking-tight mb-3 !text-white"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             Chào mừng bạn trở lại, Học viên CUS!
-          </h1>
-          <p className="text-sm sm:text-base text-[#beccbf] font-medium leading-relaxed">
+          </div>
+          <div className="text-sm sm:text-base text-[var(--brand-base-100)] font-medium leading-relaxed">
             Đây là trang tổng quan cá nhân hóa dành cho học viên. Bạn có thể theo dõi tiến độ học tập, làm bài thi thử và truy cập thư viện tài liệu.
-          </p>
+          </div>
         </div>
       </div>
 
@@ -54,9 +54,9 @@ export default function LearnerDashboard() {
 
       {/* Navigation Quick Actions */}
       <div className="bg-white rounded-[var(--radius-xl)] p-8 border border-[var(--border-300)] shadow-xs space-y-6">
-        <h2 className="text-xl font-extrabold text-[var(--text-primary-500)]" style={{ fontFamily: "var(--font-heading)" }}>
+        <div className="text-xl font-extrabold text-[var(--text-primary-500)]" style={{ fontFamily: "var(--font-heading)" }}>
           Truy cập nhanh
-        </h2>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link
             to={ROUTES.COURSES}

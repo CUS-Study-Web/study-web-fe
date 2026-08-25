@@ -4,6 +4,7 @@ interface SubjectCardProps {
   lessons: number;
   cardHeaderBg: string;
   cardBtnColor: string;
+  progress?: number;
   onSelect: () => void;
 }
 
@@ -13,6 +14,7 @@ export default function SubjectCard({
   lessons,
   cardHeaderBg,
   cardBtnColor,
+  progress,
   onSelect,
 }: SubjectCardProps) {
   return (
@@ -55,6 +57,22 @@ export default function SubjectCard({
             </div>
           </div>
         </div>
+
+        {/* Progress Bar (Only shown if progress is defined) */}
+        {progress !== undefined && (
+          <div className="space-y-1.5 mb-5">
+            <div className="flex items-center justify-between text-xs font-semibold">
+              <span className="text-[var(--text-secondary-400)]">Tiến trình học</span>
+              <span className="font-bold text-[var(--text-primary-500)]">{progress}%</span>
+            </div>
+            <div className="w-full h-1.5 bg-[#deede1] rounded-full overflow-hidden">
+              <div
+                className="h-full bg-[var(--brand-base-600)] rounded-full transition-all duration-500"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Action Button */}
         <button

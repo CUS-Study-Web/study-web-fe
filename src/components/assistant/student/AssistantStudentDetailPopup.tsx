@@ -1,4 +1,4 @@
-import type { AssistantStudent } from '../../../types/assistant/models';
+import type { AssistantStudent } from '../../../types/assistant';
 
 interface AssistantStudentDetailPopup {
   student: AssistantStudent;

@@ -1,9 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
-import { DEMO_MATERIALS_ASST } from '../../types/assistant/mockData';
-import type { AssistantDocument } from '../../types/assistant/models';
+import { useSearchParams } from 'react-router-dom';
+import { DEMO_MATERIALS_ASST } from '../../types/mockData';
+import type { AssistantDocument } from '../../types/assistant';
 import AssistantUploadMaterialPopup from '../../components/assistant/material/AssistantUploadMaterialPopup';
 import AssistantEditMaterialPopup from '../../components/assistant/material/AssistantEditMaterialPopup';
 import AssistantViewMaterialPopup from '../../components/assistant/material/AssistantViewMaterialPopup';
+import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
+import AssistantFeatureInDevPopup from '../../components/assistant/AssistantFeatureInDevPopup';
+import { getDisplayFileType, FILE_TYPE_COLORS } from '../../utils/fileUtils';
 
 const SUBJECT_COLORS: Record<string, string> = {
   "Toán": "var(--brand-500)",
@@ -26,11 +30,14 @@ const SubjectBadge = ({ subject }: { subject: string }) => {
   );
 };
 
-const FileTypeBadge = ({ type }: { type: string }) => (
-  <span className="px-2.5 py-1 rounded-md bg-[var(--surface-muted)] text-[var(--text-secondary)] font-[family-name:var(--font-heading)] font-semibold text-[11px]">
-    {type}
-  </span>
-);
+const FileTypeBadge = ({ type }: { type: string }) => {
+  const displayType = getDisplayFileType(type);
+  return (
+    <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${FILE_TYPE_COLORS[displayType] ?? 'bg-[var(--surface-muted)] text-[var(--text-secondary)]'}`}>
+      {displayType}
+    </span>
+  );
+};
 
 const AccessBadge = ({ access }: { access: string }) => {
   const isPublic = access === "Public";
@@ -41,15 +48,16 @@ const AccessBadge = ({ access }: { access: string }) => {
   );
 };
 
-// Action menu component
-interface ActionMenuProps {
+// ── 3-dot action menu ────────────────────────────────────────────────────────
+
+interface MaterialActionMenuProps {
   doc: AssistantDocument;
   onView: (doc: AssistantDocument) => void;
   onEdit: (doc: AssistantDocument) => void;
   onDelete: (id: number) => void;
 }
 
-function ActionMenu({ doc, onView, onEdit, onDelete }: ActionMenuProps) {
+function MaterialActionMenu({ doc, onView, onEdit, onDelete }: MaterialActionMenuProps) {
   const [open, setOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -71,7 +79,6 @@ function ActionMenu({ doc, onView, onEdit, onDelete }: ActionMenuProps) {
     const handleClose = (e: MouseEvent | KeyboardEvent) => {
       if (e instanceof KeyboardEvent && e.key !== 'Escape') return;
       if (e instanceof MouseEvent) {
-        // Ignore clicks inside the button or inside the dropdown menu
         if (btnRef.current?.contains(e.target as Node)) return;
         if (menuRef.current?.contains(e.target as Node)) return;
       }
@@ -90,15 +97,13 @@ function ActionMenu({ doc, onView, onEdit, onDelete }: ActionMenuProps) {
       <button
         ref={btnRef}
         onClick={handleToggle}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[var(--border-default)] bg-[var(--surface-card)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] active:scale-95 transition-all duration-150 select-none"
+        className="w-8 h-8 rounded-full border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
+        aria-label="Tùy chọn"
       >
-        Hành động
-        <svg
-          width="12" height="12" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-          className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-        >
-          <polyline points="6 9 12 15 18 9" />
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--neutral-500)">
+          <circle cx="12" cy="5" r="1.5" />
+          <circle cx="12" cy="12" r="1.5" />
+          <circle cx="12" cy="19" r="1.5" />
         </svg>
       </button>
 
@@ -110,26 +115,16 @@ function ActionMenu({ doc, onView, onEdit, onDelete }: ActionMenuProps) {
             top: menuPos.top,
             right: menuPos.right,
             zIndex: 9999,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.14)',
           }}
-          className="min-w-[152px] rounded-[10px] border border-[var(--border-default)] bg-[var(--surface-card)] shadow-[0_8px_24px_rgba(0,0,0,0.14)] overflow-hidden"
+          className="bg-white rounded-[10px] border border-[var(--border-default)] py-1.5 min-w-[160px]"
         >
-          {/* Tải về */}
-          <button
-            onClick={() => { setOpen(false); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors cursor-pointer border-none bg-transparent"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Tải về
-          </button>
+
 
           {/* Xem */}
           <button
             onClick={() => { setOpen(false); onView(doc); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -141,7 +136,7 @@ function ActionMenu({ doc, onView, onEdit, onDelete }: ActionMenuProps) {
           {/* Sửa */}
           <button
             onClick={() => { setOpen(false); onEdit(doc); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-muted)] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
@@ -149,12 +144,10 @@ function ActionMenu({ doc, onView, onEdit, onDelete }: ActionMenuProps) {
             Sửa
           </button>
 
-          <div className="mx-3 border-t border-[var(--border-subtle)]" />
-
           {/* Xóa */}
           <button
             onClick={() => { setOpen(false); onDelete(doc.id); }}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-[family-name:var(--font-heading)] font-medium text-[#DC2626] hover:bg-[#FEF2F2] transition-colors cursor-pointer border-none bg-transparent"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] !text-[#DC2626] text-left transition-colors hover:bg-[#FEF2F2]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -167,16 +160,28 @@ function ActionMenu({ doc, onView, onEdit, onDelete }: ActionMenuProps) {
   );
 }
 
+// ── Main page ────────────────────────────────────────────────────────────────
+
 export default function AssistantMaterials() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<"ly-thuyet" | "bai-tap">("ly-thuyet");
   const [docs, setDocs] = useState<AssistantDocument[]>(DEMO_MATERIALS_ASST);
   const [search, setSearch] = useState("");
 
-  const [showUpload, setShowUpload] = useState(false);
+  const [showUpload, setShowUpload] = useState(() => searchParams.get('upload') === '1');
+  const [showDevPopup, setShowDevPopup] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showView, setShowView] = useState(false);
 
   const [selectedMaterial, setSelectedMaterial] = useState<AssistantDocument | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+
+  // Clear URL param after reading it once
+  useEffect(() => {
+    if (searchParams.get('upload') === '1') {
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const filtered = docs.filter(d => {
     if (d.cat !== activeTab) return false;
@@ -189,8 +194,15 @@ export default function AssistantMaterials() {
     "bai-tap": docs.filter(d => d.cat === "bai-tap").length,
   };
 
-  const handleDelete = (id: number) => {
-    setDocs(prev => prev.filter(d => d.id !== id));
+  const handleDeleteRequest = (id: number) => {
+    setDeleteTarget(id);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteTarget !== null) {
+      setDocs(prev => prev.filter(d => d.id !== deleteTarget));
+    }
+    setDeleteTarget(null);
   };
 
   const handleEditClick = (doc: AssistantDocument) => {
@@ -203,11 +215,28 @@ export default function AssistantMaterials() {
     setShowView(true);
   };
 
+  const deleteDoc = docs.find(d => d.id === deleteTarget);
+
   return (
     <div className="flex flex-col h-full w-full">
       {showUpload && <AssistantUploadMaterialPopup onClose={() => setShowUpload(false)} />}
       {showEdit && <AssistantEditMaterialPopup material={selectedMaterial} onClose={() => setShowEdit(false)} />}
       {showView && <AssistantViewMaterialPopup material={selectedMaterial} onClose={() => setShowView(false)} />}
+
+      {showDevPopup && (
+        <AssistantFeatureInDevPopup onClose={() => setShowDevPopup(false)} />
+      )}
+
+      {deleteTarget !== null && (
+        <AssistantConfirmPopup
+          title="Xóa tài liệu"
+          message={`Bạn có chắc muốn xóa tài liệu "${deleteDoc?.title ?? ''}"? Hành động này không thể hoàn tác.`}
+          confirmLabel="Xóa"
+          variant="danger"
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setDeleteTarget(null)}
+        />
+      )}
 
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -329,11 +358,11 @@ export default function AssistantMaterials() {
                   </td>
                   <td className="py-3.5 px-5">
                     <div className="flex justify-end">
-                      <ActionMenu
+                      <MaterialActionMenu
                         doc={doc}
                         onView={handleViewClick}
                         onEdit={handleEditClick}
-                        onDelete={handleDelete}
+                        onDelete={handleDeleteRequest}
                       />
                     </div>
                   </td>

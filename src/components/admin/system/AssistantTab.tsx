@@ -112,7 +112,7 @@ export const AssistantTab = ({
                 {a.email} · {a.phone}
               </div>
               <div className="flex flex-wrap gap-x-[18px] gap-y-[4px] mt-[8px]">
-                {[{ label: "Khóa học", v: a.courses }, { label: "Đề thi", v: a.exams }, { label: "Học viên", v: a.students }].map((s) => (
+                {[{ label: "Đề thi", v: a.exams }, { label: "Học viên", v: a.students }].map((s) => (
                   <div key={s.label} className="flex gap-[5px] items-baseline">
                     <span className="[font-family:var(--font-heading)] font-bold text-[14px] text-[var(--brand-500)]">
                       {s.v}
@@ -153,25 +153,38 @@ export const AssistantTab = ({
                       setSelectedAsst(a)
                       setActiveDropdownRowId(null)
                     }}
-                    className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                    className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                   >
                     Xem chi tiết
                   </button>
-                  <button
-                    onClick={() => {
-                      onToggleStatus(a.id)
-                      setActiveDropdownRowId(null)
-                    }}
-                    className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                  >
-                    {a.status === 'Hoạt động' ? 'Vô hiệu hóa' : 'Kích hoạt'}
-                  </button>
+                  {a.status === 'Hoạt động' && (
+                    <button
+                      onClick={() => {
+                        onToggleStatus(a.id)
+                        setActiveDropdownRowId(null)
+                      }}
+                      className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--warning-500)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                    >
+                      Vô hiệu hóa
+                    </button>
+                  )}
+                  {a.status !== 'Hoạt động' && (
+                    <button
+                      onClick={() => {
+                        onToggleStatus(a.id)
+                        setActiveDropdownRowId(null)
+                      }}
+                      className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--brand-base-500)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                    >
+                      Kích hoạt
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       handleDeleteClick(a.id, a.name)
                       setActiveDropdownRowId(null)
                     }}
-                    className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
+                    className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
                   >
                     Xóa
                   </button>

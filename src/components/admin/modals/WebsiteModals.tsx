@@ -1,4 +1,5 @@
 export { CourseModal } from './website/CourseModal'
+export { AddCourseModal } from './website/AddCourseModal'
 export { InstructorModal } from './website/InstructorModal'
 export { AchievementModal } from './website/AchievementModal'
 export { ReviewModal } from './website/ReviewModal'

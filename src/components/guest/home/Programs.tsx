@@ -2,35 +2,11 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../../utils/routes";
 
-const programsData = [
-  {
-    title: "V-ACT",
-    tag: "ĐGNL TP.HCM",
-    img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&q=60&auto=format&fit=crop",
-  },
-  {
-    title: "V-SAT",
-    tag: "Khảo thí quốc gia",
-    img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=60&auto=format&fit=crop",
-  },
-  {
-    title: "HSA",
-    tag: "ĐGNL ĐHQG Hà Nội",
-    img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=60&auto=format&fit=crop",
-  },
-  {
-    title: "HSCA",
-    tag: "ĐH Sư phạm TP.HCM",
-    img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=60&auto=format&fit=crop",
-  },
-  {
-    title: "THPT QG",
-    tag: "Bộ GD&ĐT",
-    img: "https://images.unsplash.com/photo-1557800636-894a64c1696f?w=800&q=60&auto=format&fit=crop",
-  },
-];
+import { useGetCoursesQuery } from "../../../hooks/queries/useCourses";
 
 export default function Programs() {
+  const { data: coursesData, isLoading } = useGetCoursesQuery({ size: 10 });
+  const courses = coursesData?.data || [];
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollLeft = () => {
@@ -85,40 +61,43 @@ export default function Programs() {
             ref={scrollContainerRef}
             className="overflow-x-auto flex gap-5 scroll-smooth pb-6 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none snap-x snap-mandatory"
           >
-            {programsData.map((p) => (
-              <div
-                key={p.title}
-                className="w-[280px] sm:w-[310px] md:w-[330px] flex-shrink-0 relative aspect-[3/4] rounded-[var(--radius-xl)] overflow-hidden shadow-lg border border-[var(--border-300)] snap-start group/card hover:shadow-xl transition-all duration-300"
-              >
-                {/* Full Card Image */}
-                <img
-                  src={p.img}
-                  alt={p.title}
-                  className="absolute inset-0 w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500"
-                />
-                
-                {/* Dark Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+            {isLoading ? (
+              <div className="w-full text-center py-10 !text-[var(--text-secondary-500)] [font-family:var(--font-body)]">Đang tải danh sách chương trình học...</div>
+            ) : (
+              courses.map((c) => (
+                <div
+                  key={c.id}
+                  className="w-[280px] sm:w-[310px] md:w-[330px] flex-shrink-0 relative aspect-[3/4] rounded-[var(--radius-xl)] overflow-hidden shadow-lg border border-[var(--border-300)] snap-start group/card hover:shadow-xl transition-all duration-300"
+                >
+                  {/* Full Card Image */}
+                  <img
+                    src={c.imageUrl || "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&q=60&auto=format&fit=crop"}
+                    alt={c.title}
+                    className="absolute inset-0 w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500"
+                  />
+                  
+                  {/* Dark Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
 
-                {/* Top Left Badge - Capsule */}
-                <div className="absolute top-4 left-4 bg-[var(--brand-base-600)] !text-white text-xs font-black px-3.5 py-1 rounded-full shadow-md border border-[var(--brand-base-700)]">
-                  {p.tag}
-                </div>
+                  {/* Top Left Badge - Capsule */}
+                  <div className="absolute top-4 left-4 bg-[var(--brand-base-600)] !text-white text-xs font-black px-3.5 py-1 rounded-full shadow-md border border-[var(--brand-base-700)] max-w-[200px] truncate">
+                    {c.badgeTitle || "Luyện thi"}
+                  </div>
 
-                {/* Bottom Title and Action */}
-                <div className="absolute bottom-5 left-5 right-5 !text-white flex flex-col gap-1.5">
-                  <h3 className="text-3xl font-black tracking-wide !text-white drop-shadow-md" style={{ fontFamily: "var(--font-heading)" }}>
-                    {p.title}
-                  </h3>
+                  {/* Bottom Title and Action */}
+                  <div className="absolute bottom-5 left-5 right-5 !text-white flex flex-col gap-1.5">
+                    <h3 className="text-3xl font-black tracking-wide !text-white drop-shadow-md truncate" style={{ fontFamily: "var(--font-heading)" }} title={c.title}>
+                      {c.title}
+                    </h3>
                   <Link
-                    to={ROUTES.COURSES}
+                    to={ROUTES.COURSE_DETAIL(c.id)}
                     className="text-xs font-extrabold !text-white hover:underline flex items-center gap-1 transition drop-shadow-sm"
                   >
                     Xem chi tiết khóa học <span className="transform group-hover/card:translate-x-1 transition-transform">→</span>
                   </Link>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
 
           {/* Right Arrow Button */}
