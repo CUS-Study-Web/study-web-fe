@@ -11,7 +11,8 @@ import { useGetLessonsQuery, useDeleteLessonMutation } from '../../hooks/queries
 import { useGetHomeworkQuery, useDeleteAssessmentMutation } from '../../hooks/queries/useAssessments';
 import { useNotification } from '../../components/common/NotificationProvider';
 import { ROUTES } from '../../utils/routes';
-import { getDisplayFileType, FILE_TYPE_COLORS } from '../../utils/fileUtils';
+import { getDisplayFileType, FILE_TYPE_COLORS, downloadFileFromUrl } from '../../utils/fileUtils';
+import { assessmentService } from '../../services/assessmentService';
 
 const TABS = [
   { key: 'bai-giang', label: 'Bài giảng' },
@@ -457,7 +458,22 @@ export default function AssistantSubjectDetail() {
                         <div className="flex justify-end">
                           <ExerciseActionMenu
                             onView={() => setViewExercise(ex)}
-                            onDownload={() => console.log('Download exercise', ex.id)}
+                            onDownload={async () => {
+                              try {
+                                showSuccess('Đang tải về...');
+                                const res = await assessmentService.getAssessmentDetail(courseKey ?? '', String(ex.id));
+                                if (res.data?.fileUrl) {
+                                  downloadFileFromUrl(
+                                    res.data.fileUrl, 
+                                    ex.title ? `${ex.title}.${getDisplayFileType(ex.fileType, res.data.fileUrl).toLowerCase()}` : `tai_lieu.${getDisplayFileType(ex.fileType, res.data.fileUrl).toLowerCase()}`
+                                  );
+                                } else {
+                                  showError('Không tìm thấy file để tải xuống');
+                                }
+                              } catch (_error) {
+                                showError('Đã có lỗi xảy ra khi tải file. Vui lòng thử lại.');
+                              }
+                            }}
                             onEdit={() => navigate(`${ROUTES.ASSISTANT.COURSE_EDIT_EXERCISE(courseKey ?? '', String(ex.id))}?subject=${encodeURIComponent(subjectId)}`)}
                             onDelete={() => setDeleteExerciseId(ex.id)}
                           />

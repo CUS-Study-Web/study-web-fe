@@ -53,12 +53,11 @@ const AccessBadge = ({ access }: { access: string }) => {
 interface MaterialActionMenuProps {
   doc: AssistantDocument;
   onView: (doc: AssistantDocument) => void;
-  onDownload: () => void;
   onEdit: (doc: AssistantDocument) => void;
   onDelete: (id: number) => void;
 }
 
-function MaterialActionMenu({ doc, onView, onDownload, onEdit, onDelete }: MaterialActionMenuProps) {
+function MaterialActionMenu({ doc, onView, onEdit, onDelete }: MaterialActionMenuProps) {
   const [open, setOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -120,18 +119,7 @@ function MaterialActionMenu({ doc, onView, onDownload, onEdit, onDelete }: Mater
           }}
           className="bg-white rounded-[10px] border border-[var(--border-default)] py-1.5 min-w-[160px]"
         >
-          {/* Tải về */}
-          <button
-            onClick={() => { setOpen(false); onDownload(); }}
-            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Tải về
-          </button>
+
 
           {/* Xem */}
           <button
@@ -373,7 +361,6 @@ export default function AssistantMaterials() {
                       <MaterialActionMenu
                         doc={doc}
                         onView={handleViewClick}
-                        onDownload={() => setShowDevPopup(true)}
                         onEdit={handleEditClick}
                         onDelete={handleDeleteRequest}
                       />
