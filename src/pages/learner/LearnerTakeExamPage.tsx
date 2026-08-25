@@ -7,6 +7,9 @@ import { useStartAssessmentQuery, useSubmitAssessmentMutation, useGetAssessmentD
 import type { AssessmentSubmitResponse } from "../../types/api/assessment.api";
 import { ROUTES } from "../../utils/routes";
 import PendingSolutionPopup from "../../components/common/PendingSolutionPopup";
+import { downloadFileFromUrl } from "../../utils/fileUtils";
+import { useNotification } from "../../components/common/NotificationProvider";
+import * as mammoth from 'mammoth';
 
 
 
@@ -22,6 +25,7 @@ export default function LearnerTakeExamPage() {
   const { data: startData, isLoading } = useStartAssessmentQuery(key, assessmentId);
   const examDetails = startData?.data;
   const { data: detailData } = useGetAssessmentDetailQuery(key, assessmentId);
+  const { showSuccess } = useNotification();
 
   const exam = {
     title: examDetails?.title ?? (isExercise ? "Bài tập thực hành" : "Đề thi thử THPT Quốc gia 2026"),
@@ -39,6 +43,23 @@ export default function LearnerTakeExamPage() {
 
   const [showPendingPopup, setShowPendingPopup] = useState(false);
   const [submissionCount, setSubmissionCount] = useState(0);
+
+  const [docxHtml, setDocxHtml] = useState<string>('');
+  const [docxZoom, setDocxZoom] = useState(100);
+  const isDocx = examDetails?.fileType?.toUpperCase() === 'DOCX';
+  const isPdf = examDetails?.fileType?.toUpperCase() === 'PDF' || !examDetails?.fileType;
+
+  useEffect(() => {
+    if (examDetails?.fileUrl && isDocx) {
+      fetch(examDetails.fileUrl)
+        .then(res => res.arrayBuffer())
+        .then(arrayBuffer => mammoth.convertToHtml({ arrayBuffer }))
+        .then(result => setDocxHtml(result.value))
+        .catch(console.error);
+    } else {
+      setDocxHtml('');
+    }
+  }, [examDetails?.fileUrl, isDocx]);
 
   // Sync timer when duration loaded
   useEffect(() => {
@@ -114,12 +135,64 @@ export default function LearnerTakeExamPage() {
               <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10 font-bold text-gray-700">Đang tải đề thi...</div>
             )}
 
-            {examDetails?.fileUrl ? (
+            {isPdf && examDetails?.fileUrl ? (
               <iframe
                 src={`${examDetails.fileUrl}#toolbar=1&navpanes=0&scrollbar=1`}
                 className="w-full h-full border-none"
                 title="PDF Preview"
               />
+            ) : isDocx && examDetails?.fileUrl ? (
+              <div className="w-full h-full flex flex-col min-h-0 bg-[#f3f4f6]">
+                {/* Toolbar */}
+                <div className="flex items-center gap-2 px-4 py-2 border-b border-[var(--border-default)] bg-white shrink-0">
+                  <div className="text-[12px] font-semibold text-[var(--text-secondary)] mr-auto">
+                    Xem trước DOCX
+                  </div>
+                  <button
+                    onClick={() => setDocxZoom(z => Math.max(50, z - 10))}
+                    className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors"
+                    title="Thu nhỏ"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </button>
+                  <span className="text-[12px] font-medium text-gray-600 w-10 text-center">
+                    {docxZoom}%
+                  </span>
+                  <button
+                    onClick={() => setDocxZoom(z => Math.min(200, z + 10))}
+                    className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors"
+                    title="Phóng to"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </button>
+                  <div className="w-[1px] h-4 bg-gray-200 mx-1"></div>
+                  <button
+                    onClick={() => {
+                      showSuccess('Đang tải về...');
+                      downloadFileFromUrl(examDetails.fileUrl, exam.title ? `${exam.title}.docx` : 'tai_lieu.docx');
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-gray-50 text-[12px] font-medium text-[var(--brand-600)] border border-[var(--brand-200)] transition-colors"
+                    title="Tải xuống"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Tải về
+                  </button>
+                </div>
+                {/* Scrollable Document Area */}
+                <div className="flex-1 min-h-0 overflow-auto p-4 md:p-8 flex justify-center items-start bg-[#f3f4f6]">
+                  <div 
+                    className="bg-white shadow-sm border border-gray-200 document-preview docx-content"
+                    style={{ 
+                      width: '800px',
+                      minHeight: '1131px',
+                      padding: '40px',
+                      zoom: `${docxZoom}%`
+                    } as React.CSSProperties}
+                  >
+                    <div dangerouslySetInnerHTML={{ __html: docxHtml }} />
+                  </div>
+                </div>
+              </div>
             ) : (
               <div className="bg-white max-w-[680px] mx-auto rounded-md pt-12 px-14 pb-12 shadow-[0_4px_20px_rgba(0,0,0,0.25)] mt-8 border border-gray-100">
                 <div className="text-center mb-8 pb-6 border-b-2 border-[#1B1F1C]">
