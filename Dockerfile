@@ -7,5 +7,10 @@ RUN pnpm build
 
 FROM nginx:1.27-alpine AS runtime
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy template to Nginx's template folder
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+# Restrict substitution to BACKEND_API_URL only
+ENV NGINX_ENVSUBST_FILTER="BACKEND_API_URL"
+# Default fallback if not passed (optional)
+ENV BACKEND_API_URL="http://localhost:8080"
 EXPOSE 80
