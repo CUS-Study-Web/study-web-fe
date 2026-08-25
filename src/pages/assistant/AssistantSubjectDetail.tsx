@@ -335,7 +335,7 @@ export default function AssistantSubjectDetail() {
                       Thời lượng
                     </th>
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
-                      Trạng thái
+                      Quyền truy cập
                     </th>
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]" />
                   </tr>
@@ -423,6 +423,9 @@ export default function AssistantSubjectDetail() {
                       Loại file
                     </th>
                     <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
+                      Quyền truy cập
+                    </th>
+                    <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">
                       Trạng thái
                     </th>
 
@@ -454,6 +457,13 @@ export default function AssistantSubjectDetail() {
                             </span>
                           );
                         })()}
+                      </td>
+                      <td className="py-3.5 px-5">
+                        <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${
+                          (ex as any).accessTier === 'VIP' ? 'bg-[#FFFBEB] text-[#D97706]' : 'bg-[var(--success-100)] text-[var(--success-700)]'
+                        }`}>
+                          {(ex as any).accessTier === 'VIP' ? 'VIP' : 'Public'}
+                        </span>
                       </td>
                       <td className="py-3.5 px-5">
                         <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${ex.status === 'DRAFT' ? 'bg-[var(--warning-100)] text-[var(--warning-700)]' : 'bg-[var(--success-100)] text-[var(--success-700)]'
@@ -491,14 +501,14 @@ export default function AssistantSubjectDetail() {
                   ))}
                   {isLoadingHomework && (
                     <tr>
-                      <td colSpan={5} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                      <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Đang tải bài tập...
                       </td>
                     </tr>
                   )}
                   {!isLoadingHomework && exercises.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                      <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Chưa có bài tập nào. Hãy tải lên bài tập đầu tiên.
                       </td>
                     </tr>
