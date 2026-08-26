@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { lessonService } from '../../services/lessonService';
 import type { LessonRequest } from '../../types/api/lesson.api';
 import { courseKeys } from './useCourses';
@@ -19,6 +19,23 @@ export const useGetLessonsQuery = (
   return useQuery({
     queryKey: lessonKeys.list(courseId, subjectId, params),
     queryFn: () => lessonService.getLessons(courseId, subjectId, params),
+    enabled: !!courseId && !!subjectId,
+  });
+};
+
+export const useGetInfiniteLessonsQuery = (
+  courseId: string,
+  subjectId: string,
+  params?: { size?: number; sort?: string[] }
+) => {
+  return useInfiniteQuery({
+    queryKey: lessonKeys.list(courseId, subjectId, { ...params, infinite: true }),
+    queryFn: ({ pageParam = 0 }) => lessonService.getLessons(courseId, subjectId, { ...params, page: pageParam as number }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      const { page, totalPages } = lastPage.paging;
+      return page + 1 < totalPages ? page + 1 : undefined;
+    },
     enabled: !!courseId && !!subjectId,
   });
 };

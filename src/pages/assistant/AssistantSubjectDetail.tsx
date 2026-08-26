@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantTabBar from '../../components/assistant/course/AssistantTabBar';
 import AssistantCreateLecturePopup from '../../components/assistant/course/AssistantCreateLecturePopup';
 import AssistantEditLecturePopup from '../../components/assistant/course/AssistantEditLecturePopup';
 import AssistantViewExercisePopup from '../../components/assistant/course/AssistantViewExercisePopup';
 import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
-import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
-import { useGetLessonsQuery, useDeleteLessonMutation } from '../../hooks/queries/useLessons';
-import { useGetHomeworkQuery, useDeleteAssessmentMutation } from '../../hooks/queries/useAssessments';
+import { useGetAssistantCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
+import { useDeleteLessonMutation, useGetInfiniteLessonsQuery } from '../../hooks/queries/useLessons';
+import { useDeleteAssessmentMutation, useGetInfiniteHomeworkQuery } from '../../hooks/queries/useAssessments';
 import { useNotification } from '../../components/common/NotificationProvider';
 import { ROUTES } from '../../utils/routes';
 import { getDisplayFileType, FILE_TYPE_COLORS, downloadFileFromUrl } from '../../utils/fileUtils';
@@ -210,7 +210,15 @@ function ExerciseActionMenu({ onView, onDownload, onEdit, onDelete }: ExerciseAc
 export default function AssistantSubjectDetail() {
   const { courseKey, subjectName } = useParams<{ courseKey: string; subjectName: string }>();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('bai-giang');
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(location.state?.activeTab || 'bai-giang');
+
+  // Sync tab if navigated with state
+  useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab);
+    }
+  }, [location.state?.activeTab]);
   const [isLecturePopupOpen, setIsLecturePopupOpen] = useState(false);
   const [editLecture, setEditLecture] = useState<any>(null);
   const [viewExercise, setViewExercise] = useState<any | null>(null);
@@ -223,20 +231,32 @@ export default function AssistantSubjectDetail() {
   const deleteMutation = useDeleteLessonMutation();
   const deleteExerciseMutation = useDeleteAssessmentMutation();
 
-  const { data: coursesData } = useGetCoursesQuery({ size: 100 });
+  const { data: coursesData } = useGetAssistantCoursesQuery({ size: 100 });
   const course = coursesData?.data.find((c) => c.id === courseKey);
 
   const { data: detailData } = useGetCourseDetailQuery(courseKey ?? '');
   const subject = detailData?.data.subjects.find(s => s.id === subjectId);
   const decodedSubject = subject?.name || 'Môn học';
 
-  // Fetch lectures (lessons)
-  const { data: lessonsData, isLoading: isLoadingLessons } = useGetLessonsQuery(courseKey ?? '', subjectId, { size: 100 });
-  const lectures = lessonsData?.data?.lessons || [];
+  // Fetch lectures (lessons) - Infinite Scroll
+  const {
+    data: lessonsData,
+    isLoading: isLoadingLessons,
+    fetchNextPage: fetchNextLessons,
+    hasNextPage: hasNextLessons,
+    isFetchingNextPage: isFetchingNextLessons,
+  } = useGetInfiniteLessonsQuery(courseKey ?? '', subjectId, { size: 20 });
+  const lectures = lessonsData?.pages.flatMap(page => page.data?.lessons || []) || [];
 
-  // Fetch exercises (homework)
-  const { data: homeworkData, isLoading: isLoadingHomework } = useGetHomeworkQuery(courseKey ?? '', { subjectId, size: 100 });
-  const exercises = homeworkData?.data || [];
+  // Fetch exercises (homework) - Infinite Scroll
+  const {
+    data: homeworkData,
+    isLoading: isLoadingHomework,
+    fetchNextPage: fetchNextHomework,
+    hasNextPage: hasNextHomework,
+    isFetchingNextPage: isFetchingNextHomework,
+  } = useGetInfiniteHomeworkQuery(courseKey ?? '', { subjectId, size: 20 });
+  const exercises = homeworkData?.pages.flatMap(page => page.data || []) || [];
 
   const handleDeleteLectureConfirm = () => {
     if (!deleteLectureId) return;
@@ -314,7 +334,7 @@ export default function AssistantSubjectDetail() {
 
       <AssistantTabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="mt-5 mb-18">
+      <div className="mt-5 mb-32">
         {/* ── Bài giảng tab ── */}
         {activeTab === 'bai-giang' && (
           <div className="bg-[var(--surface-card)] rounded-[18px] border border-[var(--border-default)] shadow-[var(--shadow-clay-sm)] overflow-hidden flex flex-col">
@@ -400,6 +420,19 @@ export default function AssistantSubjectDetail() {
                       </td>
                     </tr>
                   )}
+                  {hasNextLessons && (
+                    <tr>
+                      <td colSpan={6} className="p-5 text-center">
+                        <button
+                          onClick={() => fetchNextLessons()}
+                          disabled={isFetchingNextLessons}
+                          className="!font-[family-name:var(--font-heading)] !font-semibold !text-[13px] !text-[var(--success-600)] !hover:text-[var(--success-700)] !hover:underline !transition-colors !disabled:!opacity-50 !disabled:!cursor-not-allowed !cursor-pointer !bg-transparent !border-none !p-0 !m-0"
+                        >
+                          {isFetchingNextLessons ? 'Đang tải thêm...' : '+ Hiện thị thêm'}
+                        </button>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -459,10 +492,9 @@ export default function AssistantSubjectDetail() {
                         })()}
                       </td>
                       <td className="py-3.5 px-5">
-                        <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${
-                          (ex as any).accessTier === 'VIP' ? 'bg-[#FFFBEB] text-[#D97706]' : 'bg-[var(--success-100)] text-[var(--success-700)]'
-                        }`}>
-                          {(ex as any).accessTier === 'VIP' ? 'VIP' : 'Public'}
+                        <span className={`px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${((ex as any).tier === 'VIP' || (ex as any).accessTier === 'VIP') ? 'bg-[#FFFBEB] text-[#D97706]' : 'bg-[var(--success-100)] text-[var(--success-700)]'
+                          }`}>
+                          {((ex as any).tier === 'VIP' || (ex as any).accessTier === 'VIP') ? 'VIP' : 'Public'}
                         </span>
                       </td>
                       <td className="py-3.5 px-5">
@@ -482,7 +514,7 @@ export default function AssistantSubjectDetail() {
                                 const res = await assessmentService.getAssessmentDetail(courseKey ?? '', String(ex.id));
                                 if (res.data?.fileUrl) {
                                   downloadFileFromUrl(
-                                    res.data.fileUrl, 
+                                    res.data.fileUrl,
                                     ex.title ? `${ex.title}.${getDisplayFileType(ex.fileType, res.data.fileUrl).toLowerCase()}` : `tai_lieu.${getDisplayFileType(ex.fileType, res.data.fileUrl).toLowerCase()}`
                                   );
                                 } else {
@@ -510,6 +542,19 @@ export default function AssistantSubjectDetail() {
                     <tr>
                       <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                         Chưa có bài tập nào. Hãy tải lên bài tập đầu tiên.
+                      </td>
+                    </tr>
+                  )}
+                  {hasNextHomework && (
+                    <tr>
+                      <td colSpan={6} className="p-5 text-center">
+                        <button
+                          onClick={() => fetchNextHomework()}
+                          disabled={isFetchingNextHomework}
+                          className="font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--success-600)] hover:text-[var(--success-700)] hover:underline transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer bg-transparent border-none p-0 m-0"
+                        >
+                          {isFetchingNextHomework ? 'Đang tải thêm...' : '+ Hiện thị thêm'}
+                        </button>
                       </td>
                     </tr>
                   )}

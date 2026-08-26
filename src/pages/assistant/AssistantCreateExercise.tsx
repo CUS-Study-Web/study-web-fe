@@ -60,7 +60,7 @@ export default function AssistantCreateExercise() {
 
   const handleBack = () => {
     if (subjectNameParam) {
-      navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, subjectNameParam));
+      navigate(ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL(key, subjectNameParam), { state: { activeTab: 'bai-tap' } });
     } else {
       navigate(ROUTES.ASSISTANT.COURSE_DETAIL(key));
     }
@@ -83,15 +83,15 @@ export default function AssistantCreateExercise() {
     const formData = new FormData();
     formData.append('assessmentType', 'HOMEWORK');
     formData.append('title', data.title);
+    formData.append('tier', data.accessTier);
     formData.append('file', file);
     formData.append('fileType', data.fileType);
     formData.append('subjectId', data.subject);
     formData.append('numQuestions', data.questionCount.toString());
     if (data.solutionLink) {
-    formData.append('explanationUrl', data.solutionLink);
+      formData.append('explanationUrl', data.solutionLink);
     }
     formData.append('status', data.status === 'draft' ? 'DRAFT' : 'PUBLISHED');
-    formData.append('accessTier', data.accessTier);
 
     // answers format: [{"questionNumber":1,"correctAnswer":"A"}]
     const answerKeysStr = JSON.stringify(data.answers);
