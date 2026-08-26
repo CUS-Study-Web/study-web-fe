@@ -6,7 +6,7 @@ import AssistantCreateLecturePopup from '../../components/assistant/course/Assis
 import AssistantEditLecturePopup from '../../components/assistant/course/AssistantEditLecturePopup';
 import AssistantViewExercisePopup from '../../components/assistant/course/AssistantViewExercisePopup';
 import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
-import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
+import { useGetAssistantCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
 import { useDeleteLessonMutation, useGetInfiniteLessonsQuery } from '../../hooks/queries/useLessons';
 import { useDeleteAssessmentMutation, useGetInfiniteHomeworkQuery } from '../../hooks/queries/useAssessments';
 import { useNotification } from '../../components/common/NotificationProvider';
@@ -231,7 +231,7 @@ export default function AssistantSubjectDetail() {
   const deleteMutation = useDeleteLessonMutation();
   const deleteExerciseMutation = useDeleteAssessmentMutation();
 
-  const { data: coursesData } = useGetCoursesQuery({ size: 100 });
+  const { data: coursesData } = useGetAssistantCoursesQuery({ size: 100 });
   const course = coursesData?.data.find((c) => c.id === courseKey);
 
   const { data: detailData } = useGetCourseDetailQuery(courseKey ?? '');

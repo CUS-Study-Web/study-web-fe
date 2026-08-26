@@ -6,7 +6,7 @@ import AssistantTabBar from '../../components/assistant/course/AssistantTabBar';
 import AssistantSubjectCard from '../../components/assistant/course/AssistantSubjectCard';
 import AssistantExamCard from '../../components/assistant/course/AssistantExamCard';
 import AssistantCreateLecturePopup from '../../components/assistant/course/AssistantCreateLecturePopup';
-import { useGetCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
+import { useGetAssistantCoursesQuery, useGetCourseDetailQuery } from '../../hooks/queries/useCourses';
 import { useGetExamsQuery } from '../../hooks/queries/useAssessments';
 import { ROUTES } from '../../utils/routes';
 import { getDisplayFileType, downloadFileFromUrl } from '../../utils/fileUtils';
@@ -30,7 +30,7 @@ export default function AssistantCourseDetail() {
   
   const key = courseKey ?? '';
 
-  const { data: coursesData } = useGetCoursesQuery({ size: 100 });
+  const { data: coursesData } = useGetAssistantCoursesQuery({ size: 100 });
   const course = coursesData?.data.find((c) => c.id === key);
 
   const { data: detailData, isLoading } = useGetCourseDetailQuery(key);
