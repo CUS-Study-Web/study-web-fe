@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { assessmentService } from '../../services/assessmentService';
 import type { AssessmentSubmitRequest } from '../../types/api/assessment.api';
 import { courseKeys } from './useCourses';
@@ -53,6 +53,19 @@ export const useGetHomeworkQuery = (courseId: string, params: { subjectId: strin
   return useQuery({
     queryKey: assessmentKeys.homework(courseId, params),
     queryFn: () => assessmentService.getHomework(courseId, params),
+    enabled: !!courseId && !!params.subjectId,
+  });
+};
+
+export const useGetInfiniteHomeworkQuery = (courseId: string, params: { subjectId: string; size?: number; sort?: string[] }) => {
+  return useInfiniteQuery({
+    queryKey: assessmentKeys.homework(courseId, { ...params, infinite: true }),
+    queryFn: ({ pageParam = 0 }) => assessmentService.getHomework(courseId, { ...params, page: pageParam as number }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      const { page, totalPages } = lastPage.paging;
+      return page + 1 < totalPages ? page + 1 : undefined;
+    },
     enabled: !!courseId && !!params.subjectId,
   });
 };
