@@ -5,7 +5,7 @@ import AssistantExamFormPanel, { type AssistantExamFormPanelHandle } from '../..
 import { ROUTES } from '../../utils/routes';
 import { useNotification } from '../../components/common/NotificationProvider';
 import { useGetAssessmentDetailQuery, useUpdateAssessmentMutation } from '../../hooks/queries/useAssessments';
-import { useGetCoursesQuery } from '../../hooks/queries/useCourses';
+import { useGetAssistantCoursesQuery } from '../../hooks/queries/useCourses';
 import { validateDocumentFile, downloadFileFromUrl } from '../../utils/fileUtils';
 import * as mammoth from 'mammoth';
 
@@ -23,7 +23,7 @@ export default function AssistantEditExam() {
   const { showSuccess, showError } = useNotification();
   const updateMutation = useUpdateAssessmentMutation();
 
-  const { data: coursesData } = useGetCoursesQuery({ size: 100 });
+  const { data: coursesData } = useGetAssistantCoursesQuery({ size: 100 });
   const course = coursesData?.data.find((c) => c.id === courseKey);
   const key = courseKey ?? '';
 

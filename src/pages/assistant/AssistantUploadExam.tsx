@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AssistantCoursePageHeader from '../../components/assistant/course/AssistantCoursePageHeader';
 import AssistantExamFormPanel, { type AssistantExamFormPanelHandle } from '../../components/assistant/course/AssistantExamFormPanel';
-import { useGetCoursesQuery } from '../../hooks/queries/useCourses';
+import { useGetAssistantCoursesQuery } from '../../hooks/queries/useCourses';
 import { ROUTES } from '../../utils/routes';
 import { useNotification } from '../../components/common/NotificationProvider';
 import { useCreateAssessmentMutation } from '../../hooks/queries/useAssessments';
@@ -22,7 +22,7 @@ export default function AssistantUploadExam() {
   const { showSuccess, showError } = useNotification();
   const createMutation = useCreateAssessmentMutation();
 
-  const { data: coursesData } = useGetCoursesQuery({ size: 100 });
+  const { data: coursesData } = useGetAssistantCoursesQuery({ size: 100 });
   const course = coursesData?.data.find((c) => c.id === courseKey);
   const key = courseKey ?? '';
 
