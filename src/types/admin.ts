@@ -93,7 +93,7 @@ type AsstActivity = {
   asst: string
 }
 
-type WTab = "trang-chu" | "footer" | "goi-cuoc" | "courses" | "instructors" | "achievements" | "reviews"
+type WTab = "trang-chu" | "footer" | "goi-cuoc" | "courses" | "doc-types" | "instructors" | "achievements" | "reviews"
 
 type ModalKey =
   | "add-course"
@@ -104,6 +104,8 @@ type ModalKey =
   | "edit-achievement"
   | "add-review"
   | "edit-review"
+  | "add-doc-type"
+  | "edit-doc-type"
 
 export type {
   SysTab,
@@ -118,5 +120,11 @@ export type {
   Review,
   AsstActivity,
   WTab,
-  ModalKey
+  ModalKey,
+  DocType
+}
+
+type DocType = {
+  id: number
+  name: string
 }
