@@ -56,6 +56,7 @@ type DayStats = {
 }
 
 import type { CourseSummaryResponse } from './api/course.api'
+import type { BadgeResponse } from './api/badge.api'
 
 export type Course = CourseSummaryResponse
 
@@ -124,7 +125,4 @@ export type {
   DocType
 }
 
-type DocType = {
-  id: number
-  name: string
-}
+type DocType = BadgeResponse

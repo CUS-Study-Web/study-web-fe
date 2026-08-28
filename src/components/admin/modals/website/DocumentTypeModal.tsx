@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { ModalHeader, mLabel, mInput, mSubmitBtnClass } from './ModalHelpers'
+import type { BadgeResponse, BadgeRequest } from '../../../../types/api/badge.api'
+import { useCreateBadgeMutation, useUpdateBadgeMutation } from '../../../../hooks/queries/useBadges'
+import { useNotification } from '../../../../components/common/NotificationProvider'
 
 const Spinner = () => (
   <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -9,24 +12,53 @@ const Spinner = () => (
 )
 
 type DocumentTypeModalProps = {
-  docType?: any
-  onSave: (data: any) => void
+  docType?: BadgeResponse
   onClose: () => void
 }
 
-export const DocumentTypeModal = ({ docType, onSave, onClose }: DocumentTypeModalProps) => {
+export const DocumentTypeModal = ({ docType, onClose }: DocumentTypeModalProps) => {
   const isEdit = !!docType
   const [name, setName] = useState(docType?.name || '')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  const createMutation = useCreateBadgeMutation()
+  const updateMutation = useUpdateBadgeMutation()
+  const isSubmitting = createMutation.isPending || updateMutation.isPending
+  
+  const { showSuccess, showError } = useNotification()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 500))
-    onSave({ name })
-    setIsSubmitting(false)
-    onClose()
+    
+    if (!name.trim()) {
+      showError('Tên loại tài liệu không được để trống')
+      return
+    }
+
+    const start = Date.now()
+    const payload: BadgeRequest = { name: name.trim() }
+
+    try {
+      if (isEdit && docType) {
+        await updateMutation.mutateAsync({ id: docType.id, data: payload })
+      } else {
+        await createMutation.mutateAsync(payload)
+      }
+      
+      const elapsed = Date.now() - start
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
+      
+      showSuccess(isEdit ? 'Cập nhật loại tài liệu thành công!' : 'Thêm loại tài liệu thành công!')
+      onClose()
+    } catch (error: any) {
+      const elapsed = Date.now() - start
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
+      
+      let errMsg = error?.response?.data?.message || error?.message || 'Đã xảy ra lỗi!'
+      if (errMsg.toLowerCase().includes('already exists')) {
+        errMsg = 'Loại tài liệu này đã tồn tại'
+      }
+      showError(errMsg)
+    }
   }
 
   return (

@@ -24,6 +24,10 @@ import {
   useGetAdminCoursesQuery,
   useDeleteCourseMutation,
 } from '../../hooks/queries/useCourses'
+import {
+  useGetBadgesQuery,
+  useDeleteBadgeMutation
+} from '../../hooks/queries/useBadges'
 import { useNotification } from '../../components/common/NotificationProvider'
 
 interface DocTypeActionMenuProps {
@@ -119,16 +123,15 @@ const AdminWebsite = () => {
 
   const deleteCourse = useDeleteCourseMutation()
 
+  // API state for doc types (badges)
+  const { data: badgesData, isLoading: isLoadingBadges } = useGetBadgesQuery({ page: 0, size: 100 })
+  const docTypes = badgesData?.data || []
+  const deleteBadge = useDeleteBadgeMutation()
+
   // Local list states (mocked ones)
   const [instructors, setInstructors] = useState<Instructor[]>(WEBSITE_INSTRUCTORS)
   const [achievements, setAchievements] = useState<Achievement[]>(WEBSITE_ACHIEVEMENTS)
   const [reviews, setReviews] = useState<Review[]>(WEBSITE_REVIEWS)
-  const [docTypes, setDocTypes] = useState<DocType[]>([
-    { id: 1, name: 'Bài tập' },
-    { id: 2, name: 'Đề thi' },
-    { id: 3, name: 'Lý thuyết' },
-    { id: 4, name: 'Toán' },
-  ])
 
   // Edit item trackers
   const [editingCourse, setEditingCourse] = useState<Course | undefined>(undefined)
@@ -227,18 +230,6 @@ const AdminWebsite = () => {
     }
   }
 
-  const handleSaveDocType = (data: Partial<DocType>) => {
-    if (editingDocType) {
-      setDocTypes((prev) => prev.map((d) => (d.id === editingDocType.id ? { ...d, ...data } as DocType : d)))
-    } else {
-      const newDoc: DocType = {
-        id: Date.now(),
-        name: data.name || ''
-      }
-      setDocTypes((prev) => [...prev, newDoc])
-    }
-  }
-
   // Delete Handlers
   const handleDeleteCourse = async (id: string) => {
     setDeletingId(`course-${id}`)
@@ -288,13 +279,22 @@ const AdminWebsite = () => {
     }
   }
 
-  const handleDeleteDocType = async (id: number) => {
+  const handleDeleteDocType = async (id: string) => {
     setDeletingId(`doctype-${id}`)
-    await new Promise(r => setTimeout(r, 500))
-    setDocTypes((prev) => prev.filter((d) => d.id !== id))
-    showSuccess("Xóa loại tài liệu thành công!")
-    setDeletingId(null)
-    setDocTypeToDelete(null)
+    const startTime = Date.now()
+    try {
+      await deleteBadge.mutateAsync(id)
+      const elapsed = Date.now() - startTime
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
+      showSuccess("Xóa loại tài liệu thành công!")
+    } catch {
+      const elapsed = Date.now() - startTime
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
+      showError("Lỗi khi xóa loại tài liệu!")
+    } finally {
+      setDeletingId(null)
+      setDocTypeToDelete(null)
+    }
   }
 
   // Common styles
@@ -456,29 +456,39 @@ const AdminWebsite = () => {
                       <div className={thClass} style={{ padding: 0 }}></div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 p-5">
-                      {[...docTypes].sort((a, b) => a.name.localeCompare(b.name)).map((type) => (
-                        <div key={type.id} className="border border-[var(--border-300)] rounded-[12px] p-4 flex items-center justify-between bg-white hover:shadow-[var(--shadow-clay-sm)] transition-shadow">
-                          <span className="font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)]">
-                            {type.name}
-                          </span>
-                          <div className="relative">
-                            {deletingId === `doctype-${type.id}` ? (
-                              <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                            ) : (
-                              <DocTypeActionMenu
-                                onEdit={() => {
-                                  setEditingDocType(type)
-                                  setShowModal("edit-doc-type")
-                                }}
-                                onDelete={() => setDocTypeToDelete(type)}
-                              />
-                            )}
-                          </div>
+                      {isLoadingBadges ? (
+                        <div className="col-span-full py-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                          Đang tải dữ liệu...
                         </div>
-                      ))}
+                      ) : docTypes.length === 0 ? (
+                        <div className="col-span-full py-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                          Không có loại tài liệu nào.
+                        </div>
+                      ) : (
+                        [...docTypes].sort((a, b) => a.name.localeCompare(b.name)).map((type) => (
+                          <div key={type.id} className="border border-[var(--border-300)] rounded-[12px] p-4 flex items-center justify-between bg-white hover:shadow-[var(--shadow-clay-sm)] transition-shadow">
+                            <span className="font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)]">
+                              {type.name}
+                            </span>
+                            <div className="relative">
+                              {deletingId === `doctype-${type.id}` ? (
+                                <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                              ) : (
+                                <DocTypeActionMenu
+                                  onEdit={() => {
+                                    setEditingDocType(type)
+                                    setShowModal("edit-doc-type")
+                                  }}
+                                  onDelete={() => setDocTypeToDelete(type)}
+                                />
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 )}
@@ -762,10 +772,10 @@ const AdminWebsite = () => {
       )}
 
       {showModal === "add-doc-type" && (
-        <DocumentTypeModal onSave={handleSaveDocType} onClose={() => setShowModal(null)} />
+        <DocumentTypeModal onClose={() => setShowModal(null)} />
       )}
       {showModal === "edit-doc-type" && (
-        <DocumentTypeModal docType={editingDocType} onSave={handleSaveDocType} onClose={() => setShowModal(null)} />
+        <DocumentTypeModal docType={editingDocType} onClose={() => setShowModal(null)} />
       )}
 
       {/* Delete Confirm Modal for Course */}
