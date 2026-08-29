@@ -13,6 +13,7 @@ export const CreateVipModal = ({ onClose }: CreateVipModalProps) => {
   const [endDate, setEndDate] = useState('')
   const [note, setNote] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [err, setErr] = useState('')
 
   const createMutation = useCreateVipAccountMutation()
@@ -127,14 +128,27 @@ export const CreateVipModal = ({ onClose }: CreateVipModalProps) => {
         </div>
 
         <div className="mb-3.5">
-          <label className={labelClass}>Mật khẩu (tùy chọn)</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={inputClass}
-            placeholder="Để trống nếu không đặt"
-          />
+          <label className={labelClass}>Mật khẩu</label>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={`${inputClass} pr-[40px]`}
+              placeholder="Để trống nếu không đặt"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-[10px] top-1/2 -translate-y-1/2 bg-transparent border-none p-[4px] cursor-pointer text-[var(--text-secondary-400)] hover:text-[var(--text-primary)] flex items-center justify-center"
+            >
+              {showPassword ? (
+                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg>
+              ) : (
+                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              )}
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-3.5">
