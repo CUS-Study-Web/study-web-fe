@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   useGetVipRequestsQuery,
   useApproveVipRequestMutation,
@@ -10,6 +10,10 @@ export const VipRequestsTab = () => {
   const [vipSearch, setVipSearch] = useState('')
   const [vipFilter, setVipFilter] = useState('Tất cả')
   const [page, setPage] = useState(1)
+
+  useEffect(() => {
+    setPage(1)
+  }, [vipSearch, vipFilter])
 
   const statusMap: Record<string, string> = {
     'Chờ duyệt': 'WAITING',

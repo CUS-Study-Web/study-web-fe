@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { LearnerSummaryResponse } from '../../../types/api/system.api'
 import { StudentDetailModal, CreateVipModal } from '../modals/system'
 import {
@@ -14,6 +14,10 @@ export const StudentTab = () => {
   const [selectedStudent, setSelectedStudent] = useState<LearnerSummaryResponse | null>(null)
   const [showVipModal, setShowVipModal] = useState(false)
   const [page, setPage] = useState(1)
+
+  useEffect(() => {
+    setPage(1)
+  }, [searchQuery])
 
   const { data: learnersData, isLoading } = useListLearnersQuery({
     search: searchQuery || undefined,

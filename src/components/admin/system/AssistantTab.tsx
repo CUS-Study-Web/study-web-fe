@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { AssistantSummaryResponse } from '../../../types/api/system.api'
 import { AssistantDetailModal, CreateAssistantModal } from '../modals/system'
 import {
@@ -14,6 +14,10 @@ export const AssistantTab = () => {
   const [selectedAsst, setSelectedAsst] = useState<AssistantSummaryResponse | null>(null)
   const [showCreateAsst, setShowCreateAsst] = useState(false)
   const [page, setPage] = useState(1)
+
+  useEffect(() => {
+    setPage(1)
+  }, [searchQuery])
 
   const { data: assistantData, isLoading } = useListAssistantsQuery({
     search: searchQuery || undefined,
