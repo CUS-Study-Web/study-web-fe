@@ -1,13 +1,53 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import GuestPageLayout from "../../components/guest/GuestPageLayout";
 import DocumentCard from "../../components/guest/DocumentCard";
-import { useGetInfiniteDocumentsQuery } from "../../hooks/queries/useDocuments";
+import { useGetInfiniteDocumentsQuery, useGetInfiniteGuestDocumentsQuery } from "../../hooks/queries/useDocuments";
 import { useAuth } from "../../contexts/AuthContext";
-import type { DocumentResponse, DocType } from "../../types/api/document.api";
+import type { DocumentResponse, GuestDocumentResponse, DocType } from "../../types/api/document.api";
+import { SORT_OPTIONS } from "../../components/assistant/material/AssistantMaterialSortPopup";
 
 export default function DocumentsPage() {
   const [activeTab, setActiveTab] = useState<DocType>("THEORY");
-  const { user } = useAuth();
+  const [sort, setSort] = useState<string>("createdAt,desc");
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sortOpen) return;
+    const handleClose = (e: MouseEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent && e.key !== 'Escape') return;
+      if (e instanceof MouseEvent) {
+        if (sortRef.current?.contains(e.target as Node)) return;
+      }
+      setSortOpen(false);
+    };
+    document.addEventListener('mousedown', handleClose);
+    document.addEventListener('keydown', handleClose);
+    return () => {
+      document.removeEventListener('mousedown', handleClose);
+      document.removeEventListener('keydown', handleClose);
+    };
+  }, [sortOpen]);
+
+  const activeSortOption = SORT_OPTIONS.find(opt => opt.value === sort) || SORT_OPTIONS[0];
+  const { user, isLoading: isAuthLoading } = useAuth();
+
+  const authReady = !isAuthLoading;
+  const isGuest = !user;
+
+  const authQuery = useGetInfiniteDocumentsQuery({
+    size: 12,
+    docType: activeTab,
+    sort: ["accessTier,asc", sort],
+    enabled: authReady && !isGuest,
+  });
+
+  const guestQuery = useGetInfiniteGuestDocumentsQuery({
+    size: 12,
+    docType: activeTab,
+    sort: ["accessTier,asc", sort],
+    enabled: authReady && isGuest,
+  });
 
   const {
     data,
@@ -15,11 +55,7 @@ export default function DocumentsPage() {
     hasNextPage,
     isFetchingNextPage,
     isLoading,
-  } = useGetInfiniteDocumentsQuery({
-    size: 12,
-    docType: activeTab,
-    sort: ["accessTier,asc", "createdAt,desc"],
-  });
+  } = isGuest ? guestQuery : authQuery;
 
   const documents = data?.pages.flatMap((page) => page.data) || [];
 
@@ -30,27 +66,64 @@ export default function DocumentsPage() {
       description="Tải về các tài liệu ôn tập chất lượng cao. Một số tài liệu yêu cầu tài khoản VIP."
     >
       <section className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-8 xl:px-10 mt-10 mb-20">
-        {/* Tabs: Lý thuyết / Bài tập */}
-        <div className="flex items-center gap-3 mb-12">
-          <div
-            onClick={() => setActiveTab("THEORY")}
-            className={`px-8 py-2.5 font-extrabold rounded-full transition-all text-sm cursor-pointer shadow-xs ${
-              activeTab === "THEORY"
-                ? "bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] shadow-sm"
-                : "bg-white text-[#333a35] border border-[var(--border-500)] hover:bg-[#edf4ee] hover:text-[var(--brand-base-600)]"
-            }`}
-          >
-            Lý thuyết
+        {/* Tabs and Sort */}
+        <div className="flex items-center justify-between mb-12">
+          <div className="flex items-center gap-3">
+            <div
+              onClick={() => setActiveTab("THEORY")}
+              className={`px-8 py-2.5 font-extrabold rounded-full transition-all text-sm cursor-pointer shadow-xs ${activeTab === "THEORY"
+                  ? "bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] shadow-sm"
+                  : "bg-white text-[#333a35] border border-[var(--border-500)] hover:bg-[#edf4ee] hover:text-[var(--brand-base-600)]"
+                }`}
+            >
+              Lý thuyết
+            </div>
+            <div
+              onClick={() => setActiveTab("EXERCISE")}
+              className={`px-8 py-2.5 font-extrabold rounded-full transition-all text-sm cursor-pointer shadow-xs ${activeTab === "EXERCISE"
+                  ? "bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] shadow-sm"
+                  : "bg-white text-[#333a35] border border-[var(--border-500)] hover:bg-[#edf4ee] hover:text-[var(--brand-base-600)]"
+                }`}
+            >
+              Bài tập
+            </div>
           </div>
-          <div
-            onClick={() => setActiveTab("EXERCISE")}
-            className={`px-8 py-2.5 font-extrabold rounded-full transition-all text-sm cursor-pointer shadow-xs ${
-              activeTab === "EXERCISE"
-                ? "bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] shadow-sm"
-                : "bg-white text-[#333a35] border border-[var(--border-500)] hover:bg-[#edf4ee] hover:text-[var(--brand-base-600)]"
-            }`}
-          >
-            Bài tập
+
+          <div className="relative" ref={sortRef}>
+            <div
+              onClick={() => setSortOpen(!sortOpen)}
+              className="px-6 py-2.5 font-extrabold rounded-full transition-all text-sm cursor-pointer shadow-xs bg-[var(--brand-base-600)] !text-white border border-[var(--brand-base-600)] flex items-center gap-2 outline-none"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 5h10M11 9h7M11 13h4M3 17l4 4 4-4M7 21V3" />
+              </svg>
+              Sắp xếp: <span className="font-semibold">{activeSortOption.label}</span>
+            </div>
+
+            {sortOpen && (
+              <div className="absolute right-0 top-[calc(100%+8px)] z-50 bg-white rounded-[12px] border border-[var(--border-default)] py-2 min-w-[200px] shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
+                {SORT_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => {
+                      setSort(opt.value);
+                      setSortOpen(false);
+                    }}
+                    className={`flex items-center gap-3 w-full px-4 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-left transition-colors hover:bg-[var(--surface-500)] ${sort === opt.value ? 'text-[var(--brand-base-600)] bg-[#edf4ee] hover:bg-[#edf4ee]' : 'text-[var(--text-primary)]'
+                      }`}
+                  >
+                    {sort === opt.value ? (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    ) : (
+                      <div className="w-[16px]" />
+                    )}
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -73,13 +146,13 @@ export default function DocumentsPage() {
               Chưa có tài liệu nào
             </div>
           ) : (
-            documents.map((doc: DocumentResponse, index: number) => {
+            documents.map((doc: DocumentResponse | GuestDocumentResponse, index: number) => {
               const isLocked = doc.accessTier === "VIP" && !user?.isVip;
-              const type = doc.badges && doc.badges.length > 0 ? doc.badges[0].name : (doc.docType === 'THEORY' ? 'LÝ THUYẾT' : 'BÀI TẬP');
-              const tag = doc.badges && doc.badges.length > 1 ? doc.badges[1].name : (doc.fileType || 'PDF');
-              
+              const type = doc.badges && doc.badges.length > 0 ? doc.badges[0].name : (('docType' in doc && doc.docType === 'THEORY') ? 'LÝ THUYẾT' : 'BÀI TẬP');
+              const tag = doc.badges && doc.badges.length > 1 ? doc.badges[1].name : (('fileType' in doc && doc.fileType) || 'TÀI LIỆU');
+
               return (
-                <DocumentCard 
+                <DocumentCard
                   key={doc.id}
                   id={doc.id}
                   title={doc.title}
@@ -90,7 +163,7 @@ export default function DocumentsPage() {
                   index={index}
                   pages={doc.numPages}
                   downloads={doc.downloadCount}
-                  createdAt={doc.createdAt}
+                  createdAt={'createdAt' in doc ? doc.createdAt : undefined}
                 />
               );
             })

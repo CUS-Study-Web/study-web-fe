@@ -33,6 +33,7 @@ export interface DocumentDownloadResponse {
 export type PageResponseDocumentResponse = PageResponse<DocumentResponse>;
 export type SingleResponseDocumentResponse = SingleResponse<DocumentResponse>;
 export type SingleResponseDocumentDownloadResponse = SingleResponse<DocumentDownloadResponse>;
+export type PageResponseGuestDocumentResponse = PageResponse<GuestDocumentResponse>;
 
 // Request types for reference (not strictly used since we send FormData, but good for typing params)
 export interface CreateDocumentRequest {
@@ -57,4 +58,14 @@ export interface UpdateDocumentRequest {
   youtubeUrl?: string;
   accessTier?: AccessTier;
   badgeIds?: string[];
+}
+
+export interface GuestDocumentResponse {
+  id: string;
+  title: string;
+  description: string;
+  numPages: number;
+  downloadCount: number;
+  accessTier: AccessTier;
+  badges: BadgeResponse[];
 }

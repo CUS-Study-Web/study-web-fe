@@ -33,6 +33,7 @@ export const useGetInfiniteDocumentsQuery = (params: {
   accessTier?: AccessTier;
   badgeId?: string;
   search?: string;
+  enabled?: boolean;
 }) => {
   return useInfiniteQuery({
     queryKey: documentKeys.list({ ...params, infinite: true }),
@@ -43,6 +44,7 @@ export const useGetInfiniteDocumentsQuery = (params: {
       const { page, totalPages } = lastPage.paging;
       return page + 1 < totalPages ? page + 1 : undefined;
     },
+    enabled: params.enabled,
   });
 };
 
@@ -89,5 +91,26 @@ export const useDeleteDocumentMutation = () => {
 export const useDownloadDocumentMutation = () => {
   return useMutation({
     mutationFn: documentService.downloadDocument,
+  });
+};
+
+export const useGetInfiniteGuestDocumentsQuery = (params: {
+  size: number;
+  sort?: string[];
+  docType?: DocType;
+  badgeId?: string;
+  search?: string;
+  enabled?: boolean;
+}) => {
+  return useInfiniteQuery({
+    queryKey: documentKeys.list({ ...params, guest: true, infinite: true }),
+    queryFn: ({ pageParam = 0 }) => 
+      documentService.getGuestDocuments({ ...params, page: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      const { page, totalPages } = lastPage.paging;
+      return page + 1 < totalPages ? page + 1 : undefined;
+    },
+    enabled: params.enabled,
   });
 };

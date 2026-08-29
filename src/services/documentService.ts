@@ -3,6 +3,7 @@ import type {
   PageResponseDocumentResponse, 
   SingleResponseDocumentResponse, 
   SingleResponseDocumentDownloadResponse,
+  PageResponseGuestDocumentResponse,
   DocType,
   AccessTier
 } from '../types/api/document.api';
@@ -62,6 +63,27 @@ export const documentService = {
 
   downloadDocument: async (id: string) => {
     const { data } = await apiClient.post<SingleResponseDocumentDownloadResponse>(`/api/documents/${id}/download`);
+    return data;
+  },
+
+  getGuestDocuments: async (params: {
+    page: number;
+    size: number;
+    sort?: string[];
+    docType?: DocType;
+    badgeId?: string;
+    search?: string;
+  }) => {
+    const query = new URLSearchParams();
+    if (params.page !== undefined) query.append('page', params.page.toString());
+    if (params.size !== undefined) query.append('size', params.size.toString());
+    if (params.docType) query.append('docType', params.docType);
+    if (params.badgeId) query.append('badgeId', params.badgeId);
+    if (params.search) query.append('search', params.search);
+    if (params.sort) {
+      params.sort.forEach(s => query.append('sort', s));
+    }
+    const { data } = await apiClient.get<PageResponseGuestDocumentResponse>(`/api/documents/guest?${query.toString()}`);
     return data;
   }
 };
