@@ -40,7 +40,7 @@ const AdminSystem = () => {
   const regularCount = normalData?.data?.count ?? 0;
   const vipCount = vipData?.data?.count ?? 0;
   const assistantCount = assistantData?.data?.count ?? 0;
-  const bannedCount = lockedData?.data?.count ?? 0;
+  const lockedCount = lockedData?.data?.count ?? 0;
 
   return (
     <div className="max-w-[1280px] mx-auto px-[28px] pt-[40px] pb-[80px]">
@@ -59,7 +59,7 @@ const AdminSystem = () => {
         regularCount={regularCount}
         vipCount={vipCount}
         assistantCount={assistantCount}
-        bannedCount={bannedCount}
+        lockedCount={lockedCount}
       />
 
       {/* Tab panel */}
