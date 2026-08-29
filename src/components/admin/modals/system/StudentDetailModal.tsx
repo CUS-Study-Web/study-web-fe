@@ -1,7 +1,7 @@
-import type { Student } from '../../../../types/admin'
+import type { LearnerSummaryResponse } from '../../../../types/api/system.api'
 
 type StudentDetailModalProps = {
-  student: Student
+  student: LearnerSummaryResponse
   onClose: () => void
 }
 
@@ -18,32 +18,36 @@ export const StudentDetailModal = ({ student, onClose }: StudentDetailModalProps
         {/* Header - Green Gradient */}
         <div className="bg-gradient-to-br from-[var(--brand-500)] to-[var(--brand-700)] px-8 py-7 flex items-center gap-[18px]">
           <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
-            </svg>
+            {student.avatarUrl ? (
+               <img src={student.avatarUrl} alt="avatar" className="w-full h-full rounded-full object-cover" />
+            ) : (
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
+              </svg>
+            )}
           </div>
           <div className="flex-1 min-w-0">
             <div className="[font-family:var(--font-heading)] font-bold text-lg text-white truncate">
               {student.name}
             </div>
             <div className="[font-family:var(--font-body)] text-sm text-white/80 truncate">
-              {student.email}
+              {student.gmail}
             </div>
           </div>
           <div className="flex gap-2">
-            {student.vip && (
+            {student.tier === 'VIP' && (
               <span className="bg-[var(--warning-100)] text-[var(--warning-800)] rounded-full px-3 py-1 [font-family:var(--font-heading)] font-bold text-[11px] whitespace-nowrap">
                 ⭐ VIP
               </span>
             )}
             <span
               className={`rounded-full px-3 py-1 [font-family:var(--font-heading)] font-semibold text-[11px] whitespace-nowrap ${
-                student.status === 'Hoạt động'
+                student.status === 'ACTIVE'
                   ? 'bg-[var(--success-50)] text-[var(--success-500)]'
                   : 'bg-[var(--warning-50)] text-[var(--warning-500)]'
               }`}
             >
-              {student.status}
+              {student.status === 'ACTIVE' ? 'Hoạt động' : student.status === 'INACTIVE' ? 'Bị khóa' : 'Bị cấm'}
             </span>
           </div>
         </div>
@@ -51,10 +55,10 @@ export const StudentDetailModal = ({ student, onClose }: StudentDetailModalProps
         {/* Info Grid */}
         <div className="px-8 py-6 grid grid-cols-2 gap-3.5">
           {[
-            { label: "Ngày tham gia", value: student.joined || "Chưa rõ" },
-            { label: "Đăng nhập gần nhất", value: student.lastLogin },
-            { label: "Số bài thi đã làm", value: `${student.examsDone || 0} bài` },
-            { label: "Điểm trung bình", value: `${student.avgScore} / 10` },
+            { label: "Khóa học", value: student.primaryCourse || "Chưa rõ" },
+            { label: "Đăng nhập gần nhất", value: student.lastLogin || "Chưa rõ" },
+            { label: "Số bài thi đã làm", value: `${student.numExams || 0} bài` },
+            { label: "Điểm trung bình", value: `${student.averageScore || 0} / 10` },
           ].map((f) => (
             <div key={f.label} className="bg-[var(--surface-500)] rounded-[var(--radius-sm)] px-4 py-3">
               <div className="[font-family:var(--font-heading)] font-semibold text-[11px] text-[var(--brand-500)] uppercase tracking-[0.4px] mb-1">

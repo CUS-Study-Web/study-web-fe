@@ -1,21 +1,15 @@
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../../../../utils/routes'
-import type { Assistant } from '../../../../types/admin'
+import type { AssistantSummaryResponse } from '../../../../types/api/system.api'
 
 type AssistantDetailModalProps = {
-  asst: Assistant
+  asst: AssistantSummaryResponse
   onClose: () => void
-  navigate?: (p: any) => void
 }
 
 export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProps) => {
   const navigate = useNavigate()
-  const actLog = [
-    { time: "Hôm nay, 10:42", text: "Đăng tải đề thi V-ACT mã đề 007" },
-    { time: "Hôm qua, 14:20", text: "Tạo bài học mới: Tư duy logic nâng cao" },
-    { time: "18/07, 09:05", text: "Trả lời 12 câu hỏi học viên" },
-    { time: "17/07, 15:30", text: "Cập nhật nội dung khóa V-ACT chương 4" }
-  ]
+  const actLog = asst.recentActivities || [];
 
   return (
     <div
@@ -29,16 +23,20 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
         {/* Header - Green Gradient */}
         <div className="bg-gradient-to-br from-[var(--brand-500)] to-[var(--brand-700)] px-[30px] py-[26px] flex items-center gap-4">
           <div className="w-[50px] h-[50px] rounded-full bg-white/20 flex items-center justify-center shrink-0">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
-            </svg>
+            {asst.avatarUrl ? (
+                <img src={asst.avatarUrl} alt="avatar" className="w-full h-full rounded-full object-cover" />
+            ) : (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
+                </svg>
+            )}
           </div>
           <div className="min-w-0 flex-1">
             <div className="[font-family:var(--font-heading)] font-extrabold text-lg text-white">
               {asst.name}
             </div>
             <div className="[font-family:var(--font-body)] text-[13px] text-[var(--brand-soft-500)] mt-0.5 truncate">
-              {asst.email} · {asst.phone}
+              {asst.gmail} · {asst.phone || 'Chưa có SĐT'}
             </div>
           </div>
         </div>
@@ -47,8 +45,8 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-3 mb-[22px]">
             {[
-              { label: "Đề thi đã tạo", value: asst.exams },
-              { label: "Học viên phụ trách", value: asst.students },
+              { label: "Đề thi đã tạo", value: asst.numExams },
+              { label: "Trạng thái", value: asst.status === 'ACTIVE' ? 'Hoạt động' : asst.status === 'INACTIVE' ? 'Tạm khóa' : 'Bị cấm' },
             ].map((s) => (
               <div key={s.label} className="bg-[var(--surface-500)] rounded-[var(--radius-sm)] px-4 py-3.5 text-center">
                 <div className="[font-family:var(--font-heading)] font-extrabold text-2xl text-[var(--brand-500)]">
@@ -76,19 +74,21 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
 
           {/* Activity Log */}
           <div className="flex flex-col">
-            {actLog.map((a, i) => (
+            {actLog.length === 0 ? (
+                <div className="text-[13px] text-[var(--text-secondary-300)] text-center py-4">Chưa có hoạt động</div>
+            ) : actLog.map((a, i) => (
               <div
-                key={i}
+                key={a.id}
                 className={`flex gap-3 items-start py-2.5 ${
                   i < actLog.length - 1 ? 'border-b border-[var(--border-100)]' : ''
                 }`}
               >
                 <div className="w-[7px] h-[7px] rounded-full bg-[var(--brand-500)] shrink-0 mt-[5px]" />
                 <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-primary)] flex-1">
-                  {a.text}
+                  {a.description}
                 </span>
                 <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-200)] shrink-0">
-                  {a.time}
+                  {a.timestamp}
                 </span>
               </div>
             ))}
