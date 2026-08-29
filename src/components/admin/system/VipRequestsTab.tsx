@@ -1,46 +1,95 @@
 import { useState, useEffect } from 'react'
-import type { VipReq } from '../../../types/admin'
+import {
+  useGetVipRequestsQuery,
+  useApproveVipRequestMutation,
+  useDisapproveVipRequestMutation
+} from '../../../hooks/queries/useSystemVipRequests'
+import Pagination from '../../common/Pagination'
+import { ConfirmMiniModal } from '../modals/website/ConfirmMiniModal'
 
-type VipRequestsTabProps = {
-  vipRequests: VipReq[]
-  onApprove: (id: number) => void
-  onReject: (id: number) => void
-}
-
-export const VipRequestsTab = ({ vipRequests, onApprove, onReject }: VipRequestsTabProps) => {
-  const [activeDropdownRowId, setActiveDropdownRowId] = useState<number | null>(null)
+export const VipRequestsTab = () => {
   const [vipSearch, setVipSearch] = useState('')
   const [vipFilter, setVipFilter] = useState('Tất cả')
-
-  useEffect(() => {
-    const handleOutsideClick = () => {
-      setActiveDropdownRowId(null)
-    }
-    window.addEventListener('click', handleOutsideClick)
-    return () => {
-      window.removeEventListener('click', handleOutsideClick)
-    }
-  }, [])
-
-  const filteredRequests = vipRequests.filter((r) => {
-    const matchSearch =
-      r.name.toLowerCase().includes(vipSearch.toLowerCase()) ||
-      r.email.toLowerCase().includes(vipSearch.toLowerCase())
-    const matchStatus = vipFilter === "Tất cả" || r.status === vipFilter
-    return matchSearch && matchStatus
+  const [page, setPage] = useState(1)
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    isDanger?: boolean
+    action: () => void
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    action: () => {}
   })
 
+  useEffect(() => {
+    setPage(1)
+  }, [vipSearch, vipFilter])
+
+  const statusMap: Record<string, string> = {
+    'Chờ duyệt': 'WAITING',
+    'Đã duyệt': 'APPROVED',
+    'Từ chối': 'DECLINED'
+  }
+
+  const { data: vipData, isLoading } = useGetVipRequestsQuery({
+    search: vipSearch || undefined,
+    status: vipFilter !== 'Tất cả' ? statusMap[vipFilter] : undefined,
+    page: page - 1,
+    size: 10,
+    sort: 'createdAt,desc'
+  })
+
+  const approveMutation = useApproveVipRequestMutation()
+  const rejectMutation = useDisapproveVipRequestMutation()
+
+  const vipRequests = vipData?.data || []
+
+  const handleApprove = (id: string, name: string) => {
+    setConfirmState({
+      isOpen: true,
+      title: 'Duyệt yêu cầu',
+      message: `Bạn có chắc chắn muốn duyệt yêu cầu VIP của ${name}?`,
+      isDanger: false,
+      action: () => {
+        approveMutation.mutate(id, { onSuccess: () => setConfirmState(s => ({ ...s, isOpen: false })) })
+      }
+    })
+  }
+
+  const handleReject = (id: string, name: string) => {
+    setConfirmState({
+      isOpen: true,
+      title: 'Từ chối yêu cầu',
+      message: `Bạn có chắc chắn muốn từ chối yêu cầu VIP của ${name}?`,
+      isDanger: true,
+      action: () => {
+        rejectMutation.mutate(id, { onSuccess: () => setConfirmState(s => ({ ...s, isOpen: false })) })
+      }
+    })
+  }
+
+
+
   const getStatusBadgeClass = (s: string) => {
-    if (s === "Đã duyệt") return "bg-[var(--success-50)] text-[var(--success-500)]"
-    if (s === "Từ chối") return "bg-[var(--error-50)] text-[var(--error-500)]"
+    if (s === "APPROVED") return "bg-[var(--success-50)] text-[var(--success-500)]"
+    if (s === "DECLINED") return "bg-[var(--error-50)] text-[var(--error-500)]"
     return "bg-[var(--warning-50)] text-[var(--warning-500)]"
+  }
+
+  const getStatusLabel = (s: string) => {
+    if (s === "APPROVED") return "Đã duyệt"
+    if (s === "DECLINED") return "Từ chối"
+    return "Chờ duyệt"
   }
 
   return (
     <div>
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-[12px] mb-[18px]">
         <div className="[font-family:var(--font-heading)] font-bold text-[15px] text-[var(--text-primary)]">
-          Yêu cầu nâng cấp VIP ({filteredRequests.length})
+          Yêu cầu nâng cấp VIP ({vipData?.paging.total || 0})
         </div>
         <div className="flex flex-wrap gap-[8px] items-center">
           <div className="relative">
@@ -92,7 +141,19 @@ export const VipRequestsTab = ({ vipRequests, onApprove, onReject }: VipRequests
             </tr>
           </thead>
           <tbody>
-            {filteredRequests.map((r, i) => (
+            {isLoading ? (
+               <tr>
+                 <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                   Đang tải...
+                 </td>
+               </tr>
+            ) : vipRequests.length === 0 ? (
+               <tr>
+                 <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                   Không có yêu cầu nào.
+                 </td>
+               </tr>
+            ) : vipRequests.map((r, i) => (
               <tr
                 key={r.id}
                 className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-400)] ${
@@ -101,10 +162,10 @@ export const VipRequestsTab = ({ vipRequests, onApprove, onReject }: VipRequests
               >
                 <td className="p-[12px_14px] [font-family:var(--font-body)] text-[12.5px] text-[var(--text-secondary-600)]">
                   <div className="font-semibold text-[var(--text-primary)]">{r.name}</div>
-                  <div className="text-[12px] text-[var(--text-secondary-300)]">{r.email}</div>
+                  <div className="text-[12px] text-[var(--text-secondary-300)]">{r.gmail}</div>
                   <div className="mt-[4px]">
                     <span className="inline-block bg-[var(--brand-soft-500)] text-[var(--brand-500)] rounded-full px-[8px] py-[1px] text-[10px] font-bold">
-                      {r.course}
+                      {r.mainCourse || 'Chưa rõ'}
                     </span>
                   </div>
                 </td>
@@ -120,65 +181,54 @@ export const VipRequestsTab = ({ vipRequests, onApprove, onReject }: VipRequests
                       r.status
                     )}`}
                   >
-                    {r.status}
+                    {getStatusLabel(r.status)}
                   </span>
                 </td>
                 <td className="p-[12px_14px] relative whitespace-nowrap">
-                  {r.status === "Chờ duyệt" && (
-                    <div className="flex justify-end">
+                  {r.status === "WAITING" && (
+                    <div className="flex justify-end items-center gap-[6px]">
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setActiveDropdownRowId(activeDropdownRowId === r.id ? null : r.id)
-                        }}
-                        className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
+                        onClick={() => handleApprove(r.id, r.name)}
+                        disabled={approveMutation.isPending || rejectMutation.isPending}
+                        className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--success-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--success-600)] hover:bg-[var(--success-100)] cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="12" cy="12" r="1" />
-                          <circle cx="12" cy="5" r="1" />
-                          <circle cx="12" cy="19" r="1" />
-                        </svg>
+                        Duyệt
                       </button>
-                      {activeDropdownRowId === r.id && (
-                        <div className="absolute right-[14px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[120px]">
-                          <button
-                            onClick={() => {
-                              onApprove(r.id)
-                              setActiveDropdownRowId(null)
-                            }}
-                            className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--success-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                          >
-                            Duyệt
-                          </button>
-                          <button
-                            onClick={() => {
-                              onReject(r.id)
-                              setActiveDropdownRowId(null)
-                            }}
-                            className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                          >
-                            Từ chối
-                          </button>
-                        </div>
-                      )}
+                      <button
+                        onClick={() => handleReject(r.id, r.name)}
+                        disabled={approveMutation.isPending || rejectMutation.isPending}
+                        className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--error-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--error-600)] hover:bg-[var(--error-100)] cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Từ chối
+                      </button>
                     </div>
                   )}
                 </td>
               </tr>
             ))}
-            {filteredRequests.length === 0 && (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]"
-                >
-                  Không có yêu cầu nào.
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {vipData?.paging && (
+        <Pagination
+          currentPage={page}
+          totalPages={vipData.paging.totalPages}
+          onPageChange={setPage}
+        />
+      )}
+
+      {confirmState.isOpen && (
+        <ConfirmMiniModal
+          title={confirmState.title}
+          message={confirmState.message}
+          isDanger={confirmState.isDanger}
+          isSubmitting={approveMutation.isPending || rejectMutation.isPending}
+          onConfirm={confirmState.action}
+          onClose={() => setConfirmState(s => ({ ...s, isOpen: false }))}
+        />
+      )}
     </div>
   )
 }

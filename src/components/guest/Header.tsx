@@ -4,6 +4,7 @@ import Logo from "./Logo";
 import { ROUTES } from "../../utils/routes";
 import { useAuth } from "../../contexts/AuthContext";
 import UserMenuPopup from "../learner/UserMenuPopup";
+import NotificationDropdown from "../learner/NotificationDropdown";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,6 +74,7 @@ export default function Header() {
                 </svg>
                 {vipButtonText}
               </Link>
+              <NotificationDropdown />
               <UserMenuPopup />
             </>
           ) : (
@@ -106,7 +108,8 @@ export default function Header() {
         {/* Hamburger Menu - Mobile */}
         <div className="lg:hidden flex items-center gap-2">
           {isLoggedIn ? (
-            <div className="md:hidden">
+            <div className="md:hidden flex items-center gap-1">
+              <NotificationDropdown />
               <UserMenuPopup />
             </div>
           ) : (

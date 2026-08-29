@@ -1,62 +1,97 @@
 import { useState, useEffect } from 'react'
-import type { Student } from '../../../types/admin'
+import type { LearnerSummaryResponse } from '../../../types/api/system.api'
 import { StudentDetailModal, CreateVipModal } from '../modals/system'
+import { ConfirmMiniModal } from '../modals/website/ConfirmMiniModal'
+import {
+  useListLearnersQuery,
+  useLockLearnerMutation,
+  useUnlockLearnerMutation,
+  useBanLearnerMutation
+} from '../../../hooks/queries/useSystemLearners'
+import Pagination from '../../common/Pagination'
 
-type StudentTabProps = {
-  students: Student[]
-  bannedIds: number[]
-  blockedIds: number[]
-  onBlockToggle: (id: number) => void
-  onBanToggle: (id: number) => void
-  onAddVip: (studentData: { name: string; email: string; course: string }) => void
-}
-
-export const StudentTab = ({
-  students,
-  bannedIds,
-  blockedIds,
-  onBlockToggle,
-  onBanToggle,
-  onAddVip
-}: StudentTabProps) => {
+export const StudentTab = () => {
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
+  const [selectedStudent, setSelectedStudent] = useState<LearnerSummaryResponse | null>(null)
   const [showVipModal, setShowVipModal] = useState(false)
-  const [activeDropdownRowId, setActiveDropdownRowId] = useState<number | null>(null)
+  const [page, setPage] = useState(1)
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    isDanger?: boolean
+    action: () => void
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    action: () => {}
+  })
 
   useEffect(() => {
-    const handleOutsideClick = () => {
-      setActiveDropdownRowId(null)
-    }
-    window.addEventListener('click', handleOutsideClick)
-    return () => {
-      window.removeEventListener('click', handleOutsideClick)
-    }
-  }, [])
+    setPage(1)
+  }, [searchQuery])
 
-  const filteredStudents = students.filter(
-    (s) =>
-      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.email.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const { data: learnersData, isLoading } = useListLearnersQuery({
+    search: searchQuery || undefined,
+    page: page - 1,
+    size: 10,
+    sort: 'createdAt,desc'
+  })
 
-  const getStudentStatus = (s: Student) => {
-    if (bannedIds.includes(s.id)) {
+  const lockMutation = useLockLearnerMutation()
+  const unlockMutation = useUnlockLearnerMutation()
+  const banMutation = useBanLearnerMutation()
+
+  const students = learnersData?.data || []
+
+
+
+  const getStudentStatus = (s: LearnerSummaryResponse) => {
+    if (s.status === 'BANNED') {
       return { text: "Bị cấm", bg: "bg-[var(--error-50)] text-[var(--error-500)]" }
     }
-    if (blockedIds.includes(s.id)) {
+    if (s.status === 'INACTIVE') {
       return { text: "Bị khóa", bg: "bg-[var(--warning-50)] text-[var(--warning-500)]" }
     }
-    return s.status === "Hoạt động"
-      ? { text: "Hoạt động", bg: "bg-[var(--success-50)] text-[var(--success-500)]" }
-      : { text: s.status, bg: "bg-[var(--warning-50)] text-[var(--warning-500)]" }
+    return { text: "Hoạt động", bg: "bg-[var(--success-50)] text-[var(--success-500)]" }
+  }
+
+  const handleToggleBlock = (s: LearnerSummaryResponse) => {
+    const isBlocked = s.status === 'INACTIVE'
+    setConfirmState({
+      isOpen: true,
+      title: isBlocked ? 'Mở khóa tài khoản' : 'Khóa tài khoản',
+      message: `Bạn có chắc chắn muốn ${isBlocked ? 'mở khóa' : 'khóa'} tài khoản ${s.name}?`,
+      isDanger: !isBlocked,
+      action: () => {
+        const onSuccess = () => setConfirmState(st => ({ ...st, isOpen: false }))
+        if (isBlocked) {
+          unlockMutation.mutate(s.id, { onSuccess })
+        } else {
+          lockMutation.mutate(s.id, { onSuccess })
+        }
+      }
+    })
+  }
+
+  const handleBanClick = (s: LearnerSummaryResponse) => {
+    setConfirmState({
+      isOpen: true,
+      title: 'Cấm tài khoản',
+      message: `Bạn có chắc chắn muốn cấm vĩnh viễn tài khoản ${s.name}?`,
+      isDanger: true,
+      action: () => {
+        banMutation.mutate(s.id, { onSuccess: () => setConfirmState(st => ({ ...st, isOpen: false })) })
+      }
+    })
   }
 
   return (
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-[12px] mb-[18px]">
         <div className="[font-family:var(--font-heading)] font-bold text-[15px] text-[var(--text-primary)]">
-          Danh sách học viên ({filteredStudents.length})
+          Danh sách học viên ({learnersData?.paging.total || 0})
         </div>
         <div className="flex gap-[10px] items-center w-full sm:w-auto">
           <div className="relative flex-1 sm:flex-none">
@@ -101,10 +136,22 @@ export const StudentTab = ({
             </tr>
           </thead>
           <tbody>
-            {filteredStudents.map((u, i) => {
+            {isLoading ? (
+               <tr>
+                 <td colSpan={7} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                   Đang tải...
+                 </td>
+               </tr>
+            ) : students.length === 0 ? (
+               <tr>
+                 <td colSpan={7} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                   Không tìm thấy học viên.
+                 </td>
+               </tr>
+            ) : students.map((u, i) => {
               const statusInfo = getStudentStatus(u)
-              const isBanned = bannedIds.includes(u.id)
-              const isBlocked = blockedIds.includes(u.id)
+              const isBanned = u.status === 'BANNED'
+              const isBlocked = u.status === 'INACTIVE'
 
               return (
                 <tr
@@ -115,9 +162,9 @@ export const StudentTab = ({
                 >
                   <td className="p-[12px_12px]">
                     <div className="[font-family:var(--font-body)] text-[12.5px] text-[var(--text-secondary-600)]">
-                      {u.email}
+                      {u.gmail}
                     </div>
-                    {u.vip && (
+                    {u.tier === 'VIP' && (
                       <span className="inline-block mt-[4px] bg-[var(--warning-50)] text-[var(--warning-500)] rounded-full px-[7px] py-[1px] [font-family:var(--font-heading)] font-bold text-[10px]">
                         ⭐ VIP
                       </span>
@@ -125,7 +172,7 @@ export const StudentTab = ({
                   </td>
                   <td className="p-[12px_12px]">
                     <span className="inline-block bg-[var(--brand-soft-500)] text-[var(--brand-500)] rounded-full px-[9px] py-[3px] [font-family:var(--font-heading)] font-bold text-[11px]">
-                      {u.course}
+                      {u.primaryCourse || "Chưa có"}
                     </span>
                   </td>
                   <td className="p-[12px_12px]">
@@ -149,17 +196,17 @@ export const StudentTab = ({
                   </td>
                   <td
                     className={`p-[12px_12px] [font-family:var(--font-heading)] font-bold text-[13px] ${
-                      u.avgScore >= 7
+                      u.averageScore >= 7
                         ? "text-[var(--brand-500)]"
-                        : u.avgScore >= 5
+                        : u.averageScore >= 5
                         ? "text-[var(--warning-500)]"
                         : "text-[var(--error-500)]"
                     }`}
                   >
-                    {u.avgScore}
+                    {u.averageScore}
                   </td>
                   <td className="p-[12px_12px] [font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-600)]">
-                    {u.lastLogin}
+                    {u.lastLogin || "Chưa đăng nhập"}
                   </td>
                   <td className="p-[12px_12px]">
                     <span
@@ -168,77 +215,31 @@ export const StudentTab = ({
                       {statusInfo.text}
                     </span>
                   </td>
-                  <td className="p-[12px_12px] relative">
-                    <div className="flex justify-end">
+                  <td className="p-[12px_12px]">
+                    <div className="flex justify-end items-center gap-[6px]">
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setActiveDropdownRowId(activeDropdownRowId === u.id ? null : u.id)
-                        }}
-                        className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
+                        onClick={() => setSelectedStudent(u)}
+                        className="px-[12px] py-[5px] rounded-[8px] border border-[var(--border-300)] bg-white ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130"
                       >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="12" cy="12" r="1" />
-                          <circle cx="12" cy="5" r="1" />
-                          <circle cx="12" cy="19" r="1" />
-                        </svg>
+                        Chi tiết
                       </button>
-                      {activeDropdownRowId === u.id && (
-                        <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[130px]">
-                          <button
-                            onClick={() => {
-                              setSelectedStudent(u)
-                              setActiveDropdownRowId(null)
-                            }}
-                            className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                          >
-                            Chi tiết
-                          </button>
-                          {!isBanned && !isBlocked && (
-                            <button
-                              onClick={() => {
-                                onBlockToggle(u.id)
-                                setActiveDropdownRowId(null)
-                              }}
-                              className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--warning-500)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                            >
-                              Khóa
-                            </button>
-                          )}
-                          {isBlocked && (
-                            <button
-                              onClick={() => {
-                                onBlockToggle(u.id)
-                                setActiveDropdownRowId(null)
-                              }}
-                              className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--brand-base-500)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                            >
-                              Mở khóa
-                            </button>
-                          )}
-                          {!isBanned && (
-                            <button
-                              onClick={() => {
-                                onBanToggle(u.id)
-                                setActiveDropdownRowId(null)
-                              }}
-                              className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                            >
-                              Cấm
-                            </button>
-                          )}
-                          {isBanned && (
-                            <button
-                              onClick={() => {
-                                onBanToggle(u.id)
-                                setActiveDropdownRowId(null)
-                              }}
-                              className="w-full text-left px-[14px] py-[8px] text-[13px] [font-family:var(--font-heading)] font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                            >
-                              Bỏ cấm
-                            </button>
-                          )}
-                        </div>
+                      {!isBanned && (
+                        <button
+                          onClick={() => handleToggleBlock(u)}
+                          disabled={lockMutation.isPending || unlockMutation.isPending}
+                          className={`px-[12px] py-[5px] rounded-[8px] border-none ![font-family:var(--font-heading)] !font-semibold !text-[12px] ${isBlocked ? 'bg-[var(--success-50)] !text-[var(--success-600)] hover:bg-[var(--success-100)]' : 'bg-[var(--warning-50)] !text-[var(--warning-600)] hover:bg-[var(--warning-100)]'} cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed`}
+                        >
+                          {isBlocked ? 'Mở khóa' : 'Khóa'}
+                        </button>
+                      )}
+                      {!isBanned && (
+                        <button
+                          onClick={() => handleBanClick(u)}
+                          disabled={banMutation.isPending}
+                          className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--error-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--error-600)] hover:bg-[var(--error-100)] cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Cấm
+                        </button>
                       )}
                     </div>
                   </td>
@@ -248,6 +249,15 @@ export const StudentTab = ({
           </tbody>
         </table>
       </div>
+      
+      {/* Pagination */}
+      {learnersData?.paging && (
+        <Pagination
+          currentPage={page}
+          totalPages={learnersData.paging.totalPages}
+          onPageChange={setPage}
+        />
+      )}
 
       {/* Modals */}
       {selectedStudent && (
@@ -260,7 +270,17 @@ export const StudentTab = ({
       {showVipModal && (
         <CreateVipModal
           onClose={() => setShowVipModal(false)}
-          onCreate={onAddVip}
+        />
+      )}
+
+      {confirmState.isOpen && (
+        <ConfirmMiniModal
+          title={confirmState.title}
+          message={confirmState.message}
+          isDanger={confirmState.isDanger}
+          isSubmitting={lockMutation.isPending || unlockMutation.isPending || banMutation.isPending}
+          onConfirm={confirmState.action}
+          onClose={() => setConfirmState(s => ({ ...s, isOpen: false }))}
         />
       )}
     </div>
