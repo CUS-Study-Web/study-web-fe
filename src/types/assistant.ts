@@ -42,7 +42,7 @@ export interface AssistantCourseForm {
 export interface AssistantDocument {
   id: number;
   title: string;
-  subject: string;
+  subject: string; // To be deprecated, but keep for now
   kythi: string;
   questions: number;
   duration: string;
@@ -50,6 +50,10 @@ export interface AssistantDocument {
   fileType: string;
   cat: string;
   access: string;
+  numPages?: number;
+  description?: string;
+  badges?: string[];
+  fileUrl?: string;
 }
 
 export interface AssistantExercise {

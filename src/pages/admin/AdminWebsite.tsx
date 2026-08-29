@@ -1,17 +1,18 @@
-import { useState, useEffect } from 'react'
-import type { Course, Instructor, Achievement, Review, WTab, ModalKey } from '../../types/admin'
+import { useState, useEffect, useRef } from 'react'
+import type { Course, Instructor, Achievement, Review, WTab, ModalKey, DocType } from '../../types/admin'
 import {
   WEBSITE_INSTRUCTORS,
   WEBSITE_ACHIEVEMENTS,
   WEBSITE_REVIEWS
 } from './MockData'
-import WebsiteTabsNav from '../../components/admin/WebsiteTabsNav'
+import WebsiteTabsNav from '../../components/admin/website/WebsiteTabsNav'
 import {
   CourseModal,
   AddCourseModal,
   InstructorModal,
   AchievementModal,
   ReviewModal,
+  DocumentTypeModal,
 } from '../../components/admin/modals/WebsiteModals'
 import { ConfirmMiniModal } from '../../components/admin/modals/website/ConfirmMiniModal'
 import TrangChuTab from '../../components/admin/website/TrangChuTab'
@@ -23,7 +24,93 @@ import {
   useGetAdminCoursesQuery,
   useDeleteCourseMutation,
 } from '../../hooks/queries/useCourses'
+import {
+  useGetBadgesQuery,
+  useDeleteBadgeMutation
+} from '../../hooks/queries/useBadges'
 import { useNotification } from '../../components/common/NotificationProvider'
+
+interface DocTypeActionMenuProps {
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+function DocTypeActionMenu({ onEdit, onDelete }: DocTypeActionMenuProps) {
+  const [open, setOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleToggle = () => {
+    if (!open && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setMenuPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
+    }
+    setOpen((prev) => !prev);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClose = (e: MouseEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent && e.key !== 'Escape') return;
+      if (e instanceof MouseEvent) {
+        if (btnRef.current?.contains(e.target as Node)) return;
+        if (menuRef.current?.contains(e.target as Node)) return;
+      }
+      setOpen(false);
+    };
+    document.addEventListener('mousedown', handleClose);
+    document.addEventListener('keydown', handleClose);
+    return () => {
+      document.removeEventListener('mousedown', handleClose);
+      document.removeEventListener('keydown', handleClose);
+    };
+  }, [open]);
+
+  return (
+    <>
+      <button
+        ref={btnRef}
+        onClick={handleToggle}
+        className="w-8 h-8 rounded-full border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
+        aria-label="Tùy chọn"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--neutral-500)">
+          <circle cx="12" cy="5" r="1.5" />
+          <circle cx="12" cy="12" r="1.5" />
+          <circle cx="12" cy="19" r="1.5" />
+        </svg>
+      </button>
+
+      {open && (
+        <div
+          ref={menuRef}
+          style={{ position: 'fixed', top: menuPos.top, right: menuPos.right, zIndex: 9999, boxShadow: '0 8px 32px rgba(0,0,0,0.14)' }}
+          className="bg-white rounded-[10px] border border-[var(--border-default)] py-1.5 min-w-[160px]"
+        >
+          <button
+            onClick={() => { setOpen(false); onEdit(); }}
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+            </svg>
+            Sửa
+          </button>
+          <button
+            onClick={() => { setOpen(false); onDelete(); }}
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold !text-[#DC2626] text-left transition-colors hover:bg-[#FEF2F2]"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            </svg>
+            Xóa
+          </button>
+        </div>
+      )}
+    </>
+  );
+}
 
 const AdminWebsite = () => {
   const [activeTab, setActiveTab] = useState<WTab>("courses")
@@ -36,6 +123,11 @@ const AdminWebsite = () => {
 
   const deleteCourse = useDeleteCourseMutation()
 
+  // API state for doc types (badges)
+  const { data: badgesData, isLoading: isLoadingBadges } = useGetBadgesQuery({ page: 0, size: 100 })
+  const docTypes = badgesData?.data || []
+  const deleteBadge = useDeleteBadgeMutation()
+
   // Local list states (mocked ones)
   const [instructors, setInstructors] = useState<Instructor[]>(WEBSITE_INSTRUCTORS)
   const [achievements, setAchievements] = useState<Achievement[]>(WEBSITE_ACHIEVEMENTS)
@@ -46,6 +138,8 @@ const AdminWebsite = () => {
   const [editingInstructor, setEditingInstructor] = useState<Instructor | undefined>(undefined)
   const [editingAchievement, setEditingAchievement] = useState<Achievement | undefined>(undefined)
   const [editingReview, setEditingReview] = useState<Review | undefined>(undefined)
+  const [editingDocType, setEditingDocType] = useState<DocType | undefined>(undefined)
+  const [docTypeToDelete, setDocTypeToDelete] = useState<DocType | null>(null)
 
   // Dropdown row state
   const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null)
@@ -66,7 +160,7 @@ const AdminWebsite = () => {
   }, [])
 
   const handleTabChange = (tab: WTab) => {
-    if (tab !== "courses") {
+    if (tab !== "courses" && tab !== "doc-types") {
       setShowDevPopup(true)
       return
     }
@@ -79,6 +173,7 @@ const AdminWebsite = () => {
     "footer": { label: "Footer" },
     "goi-cuoc": { label: "Gói cước" },
     "courses": { label: "Danh sách khóa học", addLabel: "Thêm khóa học", addModal: "add-course" },
+    "doc-types": { label: "Loại tài liệu", addLabel: "Thêm loại tài liệu", addModal: "add-doc-type" },
     "instructors": { label: "Đội ngũ giảng viên", addLabel: "Thêm giảng viên", addModal: "add-instructor" },
     "achievements": { label: "Bảng thành tích", addLabel: "Thêm thành tích", addModal: "add-achievement" },
     "reviews": { label: "Cảm nhận học viên", addLabel: "Thêm cảm nhận", addModal: "add-review" },
@@ -184,6 +279,24 @@ const AdminWebsite = () => {
     }
   }
 
+  const handleDeleteDocType = async (id: string) => {
+    setDeletingId(`doctype-${id}`)
+    const startTime = Date.now()
+    try {
+      await deleteBadge.mutateAsync(id)
+      const elapsed = Date.now() - startTime
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
+      showSuccess("Xóa loại tài liệu thành công!")
+    } catch {
+      const elapsed = Date.now() - startTime
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
+      showError("Lỗi khi xóa loại tài liệu!")
+    } finally {
+      setDeletingId(null)
+      setDocTypeToDelete(null)
+    }
+  }
+
   // Common styles
   const thClass = "px-5 py-[11px] [font-family:var(--font-heading)] font-bold text-xs text-[var(--text-secondary-300)] text-left uppercase tracking-[0.4px] whitespace-nowrap"
   const tdCellClass = "px-5 py-3.5 [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-600)] align-middle"
@@ -217,6 +330,7 @@ const AdminWebsite = () => {
                   setEditingInstructor(undefined)
                   setEditingAchievement(undefined)
                   setEditingReview(undefined)
+                  setEditingDocType(undefined)
                   setShowModal(currentTab.addModal!)
                 }}
                 className="flex items-center gap-2 px-[18px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--brand-500)] !text-white ![font-family:var(--font-heading)] !font-bold !text-[13px] cursor-pointer hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"
@@ -235,7 +349,7 @@ const AdminWebsite = () => {
           {activeTab === "goi-cuoc" && <GoiCuocTab />}
 
           {/* Tab Tables */}
-          {(activeTab === "courses" || activeTab === "instructors" || activeTab === "achievements" || activeTab === "reviews") && (
+          {(activeTab === "courses" || activeTab === "doc-types" || activeTab === "instructors" || activeTab === "achievements" || activeTab === "reviews") && (
             <div className="rounded-[var(--radius-md)] border border-[var(--border-300)] overflow-visible">
               <div>
                 {activeTab === "courses" && (
@@ -333,6 +447,50 @@ const AdminWebsite = () => {
                       )}
                     </tbody>
                   </table>
+                )}
+
+                {activeTab === "doc-types" && (
+                  <div className="w-full">
+                    <div className="flex justify-between items-center bg-[var(--surface-500)] border-b border-[var(--border-300)] px-5 py-[11px]">
+                      <div className={thClass} style={{ padding: 0 }}>Tên loại tài liệu</div>
+                      <div className={thClass} style={{ padding: 0 }}></div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 p-5">
+                      {isLoadingBadges ? (
+                        <div className="col-span-full py-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                          Đang tải dữ liệu...
+                        </div>
+                      ) : docTypes.length === 0 ? (
+                        <div className="col-span-full py-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                          Không có loại tài liệu nào.
+                        </div>
+                      ) : (
+                        [...docTypes].sort((a, b) => a.name.localeCompare(b.name)).map((type) => (
+                          <div key={type.id} className="border border-[var(--border-300)] rounded-[12px] p-4 flex items-center justify-between bg-white hover:shadow-[var(--shadow-clay-sm)] transition-shadow">
+                            <span className="font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)]">
+                              {type.name}
+                            </span>
+                            <div className="relative">
+                              {deletingId === `doctype-${type.id}` ? (
+                                <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                              ) : (
+                                <DocTypeActionMenu
+                                  onEdit={() => {
+                                    setEditingDocType(type)
+                                    setShowModal("edit-doc-type")
+                                  }}
+                                  onDelete={() => setDocTypeToDelete(type)}
+                                />
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
                 )}
 
                 {activeTab === "instructors" && (
@@ -613,6 +771,13 @@ const AdminWebsite = () => {
         <ReviewModal review={editingReview} onSave={handleSaveReview} onClose={() => setShowModal(null)} />
       )}
 
+      {showModal === "add-doc-type" && (
+        <DocumentTypeModal onClose={() => setShowModal(null)} />
+      )}
+      {showModal === "edit-doc-type" && (
+        <DocumentTypeModal docType={editingDocType} onClose={() => setShowModal(null)} />
+      )}
+
       {/* Delete Confirm Modal for Course */}
       {courseToDelete && (
         <ConfirmMiniModal
@@ -630,6 +795,22 @@ const AdminWebsite = () => {
         />
       )}
       
+      {docTypeToDelete && (
+        <ConfirmMiniModal
+          title="Xác nhận xóa loại tài liệu"
+          message={
+            <span>
+              Bạn có chắc chắn muốn xóa loại tài liệu <strong>"{docTypeToDelete.name}"</strong>? Tất cả dữ liệu liên quan sẽ bị xóa.
+            </span>
+          }
+          isDanger
+          confirmText="Xóa loại tài liệu"
+          isSubmitting={deletingId === `doctype-${docTypeToDelete.id}`}
+          onConfirm={() => handleDeleteDocType(docTypeToDelete.id)}
+          onClose={() => setDocTypeToDelete(null)}
+        />
+      )}
+
       {showDevPopup && (
         <ConfirmMiniModal
           title="Đang phát triển"

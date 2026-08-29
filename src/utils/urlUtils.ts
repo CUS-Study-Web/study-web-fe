@@ -5,6 +5,8 @@ export const isValidUrl = (url: string): boolean => {
   try {
     const parsed = new URL(url);
     if (!parsed.protocol) return false;
+    // Must have a specific address after the domain (not just a root path without search params)
+    if (parsed.pathname === '/' && !parsed.search && !parsed.hash) return false;
     return true;
   } catch {
     return false;
