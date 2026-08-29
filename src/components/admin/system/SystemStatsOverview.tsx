@@ -17,7 +17,7 @@ export const SystemStatsOverview = ({
     { label: 'Tài khoản thường', value: regularCount, color: 'var(--brand-500)' },
     { label: 'Tài khoản VIP', value: vipCount, color: 'var(--warning-500)' },
     { label: 'Trợ giảng', value: assistantCount, color: 'var(--info-500)' },
-    { label: 'Tài khoản bị cấm', value: bannedCount, color: 'var(--error-500)' }
+    { label: 'Tài khoản bị khóa', value: bannedCount, color: 'var(--error-500)' }
   ]
 
   return (
