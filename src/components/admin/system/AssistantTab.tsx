@@ -34,8 +34,8 @@ export const AssistantTab = () => {
 
 
 
-  const handleDeleteClick = (id: string, name: string) => {
-    if (window.confirm(`Xóa (Ban) tài khoản của trợ giảng ${name}?`)) {
+  const handleBanClick = (id: string, name: string) => {
+    if (window.confirm(`Bạn có chắc chắn muốn Cấm vĩnh viễn tài khoản của trợ giảng ${name}?`)) {
       banMutation.mutate(id)
     }
   }
@@ -165,11 +165,11 @@ export const AssistantTab = () => {
               )}
               {a.status !== 'BANNED' && (
                 <button
-                  onClick={() => handleDeleteClick(a.id, a.name)}
+                  onClick={() => handleBanClick(a.id, a.name)}
                   disabled={banMutation.isPending}
                   className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--error-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--error-600)] hover:bg-[var(--error-100)] cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Xóa
+                  Cấm
                 </button>
               )}
             </div>
