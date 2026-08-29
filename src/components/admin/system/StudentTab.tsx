@@ -191,7 +191,8 @@ export const StudentTab = () => {
                       {!isBanned && (
                         <button
                           onClick={() => handleToggleBlock(u)}
-                          className={`px-[12px] py-[5px] rounded-[8px] border-none ![font-family:var(--font-heading)] !font-semibold !text-[12px] ${isBlocked ? 'bg-[var(--success-50)] !text-[var(--success-600)] hover:bg-[var(--success-100)]' : 'bg-[var(--warning-50)] !text-[var(--warning-600)] hover:bg-[var(--warning-100)]'} cursor-pointer transition-colors duration-130`}
+                          disabled={lockMutation.isPending || unlockMutation.isPending}
+                          className={`px-[12px] py-[5px] rounded-[8px] border-none ![font-family:var(--font-heading)] !font-semibold !text-[12px] ${isBlocked ? 'bg-[var(--success-50)] !text-[var(--success-600)] hover:bg-[var(--success-100)]' : 'bg-[var(--warning-50)] !text-[var(--warning-600)] hover:bg-[var(--warning-100)]'} cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed`}
                         >
                           {isBlocked ? 'Mở khóa' : 'Khóa'}
                         </button>
@@ -199,7 +200,8 @@ export const StudentTab = () => {
                       {!isBanned && (
                         <button
                           onClick={() => banMutation.mutate(u.id)}
-                          className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--error-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--error-600)] hover:bg-[var(--error-100)] cursor-pointer transition-colors duration-130"
+                          disabled={banMutation.isPending}
+                          className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--error-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--error-600)] hover:bg-[var(--error-100)] cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           Cấm
                         </button>

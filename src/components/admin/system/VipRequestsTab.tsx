@@ -152,13 +152,15 @@ export const VipRequestsTab = () => {
                     <div className="flex justify-end items-center gap-[6px]">
                       <button
                         onClick={() => approveMutation.mutate(r.id)}
-                        className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--success-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--success-600)] hover:bg-[var(--success-100)] cursor-pointer transition-colors duration-130"
+                        disabled={approveMutation.isPending || rejectMutation.isPending}
+                        className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--success-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--success-600)] hover:bg-[var(--success-100)] cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Duyệt
                       </button>
                       <button
                         onClick={() => rejectMutation.mutate(r.id)}
-                        className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--error-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--error-600)] hover:bg-[var(--error-100)] cursor-pointer transition-colors duration-130"
+                        disabled={approveMutation.isPending || rejectMutation.isPending}
+                        className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--error-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--error-600)] hover:bg-[var(--error-100)] cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Từ chối
                       </button>

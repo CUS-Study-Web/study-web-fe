@@ -157,7 +157,8 @@ export const AssistantTab = () => {
               {a.status !== 'BANNED' && (
                 <button
                   onClick={() => handleToggleStatus(a)}
-                  className={`px-[12px] py-[5px] rounded-[8px] border-none ![font-family:var(--font-heading)] !font-semibold !text-[12px] ${a.status === 'ACTIVE' ? 'bg-[var(--warning-50)] !text-[var(--warning-600)] hover:bg-[var(--warning-100)]' : 'bg-[var(--success-50)] !text-[var(--success-600)] hover:bg-[var(--success-100)]'} cursor-pointer transition-colors duration-130`}
+                  disabled={activateMutation.isPending || deactivateMutation.isPending}
+                  className={`px-[12px] py-[5px] rounded-[8px] border-none ![font-family:var(--font-heading)] !font-semibold !text-[12px] ${a.status === 'ACTIVE' ? 'bg-[var(--warning-50)] !text-[var(--warning-600)] hover:bg-[var(--warning-100)]' : 'bg-[var(--success-50)] !text-[var(--success-600)] hover:bg-[var(--success-100)]'} cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {a.status === 'ACTIVE' ? 'Vô hiệu hóa' : 'Kích hoạt'}
                 </button>
@@ -165,7 +166,8 @@ export const AssistantTab = () => {
               {a.status !== 'BANNED' && (
                 <button
                   onClick={() => handleDeleteClick(a.id, a.name)}
-                  className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--error-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--error-600)] hover:bg-[var(--error-100)] cursor-pointer transition-colors duration-130"
+                  disabled={banMutation.isPending}
+                  className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--error-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--error-600)] hover:bg-[var(--error-100)] cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Xóa
                 </button>
