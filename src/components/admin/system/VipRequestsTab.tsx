@@ -3,7 +3,7 @@ import {
   useGetVipRequestsQuery,
   useApproveVipRequestMutation,
   useDisapproveVipRequestMutation
-} from '../../../hooks/queries/useSystemManagement'
+} from '../../../hooks/queries/useSystemVipRequests'
 import Pagination from '../../common/Pagination'
 import { ConfirmMiniModal } from '../modals/website/ConfirmMiniModal'
 

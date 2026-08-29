@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useCreateVipAccountMutation } from '../../../../hooks/queries/useSystemManagement'
+import { useCreateVipAccountMutation } from '../../../../hooks/queries/useSystemLearners'
 import type { CreateVipAccountRequest } from '../../../../types/api/system.api'
 
 type CreateVipModalProps = {

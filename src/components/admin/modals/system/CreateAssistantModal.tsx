@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useCreateAssistantMutation } from '../../../../hooks/queries/useSystemManagement'
+import { useCreateAssistantMutation } from '../../../../hooks/queries/useSystemAssistants'
 
 type CreateAssistantModalProps = {
   onClose: () => void

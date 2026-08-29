@@ -7,7 +7,7 @@ import {
   useLockLearnerMutation,
   useUnlockLearnerMutation,
   useBanLearnerMutation
-} from '../../../hooks/queries/useSystemManagement'
+} from '../../../hooks/queries/useSystemLearners'
 import Pagination from '../../common/Pagination'
 
 export const StudentTab = () => {

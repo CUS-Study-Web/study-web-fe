@@ -7,7 +7,7 @@ import {
   useActivateAssistantMutation,
   useDeactivateAssistantMutation,
   useBanAssistantMutation
-} from '../../../hooks/queries/useSystemManagement'
+} from '../../../hooks/queries/useSystemAssistants'
 import Pagination from '../../common/Pagination'
 
 export const AssistantTab = () => {
