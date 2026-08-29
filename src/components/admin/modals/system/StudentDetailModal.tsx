@@ -58,7 +58,7 @@ export const StudentDetailModal = ({ student, onClose }: StudentDetailModalProps
             { label: "Khóa học", value: student.primaryCourse || "Chưa rõ" },
             { label: "Đăng nhập gần nhất", value: student.lastLogin || "Chưa rõ" },
             { label: "Số bài thi đã làm", value: `${student.numExams || 0} bài` },
-            { label: "Điểm trung bình", value: `${student.averageScore || 0} / 10` },
+            { label: "Điểm trung bình", value: `${student.averageScore || 0}` },
           ].map((f) => (
             <div key={f.label} className="bg-[var(--surface-500)] rounded-[var(--radius-sm)] px-4 py-3">
               <div className="[font-family:var(--font-heading)] font-semibold text-[11px] text-[var(--brand-500)] uppercase tracking-[0.4px] mb-1">
