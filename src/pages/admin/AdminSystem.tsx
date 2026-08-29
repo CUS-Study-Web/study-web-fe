@@ -14,16 +14,18 @@ import {
   VipRequestsTab,
   AccessStatsTab
 } from '../../components/admin/SystemComponents'
+import AssistantFeatureInDevPopup from '../../components/assistant/AssistantFeatureInDevPopup'
+import { useGetVipRequestCountsQuery } from '../../hooks/queries/useSystemVipRequests'
 import {
-  useGetVipRequestCountsQuery,
   useGetVipLearnersCountQuery,
   useGetNormalLearnersCountQuery,
   useGetLockedLearnersCountQuery,
-  useGetAssistantsCountQuery,
-} from '../../hooks/queries/useSystemManagement'
+} from '../../hooks/queries/useSystemLearners'
+import { useGetAssistantsCountQuery } from '../../hooks/queries/useSystemAssistants'
 
 const AdminSystem = () => {
   const [activeTab, setActiveTab] = useState<SysTab>('students')
+  const [showInDev, setShowInDev] = useState(false)
   const [selDate, setSelDate] = useState('2026-07-23')
   const [selMonth, setSelMonth] = useState('07')
 
@@ -66,7 +68,13 @@ const AdminSystem = () => {
       <div className="bg-white rounded-[18px] shadow-[var(--shadow-clay-sm)] border border-[rgba(220,233,222,0.5)]">
         <SystemTabsNav
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={(tab) => {
+            if (tab === 'stats') {
+              setShowInDev(true)
+            } else {
+              setActiveTab(tab)
+            }
+          }}
           pendingVipCount={pendingVipCount}
         />
 
@@ -91,6 +99,8 @@ const AdminSystem = () => {
           )}
         </div>
       </div>
+
+      {showInDev && <AssistantFeatureInDevPopup onClose={() => setShowInDev(false)} />}
     </div>
   )
 }
