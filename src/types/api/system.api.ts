@@ -13,7 +13,6 @@ export type SystemListParams = {
 export interface CreateVipAccountRequest {
   name: string;
   gmail: string;
-  primaryCourseId?: string;
   startDate: string; // YYYY-MM-DD
   endDate: string; // YYYY-MM-DD
   note?: string;
