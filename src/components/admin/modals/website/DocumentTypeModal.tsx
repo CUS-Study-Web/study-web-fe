@@ -22,7 +22,8 @@ export const DocumentTypeModal = ({ docType, onClose }: DocumentTypeModalProps) 
   
   const createMutation = useCreateBadgeMutation()
   const updateMutation = useUpdateBadgeMutation()
-  const isSubmitting = createMutation.isPending || updateMutation.isPending
+  const [isLocalSubmitting, setIsLocalSubmitting] = useState(false)
+  const isSubmitting = createMutation.isPending || updateMutation.isPending || isLocalSubmitting
   
   const { showSuccess, showError } = useNotification()
 
@@ -38,6 +39,7 @@ export const DocumentTypeModal = ({ docType, onClose }: DocumentTypeModalProps) 
     const payload: BadgeRequest = { name: name.trim() }
 
     try {
+      setIsLocalSubmitting(true)
       if (isEdit && docType) {
         await updateMutation.mutateAsync({ id: docType.id, data: payload })
       } else {
@@ -58,6 +60,8 @@ export const DocumentTypeModal = ({ docType, onClose }: DocumentTypeModalProps) 
         errMsg = 'Loại tài liệu này đã tồn tại'
       }
       showError(errMsg)
+    } finally {
+      setIsLocalSubmitting(false)
     }
   }
 

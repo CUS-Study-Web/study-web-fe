@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNotification } from '../../common/NotificationProvider';
 import { validateDocumentFile, downloadFileFromUrl } from '../../../utils/fileUtils';
+import { isValidUrl } from '../../../utils/urlUtils';
 import * as mammoth from 'mammoth';
 import { useGetBadgesQuery } from '../../../hooks/queries/useBadges';
 import { useCreateDocumentMutation } from '../../../hooks/queries/useDocuments';
@@ -33,7 +34,7 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
 
   const { data: badgesData } = useGetBadgesQuery({ page: 0, size: 100 });
   const availableBadges = badgesData?.data || [];
-  
+
   const { mutate: createDocument, isPending } = useCreateDocumentMutation();
 
   useEffect(() => {
@@ -153,6 +154,10 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
       showError('Vui lòng nhập mô tả');
       return;
     }
+    if (youtubeLink.trim() && !isValidUrl(youtubeLink.trim())) {
+      showError('Link YouTube không hợp lệ (VD: https://youtube.com/watch?v=...)');
+      return;
+    }
 
     const formData = new FormData();
     formData.append('file', selectedFile);
@@ -219,22 +224,23 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
                   <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] font-medium truncate flex-1">
                     {selectedFile.name}
                   </span>
-                  <div
+                  <button
+                    type="button"
                     onClick={() => {
                       if (fileUrl) {
                         showSuccess('Đang tải về...');
                         downloadFileFromUrl(fileUrl, selectedFile.name);
                       }
                     }}
-                    className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--brand-600)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
+                    className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
                   >
                     Tải về
-                  </div>
-                  <label className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
+                  </button>
+                  <button type="button" onClick={() => fileInputRef.current?.click()} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
                     Đổi file
-                    <input type="file" accept=".pdf,.docx" className="hidden" onChange={handleFileChange} />
-                  </label>
-                  <button onClick={handleRemoveFile} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-red-200 bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-red-500 cursor-pointer hover:bg-red-50 transition-colors select-none">
+                  </button>
+                  <input ref={fileInputRef} type="file" accept=".pdf,.docx" className="hidden" onChange={handleFileChange} />
+                  <button type="button" onClick={handleRemoveFile} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
                     Xóa
                   </button>
                 </div>
@@ -407,10 +413,10 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
               <div onClick={onClose} className="flex-1 p-3 flex items-center justify-center rounded-[var(--radius-md)] border-[1.5px] border-[var(--border-default)] bg-[var(--surface-card)] text-[var(--text-primary)] font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors">
                 Hủy
               </div>
-              <button 
-                onClick={handleUpload} 
+              <button
+                onClick={handleUpload}
                 disabled={isPending}
-                className={`flex-[2] p-3 flex items-center justify-center rounded-[var(--radius-md)] border-none ${isPending ? 'bg-[var(--surface-500)] text-[var(--text-secondary)] cursor-not-allowed' : 'bg-[var(--brand-500)] text-[var(--text-inverse)] hover:bg-[var(--brand-600)] cursor-pointer'} font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)] transition-colors`}
+                className={`!flex-[2] !p-3 !flex !items-center !justify-center !rounded-[var(--radius-md)] !border-none ${isPending ? '!bg-[var(--surface-500)] !text-[var(--text-secondary)] !cursor-not-allowed' : '!bg-[var(--brand-500)] !text-[var(--text-inverse)] !hover:bg-[var(--brand-600)] !cursor-pointer'} !font-[family-name:var(--font-heading)] !font-bold !text-[length:var(--text-body-sm)] !transition-colors`}
               >
                 {isPending ? 'Đang tải lên...' : 'Upload tài liệu'}
               </button>

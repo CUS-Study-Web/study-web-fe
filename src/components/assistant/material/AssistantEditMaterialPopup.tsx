@@ -3,6 +3,7 @@ import type { DocumentResponse } from '../../../types/api/document.api';
 import AssistantConfirmPopup from '../AssistantConfirmPopup';
 import { useNotification } from '../../common/NotificationProvider';
 import { validateDocumentFile, downloadFileFromUrl } from '../../../utils/fileUtils';
+import { isValidUrl } from '../../../utils/urlUtils';
 import * as mammoth from 'mammoth';
 import { useGetBadgesQuery } from '../../../hooks/queries/useBadges';
 import { useUpdateDocumentMutation } from '../../../hooks/queries/useDocuments';
@@ -33,11 +34,12 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
   const fileInputRef = useRef<HTMLInputElement>(null);
   const badgeRef = useRef<HTMLDivElement>(null);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isMaterialFileRemoved, setIsMaterialFileRemoved] = useState(false);
   const { showError, showSuccess } = useNotification();
 
   const { data: badgesData } = useGetBadgesQuery({ page: 0, size: 100 });
   const availableBadges = badgesData?.data || [];
-  
+
   const { mutate: updateDocument, isPending } = useUpdateDocumentMutation();
 
   useEffect(() => {
@@ -52,6 +54,25 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
       setSelectedBadges(material.badges?.map(b => b.id) || []);
     }
   }, [material]);
+
+  useEffect(() => {
+    if (selectedFile) return;
+    if (material?.fileUrl) {
+      const ext = material.fileType?.toUpperCase() || '';
+      if (['DOCX', 'DOC'].includes(ext)) {
+        fetch(material.fileUrl)
+          .then(response => response.arrayBuffer())
+          .then(arrayBuffer => {
+            mammoth.convertToHtml({ arrayBuffer })
+              .then((result) => setDocxHtml(result.value))
+              .catch((err) => console.error("Mammoth error:", err));
+          })
+          .catch(err => console.error("Fetch DOCX error:", err));
+      } else {
+        setDocxHtml(null);
+      }
+    }
+  }, [material, selectedFile]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -154,6 +175,10 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
       showError('Vui lòng nhập tiêu đề tài liệu');
       return;
     }
+    if (isMaterialFileRemoved && !selectedFile) {
+      showError('Vui lòng chọn file tài liệu thay thế');
+      return;
+    }
     if (!numPages) {
       showError('Vui lòng nhập số trang');
       return;
@@ -166,12 +191,16 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
       showError('Vui lòng nhập mô tả');
       return;
     }
+    if (youtubeLink.trim() && !isValidUrl(youtubeLink.trim())) {
+      showError('Link YouTube không hợp lệ (VD: https://youtube.com/watch?v=...)');
+      return;
+    }
     setShowConfirm(true);
   };
 
   const handleSaveConfirm = () => {
     if (!material) return;
-    
+
     const formData = new FormData();
     if (selectedFile) formData.append('file', selectedFile);
     formData.append('title', title.trim());
@@ -182,9 +211,17 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
     if (youtubeLink.trim()) {
       formData.append('youtubeUrl', youtubeLink.trim());
     }
-    selectedBadges.forEach(id => {
-      formData.append('badgeIds', id);
-    });
+    // Chỉ gửi badgeIds khi badge selection thực sự thay đổi so với dữ liệu gốc.
+    // Nếu gửi cùng badge IDs cũ, backend sẽ clear() + addAll() cùng rows,
+    // gây UniqueConstraint violation (document_id, badge_id) → 500.
+    const originalBadgeIds = [...(material.badges?.map(b => b.id) ?? [])].sort();
+    const currentBadgeIds = [...selectedBadges].sort();
+    const badgesChanged = JSON.stringify(originalBadgeIds) !== JSON.stringify(currentBadgeIds);
+    if (badgesChanged) {
+      selectedBadges.forEach(id => {
+        formData.append('badgeIds', id);
+      });
+    }
 
     updateDocument({ id: material.id, formData }, {
       onSuccess: () => {
@@ -229,7 +266,12 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
           {/* Content Body */}
           <div className="flex flex-1 min-h-0">
             {/* Left: Preview/Dropzone */}
-            <div className="flex-1 border-r border-[var(--border-default)] bg-[var(--surface-muted)] p-5 relative overflow-hidden flex flex-col">
+            <div
+              className="flex-1 border-r border-[var(--border-default)] bg-[var(--surface-muted)] p-5 relative overflow-hidden flex flex-col"
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
               {selectedFile ? (
                 <div className="flex flex-col flex-1 min-h-0 rounded-[12px] overflow-hidden border border-[var(--border-default)] bg-white">
                   <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[var(--border-default)] bg-white shrink-0">
@@ -240,22 +282,23 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                     <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] font-medium truncate flex-1">
                       {selectedFile.name}
                     </span>
-                    <div
+                    <button
+                      type="button"
                       onClick={() => {
                         if (fileUrl) {
                           showSuccess('Đang tải về...');
                           downloadFileFromUrl(fileUrl, selectedFile.name);
                         }
                       }}
-                      className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--brand-600)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
+                      className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
                     >
                       Tải về
-                    </div>
-                    <label className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
+                    </button>
+                    <button type="button" onClick={() => fileInputRef.current?.click()} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
                       Đổi file
-                      <input type="file" accept=".pdf,.docx" className="hidden" onChange={handleFileChange} />
-                    </label>
-                    <button onClick={handleRemoveFile} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-red-200 bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-red-500 cursor-pointer hover:bg-red-50 transition-colors select-none">
+                    </button>
+                    <input ref={fileInputRef} type="file" accept=".pdf,.docx" className="hidden" onChange={handleFileChange} />
+                    <button type="button" onClick={handleRemoveFile} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
                       Xóa
                     </button>
                   </div>
@@ -295,15 +338,81 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                     </div>
                   )}
                 </div>
+              ) : !isMaterialFileRemoved ? (
+                <div className="flex flex-col flex-1 min-h-0 rounded-[12px] overflow-hidden border border-[var(--border-default)] bg-white relative">
+                  <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[var(--border-default)] bg-white shrink-0">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-secondary)]">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] font-medium truncate flex-1">
+                      {material?.title}.{material?.fileType?.toLowerCase() || 'pdf'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (material?.fileUrl) {
+                          showSuccess('Đang tải về...');
+                          downloadFileFromUrl(material.fileUrl, `${material.title}.${material.fileType?.toLowerCase() || 'pdf'}`);
+                        }
+                      }}
+                      className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
+                    >
+                      Tải về
+                    </button>
+                    <button type="button" onClick={() => fileInputRef.current?.click()} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
+                      Đổi file
+                    </button>
+                    <input ref={fileInputRef} type="file" accept=".pdf,.docx" className="hidden" onChange={handleFileChange} />
+                    <button type="button" onClick={() => setIsMaterialFileRemoved(true)} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
+                      Xóa
+                    </button>
+                  </div>
+
+                  {material?.fileType === 'PDF' && material?.fileUrl ? (
+                    <iframe src={`${material.fileUrl}#toolbar=1&navpanes=0&scrollbar=1`} className="flex-1 w-full border-none" title="PDF Preview" />
+                  ) : ['DOCX', 'DOC'].includes(material?.fileType?.toUpperCase() || '') && docxHtml ? (
+                    <div className="flex-1 w-full flex flex-col min-h-0 bg-[#f3f4f6]">
+                      <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--border-default)] bg-white shrink-0">
+                        <div className="text-[12px] font-semibold text-[var(--text-secondary)]">Xem trước DOCX</div>
+                        <div className="flex items-center gap-2">
+                          <button onClick={() => setDocxZoom(z => Math.max(50, z - 10))} className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors" title="Thu nhỏ">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                          </button>
+                          <span className="text-[12px] font-medium text-gray-600 w-10 text-center">{docxZoom}%</span>
+                          <button onClick={() => setDocxZoom(z => Math.min(200, z + 10))} className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors" title="Phóng to">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex-1 min-h-0 overflow-auto p-4 md:p-8 flex justify-center items-start bg-[#f3f4f6]">
+                        <div className="bg-white shadow-sm border border-gray-200 document-preview" style={{ width: '800px', minHeight: '1131px', padding: '40px', zoom: `${docxZoom}%` } as React.CSSProperties}>
+                          <div dangerouslySetInnerHTML={{ __html: docxHtml }} />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex-1 flex flex-col items-center justify-center gap-3 bg-[var(--surface-muted)]">
+                      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="6" width="36" height="46" rx="4" fill="#e5e7eb" stroke="#9ca3af" strokeWidth="2" />
+                        <path d="M38 6v12h10" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <rect x="10" y="6" width="38" height="12" rx="4" fill="none" />
+                        <line x1="18" y1="30" x2="46" y2="30" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" />
+                        <line x1="18" y1="38" x2="46" y2="38" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" />
+                        <line x1="18" y1="46" x2="34" y2="46" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" />
+                      </svg>
+                      <div className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-secondary)]">
+                        Bản xem trước tài liệu {material?.fileType || 'DOCX'}
+                      </div>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <div
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  className={`flex flex-col items-center justify-center gap-4 h-full rounded-[12px] border-2 border-dashed transition-all duration-200 ${isDragOver ? 'border-[var(--brand-500)] bg-[var(--brand-soft-300)]' : 'border-[var(--border-default)] bg-[var(--surface-muted)]'
+                  className={`flex flex-col items-center justify-center gap-4 h-full rounded-[12px] border-2 border-dashed transition-all duration-200 ${isDragOver ? 'border-[var(--brand-500)] bg-[var(--brand-soft-300)]' : 'border-[var(--border-default)] bg-white'
                     }`}
                 >
-                  <div className="w-14 h-14 rounded-full bg-white border border-[var(--border-default)] flex items-center justify-center shadow-sm">
+                  <div className="w-14 h-14 rounded-full bg-[var(--surface-muted)] border border-[var(--border-default)] flex items-center justify-center">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-secondary)]">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                       <polyline points="17 8 12 3 7 8" />
@@ -311,7 +420,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                     </svg>
                   </div>
                   <div className="font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--brand-600)]">
-                    Kéo thả file mới để thay thế file hiện tại
+                    Kéo thả file tài liệu vào đây
                   </div>
                   <label className="px-5 py-2 rounded-[8px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none shadow-sm">
                     Chọn File
@@ -319,6 +428,22 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                   </label>
                   <div className="font-[family-name:var(--font-body)] text-[12px] text-[var(--text-tertiary)] italic">
                     Hỗ trợ file PDF, DOCX (Tối đa 50MB)
+                  </div>
+                </div>
+              )}
+
+              {/* Global Drop Overlay */}
+              {isDragOver && (
+                <div className="absolute inset-5 z-50 bg-white/90 backdrop-blur-sm border-2 border-dashed border-[var(--brand-500)] rounded-[12px] flex flex-col items-center justify-center gap-4 pointer-events-none">
+                  <div className="w-14 h-14 rounded-full bg-[var(--brand-50)] border border-[var(--brand-200)] flex items-center justify-center shadow-sm">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--brand-600)]">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                  </div>
+                  <div className="font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--brand-600)]">
+                    Thả file vào đây để thay thế
                   </div>
                 </div>
               )}

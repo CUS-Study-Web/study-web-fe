@@ -18,9 +18,17 @@ export const documentService = {
     badgeId?: string;
     search?: string;
   }) => {
-    // Axios array format serialization is tricky for `sort=field1,asc&sort=field2,desc`.
-    // It's safer to pass as query string or URLSearchParams if array fails, but axios handles params: { sort: ['a,asc'] } reasonably.
-    const { data } = await apiClient.get<PageResponseDocumentResponse>('/api/documents', { params });
+    const query = new URLSearchParams();
+    if (params.page !== undefined) query.append('page', params.page.toString());
+    if (params.size !== undefined) query.append('size', params.size.toString());
+    if (params.docType) query.append('docType', params.docType);
+    if (params.accessTier) query.append('accessTier', params.accessTier);
+    if (params.badgeId) query.append('badgeId', params.badgeId);
+    if (params.search) query.append('search', params.search);
+    if (params.sort) {
+      params.sort.forEach(s => query.append('sort', s));
+    }
+    const { data } = await apiClient.get<PageResponseDocumentResponse>(`/api/documents?${query.toString()}`);
     return data;
   },
 
@@ -32,7 +40,7 @@ export const documentService = {
   createDocument: async (formData: FormData) => {
     const { data } = await apiClient.post<SingleResponseDocumentResponse>('/api/documents', formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': undefined,
       },
     });
     return data;
@@ -41,7 +49,7 @@ export const documentService = {
   updateDocument: async (id: string, formData: FormData) => {
     const { data } = await apiClient.put<SingleResponseDocumentResponse>(`/api/documents/${id}`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': undefined,
       },
     });
     return data;

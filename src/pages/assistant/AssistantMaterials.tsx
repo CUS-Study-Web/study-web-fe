@@ -7,6 +7,7 @@ import AssistantEditMaterialPopup from '../../components/assistant/material/Assi
 import AssistantViewMaterialPopup from '../../components/assistant/material/AssistantViewMaterialPopup';
 import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
 import AssistantFeatureInDevPopup from '../../components/assistant/AssistantFeatureInDevPopup';
+import AssistantMaterialSortPopup from '../../components/assistant/material/AssistantMaterialSortPopup';
 import { getDisplayFileType, FILE_TYPE_COLORS } from '../../utils/fileUtils';
 import { useNotification } from '../../components/common/NotificationProvider';
 
@@ -145,6 +146,7 @@ export default function AssistantMaterials() {
   const [activeTab, setActiveTab] = useState<"ly-thuyet" | "bai-tap">("ly-thuyet");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [sort, setSort] = useState<string>("createdAt,desc");
   const { showSuccess, showError } = useNotification();
 
   const [showUpload, setShowUpload] = useState(() => searchParams.get('upload') === '1');
@@ -173,6 +175,7 @@ export default function AssistantMaterials() {
     size: 20,
     docType: activeTab === 'ly-thuyet' ? 'THEORY' : 'EXERCISE',
     search: debouncedSearch.trim() || undefined,
+    sort: [sort],
   });
 
   const { mutate: deleteDocument, isPending: isDeleting } = useDeleteDocumentMutation();
@@ -271,8 +274,9 @@ export default function AssistantMaterials() {
         </div>
       </div>
 
-      <div className="relative flex bg-[var(--surface-muted)] p-[4px] rounded-[10px] w-fit mb-6" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.08)' }}>
-        {/* Sliding white pill indicator */}
+      <div className="flex justify-between items-center mb-6">
+        <div className="relative flex bg-[var(--surface-muted)] p-[4px] rounded-[10px] w-fit" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.08)' }}>
+          {/* Sliding white pill indicator */}
         <div
           className="absolute top-[4px] bottom-[4px] rounded-[10px] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
           style={{
@@ -315,6 +319,9 @@ export default function AssistantMaterials() {
           )}
         </div>
       </div>
+
+      <AssistantMaterialSortPopup currentSort={sort} onSortChange={setSort} />
+    </div>
 
       <div className="bg-[var(--surface-card)] rounded-[18px] border border-[var(--border-default)] shadow-[var(--shadow-clay-sm)] overflow-hidden flex flex-col">
         <div className="p-[14px_20px] border-b border-[var(--border-subtle)] flex items-center gap-2.5">
