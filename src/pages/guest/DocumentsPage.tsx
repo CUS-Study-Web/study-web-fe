@@ -4,7 +4,7 @@ import DocumentCard from "../../components/guest/DocumentCard";
 import { useGetInfiniteDocumentsQuery, useGetInfiniteGuestDocumentsQuery } from "../../hooks/queries/useDocuments";
 import { useAuth } from "../../contexts/AuthContext";
 import type { DocumentResponse, GuestDocumentResponse, DocType } from "../../types/api/document.api";
-import { SORT_OPTIONS } from "../../components/assistant/material/AssistantMaterialSortPopup";
+import { SORT_OPTIONS } from "../../utils/sortOptions";
 
 export default function DocumentsPage() {
   const [activeTab, setActiveTab] = useState<DocType>("THEORY");
