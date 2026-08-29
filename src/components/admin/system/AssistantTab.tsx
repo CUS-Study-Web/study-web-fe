@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { AssistantSummaryResponse } from '../../../types/api/system.api'
 import { AssistantDetailModal, CreateAssistantModal } from '../modals/system'
+import { ConfirmMiniModal } from '../modals/website/ConfirmMiniModal'
 import {
   useListAssistantsQuery,
   useActivateAssistantMutation,
@@ -14,6 +15,18 @@ export const AssistantTab = () => {
   const [selectedAsst, setSelectedAsst] = useState<AssistantSummaryResponse | null>(null)
   const [showCreateAsst, setShowCreateAsst] = useState(false)
   const [page, setPage] = useState(1)
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    isDanger?: boolean
+    action: () => void
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    action: () => {}
+  })
 
   useEffect(() => {
     setPage(1)
@@ -35,17 +48,33 @@ export const AssistantTab = () => {
 
 
   const handleBanClick = (id: string, name: string) => {
-    if (window.confirm(`Bạn có chắc chắn muốn Cấm vĩnh viễn tài khoản của trợ giảng ${name}?`)) {
-      banMutation.mutate(id)
-    }
+    setConfirmState({
+      isOpen: true,
+      title: 'Cấm tài khoản',
+      message: `Bạn có chắc chắn muốn cấm vĩnh viễn tài khoản của trợ giảng ${name}?`,
+      isDanger: true,
+      action: () => {
+        banMutation.mutate(id, { onSuccess: () => setConfirmState(s => ({ ...s, isOpen: false })) })
+      }
+    })
   }
 
   const handleToggleStatus = (a: AssistantSummaryResponse) => {
-    if (a.status === 'ACTIVE') {
-      deactivateMutation.mutate(a.id)
-    } else {
-      activateMutation.mutate(a.id)
-    }
+    const isBlock = a.status === 'ACTIVE'
+    setConfirmState({
+      isOpen: true,
+      title: isBlock ? 'Khóa tài khoản' : 'Mở khóa tài khoản',
+      message: `Bạn có chắc chắn muốn ${isBlock ? 'khóa' : 'mở khóa'} tài khoản của trợ giảng ${a.name}?`,
+      isDanger: isBlock,
+      action: () => {
+        const onSuccess = () => setConfirmState(s => ({ ...s, isOpen: false }))
+        if (isBlock) {
+          deactivateMutation.mutate(a.id, { onSuccess })
+        } else {
+          activateMutation.mutate(a.id, { onSuccess })
+        }
+      }
+    })
   }
 
   return (
@@ -130,16 +159,14 @@ export const AssistantTab = () => {
                 {a.gmail} · {a.phone || 'Chưa có số ĐT'}
               </div>
               <div className="flex flex-wrap gap-x-[18px] gap-y-[4px] mt-[8px]">
-                {[{ label: "Đề thi", v: a.numExams }, { label: "Học viên", v: 0 /* No API for students count yet */ }].map((s) => (
-                  <div key={s.label} className="flex gap-[5px] items-baseline">
-                    <span className="[font-family:var(--font-heading)] font-bold text-[14px] text-[var(--brand-500)]">
-                      {s.v}
-                    </span>
-                    <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-600)]">
-                      {s.label}
-                    </span>
-                  </div>
-                ))}
+                <div className="flex gap-[5px] items-baseline">
+                  <span className="[font-family:var(--font-heading)] font-bold text-[14px] text-[var(--brand-500)]">
+                    {a.numExams}
+                  </span>
+                  <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-600)]">
+                    Đề thi
+                  </span>
+                </div>
                 <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-300)] ml-auto md:ml-0">
                   Hoạt động: {a.lastLogin || 'Chưa đăng nhập'}
                 </span>
@@ -160,7 +187,7 @@ export const AssistantTab = () => {
                   disabled={activateMutation.isPending || deactivateMutation.isPending}
                   className={`px-[12px] py-[5px] rounded-[8px] border-none ![font-family:var(--font-heading)] !font-semibold !text-[12px] ${a.status === 'ACTIVE' ? 'bg-[var(--warning-50)] !text-[var(--warning-600)] hover:bg-[var(--warning-100)]' : 'bg-[var(--success-50)] !text-[var(--success-600)] hover:bg-[var(--success-100)]'} cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  {a.status === 'ACTIVE' ? 'Vô hiệu hóa' : 'Kích hoạt'}
+                  {a.status === 'ACTIVE' ? 'Khóa' : 'Mở khóa'}
                 </button>
               )}
               {a.status !== 'BANNED' && (
@@ -197,6 +224,17 @@ export const AssistantTab = () => {
       {showCreateAsst && (
         <CreateAssistantModal
           onClose={() => setShowCreateAsst(false)}
+        />
+      )}
+
+      {confirmState.isOpen && (
+        <ConfirmMiniModal
+          title={confirmState.title}
+          message={confirmState.message}
+          isDanger={confirmState.isDanger}
+          isSubmitting={activateMutation.isPending || deactivateMutation.isPending || banMutation.isPending}
+          onConfirm={confirmState.action}
+          onClose={() => setConfirmState(s => ({ ...s, isOpen: false }))}
         />
       )}
     </div>

@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom'
-import { ROUTES } from '../../../../utils/routes'
+import { useState } from 'react'
+import AssistantFeatureInDevPopup from '../../../assistant/AssistantFeatureInDevPopup'
 import type { AssistantSummaryResponse } from '../../../../types/api/system.api'
 
 type AssistantDetailModalProps = {
@@ -8,7 +8,7 @@ type AssistantDetailModalProps = {
 }
 
 export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProps) => {
-  const navigate = useNavigate()
+  const [showInDev, setShowInDev] = useState(false)
   const actLog = asst.recentActivities || [];
 
   return (
@@ -65,7 +65,7 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
               Hoạt động gần đây
             </div>
             <button
-              onClick={() => navigate(ROUTES.ADMIN.ACTIVITIES)}
+              onClick={() => setShowInDev(true)}
               className="bg-transparent border-none cursor-pointer ![font-family:var(--font-heading)] !font-bold !text-[12px] !text-[var(--brand-500)] p-0 underline underline-offset-[3px]"
             >
               Xem tất cả
@@ -105,6 +105,8 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
           </button>
         </div>
       </div>
+
+      {showInDev && <AssistantFeatureInDevPopup onClose={() => setShowInDev(false)} />}
     </div>
   )
 }

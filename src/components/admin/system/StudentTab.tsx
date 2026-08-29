@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { LearnerSummaryResponse } from '../../../types/api/system.api'
 import { StudentDetailModal, CreateVipModal } from '../modals/system'
+import { ConfirmMiniModal } from '../modals/website/ConfirmMiniModal'
 import {
   useListLearnersQuery,
   useLockLearnerMutation,
@@ -14,6 +15,18 @@ export const StudentTab = () => {
   const [selectedStudent, setSelectedStudent] = useState<LearnerSummaryResponse | null>(null)
   const [showVipModal, setShowVipModal] = useState(false)
   const [page, setPage] = useState(1)
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    isDanger?: boolean
+    action: () => void
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    action: () => {}
+  })
 
   useEffect(() => {
     setPage(1)
@@ -45,11 +58,33 @@ export const StudentTab = () => {
   }
 
   const handleToggleBlock = (s: LearnerSummaryResponse) => {
-    if (s.status === 'INACTIVE') {
-      unlockMutation.mutate(s.id)
-    } else {
-      lockMutation.mutate(s.id)
-    }
+    const isBlocked = s.status === 'INACTIVE'
+    setConfirmState({
+      isOpen: true,
+      title: isBlocked ? 'Mở khóa tài khoản' : 'Khóa tài khoản',
+      message: `Bạn có chắc chắn muốn ${isBlocked ? 'mở khóa' : 'khóa'} tài khoản ${s.name}?`,
+      isDanger: !isBlocked,
+      action: () => {
+        const onSuccess = () => setConfirmState(st => ({ ...st, isOpen: false }))
+        if (isBlocked) {
+          unlockMutation.mutate(s.id, { onSuccess })
+        } else {
+          lockMutation.mutate(s.id, { onSuccess })
+        }
+      }
+    })
+  }
+
+  const handleBanClick = (s: LearnerSummaryResponse) => {
+    setConfirmState({
+      isOpen: true,
+      title: 'Cấm tài khoản',
+      message: `Bạn có chắc chắn muốn cấm vĩnh viễn tài khoản ${s.name}?`,
+      isDanger: true,
+      action: () => {
+        banMutation.mutate(s.id, { onSuccess: () => setConfirmState(st => ({ ...st, isOpen: false })) })
+      }
+    })
   }
 
   return (
@@ -199,7 +234,7 @@ export const StudentTab = () => {
                       )}
                       {!isBanned && (
                         <button
-                          onClick={() => banMutation.mutate(u.id)}
+                          onClick={() => handleBanClick(u)}
                           disabled={banMutation.isPending}
                           className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--error-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--error-600)] hover:bg-[var(--error-100)] cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
@@ -235,6 +270,17 @@ export const StudentTab = () => {
       {showVipModal && (
         <CreateVipModal
           onClose={() => setShowVipModal(false)}
+        />
+      )}
+
+      {confirmState.isOpen && (
+        <ConfirmMiniModal
+          title={confirmState.title}
+          message={confirmState.message}
+          isDanger={confirmState.isDanger}
+          isSubmitting={lockMutation.isPending || unlockMutation.isPending || banMutation.isPending}
+          onConfirm={confirmState.action}
+          onClose={() => setConfirmState(s => ({ ...s, isOpen: false }))}
         />
       )}
     </div>

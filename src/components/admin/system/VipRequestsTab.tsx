@@ -5,11 +5,24 @@ import {
   useDisapproveVipRequestMutation
 } from '../../../hooks/queries/useSystemManagement'
 import Pagination from '../../common/Pagination'
+import { ConfirmMiniModal } from '../modals/website/ConfirmMiniModal'
 
 export const VipRequestsTab = () => {
   const [vipSearch, setVipSearch] = useState('')
   const [vipFilter, setVipFilter] = useState('Tất cả')
   const [page, setPage] = useState(1)
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    isDanger?: boolean
+    action: () => void
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    action: () => {}
+  })
 
   useEffect(() => {
     setPage(1)
@@ -33,6 +46,30 @@ export const VipRequestsTab = () => {
   const rejectMutation = useDisapproveVipRequestMutation()
 
   const vipRequests = vipData?.data || []
+
+  const handleApprove = (id: string, name: string) => {
+    setConfirmState({
+      isOpen: true,
+      title: 'Duyệt yêu cầu',
+      message: `Bạn có chắc chắn muốn duyệt yêu cầu VIP của ${name}?`,
+      isDanger: false,
+      action: () => {
+        approveMutation.mutate(id, { onSuccess: () => setConfirmState(s => ({ ...s, isOpen: false })) })
+      }
+    })
+  }
+
+  const handleReject = (id: string, name: string) => {
+    setConfirmState({
+      isOpen: true,
+      title: 'Từ chối yêu cầu',
+      message: `Bạn có chắc chắn muốn từ chối yêu cầu VIP của ${name}?`,
+      isDanger: true,
+      action: () => {
+        rejectMutation.mutate(id, { onSuccess: () => setConfirmState(s => ({ ...s, isOpen: false })) })
+      }
+    })
+  }
 
 
 
@@ -151,14 +188,14 @@ export const VipRequestsTab = () => {
                   {r.status === "WAITING" && (
                     <div className="flex justify-end items-center gap-[6px]">
                       <button
-                        onClick={() => approveMutation.mutate(r.id)}
+                        onClick={() => handleApprove(r.id, r.name)}
                         disabled={approveMutation.isPending || rejectMutation.isPending}
                         className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--success-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--success-600)] hover:bg-[var(--success-100)] cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Duyệt
                       </button>
                       <button
-                        onClick={() => rejectMutation.mutate(r.id)}
+                        onClick={() => handleReject(r.id, r.name)}
                         disabled={approveMutation.isPending || rejectMutation.isPending}
                         className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--error-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--error-600)] hover:bg-[var(--error-100)] cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
@@ -179,6 +216,17 @@ export const VipRequestsTab = () => {
           currentPage={page}
           totalPages={vipData.paging.totalPages}
           onPageChange={setPage}
+        />
+      )}
+
+      {confirmState.isOpen && (
+        <ConfirmMiniModal
+          title={confirmState.title}
+          message={confirmState.message}
+          isDanger={confirmState.isDanger}
+          isSubmitting={approveMutation.isPending || rejectMutation.isPending}
+          onConfirm={confirmState.action}
+          onClose={() => setConfirmState(s => ({ ...s, isOpen: false }))}
         />
       )}
     </div>
