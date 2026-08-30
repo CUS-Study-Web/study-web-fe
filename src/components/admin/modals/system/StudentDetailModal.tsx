@@ -55,7 +55,7 @@ export const StudentDetailModal = ({ student, onClose }: StudentDetailModalProps
         {/* Info Grid */}
         <div className="px-8 py-6 grid grid-cols-2 gap-3.5">
           {[
-            { label: "Khóa học", value: student.primaryCourse || "Chưa rõ" },
+            { label: "Khóa học", value: (!student.primaryCourse || student.primaryCourse === "N/A") ? "Chưa học" : student.primaryCourse },
             { label: "Đăng nhập gần nhất", value: student.lastLogin || "Chưa rõ" },
             { label: "Số bài thi đã làm", value: `${student.numExams || 0} bài` },
             { label: "Điểm trung bình", value: `${student.averageScore || 0}` },

@@ -172,16 +172,16 @@ export const StudentTab = () => {
                   </td>
                   <td className="p-[12px_12px]">
                     <span className="inline-block bg-[var(--brand-soft-500)] text-[var(--brand-500)] rounded-full px-[9px] py-[3px] [font-family:var(--font-heading)] font-bold text-[11px]">
-                      {u.primaryCourse || "Chưa có"}
+                      {(!u.primaryCourse || u.primaryCourse === "N/A") ? "Chưa học" : u.primaryCourse}
                     </span>
                   </td>
                   <td className="p-[12px_12px]">
                     <div className="flex items-center gap-[7px]">
                       <div className="bg-[var(--brand-soft-500)] rounded-full h-[6px] w-[70px] overflow-hidden">
                         <div
-                          style={{ width: `${u.progress}%` }}
+                          style={{ width: `${u.progress || 0}%` }}
                           className={`h-full rounded-full ${
-                            u.progress >= 70
+                            (u.progress || 0) >= 70
                               ? "bg-[var(--brand-500)]"
                               : u.progress >= 40
                               ? "bg-[var(--warning-500)]"
@@ -190,7 +190,7 @@ export const StudentTab = () => {
                         />
                       </div>
                       <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-600)]">
-                        {u.progress}%
+                        {u.progress || 0}%
                       </span>
                     </div>
                   </td>
