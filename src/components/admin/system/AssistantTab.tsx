@@ -1,52 +1,87 @@
 import { useState, useEffect } from 'react'
-import type { Assistant } from '../../../types/admin'
+import type { AssistantSummaryResponse } from '../../../types/api/system.api'
 import { AssistantDetailModal, CreateAssistantModal } from '../modals/system'
+import { ConfirmMiniModal } from '../modals/website/ConfirmMiniModal'
+import {
+  useListAssistantsQuery,
+  useActivateAssistantMutation,
+  useDeactivateAssistantMutation,
+  useBanAssistantMutation
+} from '../../../hooks/queries/useSystemAssistants'
+import Pagination from '../../common/Pagination'
 
-type AssistantTabProps = {
-  assistants: Assistant[]
-  onToggleStatus: (id: number) => void
-  onDelete: (id: number) => void
-  onCreateAssistant: (assistant: Assistant) => void
-}
-
-export const AssistantTab = ({
-  assistants,
-  onToggleStatus,
-  onDelete,
-  onCreateAssistant
-}: AssistantTabProps) => {
+export const AssistantTab = () => {
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedAsst, setSelectedAsst] = useState<Assistant | null>(null)
+  const [selectedAsst, setSelectedAsst] = useState<AssistantSummaryResponse | null>(null)
   const [showCreateAsst, setShowCreateAsst] = useState(false)
-  const [activeDropdownRowId, setActiveDropdownRowId] = useState<number | null>(null)
+  const [page, setPage] = useState(1)
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    isDanger?: boolean
+    action: () => void
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    action: () => {}
+  })
 
   useEffect(() => {
-    const handleOutsideClick = () => {
-      setActiveDropdownRowId(null)
-    }
-    window.addEventListener('click', handleOutsideClick)
-    return () => {
-      window.removeEventListener('click', handleOutsideClick)
-    }
-  }, [])
+    setPage(1)
+  }, [searchQuery])
 
-  const filteredAssistants = assistants.filter(
-    (a) =>
-      a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      a.email.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const { data: assistantData, isLoading } = useListAssistantsQuery({
+    search: searchQuery || undefined,
+    page: page - 1,
+    size: 10,
+    sort: 'createdAt,desc'
+  })
 
-  const handleDeleteClick = (id: number, name: string) => {
-    if (window.confirm(`Xóa tài khoản của trợ giảng ${name}?`)) {
-      onDelete(id)
-    }
+  const activateMutation = useActivateAssistantMutation()
+  const deactivateMutation = useDeactivateAssistantMutation()
+  const banMutation = useBanAssistantMutation()
+
+  const assistants = assistantData?.data || []
+
+
+
+  const handleBanClick = (id: string, name: string) => {
+    setConfirmState({
+      isOpen: true,
+      title: 'Cấm tài khoản',
+      message: `Bạn có chắc chắn muốn cấm vĩnh viễn tài khoản của trợ giảng ${name}?`,
+      isDanger: true,
+      action: () => {
+        banMutation.mutate(id, { onSuccess: () => setConfirmState(s => ({ ...s, isOpen: false })) })
+      }
+    })
+  }
+
+  const handleToggleStatus = (a: AssistantSummaryResponse) => {
+    const isBlock = a.status === 'ACTIVE'
+    setConfirmState({
+      isOpen: true,
+      title: isBlock ? 'Khóa tài khoản' : 'Mở khóa tài khoản',
+      message: `Bạn có chắc chắn muốn ${isBlock ? 'khóa' : 'mở khóa'} tài khoản của trợ giảng ${a.name}?`,
+      isDanger: isBlock,
+      action: () => {
+        const onSuccess = () => setConfirmState(s => ({ ...s, isOpen: false }))
+        if (isBlock) {
+          deactivateMutation.mutate(a.id, { onSuccess })
+        } else {
+          activateMutation.mutate(a.id, { onSuccess })
+        }
+      }
+    })
   }
 
   return (
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-[12px] mb-[20px]">
         <div className="[font-family:var(--font-heading)] font-bold text-[15px] text-[var(--text-primary)]">
-          Tài khoản trợ giảng ({filteredAssistants.length})
+          Tài khoản trợ giảng ({assistantData?.paging.total || 0})
         </div>
         <div className="flex gap-[10px] items-center w-full sm:w-auto">
           <div className="relative flex-1 sm:flex-none">
@@ -80,16 +115,28 @@ export const AssistantTab = ({
       </div>
 
       <div className="flex flex-col gap-[14px]">
-        {filteredAssistants.map((a) => (
+        {isLoading ? (
+          <div className="text-center py-[48px] [font-family:var(--font-body)] text-[14px] text-[var(--text-secondary-300)]">
+            Đang tải...
+          </div>
+        ) : assistants.length === 0 ? (
+          <div className="text-center py-[48px] [font-family:var(--font-body)] text-[14px] text-[var(--text-secondary-300)]">
+            Không tìm thấy trợ giảng.
+          </div>
+        ) : assistants.map((a) => (
           <div
             key={a.id}
-            className="flex flex-col md:flex-row items-start md:items-center gap-[18px] p-[18px_22px] bg-[var(--surface-500)] rounded-[16px] border border-[var(--border-300)]"
+            className={`flex flex-col md:flex-row items-start md:items-center gap-[18px] p-[18px_22px] bg-[var(--surface-500)] rounded-[16px] border border-[var(--border-300)] ${a.status === 'BANNED' ? 'opacity-50' : ''}`}
           >
             {/* Avatar Circle */}
             <div className="w-[46px] h-[46px] rounded-full bg-gradient-to-br from-[var(--brand-500)] to-[var(--brand-700)] flex items-center justify-center shrink-0">
-              <span className="[font-family:var(--font-heading)] font-[800] text-[16px] text-white">
-                {a.name.charAt(0)}
-              </span>
+              {a.avatarUrl ? (
+                <img src={a.avatarUrl} alt="avatar" className="w-full h-full rounded-full object-cover" />
+              ) : (
+                <span className="[font-family:var(--font-heading)] font-[800] text-[16px] text-white">
+                  {a.name.charAt(0)}
+                </span>
+              )}
             </div>
 
             {/* Core Info */}
@@ -100,105 +147,71 @@ export const AssistantTab = ({
                 </span>
                 <span
                   className={`inline-block rounded-full px-[9px] py-[2px] [font-family:var(--font-heading)] font-semibold text-[11px] ${
-                    a.status === 'Hoạt động'
+                    a.status === 'ACTIVE'
                       ? 'bg-[var(--success-50)] text-[var(--success-500)]'
                       : 'bg-[var(--warning-50)] text-[var(--warning-500)]'
                   }`}
                 >
-                  {a.status}
+                  {a.status === 'ACTIVE' ? 'Hoạt động' : a.status === 'INACTIVE' ? 'Tạm nghỉ' : 'Bị cấm'}
                 </span>
               </div>
               <div className="[font-family:var(--font-body)] text-[12.5px] text-[var(--text-secondary-600)]">
-                {a.email} · {a.phone}
+                {a.gmail} · {a.phone || 'Chưa có số ĐT'}
               </div>
               <div className="flex flex-wrap gap-x-[18px] gap-y-[4px] mt-[8px]">
-                {[{ label: "Đề thi", v: a.exams }, { label: "Học viên", v: a.students }].map((s) => (
-                  <div key={s.label} className="flex gap-[5px] items-baseline">
-                    <span className="[font-family:var(--font-heading)] font-bold text-[14px] text-[var(--brand-500)]">
-                      {s.v}
-                    </span>
-                    <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-600)]">
-                      {s.label}
-                    </span>
-                  </div>
-                ))}
+                <div className="flex gap-[5px] items-baseline">
+                  <span className="[font-family:var(--font-heading)] font-bold text-[14px] text-[var(--brand-500)]">
+                    {a.numExams}
+                  </span>
+                  <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-600)]">
+                    Đề thi
+                  </span>
+                </div>
                 <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-300)] ml-auto md:ml-0">
-                  Hoạt động: {a.lastActive}
+                  Hoạt động: {a.lastLogin || 'Chưa đăng nhập'}
                 </span>
               </div>
             </div>
 
             {/* Row Actions */}
-            <div className="relative mt-[12px] md:mt-0 flex self-end md:self-auto">
+            <div className="mt-[12px] md:mt-0 flex self-end md:self-auto items-center gap-[6px]">
               <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setActiveDropdownRowId(activeDropdownRowId === a.id ? null : a.id)
-                }}
-                className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
+                onClick={() => setSelectedAsst(a)}
+                className="px-[12px] py-[5px] rounded-[8px] border border-[var(--border-300)] bg-white ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="1" />
-                  <circle cx="12" cy="5" r="1" />
-                  <circle cx="12" cy="19" r="1" />
-                </svg>
+                Chi tiết
               </button>
-              {activeDropdownRowId === a.id && (
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  className="absolute right-0 top-[34px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[130px]"
+              {a.status !== 'BANNED' && (
+                <button
+                  onClick={() => handleToggleStatus(a)}
+                  disabled={activateMutation.isPending || deactivateMutation.isPending}
+                  className={`px-[12px] py-[5px] rounded-[8px] border-none ![font-family:var(--font-heading)] !font-semibold !text-[12px] ${a.status === 'ACTIVE' ? 'bg-[var(--warning-50)] !text-[var(--warning-600)] hover:bg-[var(--warning-100)]' : 'bg-[var(--success-50)] !text-[var(--success-600)] hover:bg-[var(--success-100)]'} cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  <button
-                    onClick={() => {
-                      setSelectedAsst(a)
-                      setActiveDropdownRowId(null)
-                    }}
-                    className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--text-secondary-600)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                  >
-                    Xem chi tiết
-                  </button>
-                  {a.status === 'Hoạt động' && (
-                    <button
-                      onClick={() => {
-                        onToggleStatus(a.id)
-                        setActiveDropdownRowId(null)
-                      }}
-                      className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--warning-500)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                    >
-                      Vô hiệu hóa
-                    </button>
-                  )}
-                  {a.status !== 'Hoạt động' && (
-                    <button
-                      onClick={() => {
-                        onToggleStatus(a.id)
-                        setActiveDropdownRowId(null)
-                      }}
-                      className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--brand-base-500)] hover:bg-[var(--surface-500)] hover:text-[var(--text-primary)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                    >
-                      Kích hoạt
-                    </button>
-                  )}
-                  <button
-                    onClick={() => {
-                      handleDeleteClick(a.id, a.name)
-                      setActiveDropdownRowId(null)
-                    }}
-                    className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
-                  >
-                    Xóa
-                  </button>
-                </div>
+                  {a.status === 'ACTIVE' ? 'Khóa' : 'Mở khóa'}
+                </button>
+              )}
+              {a.status !== 'BANNED' && (
+                <button
+                  onClick={() => handleBanClick(a.id, a.name)}
+                  disabled={banMutation.isPending}
+                  className="px-[12px] py-[5px] rounded-[8px] border-none bg-[var(--error-50)] ![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--error-600)] hover:bg-[var(--error-100)] cursor-pointer transition-colors duration-130 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Cấm
+                </button>
               )}
             </div>
           </div>
         ))}
-        {filteredAssistants.length === 0 && (
-          <div className="text-center py-[48px] [font-family:var(--font-body)] text-[14px] text-[var(--text-secondary-300)]">
-            Không tìm thấy trợ giảng.
-          </div>
-        )}
       </div>
+
+      {/* Pagination */}
+      {assistantData?.paging && (
+        <Pagination
+          currentPage={page}
+          totalPages={assistantData.paging.totalPages}
+          onPageChange={setPage}
+        />
+      )}
 
       {/* Modals */}
       {selectedAsst && (
@@ -211,7 +224,17 @@ export const AssistantTab = ({
       {showCreateAsst && (
         <CreateAssistantModal
           onClose={() => setShowCreateAsst(false)}
-          onCreate={onCreateAssistant}
+        />
+      )}
+
+      {confirmState.isOpen && (
+        <ConfirmMiniModal
+          title={confirmState.title}
+          message={confirmState.message}
+          isDanger={confirmState.isDanger}
+          isSubmitting={activateMutation.isPending || deactivateMutation.isPending || banMutation.isPending}
+          onConfirm={confirmState.action}
+          onClose={() => setConfirmState(s => ({ ...s, isOpen: false }))}
         />
       )}
     </div>

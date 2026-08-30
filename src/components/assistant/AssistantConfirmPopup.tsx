@@ -6,6 +6,7 @@ interface AssistantConfirmPopupProps {
   variant?: 'danger' | 'warning' | 'info';
   onConfirm: () => void;
   onCancel: () => void;
+  isLoading?: boolean;
 }
 
 const VARIANT_CONFIG = {
@@ -57,6 +58,7 @@ export default function AssistantConfirmPopup({
   variant = 'danger',
   onConfirm,
   onCancel,
+  isLoading = false,
 }: AssistantConfirmPopupProps) {
   const config = VARIANT_CONFIG[variant];
 
@@ -89,18 +91,20 @@ export default function AssistantConfirmPopup({
 
         {/* Buttons */}
         <div className="flex gap-3 mt-1">
-          <div
-            onClick={onCancel}
-            className="flex-1 py-2.5 flex justify-center items-center rounded-[10px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)] bg-white hover:bg-[var(--surface-muted)] cursor-pointer transition-colors select-none"
+          <button
+            onClick={isLoading ? undefined : onCancel}
+            disabled={isLoading}
+            className="flex-1 py-2.5 flex justify-center items-center rounded-[10px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)] bg-white hover:bg-[var(--surface-muted)] cursor-pointer transition-colors select-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {cancelLabel}
-          </div>
-          <div
-            onClick={onConfirm}
-            className={`flex-1 py-2.5 flex justify-center items-center rounded-[10px] font-[family-name:var(--font-heading)] font-semibold text-[14px] cursor-pointer transition-colors select-none border-none ${config.btnClass}`}
+          </button>
+          <button
+            onClick={isLoading ? undefined : onConfirm}
+            disabled={isLoading}
+            className={`flex-1 py-2.5 flex justify-center items-center rounded-[10px] font-[family-name:var(--font-heading)] font-semibold text-[14px] cursor-pointer transition-colors select-none border-none disabled:opacity-50 disabled:cursor-not-allowed ${config.btnClass}`}
           >
-            {confirmLabel}
-          </div>
+            {isLoading ? 'Đang xử lý...' : confirmLabel}
+          </button>
         </div>
       </div>
     </div>

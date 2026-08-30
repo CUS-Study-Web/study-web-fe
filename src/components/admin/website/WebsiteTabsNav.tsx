@@ -16,6 +16,7 @@ const WebsiteTabsNav = ({ activeTab, onTabChange }: WebsiteTabsNavProps) => {
     { key: "footer",       label: "Footer" },
     { key: "goi-cuoc",     label: "Gói cước" },
     { key: "courses",      label: "Danh sách khóa học" },
+    { key: "doc-types",    label: "Loại tài liệu" },
     { key: "instructors",  label: "Đội ngũ giảng viên" },
     { key: "achievements", label: "Bảng thành tích" },
     { key: "reviews",      label: "Cảm nhận học viên" },

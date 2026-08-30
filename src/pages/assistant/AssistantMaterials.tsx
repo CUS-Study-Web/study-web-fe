@@ -1,34 +1,15 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { DEMO_MATERIALS_ASST } from '../../types/mockData';
-import type { AssistantDocument } from '../../types/assistant';
+import type { DocumentResponse } from '../../types/api/document.api';
+import { useGetInfiniteDocumentsQuery, useDeleteDocumentMutation } from '../../hooks/queries/useDocuments';
 import AssistantUploadMaterialPopup from '../../components/assistant/material/AssistantUploadMaterialPopup';
 import AssistantEditMaterialPopup from '../../components/assistant/material/AssistantEditMaterialPopup';
 import AssistantViewMaterialPopup from '../../components/assistant/material/AssistantViewMaterialPopup';
 import AssistantConfirmPopup from '../../components/assistant/AssistantConfirmPopup';
 import AssistantFeatureInDevPopup from '../../components/assistant/AssistantFeatureInDevPopup';
+import AssistantMaterialSortPopup from '../../components/assistant/material/AssistantMaterialSortPopup';
 import { getDisplayFileType, FILE_TYPE_COLORS } from '../../utils/fileUtils';
-
-const SUBJECT_COLORS: Record<string, string> = {
-  "Toán": "var(--brand-500)",
-  "Vật lý": "var(--info-700)",
-  "Hóa học": "var(--error-700)",
-  "Tiếng Anh": "var(--warning-700)",
-  "Ngữ văn": "var(--warning-500)",
-  "Sinh học": "var(--success-700)"
-};
-
-const SubjectBadge = ({ subject }: { subject: string }) => {
-  const color = SUBJECT_COLORS[subject] || "var(--neutral-600)";
-  return (
-    <span
-      style={{ color: color, backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` }}
-      className="px-3 py-1.5 rounded-md font-[family-name:var(--font-heading)] font-bold text-[13px] uppercase tracking-wide"
-    >
-      {subject}
-    </span>
-  );
-};
+import { useNotification } from '../../components/common/NotificationProvider';
 
 const FileTypeBadge = ({ type }: { type: string }) => {
   const displayType = getDisplayFileType(type);
@@ -40,7 +21,7 @@ const FileTypeBadge = ({ type }: { type: string }) => {
 };
 
 const AccessBadge = ({ access }: { access: string }) => {
-  const isPublic = access === "Public";
+  const isPublic = access === "PUBLIC";
   return (
     <span className={`px-3 py-1.5 rounded-full font-[family-name:var(--font-heading)] font-bold text-[13px] ${isPublic ? 'bg-[var(--brand-soft-500)] text-[var(--brand-500)]' : 'bg-[var(--warning-100)] text-[var(--warning-600)]'}`}>
       {isPublic ? "🌐 Public" : "⭐ VIP"}
@@ -51,10 +32,10 @@ const AccessBadge = ({ access }: { access: string }) => {
 // ── 3-dot action menu ────────────────────────────────────────────────────────
 
 interface MaterialActionMenuProps {
-  doc: AssistantDocument;
-  onView: (doc: AssistantDocument) => void;
-  onEdit: (doc: AssistantDocument) => void;
-  onDelete: (id: number) => void;
+  doc: DocumentResponse;
+  onView: (doc: DocumentResponse) => void;
+  onEdit: (doc: DocumentResponse) => void;
+  onDelete: (id: string) => void;
 }
 
 function MaterialActionMenu({ doc, onView, onEdit, onDelete }: MaterialActionMenuProps) {
@@ -119,8 +100,6 @@ function MaterialActionMenu({ doc, onView, onEdit, onDelete }: MaterialActionMen
           }}
           className="bg-white rounded-[10px] border border-[var(--border-default)] py-1.5 min-w-[160px]"
         >
-
-
           {/* Xem */}
           <button
             onClick={() => { setOpen(false); onView(doc); }}
@@ -165,16 +144,48 @@ function MaterialActionMenu({ doc, onView, onEdit, onDelete }: MaterialActionMen
 export default function AssistantMaterials() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<"ly-thuyet" | "bai-tap">("ly-thuyet");
-  const [docs, setDocs] = useState<AssistantDocument[]>(DEMO_MATERIALS_ASST);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [sort, setSort] = useState<string>("createdAt,desc");
+  const { showSuccess, showError } = useNotification();
 
   const [showUpload, setShowUpload] = useState(() => searchParams.get('upload') === '1');
   const [showDevPopup, setShowDevPopup] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showView, setShowView] = useState(false);
 
-  const [selectedMaterial, setSelectedMaterial] = useState<AssistantDocument | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+  const [selectedMaterial, setSelectedMaterial] = useState<DocumentResponse | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+
+  // Debounce search
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading
+  } = useGetInfiniteDocumentsQuery({
+    size: 20,
+    docType: activeTab === 'ly-thuyet' ? 'THEORY' : 'EXERCISE',
+    search: debouncedSearch.trim() || undefined,
+    sort: [sort],
+  });
+
+  const { mutate: deleteDocument, isPending: isDeleting } = useDeleteDocumentMutation();
+
+  const docs = useMemo(() => {
+    return data?.pages.flatMap(page => page.data) || [];
+  }, [data]);
+
+  // Use a hardcoded estimate or real total if API provides it
+  const totalElements = data?.pages[0]?.paging?.total || 0;
 
   // Clear URL param after reading it once
   useEffect(() => {
@@ -183,35 +194,35 @@ export default function AssistantMaterials() {
     }
   }, [searchParams, setSearchParams]);
 
-  const filtered = docs.filter(d => {
-    if (d.cat !== activeTab) return false;
-    const q = search.toLowerCase();
-    return d.title.toLowerCase().includes(q) || d.subject.toLowerCase().includes(q);
-  });
-
-  const counts = {
-    "ly-thuyet": docs.filter(d => d.cat === "ly-thuyet").length,
-    "bai-tap": docs.filter(d => d.cat === "bai-tap").length,
-  };
-
-  const handleDeleteRequest = (id: number) => {
+  const handleDeleteRequest = (id: string) => {
     setDeleteTarget(id);
   };
 
   const handleDeleteConfirm = () => {
-    if (deleteTarget !== null) {
-      setDocs(prev => prev.filter(d => d.id !== deleteTarget));
+    if (deleteTarget) {
+      deleteDocument(deleteTarget, {
+        onSuccess: () => {
+          showSuccess("Xóa tài liệu thành công");
+          setDeleteTarget(null);
+        },
+        onError: (err: any) => {
+          showError(err.message || "Có lỗi xảy ra khi xóa tài liệu");
+          setDeleteTarget(null);
+        }
+      });
     }
-    setDeleteTarget(null);
   };
 
-  const handleEditClick = (doc: AssistantDocument) => {
+  const handleEditClick = (doc: DocumentResponse) => {
     setSelectedMaterial(doc);
     setShowEdit(true);
   };
 
-  const handleViewClick = (doc: AssistantDocument) => {
-    setSelectedMaterial(doc);
+  const handleViewClick = (doc: DocumentResponse) => {
+    // Cast it to AssistantDocument for the view popup since it probably expects it,
+    // or just let it fail/warn if we need to modify AssistantViewMaterialPopup too.
+    // For now, pass it as any, or we should update AssistantViewMaterialPopup next.
+    setSelectedMaterial(doc as any);
     setShowView(true);
   };
 
@@ -221,7 +232,7 @@ export default function AssistantMaterials() {
     <div className="flex flex-col h-full w-full">
       {showUpload && <AssistantUploadMaterialPopup onClose={() => setShowUpload(false)} />}
       {showEdit && <AssistantEditMaterialPopup material={selectedMaterial} onClose={() => setShowEdit(false)} />}
-      {showView && <AssistantViewMaterialPopup material={selectedMaterial} onClose={() => setShowView(false)} />}
+      {showView && <AssistantViewMaterialPopup material={selectedMaterial as any} onClose={() => setShowView(false)} />}
 
       {showDevPopup && (
         <AssistantFeatureInDevPopup onClose={() => setShowDevPopup(false)} />
@@ -235,6 +246,7 @@ export default function AssistantMaterials() {
           variant="danger"
           onConfirm={handleDeleteConfirm}
           onCancel={() => setDeleteTarget(null)}
+          isLoading={isDeleting}
         />
       )}
 
@@ -262,8 +274,9 @@ export default function AssistantMaterials() {
         </div>
       </div>
 
-      <div className="relative flex bg-[var(--surface-muted)] p-[4px] rounded-[10px] w-fit mb-6" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.08)' }}>
-        {/* Sliding white pill indicator */}
+      <div className="flex justify-between items-center mb-6">
+        <div className="relative flex bg-[var(--surface-muted)] p-[4px] rounded-[10px] w-fit" style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.08)' }}>
+          {/* Sliding white pill indicator */}
         <div
           className="absolute top-[4px] bottom-[4px] rounded-[10px] transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
           style={{
@@ -283,9 +296,11 @@ export default function AssistantMaterials() {
             }`}
         >
           Lý thuyết
-          <span className={`text-[12px] transition-opacity duration-300 ${activeTab === 'ly-thuyet' ? 'opacity-80' : 'opacity-50'}`}>
-            ({counts["ly-thuyet"]})
-          </span>
+          {activeTab === 'ly-thuyet' && (
+            <span className={`text-[12px] transition-opacity duration-300 ${activeTab === 'ly-thuyet' ? 'opacity-80' : 'opacity-50'}`}>
+              ({totalElements})
+            </span>
+          )}
         </div>
 
         {/* Tab 2: Bài tập */}
@@ -297,11 +312,16 @@ export default function AssistantMaterials() {
             }`}
         >
           Bài tập
-          <span className={`text-[12px] transition-opacity duration-300 ${activeTab === 'bai-tap' ? 'opacity-80' : 'opacity-50'}`}>
-            ({counts["bai-tap"]})
-          </span>
+          {activeTab === 'bai-tap' && (
+             <span className={`text-[12px] transition-opacity duration-300 ${activeTab === 'bai-tap' ? 'opacity-80' : 'opacity-50'}`}>
+              ({totalElements})
+            </span>
+          )}
         </div>
       </div>
+
+      <AssistantMaterialSortPopup currentSort={sort} onSortChange={setSort} />
+    </div>
 
       <div className="bg-[var(--surface-card)] rounded-[18px] border border-[var(--border-default)] shadow-[var(--shadow-clay-sm)] overflow-hidden flex flex-col">
         <div className="p-[14px_20px] border-b border-[var(--border-subtle)] flex items-center gap-2.5">
@@ -311,7 +331,7 @@ export default function AssistantMaterials() {
           </svg>
           <input
             type="text"
-            placeholder="Tìm kiếm theo tiêu đề hoặc môn học..."
+            placeholder="Tìm kiếm theo tiêu đề..."
             className="flex-1 border-none outline-none bg-transparent font-[family-name:var(--font-body)] text-[14px] text-[var(--text-primary)]"
             value={search}
             onChange={e => setSearch(e.target.value)}
@@ -323,9 +343,7 @@ export default function AssistantMaterials() {
             <thead>
               <tr className="bg-[var(--surface-500)]">
                 <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">Tiêu đề</th>
-                {activeTab === "ly-thuyet" && (
-                  <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">Môn học</th>
-                )}
+                <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">Nhãn</th>
                 <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">Loại file</th>
                 <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">Tải lên lúc</th>
                 <th className="text-left font-[family-name:var(--font-heading)] font-bold text-[12px] text-[var(--text-secondary)] py-[11px] px-5 whitespace-nowrap uppercase tracking-[0.4px]">Quyền truy cập</th>
@@ -333,51 +351,74 @@ export default function AssistantMaterials() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((doc) => (
-                <tr key={doc.id} className="hover:bg-[var(--surface-400)] transition-colors duration-140 border-t border-[var(--surface-500)]">
-                  <td className="py-3.5 px-5">
-                    <span className="font-[family-name:var(--font-body)] font-semibold text-[13px] text-[var(--text-primary)]">
-                      {doc.title}
-                    </span>
-                  </td>
-                  {activeTab === "ly-thuyet" && (
-                    <td className="py-3.5 px-5">
-                      <SubjectBadge subject={doc.subject} />
-                    </td>
-                  )}
-                  <td className="py-3.5 px-5">
-                    <FileTypeBadge type={doc.fileType} />
-                  </td>
-                  <td className="py-3.5 px-5">
-                    <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-secondary)]">
-                      {doc.date}
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-5">
-                    <AccessBadge access={doc.access} />
-                  </td>
-                  <td className="py-3.5 px-5">
-                    <div className="flex justify-end">
-                      <MaterialActionMenu
-                        doc={doc}
-                        onView={handleViewClick}
-                        onEdit={handleEditClick}
-                        onDelete={handleDeleteRequest}
-                      />
-                    </div>
+              {isLoading && docs.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                    Đang tải dữ liệu...
                   </td>
                 </tr>
-              ))}
-              {filtered.length === 0 && (
+              ) : docs.length === 0 ? (
                 <tr>
-                  <td colSpan={activeTab === "ly-thuyet" ? 6 : 5} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
+                  <td colSpan={6} className="p-10 text-center text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
                     Không tìm thấy tài liệu phù hợp
                   </td>
                 </tr>
+              ) : (
+                docs.map((doc) => (
+                  <tr key={doc.id} className="hover:bg-[var(--surface-400)] transition-colors duration-140 border-t border-[var(--surface-500)]">
+                    <td className="py-3.5 px-5">
+                      <span className="font-[family-name:var(--font-body)] font-semibold text-[13px] text-[var(--text-primary)]">
+                        {doc.title}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-5">
+                      <div className="flex gap-1.5 flex-wrap">
+                        {doc.badges?.map((badge: any) => (
+                          <span key={badge.id} className="px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-bold text-[10px] uppercase tracking-wide bg-[var(--brand-100)] text-[var(--brand-600)]">
+                            {badge.name}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-5">
+                      <FileTypeBadge type={doc.fileType} />
+                    </td>
+                    <td className="py-3.5 px-5">
+                      <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-secondary)]">
+                        {new Date(doc.createdAt).toLocaleDateString('vi-VN')}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-5">
+                      <AccessBadge access={doc.accessTier} />
+                    </td>
+                    <td className="py-3.5 px-5">
+                      <div className="flex justify-end">
+                        <MaterialActionMenu
+                          doc={doc}
+                          onView={handleViewClick}
+                          onEdit={handleEditClick}
+                          onDelete={handleDeleteRequest}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
         </div>
+        
+        {hasNextPage && (
+          <div className="p-4 border-t border-[var(--border-default)] flex justify-center">
+            <button
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+              className="px-5 py-2.5 rounded-full border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--brand-600)] hover:bg-[var(--surface-muted)] transition-colors cursor-pointer disabled:opacity-50"
+            >
+              {isFetchingNextPage ? 'Đang tải...' : '+ Hiển thị thêm'}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -4,20 +4,20 @@ type SystemStatsOverviewProps = {
   regularCount: number
   vipCount: number
   assistantCount: number
-  bannedCount: number
+  lockedCount: number
 }
 
 export const SystemStatsOverview = ({
   regularCount,
   vipCount,
   assistantCount,
-  bannedCount
+  lockedCount
 }: SystemStatsOverviewProps) => {
   const stats = [
     { label: 'Tài khoản thường', value: regularCount, color: 'var(--brand-500)' },
     { label: 'Tài khoản VIP', value: vipCount, color: 'var(--warning-500)' },
     { label: 'Trợ giảng', value: assistantCount, color: 'var(--info-500)' },
-    { label: 'Tài khoản bị cấm', value: bannedCount, color: 'var(--error-500)' }
+    { label: 'Tài khoản bị khóa', value: lockedCount, color: 'var(--error-500)' }
   ]
 
   return (
