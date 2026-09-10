@@ -126,7 +126,7 @@ export const getLearnerFlashcardTopicById = async (
 
 export const getLearnerFlashcardWords = async (
   topicId: string,
-  params: Pageable & { search?: string; status?: 'ALL' | 'REMEMBER' | 'STUDY' }
+  params: Pageable & { search?: string; status?: 'ALL' | 'REMEMBERED' | 'NOT_REMEMBERED' | 'NOT_STUDIED' }
 ): Promise<PageResponseLearnerFlashcardItemResponse> => {
   const { data } = await apiClient.get<PageResponseLearnerFlashcardItemResponse>(`/api/learner/flashcards/topics/${topicId}/words`, { params });
   return data;
