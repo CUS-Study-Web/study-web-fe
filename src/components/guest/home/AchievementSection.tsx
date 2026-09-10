@@ -23,10 +23,7 @@ const fallbackStudents = [
   { id: "6", name: "Ngô Quang Vinh", title: "Đỗ ngành CNTT", school: "ĐH Bách Khoa Hà Nội", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=60", subject: "THPT QG", scores: [], total: "28.5 / 30" },
 ];
 
-const defaultPrograms = ["V-ACT", "V-SAT", "HSA", "HSCA", "THPT QG"];
-
 export default function AchievementSection() {
-  const [activeTab, setActiveTab] = useState("V-ACT");
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
 
   const { data: leaderboardRes } = useGetLeaderboardsQuery({ page: 0, size: 20 });
@@ -48,14 +45,10 @@ export default function AchievementSection() {
       }))
     : fallbackStudents;
 
-  // Filter students based on active tab if there are matching ones, else fallback to all
-  const filteredStudents =
-    dynamicStudents.filter((s) => s.subject.toUpperCase() === activeTab.toUpperCase()).length > 0
-      ? dynamicStudents.filter((s) => s.subject.toUpperCase() === activeTab.toUpperCase())
-      : dynamicStudents;
+  const filteredStudents = dynamicStudents;
 
   const currentStudent =
-    filteredStudents.find((s) => s.id === selectedStudentId) || filteredStudents[0] || dynamicStudents[0];
+    filteredStudents.find((s) => s.id === selectedStudentId) || filteredStudents[0];
 
   return (
     <section className="bg-[var(--surface-500)] py-16 md:py-24 border-t border-[var(--border-300)]">

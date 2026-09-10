@@ -123,7 +123,6 @@ function DocTypeActionMenu({ onEdit, onDelete }: DocTypeActionMenuProps) {
 const AdminWebsite = () => {
   const [activeTab, setActiveTab] = useState<WTab>("courses")
   const [showModal, setShowModal] = useState<ModalKey | null>(null)
-  const [showDevPopup, setShowDevPopup] = useState(false)
 
   // API state for courses
   const { data: coursesData, isLoading: isLoadingCourses } = useGetAdminCoursesQuery({ size: 100 })
@@ -181,10 +180,6 @@ const AdminWebsite = () => {
   }, [])
 
   const handleTabChange = (tab: WTab) => {
-    if (tab === "trang-chu" || tab === "footer") {
-      setShowDevPopup(true)
-      return
-    }
     setActiveTab(tab)
     setActiveDropdownId(null)
   }
@@ -900,15 +895,6 @@ const AdminWebsite = () => {
         />
       )}
 
-      {showDevPopup && (
-        <ConfirmMiniModal
-          title="Đang phát triển"
-          message="Tính năng đang được phát triển. Vui lòng quay lại sau!"
-          confirmText="Đóng"
-          onConfirm={() => setShowDevPopup(false)}
-          onClose={() => setShowDevPopup(false)}
-        />
-      )}
     </div>
   )
 }

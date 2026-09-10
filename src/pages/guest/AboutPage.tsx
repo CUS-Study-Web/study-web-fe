@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import GuestPageLayout from "@/components/guest/GuestPageLayout";
 import TeacherCard from "@/components/guest/home/TeacherCard";
 import TestimonialCard from "@/components/guest/home/TestimonialCard";
@@ -13,14 +14,17 @@ const fallbackTeachers = [
 ];
 
 const fallbackTestimonials = [
-  { avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=60", name: "Trần Khánh Linh", course: "Khóa Toán nâng cao", date: "Tháng 6, 2024", review: "Giáo viên giảng rất dễ hiểu, bài tập phong phú và sát đề thi thật. Em cảm thấy tự tin hơn rất nhiều sau mỗi buổi học." },
-  { avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=60", name: "Phạm Đức Anh", course: "Khóa Vật lý", date: "Tháng 5, 2024", review: "Thầy Đức dạy cực kỳ cuốn, kết hợp lý thuyết và bài tập trắc nghiệm rất mượt. Điểm thi thử của em từ 6 lên 9 sau 2 tháng." },
-  { avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=60", name: "Ngô Bảo Châu", course: "Khóa Tiếng Anh", date: "Tháng 5, 2024", review: "Cô Hoa rất tận tâm, luôn sửa bài viết chi tiết và cung cấp tài liệu bổ sung. Kỹ năng đọc hiểu của em tiến bộ rõ rệt." },
+  { avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=60", name: "Bảo Ngọc", course: "Lớp VACT", date: "Tháng 6, 2024", review: "Mới đầu em tính dành 2 tháng hè để nghỉ ngơi thôi, nhưng đăng ký học ở CUS xong mới thấy quyết định này quá đúng đắn. Kho tài liệu bài tập ở đây nhiều khủng khiếp luôn, cày hoài không hết mà câu nào cũng chất lượng. Đã thế trong suốt đợt hè, mỗi lần làm bài có chỗ nào bí là em nhắn lên nhóm hỏi liền, thầy cô với trợ giảng giải đáp 24/7 siêu nhiệt tình. Nhờ vậy mà hết hè em thấy mình cải thiện rõ rệt kỹ năng làm bài và mẹo giải nhanh!" },
+  { avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=60", name: "Đức Anh", course: "Lớp VACT", date: "Tháng 5, 2024", review: "Trải nghiệm 2 tháng hè tại CUS thật sự vượt ngoài mong đợi của em. Trung tâm hỗ trợ chữa bài 1-1 rất chi tiết, chỉ ra từng lỗi sai nhỏ mà em hay mắc phải khi làm bài. Nhờ sự sát sao đó kết hợp với lộ trình học bài bản từ cơ bản đến nâng cao, em cảm thấy kỳ nghỉ hè của mình cực kỳ ý nghĩa và tối ưu được thời gian. Giờ chuẩn bị vào năm học mới em thấy tự tin hơn hẳn vì đã nắm chắc kiến thức rồi." },
+  { avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=60", name: "Phương Anh", course: "Lớp VACT", date: "Tháng 5, 2024", review: "Thầy cô ở CUS dạy cuốn lắm, truyền đạt dễ hiểu mà còn hướng dẫn nhiều phương pháp tư duy logic rất hay. Kho tài liệu bài tập thì bao la, dạng bài nào cũng có để luyện nên em rèn được phản xạ làm bài nhanh hơn nhiều. Đặc biệt là đội ngũ hỗ trợ giải đáp 24/7 cực kỳ tận tâm, dù nửa đêm em hỏi bài vẫn được hỗ trợ chu đáo. Hết 2 tháng hè vừa tranh thủ ôn luyện vừa tích lũy được bao nhiêu kinh nghiệm." },
 ];
 
 export default function AboutPage() {
-  const { data: teacherRes } = useGetTeachersQuery({ page: 0, size: 8 });
-  const { data: reviewRes } = useGetReviewsQuery({ page: 0, size: 6 });
+  const teacherScrollRef = useRef<HTMLDivElement>(null);
+  const reviewScrollRef = useRef<HTMLDivElement>(null);
+
+  const { data: teacherRes } = useGetTeachersQuery({ page: 0, size: 50 });
+  const { data: reviewRes } = useGetReviewsQuery({ page: 0, size: 50 });
 
   const teacherList =
     teacherRes?.data && teacherRes.data.length > 0
@@ -42,6 +46,12 @@ export default function AboutPage() {
           review: r.comment,
         }))
       : fallbackTestimonials;
+
+  const scrollCarousel = (ref: React.RefObject<HTMLDivElement | null>, offset: number) => {
+    if (ref.current) {
+      ref.current.scrollBy({ left: offset, behavior: "smooth" });
+    }
+  };
 
   return (
     <GuestPageLayout
@@ -65,10 +75,47 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {teacherList.map((teacher, idx) => (
-              <TeacherCard key={idx} {...teacher} />
-            ))}
+          {/* Teacher Horizontal Carousel */}
+          <div className="relative group px-2 md:px-0">
+            {/* Left Button */}
+            <button
+              type="button"
+              onClick={() => scrollCarousel(teacherScrollRef, -340)}
+              className={`absolute -left-3 md:-left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white hover:bg-[var(--surface-500)] text-[var(--text-primary-500)] shadow-xl border border-[var(--border-300)] flex items-center justify-center transition-all opacity-90 hover:opacity-100 hover:scale-105 active:scale-95 cursor-pointer ${
+                teacherList.length <= 4 ? 'md:hidden' : ''
+              } ${teacherList.length <= 1 ? 'hidden' : ''}`}
+              aria-label="Previous teachers"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </button>
+
+            {/* Scrollable Row */}
+            <div
+              ref={teacherScrollRef}
+              className="overflow-x-auto flex gap-6 scroll-smooth pb-4 -mx-4 px-4 md:mx-0 md:px-0 no-scrollbar snap-x snap-mandatory items-stretch"
+            >
+              {teacherList.map((teacher, idx) => (
+                <div key={idx} className="w-[270px] sm:w-[290px] md:w-[310px] flex-shrink-0 snap-start flex flex-col">
+                  <TeacherCard {...teacher} />
+                </div>
+              ))}
+            </div>
+
+            {/* Right Button */}
+            <button
+              type="button"
+              onClick={() => scrollCarousel(teacherScrollRef, 340)}
+              className={`absolute -right-3 md:-right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white hover:bg-[var(--surface-500)] text-[var(--text-primary-500)] shadow-xl border border-[var(--border-300)] flex items-center justify-center transition-all opacity-90 hover:opacity-100 hover:scale-105 active:scale-95 cursor-pointer ${
+                teacherList.length <= 4 ? 'md:hidden' : ''
+              } ${teacherList.length <= 1 ? 'hidden' : ''}`}
+              aria-label="Next teachers"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
           </div>
         </div>
       </section>
@@ -93,10 +140,52 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {reviewList.map((testi, idx) => (
-              <TestimonialCard key={idx} {...testi} />
-            ))}
+          {/* Testimonial Horizontal Carousel */}
+          <div className="relative group px-2 md:px-0">
+            {/* Left Button */}
+            <button
+              type="button"
+              onClick={() => scrollCarousel(reviewScrollRef, -380)}
+              className={`absolute -left-3 md:-left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white hover:bg-[var(--surface-500)] text-[var(--text-primary-500)] shadow-xl border border-[var(--border-300)] flex items-center justify-center transition-all opacity-90 hover:opacity-100 hover:scale-105 active:scale-95 cursor-pointer ${
+                reviewList.length <= 3 ? 'md:hidden' : ''
+              } ${reviewList.length <= 1 ? 'hidden' : ''}`}
+              aria-label="Previous testimonials"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </button>
+
+            {/* Scrollable Row */}
+            <div
+              ref={reviewScrollRef}
+              className={`overflow-x-auto flex gap-6 scroll-smooth pb-4 -mx-4 px-4 md:mx-0 md:px-0 no-scrollbar snap-x snap-mandatory items-stretch ${
+                reviewList.length < 3 ? 'md:justify-center' : ''
+              }`}
+            >
+              {reviewList.map((testi, idx) => (
+                <div
+                  key={idx}
+                  className="w-[300px] sm:w-[340px] md:w-[calc((100%-48px)/3)] flex-shrink-0 snap-start flex flex-col"
+                >
+                  <TestimonialCard {...testi} />
+                </div>
+              ))}
+            </div>
+
+            {/* Right Button */}
+            <button
+              type="button"
+              onClick={() => scrollCarousel(reviewScrollRef, 380)}
+              className={`absolute -right-3 md:-right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white hover:bg-[var(--surface-500)] text-[var(--text-primary-500)] shadow-xl border border-[var(--border-300)] flex items-center justify-center transition-all opacity-90 hover:opacity-100 hover:scale-105 active:scale-95 cursor-pointer ${
+                reviewList.length <= 3 ? 'md:hidden' : ''
+              } ${reviewList.length <= 1 ? 'hidden' : ''}`}
+              aria-label="Next testimonials"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
           </div>
         </div>
       </section>

@@ -1,22 +1,34 @@
 interface TestimonialCardProps {
+  avatar?: string;
   name: string;
   course: string;
   review: string;
   isParent?: boolean;
 }
 
-export default function TestimonialCard({ name, course, review, isParent }: TestimonialCardProps) {
+export default function TestimonialCard({ avatar, name, course, review, isParent }: TestimonialCardProps) {
   return (
-    <div className="bg-gradient-to-br from-[var(--neutral-0)] to-[#ebf5ed] rounded-[var(--radius-xl)] p-8 shadow-sm border border-[var(--border-200)] flex flex-col hover:shadow-md transition-shadow h-full">
+    <div className="w-full h-full bg-gradient-to-br from-[var(--neutral-0)] to-[#ebf5ed] rounded-[var(--radius-xl)] p-8 shadow-sm border border-[var(--border-200)] flex flex-col hover:shadow-md transition-shadow">
 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-[var(--brand-soft-300)] flex items-center justify-center text-[var(--brand-base-600)] shrink-0 border border-[var(--brand-soft-200)]">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
-            </svg>
-          </div>
+          {avatar ? (
+            <img
+              src={avatar}
+              alt={name}
+              className="w-12 h-12 rounded-full object-cover shrink-0 border border-[var(--brand-soft-200)]"
+              onError={(e) => {
+                (e.target as HTMLElement).style.display = 'none';
+              }}
+            />
+          ) : (
+            <div className="w-12 h-12 rounded-full bg-[var(--brand-soft-300)] flex items-center justify-center text-[var(--brand-base-600)] shrink-0 border border-[var(--brand-soft-200)]">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+              </svg>
+            </div>
+          )}
           <div>
             <div className="font-bold text-[var(--text-primary-500)] text-lg mb-0.5">{name}</div>
             <div className="text-xs font-medium text-[var(--text-secondary-400)]">{course}</div>
