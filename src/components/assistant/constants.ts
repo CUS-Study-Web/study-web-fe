@@ -7,5 +7,5 @@ export const ASSISTANT_MENU: { key: PageKey; icon: string; label: string; path: 
   { key: 'asst-courses', icon: '📎', label: 'Nội dung khóa học', path: ROUTES.ASSISTANT.COURSES },
   { key: 'asst-materials', icon: '📝', label: 'Tài liệu', path: ROUTES.ASSISTANT.MATERIALS },
   { key: 'asst-students', icon: '👥', label: 'Học viên', path: ROUTES.UNDER_DEVELOPMENT },
-  { key: 'asst-flashcards', icon: '🃏', label: 'Flashcard', path: ROUTES.UNDER_DEVELOPMENT },
+  { key: 'asst-flashcards', icon: '🃏', label: 'Flashcard', path: ROUTES.ASSISTANT.FLASHCARDS },
 ];

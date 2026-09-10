@@ -22,7 +22,7 @@ const VARIANT_CONFIG = {
         <path d="M9 6V4h6v2" />
       </svg>
     ),
-    btnClass: 'bg-red-500 hover:bg-red-600 text-white',
+    btnClass: 'bg-red-500 hover:bg-red-600 !text-white',
   },
   warning: {
     iconBg: 'bg-amber-50',
@@ -34,7 +34,7 @@ const VARIANT_CONFIG = {
         <line x1="12" y1="17" x2="12.01" y2="17" />
       </svg>
     ),
-    btnClass: 'bg-amber-500 hover:bg-amber-600 text-white',
+    btnClass: 'bg-amber-500 hover:bg-amber-600 !text-white',
   },
   info: {
     iconBg: 'bg-green-100',
@@ -46,7 +46,7 @@ const VARIANT_CONFIG = {
         <line x1="12" y1="16" x2="12.01" y2="16" />
       </svg>
     ),
-    btnClass: 'bg-green-800 hover:bg-green-800 text-white',
+    btnClass: 'bg-green-800 hover:bg-green-800 !text-white',
   },
 };
 
@@ -94,14 +94,14 @@ export default function AssistantConfirmPopup({
           <button
             onClick={isLoading ? undefined : onCancel}
             disabled={isLoading}
-            className="flex-1 py-2.5 flex justify-center items-center rounded-[10px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)] bg-white hover:bg-[var(--surface-muted)] cursor-pointer transition-colors select-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="!flex-1 !py-2.5 !flex !justify-center !items-center !rounded-[10px] !border !border-[var(--border-default)] !font-[family-name:var(--font-heading)] !font-semibold !text-[14px] !text-[var(--text-primary)] !bg-white !hover:bg-[var(--surface-muted)] !cursor-pointer !transition-colors !select-none !disabled:opacity-50 !disabled:cursor-not-allowed"
           >
             {cancelLabel}
           </button>
           <button
             onClick={isLoading ? undefined : onConfirm}
             disabled={isLoading}
-            className={`flex-1 py-2.5 flex justify-center items-center rounded-[10px] font-[family-name:var(--font-heading)] font-semibold text-[14px] cursor-pointer transition-colors select-none border-none disabled:opacity-50 disabled:cursor-not-allowed ${config.btnClass}`}
+            className={`!flex-1 !py-2.5 !flex !justify-center !items-center !rounded-[10px] !font-[family-name:var(--font-heading)] !font-semibold !text-[14px] !cursor-pointer !transition-colors !select-none !disabled:opacity-50 !disabled:cursor-not-allowed ${config.btnClass}`}
           >
             {isLoading ? 'Đang xử lý...' : confirmLabel}
           </button>
