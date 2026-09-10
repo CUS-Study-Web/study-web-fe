@@ -81,6 +81,7 @@ export function AssistantEditTopicPopup({
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { showError } = useNotification();
 
   // Initialize editWords when data is loaded
@@ -390,7 +391,13 @@ export function AssistantEditTopicPopup({
           message={`Bạn có chắc chắn muốn lưu thay đổi cho chủ đề "${topic.title}"?`}
           confirmLabel="Lưu"
           variant="warning"
-          onConfirm={() => { onSave(editWords, status); setShowConfirm(false); }}
+          isLoading={isSaving}
+          onConfirm={async () => {
+            setIsSaving(true);
+            await onSave(editWords, status);
+            setIsSaving(false);
+            setShowConfirm(false);
+          }}
           onCancel={() => setShowConfirm(false)}
         />
       )}

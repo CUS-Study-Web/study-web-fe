@@ -108,7 +108,7 @@ export default function AssistantFlashcards() {
     let successCount = 0;
     const errors: string[] = [];
 
-    const processPromises = words.map(async (word) => {
+    for (const word of words) {
       try {
         if (word.isDeleted) {
           if (!word.isNew) {
@@ -145,19 +145,20 @@ export default function AssistantFlashcards() {
       } catch (e: any) {
         errors.push(e.message || "Lỗi cập nhật từ vựng");
       }
+    }
+
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        if (errors.length > 0) {
+          showError(`Đã cập nhật ${successCount} từ vựng. Gặp lỗi: ${errors[0]}`);
+        } else {
+          showSuccess("Lưu thay đổi thành công!");
+        }
+        setModal(null);
+        setEditTopic(null);
+        resolve();
+      }, 500); // UI delay convention
     });
-
-    await Promise.all(processPromises);
-
-    setTimeout(() => {
-      if (errors.length > 0) {
-        showError(`Đã cập nhật ${successCount} từ vựng. Gặp lỗi: ${errors[0]}`);
-      } else {
-        showSuccess("Lưu thay đổi thành công!");
-      }
-      setModal(null);
-      setEditTopic(null);
-    }, 500); // UI delay convention
   };
 
   const deleteTopic = topics.find(t => t.id === deleteTopicId);
@@ -178,8 +179,6 @@ export default function AssistantFlashcards() {
         </div>
 
         <div className="flex gap-4">
-          <AssistantMaterialSortPopup currentSort={sort} onSortChange={setSort} />
-          
           <div
             id="btn-create-flashcard-topic"
             onClick={e => { e.stopPropagation(); setModal('create'); }}
@@ -195,7 +194,10 @@ export default function AssistantFlashcards() {
         </div>
       </div>
 
-      <AssistantSummaryChips metrics={metricsData?.data} />
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <AssistantSummaryChips metrics={metricsData?.data} />
+        <AssistantMaterialSortPopup currentSort={sort} onSortChange={setSort} />
+      </div>
 
       <AssistantTopicTable
         topics={topics}

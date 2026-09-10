@@ -151,3 +151,41 @@ export interface SuccessResponse {
   statusCode: number;
   message: string;
 }
+
+export interface PageResponseLearnerFlashcardTopicResponse {
+  statusCode: number;
+  message: string;
+  data: LearnerFlashcardTopicResponse[];
+  paging: PagingInfo;
+}
+
+export interface SingleResponseLearnerTopicDetailResponse {
+  statusCode: number;
+  message: string;
+  data: LearnerTopicDetailResponse;
+}
+
+export interface PageResponseLearnerFlashcardItemResponse {
+  statusCode: number;
+  message: string;
+  data: LearnerFlashcardItemResponse[];
+  paging: PagingInfo;
+}
+
+export interface SingleResponseListLearnerFlashcardItemResponse {
+  statusCode: number;
+  message: string;
+  data: LearnerFlashcardItemResponse[];
+}
+
+export interface SingleResponseLearnerCardProgressResponse {
+  statusCode: number;
+  message: string;
+  data: LearnerCardProgressResponse;
+}
+
+export interface SingleResponseLearnerFlashcardMetricsResponse {
+  statusCode: number;
+  message: string;
+  data: LearnerFlashcardMetricsResponse;
+}

@@ -38,7 +38,7 @@ interface AssistantSummaryChipsProps {
 
 export function AssistantSummaryChips({ metrics }: AssistantSummaryChipsProps) {
   return (
-    <div className="flex gap-3 mb-6 flex-wrap">
+    <div className="flex gap-3 flex-wrap">
       <SummaryChip
         label="Tổng chủ đề"
         value={metrics?.totalTopics ?? 0}

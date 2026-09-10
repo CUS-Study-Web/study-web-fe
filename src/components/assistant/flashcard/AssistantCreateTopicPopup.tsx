@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { useNotification } from '../../common/NotificationProvider';
-import { validateDocumentFile } from '../../../utils/fileUtils';
 import AssistantFeatureInDevPopup from '../AssistantFeatureInDevPopup';
 
 interface AssistantCreateTopicPopupProps {
@@ -10,20 +8,10 @@ interface AssistantCreateTopicPopupProps {
 
 export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreateTopicPopupProps) {
   const [topicName, setTopicName] = useState('');
-  const [fileName, setFileName] = useState('');
+  const [fileName] = useState('');
   const [status, setStatus] = useState<'PUBLISH' | 'DRAFT'>('DRAFT');
   const [isDragOver, setIsDragOver] = useState(false);
   const [showDevPopup, setShowDevPopup] = useState(false);
-  const { showError } = useNotification();
-
-  const handleFile = (file: File) => {
-    try {
-      validateDocumentFile(file);
-      setFileName(file.name);
-    } catch (err: any) {
-      showError(err.message);
-    }
-  };
 
   // ─── Drag & Drop handlers ───────────────────────────────────────────────────
   const handleDragOver = (e: React.DragEvent) => {

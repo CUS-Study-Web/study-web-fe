@@ -33,6 +33,7 @@ import LearnerSubjectDetailPage from "../pages/learner/LearnerSubjectDetailPage"
 import LearnerExamStartPage from "../pages/learner/LearnerExamStartPage";
 import LearnerTakeExamPage from "../pages/learner/LearnerTakeExamPage";
 import LearnerFlashcardTopicsPage from "../pages/learner/LearnerFlashcardTopicsPage";
+import LearnerFlashcardTopicDetailPage from "../pages/learner/LearnerFlashcardTopicDetailPage";
 import LearnerFlashcardStudyPage from "../pages/learner/LearnerFlashcardStudyPage";
 
 // Assistant Components & Pages
@@ -154,6 +155,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.LEARNER.TAKE_EXAM()} element={<LearnerTakeExamPage />} />
         <Route path={ROUTES.LEARNER.TAKE_EXERCISE()} element={<LearnerTakeExamPage />} />
         <Route path={ROUTES.LEARNER.FLASHCARD_TOPICS} element={<LearnerFlashcardTopicsPage />} />
+        <Route path={ROUTES.LEARNER.FLASHCARD_TOPIC_DETAIL()} element={<LearnerFlashcardTopicDetailPage />} />
         <Route path={ROUTES.LEARNER.FLASHCARD_STUDY()} element={<LearnerFlashcardStudyPage />} />
       </Route>
 

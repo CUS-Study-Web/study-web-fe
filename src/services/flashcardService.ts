@@ -11,6 +11,14 @@ import type {
   PageResponseFlashcardResponse,
   SingleResponseFlashcardMetricsResponse,
   SuccessResponse,
+  // Learner imports
+  PageResponseLearnerFlashcardTopicResponse,
+  SingleResponseLearnerTopicDetailResponse,
+  PageResponseLearnerFlashcardItemResponse,
+  SingleResponseListLearnerFlashcardItemResponse,
+  UpdateLearnerProgressRequest,
+  SingleResponseLearnerCardProgressResponse,
+  SingleResponseLearnerFlashcardMetricsResponse,
 } from '../types/api/flashcard.api';
 
 // --- Assistant / Admin Endpoints ---
@@ -92,5 +100,53 @@ export const deleteFlashcard = async (
   cardId: string
 ): Promise<SuccessResponse> => {
   const { data } = await apiClient.delete<SuccessResponse>(`/api/flashcards/topics/${topicId}/cards/${cardId}`);
+  return data;
+};
+
+// --- Learner Endpoints ---
+
+export const getLearnerFlashcardMetrics = async (): Promise<SingleResponseLearnerFlashcardMetricsResponse> => {
+  const { data } = await apiClient.get<SingleResponseLearnerFlashcardMetricsResponse>('/api/learner/flashcards/metrics');
+  return data;
+};
+
+export const getLearnerFlashcardTopics = async (
+  params: Pageable & { search?: string }
+): Promise<PageResponseLearnerFlashcardTopicResponse> => {
+  const { data } = await apiClient.get<PageResponseLearnerFlashcardTopicResponse>('/api/learner/flashcards/topics', { params });
+  return data;
+};
+
+export const getLearnerFlashcardTopicById = async (
+  topicId: string
+): Promise<SingleResponseLearnerTopicDetailResponse> => {
+  const { data } = await apiClient.get<SingleResponseLearnerTopicDetailResponse>(`/api/learner/flashcards/topics/${topicId}`);
+  return data;
+};
+
+export const getLearnerFlashcardWords = async (
+  topicId: string,
+  params: Pageable & { search?: string; status?: 'ALL' | 'REMEMBER' | 'STUDY' }
+): Promise<PageResponseLearnerFlashcardItemResponse> => {
+  const { data } = await apiClient.get<PageResponseLearnerFlashcardItemResponse>(`/api/learner/flashcards/topics/${topicId}/words`, { params });
+  return data;
+};
+
+export const getLearnerFlashcardsStudy = async (
+  topicId: string
+): Promise<SingleResponseListLearnerFlashcardItemResponse> => {
+  const { data } = await apiClient.get<SingleResponseListLearnerFlashcardItemResponse>(`/api/learner/flashcards/topics/${topicId}/study`);
+  return data;
+};
+
+export const updateLearnerFlashcardProgress = async (
+  topicId: string,
+  cardId: string,
+  payload: UpdateLearnerProgressRequest
+): Promise<SingleResponseLearnerCardProgressResponse> => {
+  const { data } = await apiClient.post<SingleResponseLearnerCardProgressResponse>(
+    `/api/learner/flashcards/topics/${topicId}/cards/${cardId}/progress`,
+    payload
+  );
   return data;
 };
