@@ -60,7 +60,7 @@ export default function AchievementSection() {
   return (
     <section className="bg-[var(--surface-500)] py-16 md:py-24 border-t border-[var(--border-300)]">
       <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 xl:px-20">
-        
+
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-block bg-[var(--brand-soft-300)] text-[var(--brand-base-600)] rounded-full px-4 py-1.5 text-xs md:text-sm font-bold mb-4">
@@ -75,6 +75,7 @@ export default function AchievementSection() {
         </div>
 
         {/* Tabs */}
+        {/* 
         <div className="flex flex-wrap justify-center gap-3 mb-12">
           {defaultPrograms.map((prog) => (
             <button
@@ -93,6 +94,7 @@ export default function AchievementSection() {
             </button>
           ))}
         </div>
+        */}
 
         {/* Top Highlight Section */}
         {currentStudent && (
