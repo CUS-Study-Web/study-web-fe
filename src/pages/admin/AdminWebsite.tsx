@@ -160,7 +160,7 @@ const AdminWebsite = () => {
   }, [])
 
   const handleTabChange = (tab: WTab) => {
-    if (tab !== "courses" && tab !== "doc-types") {
+    if (tab !== "courses" && tab !== "doc-types" && tab !== "trang-chu" && tab !== "footer") {
       setShowDevPopup(true)
       return
     }
