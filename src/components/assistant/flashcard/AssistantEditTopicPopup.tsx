@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
-import type { FlashcardTopicResponse } from '../../../types/api/flashcard.api';
+import type { FlashcardTopicResponse } from '../../../types/api/flashcardTopic.api';
 import AssistantConfirmPopup from '../AssistantConfirmPopup';
 import { useNotification } from '../../common/NotificationProvider';
 import { validateDocumentFile } from '../../../utils/fileUtils';

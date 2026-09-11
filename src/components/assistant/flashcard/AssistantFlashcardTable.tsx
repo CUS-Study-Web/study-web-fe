@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import type { FlashcardTopicResponse, FlashcardMetricsResponse } from '../../../types/api/flashcard.api';
+import type { FlashcardTopicResponse, FlashcardMetricsResponse } from '../../../types/api/flashcardTopic.api';
 
 // ─── Summary Chips ────────────────────────────────────────────────────────────
 

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../utils/routes";
-import type { LearnerFlashcardTopicResponse } from "../../types/api/flashcard.api";
+import type { LearnerFlashcardTopicResponse } from "../../types/api/flashcardTopic.api";
 
 type FlashcardTopicItemProps = {
   topic: LearnerFlashcardTopicResponse;

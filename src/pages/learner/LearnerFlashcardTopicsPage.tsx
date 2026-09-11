@@ -1,7 +1,7 @@
 import Header from "../../components/guest/Header";
 import Footer from "../../components/guest/Footer";
 import FlashcardTopicItem from "../../components/learner/FlashcardTopicItem";
-import { useGetLearnerFlashcardMetricsQuery, useGetLearnerFlashcardTopicsQuery } from "../../hooks/queries/useFlashcards";
+import { useGetLearnerFlashcardMetricsQuery, useGetLearnerFlashcardTopicsQuery } from "../../hooks/queries/useFlashcardTopics";
 
 export default function LearnerFlashcardTopicsPage() {
   const { data: metricsData, isLoading: isLoadingMetrics } = useGetLearnerFlashcardMetricsQuery();

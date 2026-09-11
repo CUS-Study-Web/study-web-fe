@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import type { FlashcardTopicResponse } from '../../types/api/flashcard.api';
+import type { FlashcardTopicResponse } from '../../types/api/flashcardTopic.api';
 import { AssistantSummaryChips, AssistantTopicTable } from '../../components/assistant/flashcard/AssistantFlashcardTable';
 import { AssistantCreateTopicPopup } from '../../components/assistant/flashcard/AssistantCreateTopicPopup';
 import { AssistantEditTopicPopup, type EditableWord } from '../../components/assistant/flashcard/AssistantEditTopicPopup';
@@ -14,6 +14,8 @@ import {
   useCreateFlashcardTopicMutation,
   useUpdateFlashcardTopicMutation,
   useDeleteFlashcardTopicMutation,
+} from '../../hooks/queries/useFlashcardTopics';
+import {
   useCreateFlashcardMutation,
   useUpdateFlashcardMutation,
   useDeleteFlashcardMutation

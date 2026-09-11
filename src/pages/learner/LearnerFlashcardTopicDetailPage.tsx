@@ -3,7 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../utils/routes";
 import Header from "../../components/guest/Header";
 import Footer from "../../components/guest/Footer";
-import { useGetLearnerFlashcardTopicByIdQuery, useGetInfiniteLearnerFlashcardWordsQuery } from "../../hooks/queries/useFlashcards";
+import { useGetLearnerFlashcardTopicByIdQuery } from "../../hooks/queries/useFlashcardTopics";
+import { useGetInfiniteLearnerFlashcardWordsQuery } from "../../hooks/queries/useFlashcards";
 
 export default function LearnerFlashcardTopicDetailPage() {
   const { topicId } = useParams<{ topicId: string }>();
