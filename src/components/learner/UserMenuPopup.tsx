@@ -97,7 +97,7 @@ export default function UserMenuPopup() {
             </Link>
 
             <Link
-              to={ROUTES.UNDER_DEVELOPMENT}
+              to={ROUTES.LEARNER.FLASHCARD_TOPICS}
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-3 px-5 py-2.5 text-sm font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-300)] hover:text-[var(--text-primary-500)] transition-colors duration-100"
             >

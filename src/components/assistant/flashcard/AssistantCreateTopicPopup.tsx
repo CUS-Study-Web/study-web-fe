@@ -1,27 +1,17 @@
 import { useState } from 'react';
-import { useNotification } from '../../common/NotificationProvider';
-import { validateDocumentFile } from '../../../utils/fileUtils';
+import AssistantFeatureInDevPopup from '../AssistantFeatureInDevPopup';
 
 interface AssistantCreateTopicPopupProps {
   onClose: () => void;
-  onCreate: (name: string, fileName: string, status: 'published' | 'draft') => void;
+  onCreate: (name: string, fileName: string, status: 'PUBLISH' | 'DRAFT') => void;
 }
 
 export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreateTopicPopupProps) {
   const [topicName, setTopicName] = useState('');
-  const [fileName, setFileName] = useState('');
-  const [status, setStatus] = useState<'published' | 'draft'>('published');
+  const [fileName] = useState('');
+  const [status, setStatus] = useState<'PUBLISH' | 'DRAFT'>('DRAFT');
   const [isDragOver, setIsDragOver] = useState(false);
-  const { showError } = useNotification();
-
-  const handleFile = (file: File) => {
-    try {
-      validateDocumentFile(file);
-      setFileName(file.name);
-    } catch (err: any) {
-      showError(err.message);
-    }
-  };
+  const [showDevPopup, setShowDevPopup] = useState(false);
 
   // ─── Drag & Drop handlers ───────────────────────────────────────────────────
   const handleDragOver = (e: React.DragEvent) => {
@@ -32,18 +22,10 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
+    setShowDevPopup(true);
   };
   const handleDropzoneClick = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx,.xls,.csv';
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) handleFile(file);
-    };
-    input.click();
+    setShowDevPopup(true);
   };
 
   const handleCreate = () => {
@@ -105,8 +87,8 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
             </div>
             <div className="flex w-[200px] rounded-[8px] overflow-hidden border border-[var(--border-default)]">
               <div
-                onClick={() => setStatus('published')}
-                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none ${status === 'published'
+                onClick={() => setStatus('PUBLISH')}
+                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none ${status === 'PUBLISH'
                   ? 'bg-[var(--brand-500)] text-white'
                   : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
                   }`}
@@ -114,8 +96,8 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
                 Xuất bản
               </div>
               <div
-                onClick={() => setStatus('draft')}
-                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none border-l border-[var(--border-default)] ${status === 'draft'
+                onClick={() => setStatus('DRAFT')}
+                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none border-l border-[var(--border-default)] ${status === 'DRAFT'
                   ? 'bg-amber-500 text-white'
                   : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
                   }`}
@@ -212,6 +194,10 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
           </div>
         </div>
       </div>
+
+      {showDevPopup && (
+        <AssistantFeatureInDevPopup onClose={() => setShowDevPopup(false)} />
+      )}
     </div>
   );
 }

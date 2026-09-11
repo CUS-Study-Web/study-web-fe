@@ -158,23 +158,22 @@ export interface SubjectTopic {
 
 // --- Flashcard types ---
 
-export type TopicStatus = 'published' | 'draft';
+export type TopicStatus = 'PUBLISH' | 'DRAFT' | 'DEVELOPING';
 
 export interface FlashcardTopic {
-  id: number;
+  id: string; // Changed to string UUID
   title: string;
   words: number;
-  created: string; // "DD/MM/YYYY"
+  created: string; // "DD/MM/YYYY" or ISO
   status: TopicStatus;
 }
 
 export interface VocabularyWord {
-  id: number;
+  id: string; // Changed to string UUID
   en: string;
   phonetic: string;
   type: string; // "Noun", "Adjective", "Verb", etc.
   vi: string;
-  ex: string;
 }
 
 export type FlashcardModalState = null | 'create' | 'edit';

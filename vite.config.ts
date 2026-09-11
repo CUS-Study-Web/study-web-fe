@@ -10,10 +10,10 @@ export default defineConfig({
       // Local dev: proxy /api/* → http://localhost:8080/*
       // Production: Nginx handles /api/* → backend (no proxy needed)
       '/api': {
-        target: 'http://116.118.6.22:58888',
+        target: 'http://localhost:8080/',
         changeOrigin: true,
         headers: {
-          Origin: 'http://116.118.6.22:58888'
+          Origin: 'http://localhost:8080/'
         }
       },
     },
