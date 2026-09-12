@@ -1,11 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { ROUTES } from "../../utils/routes";
+import { useAuth } from "@/contexts/AuthContext";
+import { ROUTES } from "@/utils/routes";
+import { useGetPricingPageQuery } from "@/hooks/queries/usePricingPage";
+import type { FeatureIconAccess } from "@/types/api/pricingPage.api";
 
 export default function VipPage() {
   const navigate = useNavigate();
   const { user, isLoggedIn } = useAuth();
   const isVip = !!user?.isVip;
+
+  const { data: pricingRes } = useGetPricingPageQuery();
+  const pricingData = pricingRes?.data;
+
+  const normalPkg = pricingData?.normalPackage;
+  const vipPkg = pricingData?.vipPackage;
+  const dynamicFeatures = pricingData?.features;
 
   const handleUpgradeClick = () => {
     if (!isVip) {
@@ -15,6 +24,37 @@ export default function VipPage() {
         navigate(ROUTES.AUTH.REGISTER);
       }
     }
+  };
+
+  const renderFeatureCell = (
+    icon: FeatureIconAccess,
+    text: string,
+    hasIcon: boolean,
+    isVipCell?: boolean
+  ) => {
+    return (
+      <div
+        className={`col-span-4 p-4 md:p-5 ${
+          isVipCell
+            ? "bg-[#fffdf5] text-[#1f1f1c] font-bold"
+            : "border-r border-[var(--border-300)] text-[#7d827f] font-medium"
+        } flex items-start gap-2`}
+      >
+        {hasIcon && icon === "CHECKED" && (
+          <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">
+            ✓
+          </span>
+        )}
+        {hasIcon && icon === "UNCHECKED" && (
+          <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">
+            ✕
+          </span>
+        )}
+        <div>
+          <span>{text}</span>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -49,16 +89,16 @@ export default function VipPage() {
         <div className="bg-white rounded-[var(--radius-xl)] p-8 shadow-xl border border-[var(--border-300)] flex flex-col justify-between hover:shadow-2xl transition-all duration-300">
           <div>
             <span className="block text-xs font-black text-[#79807a] uppercase tracking-wider mb-2">
-              TÀI KHOẢN THƯỜNG
+              {normalPkg?.name || "TÀI KHOẢN THƯỜNG"}
             </span>
             <h2
               className="text-4xl font-black !text-[#1f1f1c] mb-3"
               style={{ fontFamily: "var(--font-heading)" }}
             >
-              Miễn phí
+              {normalPkg?.price || "Miễn phí"}
             </h2>
             <div className="text-sm text-[#5c635e] font-medium leading-relaxed mb-8 min-h-[42px]">
-              Phù hợp để khám phá nền tảng CUS trước khi nâng cấp.
+              {normalPkg?.description || "Phù hợp để khám phá nền tảng CUS trước khi nâng cấp."}
             </div>
           </div>
 
@@ -66,7 +106,7 @@ export default function VipPage() {
             disabled
             className="!w-full !py-3.5 !bg-[#f4f7f4] !border !border-[var(--border-500)] !text-[#79807a] !font-extrabold !text-sm !rounded-[var(--radius-lg)] !text-center !cursor-default"
           >
-            {isVip ? "Gói miễn phí" : "Đang sử dụng"}
+            {isVip ? "Gói miễn phí" : normalPkg?.buttonText || "Đang sử dụng"}
           </button>
         </div>
 
@@ -74,24 +114,30 @@ export default function VipPage() {
         <div className="bg-[#1a231b] text-white rounded-[var(--radius-xl)] p-8 shadow-2xl border border-[#2d422a] relative overflow-hidden flex flex-col justify-between ring-2 ring-[#ffc107]/40 hover:shadow-[0_20px_50px_rgba(255,193,7,0.15)] transition-all duration-300">
           {/* Top Right Popular Tag */}
           <div className="absolute top-6 right-6 bg-[#384236] border border-[#525f4f] text-[#ffc107] text-xs font-extrabold px-3 py-1 rounded-full flex items-center gap-1 shadow-xs">
-            <span>✦</span> Phổ biến
+            <span>✦</span> {vipPkg?.tag || "Phổ biến"}
           </div>
 
           <div>
             <span className="block text-xs font-black text-[#ffc107] uppercase tracking-wider mb-2">
-              TÀI KHOẢN VIP
+              {vipPkg?.name || "TÀI KHOẢN VIP"}
             </span>
             <div className="flex items-baseline gap-1 mb-3">
               <h2
                 className="text-4xl font-black !text-white"
                 style={{ fontFamily: "var(--font-heading)" }}
               >
-                80.000 đ
+                {vipPkg?.price || "80.000 đ"}
               </h2>
-              <span className="text-sm font-medium text-[#beccbf]">/tháng</span>
+              <span className="text-sm font-medium text-[#beccbf]">
+                {vipPkg?.billingPeriod
+                  ? vipPkg.billingPeriod.startsWith("/")
+                    ? vipPkg.billingPeriod
+                    : `/${vipPkg.billingPeriod}`
+                  : "/tháng"}
+              </span>
             </div>
             <div className="text-sm text-[#beccbf] font-medium leading-relaxed mb-8 min-h-[42px]">
-              Đầy đủ tính năng, không giới hạn, hỗ trợ ưu tiên.
+              {vipPkg?.description || "Đầy đủ tính năng, không giới hạn, hỗ trợ ưu tiên."}
             </div>
           </div>
 
@@ -137,90 +183,105 @@ export default function VipPage() {
             </div>
           </div>
 
-          {/* Row 1: Làm đề thi */}
-          <div className="grid grid-cols-12 border-b border-[var(--border-300)] text-xs md:text-sm">
-            <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[var(--border-300)] flex items-center">
-              Làm đề thi
-            </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
-              <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
-              <span>Giới hạn một số đề, không xem được đáp án chi tiết</span>
-            </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
-              <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
-              <span>Không giới hạn, xem được đáp án và lời giải chi tiết</span>
-            </div>
-          </div>
-
-          {/* Row 2: Làm bài tập */}
-          <div className="grid grid-cols-12 border-b border-[var(--border-300)] text-xs md:text-sm">
-            <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[var(--border-300)] flex items-center">
-              Làm bài tập
-            </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
-              <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
-              <span>Giới hạn 3 bài tập, không xem lời giải chi tiết</span>
-            </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
-              <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
-              <span>Không giới hạn, xem được đáp án và lời giải chi tiết</span>
-            </div>
-          </div>
-
-          {/* Row 3: Phòng thi thực chiến */}
-          <div className="grid grid-cols-12 border-b border-[var(--border-300)] text-xs md:text-sm">
-            <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[var(--border-300)] flex items-center">
-              Phòng thi thực chiến
-            </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
-              <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
-              <span>Không có</span>
-            </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
-              <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
-              <span>Có — Giúp học sinh mô phỏng quá trình làm bài thi thật</span>
-            </div>
-          </div>
-
-          {/* Row 4: Tài liệu thi thử (Đặc biệt) */}
-          <div className="grid grid-cols-12 border-b border-[var(--border-300)] text-xs md:text-sm">
-            <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[var(--border-300)] flex items-center">
-              Tài liệu thi thử
-            </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
-              <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
-              <span>Không có</span>
-            </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
-              <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
-              <div>
-                <span className="inline-block bg-[#fef3c7] text-[#b45309] border border-[#fde68a] text-[10px] font-extrabold px-1.5 py-0.5 rounded mr-1.5 uppercase">
-                  Đặc biệt
-                </span>
-                <span>Tài liệu thi thử được cập nhật theo thời gian học của khóa học chính thức tại CUS</span>
+          {dynamicFeatures && dynamicFeatures.length > 0 ? (
+            dynamicFeatures.map((feat, idx) => (
+              <div
+                key={feat.id || idx}
+                className={`grid grid-cols-12 ${
+                  idx !== dynamicFeatures.length - 1 ? "border-b border-[var(--border-300)]" : ""
+                } text-xs md:text-sm`}
+              >
+                <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[var(--border-300)] flex items-center">
+                  {feat.featureName}
+                </div>
+                {renderFeatureCell(feat.iconNormalAccess, feat.normalAccess, feat.normalHasIcon, false)}
+                {renderFeatureCell(feat.iconVipAccess, feat.vipAccess, feat.vipHasIcon, true)}
               </div>
-            </div>
-          </div>
-
-          {/* Row 5: Buổi học GG Meet (Đặc biệt) */}
-          <div className="grid grid-cols-12 text-xs md:text-sm">
-            <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[var(--border-300)] flex items-center">
-              Buổi học GG Meet
-            </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
-              <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
-              <span>Không có</span>
-            </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
-              <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
-              <div>
-                <span className="inline-block bg-[#fef3c7] text-[#b45309] border border-[#fde68a] text-[10px] font-extrabold px-1.5 py-0.5 rounded mr-1.5 uppercase">
-                  Đặc biệt
-                </span>
-                <span>Tham gia trực tiếp một số buổi học chính thức qua GG Meet khi liên hệ hotline</span>
+            ))
+          ) : (
+            <>
+              {/* Fallback Static Rows */}
+              <div className="grid grid-cols-12 border-b border-[var(--border-300)] text-xs md:text-sm">
+                <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[var(--border-300)] flex items-center">
+                  Làm đề thi
+                </div>
+                <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
+                  <span>Giới hạn một số đề, không xem được đáp án chi tiết</span>
+                </div>
+                <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
+                  <span>Không giới hạn, xem được đáp án và lời giải chi tiết</span>
+                </div>
               </div>
-            </div>
-          </div>
+
+              <div className="grid grid-cols-12 border-b border-[var(--border-300)] text-xs md:text-sm">
+                <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[var(--border-300)] flex items-center">
+                  Làm bài tập
+                </div>
+                <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
+                  <span>Giới hạn 3 bài tập, không xem lời giải chi tiết</span>
+                </div>
+                <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
+                  <span>Không giới hạn, xem được đáp án và lời giải chi tiết</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-12 border-b border-[var(--border-300)] text-xs md:text-sm">
+                <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[var(--border-300)] flex items-center">
+                  Phòng thi thực chiến
+                </div>
+                <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
+                  <span>Không có</span>
+                </div>
+                <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
+                  <span>Có — Giúp học sinh mô phỏng quá trình làm bài thi thật</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-12 border-b border-[var(--border-300)] text-xs md:text-sm">
+                <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[var(--border-300)] flex items-center">
+                  Tài liệu thi thử
+                </div>
+                <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
+                  <span>Không có</span>
+                </div>
+                <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
+                  <div>
+                    <span className="inline-block bg-[#fef3c7] text-[#b45309] border border-[#fde68a] text-[10px] font-extrabold px-1.5 py-0.5 rounded mr-1.5 uppercase">
+                      Đặc biệt
+                    </span>
+                    <span>Tài liệu thi thử được cập nhật theo thời gian học của khóa học chính thức tại CUS</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-12 text-xs md:text-sm">
+                <div className="col-span-4 p-4 md:p-5 font-extrabold text-[#1f1f1c] border-r border-[var(--border-300)] flex items-center">
+                  Buổi học GG Meet
+                </div>
+                <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
+                  <span>Không có</span>
+                </div>
+                <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
+                  <div>
+                    <span className="inline-block bg-[#fef3c7] text-[#b45309] border border-[#fde68a] text-[10px] font-extrabold px-1.5 py-0.5 rounded mr-1.5 uppercase">
+                      Đặc biệt
+                    </span>
+                    <span>Tham gia trực tiếp một số buổi học chính thức qua GG Meet khi liên hệ hotline</span>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -254,3 +315,4 @@ export default function VipPage() {
     </div>
   );
 }
+
