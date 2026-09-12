@@ -42,6 +42,9 @@ export interface VipRequestResponse {
   userId: string;
   name: string;
   gmail: string;
+  phone?: string;
+  birth?: string;
+  evidenceUrl?: string;
   avatarUrl?: string;
   mainCourse?: string;
   note?: string;

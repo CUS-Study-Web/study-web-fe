@@ -6,6 +6,8 @@ export interface UserResponse {
   birth: string; // YYYY-MM-DD
   gender: 'MALE' | 'FEMALE';
   school: string;
+  vipStartDate?: string;
+  vipEndDate?: string;
 }
 
 export interface AuthResponse {

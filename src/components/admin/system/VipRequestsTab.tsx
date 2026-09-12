@@ -130,7 +130,7 @@ export const VipRequestsTab = () => {
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-[var(--surface-500)]">
-              {["Email", "Ghi chú", "Ngày yêu cầu", "Trạng thái", ""].map((h) => (
+              {["Email", "SĐT", "Ghi chú", "Ngày yêu cầu", "Minh chứng", "Trạng thái", ""].map((h) => (
                 <th
                   key={h}
                   className="p-[10px_14px] [font-family:var(--font-heading)] font-bold text-[11px] text-[var(--text-secondary-300)] text-left uppercase tracking-[0.4px] whitespace-nowrap"
@@ -143,13 +143,13 @@ export const VipRequestsTab = () => {
           <tbody>
             {isLoading ? (
                <tr>
-                 <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                 <td colSpan={7} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
                    Đang tải...
                  </td>
                </tr>
             ) : vipRequests.length === 0 ? (
                <tr>
-                 <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                 <td colSpan={7} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
                    Không có yêu cầu nào.
                  </td>
                </tr>
@@ -169,11 +169,32 @@ export const VipRequestsTab = () => {
                     </span>
                   </div>
                 </td>
+                <td className="p-[12px_14px] [font-family:var(--font-body)] text-[12.5px] text-[var(--text-secondary-600)] whitespace-nowrap">
+                  {r.phone || "---"}
+                </td>
                 <td className="p-[12px_14px] [font-family:var(--font-body)] text-[12.5px] text-[var(--text-secondary-600)] max-w-[280px]">
                   {r.note || "---"}
                 </td>
                 <td className="p-[12px_14px] [font-family:var(--font-body)] text-[12.5px] text-[var(--text-secondary-600)] whitespace-nowrap">
                   {r.requestDate}
+                </td>
+                <td className="p-[12px_14px]">
+                  {r.evidenceUrl ? (
+                    <a
+                      href={r.evidenceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-[4px] px-[10px] py-[4px] rounded-[8px] bg-[var(--info-50)] text-[var(--info-500)] [font-family:var(--font-heading)] font-semibold text-[11px] hover:bg-[var(--info-100)] transition-colors duration-130 no-underline"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="2" />
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
+                      </svg>
+                      Xem
+                    </a>
+                  ) : (
+                    <span className="text-[var(--text-secondary-200)] text-[12px]">---</span>
+                  )}
                 </td>
                 <td className="p-[12px_14px]">
                   <span
