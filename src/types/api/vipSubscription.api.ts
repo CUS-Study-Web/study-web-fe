@@ -6,3 +6,13 @@ export interface VipSubscriptionFormData {
   evidence: File;
   note?: string;
 }
+
+export interface VipInfoResponse {
+  tier: string;
+  vipStartDate: string;
+  vipEndDate: string;
+  status: string;
+  requestDate: string;
+  note: string;
+  evidenceUrl: string;
+}

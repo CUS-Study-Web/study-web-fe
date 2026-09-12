@@ -1,5 +1,6 @@
 import apiClient from './apiClient';
-import type { SuccessResponse } from '../types/api/common.api';
+import type { SingleResponse, SuccessResponse } from '../types/api/common.api';
+import type { VipInfoResponse } from '../types/api/vipSubscription.api';
 
 export const vipSubscriptionService = {
   subscribeVip: async (formData: FormData) => {
@@ -19,4 +20,9 @@ export const vipSubscriptionService = {
     });
     return response.data;
   },
+
+  getVipInfo: async () => {
+    const response = await apiClient.get<SingleResponse<VipInfoResponse>>('/api/user/vip-info');
+    return response.data;
+  }
 };
