@@ -10,7 +10,7 @@ export default function VipPage() {
   const handleUpgradeClick = () => {
     if (!isVip) {
       if (isLoggedIn) {
-        navigate(ROUTES.UNDER_DEVELOPMENT);
+        navigate(ROUTES.LEARNER.VIP_REGISTER);
       } else {
         navigate(ROUTES.AUTH.REGISTER);
       }
@@ -96,13 +96,19 @@ export default function VipPage() {
           </div>
 
           <button
-            onClick={!isVip ? handleUpgradeClick : undefined}
+            onClick={() => {
+              if (isVip) {
+                navigate(`${ROUTES.LEARNER.VIP_REGISTER}?mode=renew`);
+              } else {
+                handleUpgradeClick();
+              }
+            }}
             className={`!w-full !py-3.5 !font-black !text-base !rounded-[var(--radius-lg)] !transition-all !text-center !flex !items-center !justify-center !gap-1.5 ${isVip
-              ? "!bg-[#2d422a] !text-[#beccbf] !cursor-default"
+              ? "!bg-gradient-to-b !from-[#ffcf33] !to-[#e6a800] !hover:from-[#ffd54f] !hover:to-[#ebaf0a] !text-[#1f1f1c] !shadow-lg !shadow-[#e6a800]/30 !active:scale-95 !cursor-pointer"
               : "!bg-gradient-to-b !from-[#ffcf33] !to-[#e6a800] !hover:from-[#ffd54f] !hover:to-[#ebaf0a] !text-[#1f1f1c] !shadow-lg !shadow-[#e6a800]/30 !active:scale-95 !cursor-pointer"
               }`}
           >
-            {isVip ? "Đang sử dụng" : <>Nâng cấp ngay <span>✦</span></>}
+            {isVip ? <>Gia hạn VIP <span>✦</span></> : <>Nâng cấp ngay <span>✦</span></>}
           </button>
         </div>
       </section>

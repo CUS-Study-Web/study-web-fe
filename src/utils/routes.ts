@@ -26,6 +26,7 @@ export const ROUTES = {
     FLASHCARD_TOPICS: '/learner/flashcards',
     FLASHCARD_TOPIC_DETAIL: (topicId: string | number = ':topicId') => `/learner/flashcards/${topicId}`,
     FLASHCARD_STUDY: (topicId: string | number = ':topicId') => `/learner/flashcards/${topicId}/study`,
+    VIP_REGISTER: '/learner/vip-register',
   },
   ASSISTANT: {
     ROOT: '/assistant',
