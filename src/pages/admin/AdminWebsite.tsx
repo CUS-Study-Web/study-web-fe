@@ -341,7 +341,7 @@ const AdminWebsite = () => {
 
           {/* Tab Tables */}
           {(activeTab === "courses" || activeTab === "doc-types" || activeTab === "instructors" || activeTab === "achievements" || activeTab === "reviews") && (
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-300)] overflow-visible">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-300)] overflow-x-auto">
               <div>
                 {activeTab === "courses" && (
                   <table className="w-full border-collapse">
@@ -365,9 +365,9 @@ const AdminWebsite = () => {
                           key={c.id}
                           className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"}`}
                         >
-                          <td className={tdBoldClass}>{c.title}</td>
-                          <td className={tdCellClass}>{c.subTitle}</td>
-                          <td className={`${tdCellClass} max-w-[260px] truncate`}>{c.description}</td>
+                          <td className={`${tdBoldClass} max-w-[200px] truncate`} title={c.title}>{c.title}</td>
+                          <td className={`${tdCellClass} max-w-[200px] truncate`} title={c.subTitle}>{c.subTitle}</td>
+                          <td className={`${tdCellClass} max-w-[260px] truncate`} title={c.description}>{c.description}</td>
                           <td className={tdCellClass}>
                             <span className={`px-2 py-1 rounded-[var(--radius-sm)] text-[11px] font-bold ${
                               c.status === 'PUBLISH' ? 'bg-[#E3F5E7] text-[#1D9A44]' : 
@@ -508,11 +508,11 @@ const AdminWebsite = () => {
                                   {inst.name.charAt(0)}
                                 </div>
                               )}
-                              <span>{inst.name}</span>
+                              <span className="max-w-[180px] truncate block" title={inst.name}>{inst.name}</span>
                             </div>
                           </td>
-                          <td className={tdCellClass}>{inst.subject}</td>
-                          <td className={`${tdCellClass} max-w-[260px] truncate`}>{inst.description}</td>
+                          <td className={`${tdCellClass} max-w-[160px] truncate`} title={inst.subject}>{inst.subject}</td>
+                          <td className={`${tdCellClass} max-w-[260px] truncate`} title={inst.description}>{inst.description}</td>
                           <td className={`${tdCellClass} relative whitespace-nowrap`}>
                             {deletingId === `instr-${inst.id}` ? (
                               <div className="flex justify-end pr-2">
@@ -603,13 +603,20 @@ const AdminWebsite = () => {
                                   {a.studentName.charAt(0)}
                                 </div>
                               )}
-                              <span>{a.studentName}</span>
+                              <span className="max-w-[180px] truncate block" title={a.studentName}>{a.studentName}</span>
                             </div>
                           </td>
-                          <td className={tdCellClass}>{a.courseName}</td>
+                          <td className={`${tdCellClass} max-w-[180px] truncate`} title={a.courseName}>{a.courseName}</td>
                           <td className={tdBoldClass}>{a.sumScore}</td>
-                          <td className={tdCellClass}>{a.achievement || '—'}</td>
-                          <td className={`${tdCellClass} max-w-[220px] truncate`}>
+                          <td className={`${tdCellClass} max-w-[200px] truncate`} title={a.achievement || '—'}>{a.achievement || '—'}</td>
+                          <td
+                            className={`${tdCellClass} max-w-[220px] truncate`}
+                            title={
+                              a.scores && a.scores.length > 0
+                                ? a.scores.map((s) => `${s.subjectName}: ${s.score}`).join(' · ')
+                                : '—'
+                            }
+                          >
                             {a.scores && a.scores.length > 0
                               ? a.scores.map((s) => `${s.subjectName}: ${s.score}`).join(' · ')
                               : '—'}
@@ -704,12 +711,14 @@ const AdminWebsite = () => {
                                   {r.studentName.charAt(0)}
                                 </div>
                               )}
-                              <span>{r.studentName}</span>
+                              <span className="max-w-[180px] truncate block" title={r.studentName}>{r.studentName}</span>
                             </div>
                           </td>
-                          <td className={tdCellClass}>{r.course?.title || 'Khóa học'}</td>
-                          <td className={tdCellClass}>{r.timeText}</td>
-                          <td className={`${tdCellClass} max-w-[260px] truncate`}>{r.comment}</td>
+                          <td className={`${tdCellClass} max-w-[180px] truncate`} title={r.course?.title || 'Khóa học'}>
+                            {r.course?.title || 'Khóa học'}
+                          </td>
+                          <td className={`${tdCellClass} max-w-[140px] truncate`} title={r.timeText}>{r.timeText}</td>
+                          <td className={`${tdCellClass} max-w-[260px] truncate`} title={r.comment}>{r.comment}</td>
                           <td className={`${tdCellClass} relative whitespace-nowrap`}>
                             {deletingId === `rev-${r.id}` ? (
                               <div className="flex justify-end pr-2">

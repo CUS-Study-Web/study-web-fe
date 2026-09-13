@@ -46,6 +46,10 @@ export const ReviewModal = ({ review, onSave, onClose }: ReviewModalProps) => {
       showError('Họ và tên học viên không được để trống')
       return
     }
+    if (studentName.trim().length > 50) {
+      showError('Họ và tên học viên không được vượt quá 50 ký tự')
+      return
+    }
     if (!selectedCourseId) {
       showError('Vui lòng chọn khóa học')
       return
@@ -54,8 +58,16 @@ export const ReviewModal = ({ review, onSave, onClose }: ReviewModalProps) => {
       showError('Thời gian không được để trống')
       return
     }
+    if (timeText.trim().length > 30) {
+      showError('Thời gian không được vượt quá 30 ký tự')
+      return
+    }
     if (!comment.trim()) {
       showError('Nội dung cảm nhận không được để trống')
+      return
+    }
+    if (comment.trim().length > 300) {
+      showError('Nội dung cảm nhận không được vượt quá 300 ký tự')
       return
     }
 
@@ -111,9 +123,15 @@ export const ReviewModal = ({ review, onSave, onClose }: ReviewModalProps) => {
           <CircularDropzone preview={preview} onChange={handleImageChange} id="rev-img-input" />
 
           <div className="mb-3.5">
-            <label className={mLabel}>Họ và tên học viên</label>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className={`${mLabel} !mb-0`}>Họ và tên học viên</label>
+              <span className="text-[11px] text-[var(--text-secondary-300)] font-medium">
+                {studentName.length}/50
+              </span>
+            </div>
             <input
               value={studentName}
+              maxLength={50}
               onChange={(e) => setStudentName(e.target.value)}
               className={mInput}
               placeholder="Tên học viên"
@@ -139,9 +157,15 @@ export const ReviewModal = ({ review, onSave, onClose }: ReviewModalProps) => {
           </div>
 
           <div className="mb-3.5">
-            <label className={mLabel}>Thời gian</label>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className={`${mLabel} !mb-0`}>Thời gian</label>
+              <span className="text-[11px] text-[var(--text-secondary-300)] font-medium">
+                {timeText.length}/30
+              </span>
+            </div>
             <input
               value={timeText}
+              maxLength={30}
               onChange={(e) => setTimeText(e.target.value)}
               className={mInput}
               placeholder="Ví dụ: Tháng 06/2025"
@@ -150,9 +174,15 @@ export const ReviewModal = ({ review, onSave, onClose }: ReviewModalProps) => {
           </div>
 
           <div className="mb-5">
-            <label className={mLabel}>Nội dung cảm nhận</label>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className={`${mLabel} !mb-0`}>Nội dung cảm nhận</label>
+              <span className="text-[11px] text-[var(--text-secondary-300)] font-medium">
+                {comment.length}/300
+              </span>
+            </div>
             <textarea
               value={comment}
+              maxLength={300}
               onChange={(e) => setComment(e.target.value)}
               className={`${mInput} resize-y min-h-[80px]`}
               placeholder="Cảm nhận của học viên về khóa học..."

@@ -116,12 +116,24 @@ export const AchievementModal = ({ achievement, onSave, onClose }: AchievementMo
       showError('Họ và tên học viên không được để trống')
       return
     }
+    if (studentName.trim().length > 50) {
+      showError('Họ và tên học viên không được vượt quá 50 ký tự')
+      return
+    }
     if (!selectedCourseId) {
       showError('Vui lòng chọn khóa học')
       return
     }
     if (sumScore === '' || isNaN(Number(sumScore))) {
       showError('Tổng điểm phải là một số hợp lệ')
+      return
+    }
+    if (sumScore.length > 10) {
+      showError('Tổng điểm không được vượt quá 10 ký tự')
+      return
+    }
+    if (achievementTitle.trim().length > 100) {
+      showError('Danh hiệu / Thành tích không được vượt quá 100 ký tự')
       return
     }
 
@@ -232,9 +244,15 @@ export const AchievementModal = ({ achievement, onSave, onClose }: AchievementMo
           <CircularDropzone preview={preview} onChange={handleImageChange} id="ach-img-input" />
 
           <div className="mb-3.5">
-            <label className={mLabel}>Họ và tên học viên</label>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className={`${mLabel} !mb-0`}>Họ và tên học viên</label>
+              <span className="text-[11px] text-[var(--text-secondary-300)] font-medium">
+                {studentName.length}/50
+              </span>
+            </div>
             <input
               value={studentName}
+              maxLength={50}
               onChange={(e) => setStudentName(e.target.value)}
               className={mInput}
               placeholder="Tên học viên"
@@ -312,8 +330,13 @@ export const AchievementModal = ({ achievement, onSave, onClose }: AchievementMo
                           step="any"
                           min="0"
                           max="100"
+                          maxLength={5}
                           value={currentVal}
-                          onChange={(e) => handleScoreChange(subj.id, e.target.value)}
+                          onChange={(e) => {
+                            if (e.target.value.length <= 5) {
+                              handleScoreChange(subj.id, e.target.value)
+                            }
+                          }}
                           placeholder="0"
                           className="w-full text-right px-2.5 py-1 text-xs font-bold rounded-md border border-[var(--border-400)] bg-white focus:outline-none focus:border-[var(--brand-500)]"
                         />
@@ -327,12 +350,22 @@ export const AchievementModal = ({ achievement, onSave, onClose }: AchievementMo
           </div>
 
           <div className="mb-3.5">
-            <label className={mLabel}>Tổng điểm</label>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className={`${mLabel} !mb-0`}>Tổng điểm</label>
+              <span className="text-[11px] text-[var(--text-secondary-300)] font-medium">
+                Tối đa 10 ký tự
+              </span>
+            </div>
             <input
               type="number"
               step="any"
+              maxLength={10}
               value={sumScore}
-              onChange={(e) => setSumScore(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length <= 10) {
+                  setSumScore(e.target.value)
+                }
+              }}
               className={mInput}
               placeholder="Ví dụ: 112 hoặc 9.5"
               required
@@ -340,9 +373,15 @@ export const AchievementModal = ({ achievement, onSave, onClose }: AchievementMo
           </div>
 
           <div className="mb-5">
-            <label className={mLabel}>Danh hiệu / Thành tích (Tùy chọn)</label>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className={`${mLabel} !mb-0`}>Danh hiệu / Thành tích (Tùy chọn)</label>
+              <span className="text-[11px] text-[var(--text-secondary-300)] font-medium">
+                {achievementTitle.length}/100
+              </span>
+            </div>
             <input
               value={achievementTitle}
+              maxLength={100}
               onChange={(e) => setAchievementTitle(e.target.value)}
               className={mInput}
               placeholder="Ví dụ: Thủ khoa V-ACT, Á khoa toàn quốc..."

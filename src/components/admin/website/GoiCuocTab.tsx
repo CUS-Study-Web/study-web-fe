@@ -26,9 +26,23 @@ const SectionCard = ({ title, children }: { title: string; children: React.React
   </div>
 )
 
-const Fld = ({ label, children }: { label: string; children: React.ReactNode }) => (
+const LIMITS = {
+  PLAN_NAME: 50,
+  PLAN_PRICE: 30,
+  PLAN_TAG: 30,
+  PLAN_BILLING: 20,
+  PLAN_DESC: 150,
+  PLAN_BTN: 30,
+  FEATURE_NAME: 80,
+  FEATURE_ACCESS: 150,
+}
+
+const Fld = ({ label, counter, children }: { label: string; counter?: React.ReactNode; children: React.ReactNode }) => (
   <div className="mb-3.5">
-    <label className={mLabel}>{label}</label>
+    <div className="flex justify-between items-center mb-1.5">
+      <label className={`${mLabel} !mb-0`}>{label}</label>
+      {counter && <span className="text-[11px] text-[var(--text-secondary-300)] font-medium">{counter}</span>}
+    </div>
     {children}
   </div>
 )
@@ -150,6 +164,64 @@ const GoiCuocForm = () => {
   }
 
   const handleSave = async () => {
+    // Length validations to prevent UI breaks
+    if (normalName.trim().length > LIMITS.PLAN_NAME) {
+      showError(`Tên gói thường không được vượt quá ${LIMITS.PLAN_NAME} ký tự.`)
+      return
+    }
+    if (normalPrice.trim().length > LIMITS.PLAN_PRICE) {
+      showError(`Giá gói thường không được vượt quá ${LIMITS.PLAN_PRICE} ký tự.`)
+      return
+    }
+    if (normalDesc.trim().length > LIMITS.PLAN_DESC) {
+      showError(`Mô tả gói thường không được vượt quá ${LIMITS.PLAN_DESC} ký tự.`)
+      return
+    }
+    if (normalBtnText.trim().length > LIMITS.PLAN_BTN) {
+      showError(`Chữ trên nút gói thường không được vượt quá ${LIMITS.PLAN_BTN} ký tự.`)
+      return
+    }
+    if (vipTag.trim().length > LIMITS.PLAN_TAG) {
+      showError(`Tag nổi bật VIP không được vượt quá ${LIMITS.PLAN_TAG} ký tự.`)
+      return
+    }
+    if (vipName.trim().length > LIMITS.PLAN_NAME) {
+      showError(`Tên gói VIP không được vượt quá ${LIMITS.PLAN_NAME} ký tự.`)
+      return
+    }
+    if (vipPrice.trim().length > LIMITS.PLAN_PRICE) {
+      showError(`Giá gói VIP không được vượt quá ${LIMITS.PLAN_PRICE} ký tự.`)
+      return
+    }
+    if (vipBillingPeriod.trim().length > LIMITS.PLAN_BILLING) {
+      showError(`Chu kỳ gói VIP không được vượt quá ${LIMITS.PLAN_BILLING} ký tự.`)
+      return
+    }
+    if (vipDesc.trim().length > LIMITS.PLAN_DESC) {
+      showError(`Mô tả gói VIP không được vượt quá ${LIMITS.PLAN_DESC} ký tự.`)
+      return
+    }
+    if (vipBtnText.trim().length > LIMITS.PLAN_BTN) {
+      showError(`Chữ trên nút gói VIP không được vượt quá ${LIMITS.PLAN_BTN} ký tự.`)
+      return
+    }
+
+    for (const row of features) {
+      if (!row.featureName.trim()) continue
+      if (row.featureName.trim().length > LIMITS.FEATURE_NAME) {
+        showError(`Tên tính năng "${row.featureName}" không được vượt quá ${LIMITS.FEATURE_NAME} ký tự.`)
+        return
+      }
+      if (row.normalAccess.trim().length > LIMITS.FEATURE_ACCESS) {
+        showError(`Mô tả Thường của tính năng "${row.featureName}" không được vượt quá ${LIMITS.FEATURE_ACCESS} ký tự.`)
+        return
+      }
+      if (row.vipAccess.trim().length > LIMITS.FEATURE_ACCESS) {
+        showError(`Mô tả VIP của tính năng "${row.featureName}" không được vượt quá ${LIMITS.FEATURE_ACCESS} ký tự.`)
+        return
+      }
+    }
+
     setIsSaving(true)
     const start = Date.now()
 
@@ -233,34 +305,38 @@ const GoiCuocForm = () => {
             <div className="[font-family:var(--font-heading)] font-extrabold text-[13px] text-[var(--text-secondary-600)] uppercase tracking-[0.5px] mb-4 pb-2.5 border-b border-[var(--surface-600)]">
               Tài khoản Thường
             </div>
-            <Fld label="Tên gói">
+            <Fld label="Tên gói" counter={`${normalName.length}/${LIMITS.PLAN_NAME}`}>
               <input
                 placeholder="Ví dụ: Tài khoản Thường"
                 value={normalName}
+                maxLength={LIMITS.PLAN_NAME}
                 onChange={(e) => setNormalName(e.target.value)}
                 className={mInput}
               />
             </Fld>
-            <Fld label="Giá">
+            <Fld label="Giá" counter={`${normalPrice.length}/${LIMITS.PLAN_PRICE}`}>
               <input
                 placeholder="Ví dụ: Miễn phí"
                 value={normalPrice}
+                maxLength={LIMITS.PLAN_PRICE}
                 onChange={(e) => setNormalPrice(e.target.value)}
                 className={mInput}
               />
             </Fld>
-            <Fld label="Mô tả">
+            <Fld label="Mô tả" counter={`${normalDesc.length}/${LIMITS.PLAN_DESC}`}>
               <textarea
                 placeholder="Phù hợp để khám phá nền tảng CUS..."
                 value={normalDesc}
+                maxLength={LIMITS.PLAN_DESC}
                 onChange={(e) => setNormalDesc(e.target.value)}
                 className={`${mInput} resize-y min-h-[80px] [font-family:var(--font-body)]`}
               />
             </Fld>
-            <Fld label="Chữ trên nút bấm">
+            <Fld label="Chữ trên nút bấm" counter={`${normalBtnText.length}/${LIMITS.PLAN_BTN}`}>
               <input
                 placeholder="Ví dụ: Đang sử dụng"
                 value={normalBtnText}
+                maxLength={LIMITS.PLAN_BTN}
                 onChange={(e) => setNormalBtnText(e.target.value)}
                 className={mInput}
               />
@@ -275,51 +351,62 @@ const GoiCuocForm = () => {
             <div className="[font-family:var(--font-heading)] font-extrabold text-[13px] text-[var(--warning-500)] uppercase tracking-[0.5px] mb-4 pb-2.5" style={{ borderBottom: '1px solid #FEF3C7' }}>
               Tài khoản VIP
             </div>
-            <Fld label="Tag nổi bật">
+            <Fld label="Tag nổi bật" counter={`${vipTag.length}/${LIMITS.PLAN_TAG}`}>
               <input
                 placeholder="Ví dụ: + Phổ biến"
                 value={vipTag}
+                maxLength={LIMITS.PLAN_TAG}
                 onChange={(e) => setVipTag(e.target.value)}
                 className={mInput}
               />
             </Fld>
-            <Fld label="Tên gói">
+            <Fld label="Tên gói" counter={`${vipName.length}/${LIMITS.PLAN_NAME}`}>
               <input
                 placeholder="Ví dụ: Tài khoản VIP"
                 value={vipName}
+                maxLength={LIMITS.PLAN_NAME}
                 onChange={(e) => setVipName(e.target.value)}
                 className={mInput}
               />
             </Fld>
             <div className="mb-3.5">
-              <label className={mLabel}>Giá &amp; Chu kỳ</label>
+              <div className="flex justify-between items-center mb-1.5">
+                <label className={`${mLabel} !mb-0`}>Giá &amp; Chu kỳ</label>
+                <span className="text-[11px] text-[var(--text-secondary-300)] font-medium">
+                  {vipPrice.length}/{LIMITS.PLAN_PRICE} · {vipBillingPeriod.length}/{LIMITS.PLAN_BILLING}
+                </span>
+              </div>
               <div className="flex gap-2">
                 <input
                   placeholder="199.000 đ"
                   value={vipPrice}
+                  maxLength={LIMITS.PLAN_PRICE}
                   onChange={(e) => setVipPrice(e.target.value)}
                   className={`${mInput} flex-[2]`}
                 />
                 <input
                   placeholder="/tháng"
                   value={vipBillingPeriod}
+                  maxLength={LIMITS.PLAN_BILLING}
                   onChange={(e) => setVipBillingPeriod(e.target.value)}
                   className={`${mInput} flex-[1]`}
                 />
               </div>
             </div>
-            <Fld label="Mô tả">
+            <Fld label="Mô tả" counter={`${vipDesc.length}/${LIMITS.PLAN_DESC}`}>
               <textarea
                 placeholder="Đầy đủ tính năng, không giới hạn..."
                 value={vipDesc}
+                maxLength={LIMITS.PLAN_DESC}
                 onChange={(e) => setVipDesc(e.target.value)}
                 className={`${mInput} resize-y min-h-[80px] [font-family:var(--font-body)]`}
               />
             </Fld>
-            <Fld label="Chữ trên nút bấm">
+            <Fld label="Chữ trên nút bấm" counter={`${vipBtnText.length}/${LIMITS.PLAN_BTN}`}>
               <input
                 placeholder="Ví dụ: Nâng cấp ngay +"
                 value={vipBtnText}
+                maxLength={LIMITS.PLAN_BTN}
                 onChange={(e) => setVipBtnText(e.target.value)}
                 className={mInput}
               />
@@ -333,13 +420,13 @@ const GoiCuocForm = () => {
         {/* Column headers */}
         <div className="grid grid-cols-[2fr_minmax(0,1.6fr)_minmax(0,1.6fr)_36px] gap-x-3 mb-2 pb-2 border-b border-[var(--border-300)]">
           <div className="[font-family:var(--font-heading)] font-bold text-[11px] text-[var(--text-secondary-300)] uppercase tracking-[0.4px]">
-            Tên tính năng
+            Tên tính năng (tối đa {LIMITS.FEATURE_NAME} ký tự)
           </div>
           <div className="[font-family:var(--font-heading)] font-bold text-[11px] text-[var(--text-secondary-300)] uppercase tracking-[0.4px]">
-            Cột Thường
+            Cột Thường (tối đa {LIMITS.FEATURE_ACCESS} ký tự)
           </div>
           <div className="[font-family:var(--font-heading)] font-bold text-[11px] text-[var(--warning-500)] uppercase tracking-[0.4px]">
-            Cột VIP
+            Cột VIP (tối đa {LIMITS.FEATURE_ACCESS} ký tự)
           </div>
           <div />
         </div>
@@ -353,9 +440,15 @@ const GoiCuocForm = () => {
             >
               {/* Feature name */}
               <div className="flex flex-col gap-1">
-                <label className={`${mLabel} !mb-0`}>Tên tính năng</label>
+                <div className="flex justify-between items-center">
+                  <label className={`${mLabel} !mb-0`}>Tên tính năng</label>
+                  <span className="text-[10px] text-[var(--text-secondary-300)]">
+                    {row.featureName.length}/{LIMITS.FEATURE_NAME}
+                  </span>
+                </div>
                 <input
                   value={row.featureName}
+                  maxLength={LIMITS.FEATURE_NAME}
                   placeholder="Ví dụ: Làm đề thi"
                   onChange={(e) => updateFeatureField(row.id, 'featureName', e.target.value)}
                   className={`${mInput} !font-semibold !text-[13px]`}
@@ -379,9 +472,15 @@ const GoiCuocForm = () => {
                   </select>
                 </div>
                 <div className="flex flex-col gap-1 flex-1 min-w-0">
-                  <label className={`${mLabel} !mb-0`}>Mô tả - Thường</label>
+                  <div className="flex justify-between items-center">
+                    <label className={`${mLabel} !mb-0`}>Mô tả - Thường</label>
+                    <span className="text-[10px] text-[var(--text-secondary-300)]">
+                      {row.normalAccess.length}/{LIMITS.FEATURE_ACCESS}
+                    </span>
+                  </div>
                   <textarea
                     value={row.normalAccess}
+                    maxLength={LIMITS.FEATURE_ACCESS}
                     placeholder="Mô tả..."
                     onChange={(e) => updateFeatureField(row.id, 'normalAccess', e.target.value)}
                     rows={2}
@@ -407,9 +506,15 @@ const GoiCuocForm = () => {
                   </select>
                 </div>
                 <div className="flex flex-col gap-1 flex-1 min-w-0">
-                  <label className={`${mLabel} !mb-0 ${vipLabelCls}`}>Mô tả - VIP</label>
+                  <div className="flex justify-between items-center">
+                    <label className={`${mLabel} !mb-0 ${vipLabelCls}`}>Mô tả - VIP</label>
+                    <span className="text-[10px] text-[var(--text-secondary-300)]">
+                      {row.vipAccess.length}/{LIMITS.FEATURE_ACCESS}
+                    </span>
+                  </div>
                   <textarea
                     value={row.vipAccess}
+                    maxLength={LIMITS.FEATURE_ACCESS}
                     placeholder="Mô tả..."
                     onChange={(e) => updateFeatureField(row.id, 'vipAccess', e.target.value)}
                     rows={2}
