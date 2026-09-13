@@ -226,13 +226,49 @@ const TrangChuTab = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Frontend validation to prevent 400 Bad Request
-    if (description.length > 100) {
-      showError('Đoạn mô tả không được vượt quá 100 ký tự.')
+    // Frontend validation matching BE DTO UpdateHomepageRequest
+    if (badgeTitle.length > 255) {
+      showError('Badge tiêu đề không được vượt quá 255 ký tự.')
       return
     }
-    if (studentStatsDesc.length > 50) {
-      showError('Mô tả thống kê học viên không được vượt quá 50 ký tự.')
+    if (headline1.length > 255) {
+      showError('Tiêu đề dòng 1 không được vượt quá 255 ký tự.')
+      return
+    }
+    if (headline2.length > 255) {
+      showError('Tiêu đề dòng 2 không được vượt quá 255 ký tự.')
+      return
+    }
+    if (description.length > 150) {
+      showError('Đoạn mô tả không được vượt quá 150 ký tự.')
+      return
+    }
+    if (ctaBtn1Name.length > 100) {
+      showError('Tên nút 1 không được vượt quá 100 ký tự.')
+      return
+    }
+    if (ctaBtn2Name.length > 100) {
+      showError('Tên nút 2 không được vượt quá 100 ký tự.')
+      return
+    }
+    if (stat1Number.length > 50) {
+      showError('Số chỉ số 1 không được vượt quá 50 ký tự.')
+      return
+    }
+    if (stat1Desc.length > 255) {
+      showError('Mô tả chỉ số 1 không được vượt quá 255 ký tự.')
+      return
+    }
+    if (stat2Number.length > 50) {
+      showError('Số chỉ số 2 không được vượt quá 50 ký tự.')
+      return
+    }
+    if (stat2Desc.length > 255) {
+      showError('Mô tả chỉ số 2 không được vượt quá 255 ký tự.')
+      return
+    }
+    if (studentStatsDesc.length > 100) {
+      showError('Mô tả thống kê học viên không được vượt quá 100 ký tự.')
       return
     }
 
@@ -325,11 +361,11 @@ const TrangChuTab = () => {
             className={mInput}
           />
         </Fld>
-        <Fld label={`Đoạn mô tả (${description.length}/100 ký tự)`}>
+        <Fld label={`Đoạn mô tả (${description.length}/150 ký tự)`}>
           <textarea
-            placeholder="Nhập mô tả ngắn cho trang chủ (tối đa 100 ký tự)..."
+            placeholder="Nhập mô tả ngắn cho trang chủ (tối đa 150 ký tự)..."
             value={description}
-            maxLength={100}
+            maxLength={150}
             onChange={(e) => setDescription(e.target.value)}
             className={`${mInput} resize-y min-h-[90px] [font-family:var(--font-body)]`}
           />
@@ -490,11 +526,11 @@ const TrangChuTab = () => {
             id="cms-av3"
           />
         </div>
-        <Fld label={`Mô tả thống kê học viên (${studentStatsDesc.length}/50 ký tự)`}>
+        <Fld label={`Mô tả thống kê học viên (${studentStatsDesc.length}/100 ký tự)`}>
           <textarea
-            placeholder="Ví dụ: 3.400+ học viên đã đỗ vào các trường top đầu (tối đa 50 ký tự)..."
+            placeholder="Ví dụ: 3.400+ học viên đã đỗ vào các trường top đầu (tối đa 100 ký tự)..."
             value={studentStatsDesc}
-            maxLength={50}
+            maxLength={100}
             onChange={(e) => setStudentStatsDesc(e.target.value)}
             className={`${mInput} resize-y min-h-[72px] [font-family:var(--font-body)]`}
           />
