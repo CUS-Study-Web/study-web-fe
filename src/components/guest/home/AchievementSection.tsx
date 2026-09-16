@@ -16,11 +16,76 @@ const fallbackStudents = [
     ],
     total: "112 / 120",
   },
-  { id: "2", name: "Nguyễn Hoàng Long", title: "Top 50 toàn quốc", school: "ĐH Ngoại Thương", avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=60", subject: "V-ACT", scores: [], total: "108 / 120" },
-  { id: "3", name: "Phạm Thị Thu Trang", title: "Học bổng xuất sắc", school: "ĐH Kinh tế Quốc dân", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=60", subject: "V-SAT", scores: [], total: "105 / 120" },
-  { id: "4", name: "Trần Minh Đức", title: "Đỗ ngành Luật", school: "ĐH Luật Hà Nội", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=60", subject: "HSA", scores: [], total: "102 / 120" },
-  { id: "5", name: "Lê Thị Ngọc Hân", title: "Top ngành Dược", school: "ĐH Dược Hà Nội", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=60", subject: "HSCA", scores: [], total: "98 / 120" },
-  { id: "6", name: "Ngô Quang Vinh", title: "Đỗ ngành CNTT", school: "ĐH Bách Khoa Hà Nội", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=60", subject: "THPT QG", scores: [], total: "28.5 / 30" },
+  {
+    id: "2",
+    name: "Nguyễn Hoàng Long",
+    title: "Top 50 toàn quốc",
+    school: "ĐH Ngoại Thương",
+    avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=60",
+    subject: "V-ACT",
+    scores: [
+      { label: "Ngôn ngữ", value: "38 / 40" },
+      { label: "Toán logic & Số liệu", value: "36 / 40" },
+      { label: "Giải quyết vấn đề", value: "34 / 40" },
+    ],
+    total: "108 / 120",
+  },
+  {
+    id: "3",
+    name: "Phạm Thị Thu Trang",
+    title: "Học bổng xuất sắc",
+    school: "ĐH Kinh tế Quốc dân",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=60",
+    subject: "V-ACT",
+    scores: [
+      { label: "Ngôn ngữ", value: "37 / 40" },
+      { label: "Toán logic & Số liệu", value: "35 / 40" },
+      { label: "Giải quyết vấn đề", value: "33 / 40" },
+    ],
+    total: "105 / 120",
+  },
+  {
+    id: "4",
+    name: "Trần Minh Đức",
+    title: "Đỗ ngành Luật",
+    school: "ĐH Luật Hà Nội",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=60",
+    subject: "V-ACT",
+    scores: [
+      { label: "Ngôn ngữ", value: "36 / 40" },
+      { label: "Toán logic & Số liệu", value: "34 / 40" },
+      { label: "Giải quyết vấn đề", value: "32 / 40" },
+    ],
+    total: "102 / 120",
+  },
+  {
+    id: "5",
+    name: "Lê Thị Ngọc Hân",
+    title: "Top ngành Dược",
+    school: "ĐH Dược Hà Nội",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=60",
+    subject: "V-ACT",
+    scores: [
+      { label: "Ngôn ngữ", value: "35 / 40" },
+      { label: "Toán logic & Số liệu", value: "33 / 40" },
+      { label: "Giải quyết vấn đề", value: "30 / 40" },
+    ],
+    total: "98 / 120",
+  },
+  {
+    id: "6",
+    name: "Ngô Quang Vinh",
+    title: "Đỗ ngành CNTT",
+    school: "ĐH Bách Khoa Hà Nội",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=60",
+    subject: "V-ACT",
+    scores: [
+      { label: "Ngôn ngữ", value: "34 / 40" },
+      { label: "Toán logic & Số liệu", value: "32 / 40" },
+      { label: "Giải quyết vấn đề", value: "30 / 40" },
+    ],
+    total: "96 / 120",
+  },
 ];
 
 export default function AchievementSection() {
@@ -29,21 +94,32 @@ export default function AchievementSection() {
   const { data: leaderboardRes } = useGetLeaderboardsQuery({ page: 0, size: 20 });
   const liveLeaderboards = leaderboardRes?.data;
 
-  const dynamicStudents = liveLeaderboards && liveLeaderboards.length > 0
-    ? liveLeaderboards.map((l) => ({
-        id: l.id,
-        name: l.studentName,
-        title: l.achievement || "Thủ khoa xét tuyển",
-        school: l.courseName || "Đại học hàng đầu",
-        avatar: l.avatarUrl || "https://images.unsplash.com/photo-1531123897727-8f129e1bf30c?w=800&q=60",
-        subject: l.courseName || "V-ACT",
-        scores: (l.scores || []).map((s) => ({
-          label: s.subjectName,
-          value: `${s.score}`,
-        })),
-        total: `${l.sumScore}`,
-      }))
-    : fallbackStudents;
+  // If BE returns leaderboards specifically matching V-ACT, prioritize them;
+  // otherwise, display all returned BE leaderboards so real data is never dropped.
+  const vactLiveLeaderboards = liveLeaderboards?.filter((l) =>
+    l.courseName?.toUpperCase().includes("V-ACT")
+  );
+  const activeLeaderboards =
+    vactLiveLeaderboards && vactLiveLeaderboards.length > 0
+      ? vactLiveLeaderboards
+      : liveLeaderboards;
+
+  const dynamicStudents =
+    activeLeaderboards && activeLeaderboards.length > 0
+      ? activeLeaderboards.map((l) => ({
+          id: l.id,
+          name: l.studentName,
+          title: l.achievement || "Thủ khoa xét tuyển",
+          school: l.courseName || "Đại học hàng đầu",
+          avatar: l.avatarUrl || "https://images.unsplash.com/photo-1531123897727-8f129e1bf30c?w=800&q=60",
+          subject: l.courseName || "V-ACT",
+          scores: (l.scores || []).map((s) => ({
+            label: s.subjectName,
+            value: `${s.score}`,
+          })),
+          total: `${l.sumScore}`,
+        }))
+      : fallbackStudents;
 
   const filteredStudents = dynamicStudents;
 
@@ -55,7 +131,7 @@ export default function AchievementSection() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 xl:px-20">
 
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <div className="inline-block bg-[var(--brand-soft-300)] text-[var(--brand-base-600)] rounded-full px-4 py-1.5 text-xs md:text-sm font-bold mb-4">
             THÀNH TÍCH NỔI BẬT
           </div>
@@ -67,27 +143,16 @@ export default function AchievementSection() {
           </p>
         </div>
 
-        {/* Tabs */}
-        {/* 
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {defaultPrograms.map((prog) => (
-            <button
-              key={prog}
-              onClick={() => {
-                setActiveTab(prog);
-                setSelectedStudentId(null);
-              }}
-              className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${
-                activeTab === prog 
-                  ? "bg-[#FFC107] text-[var(--text-primary-800)] shadow-md" 
-                  : "bg-transparent border border-[var(--border-300)] text-[var(--text-secondary-500)] hover:bg-[var(--surface-600)]"
-              }`}
-            >
-              {prog}
-            </button>
-          ))}
+        {/* Course Filter - Centered single V-ACT filter */}
+        <div className="flex justify-center mb-12">
+          <button
+            type="button"
+            className="px-7 py-2.5 rounded-full text-sm font-bold bg-[#FFC107] text-[var(--text-primary-800)] shadow-md transition-all cursor-default select-none"
+            aria-label="Khóa học V-ACT"
+          >
+            V-ACT
+          </button>
         </div>
-        */}
 
         {/* Top Highlight Section */}
         {currentStudent && (
@@ -95,7 +160,14 @@ export default function AchievementSection() {
             {/* Left Hero Student Card */}
             <div className="w-full lg:w-1/3 bg-[var(--neutral-0)] rounded-[var(--radius-xl)] p-8 shadow-sm border border-[var(--border-300)] flex flex-col items-center justify-center text-center">
               <div className="w-24 h-24 rounded-full overflow-hidden mb-5 border-4 border-[var(--surface-500)] shadow-sm">
-                <img src={currentStudent.avatar} alt={currentStudent.name} className="w-full h-full object-cover" />
+                <img
+                  src={currentStudent.avatar}
+                  alt={currentStudent.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "https://images.unsplash.com/photo-1531123897727-8f129e1bf30c?w=800&q=60";
+                  }}
+                />
               </div>
               <h3 className="text-xl font-extrabold text-[var(--text-primary-500)] mb-1" style={{ fontFamily: "var(--font-heading)" }}>{currentStudent.name}</h3>
               <p className="text-sm font-bold text-[var(--brand-base-600)] mb-1">{currentStudent.title}</p>
@@ -158,7 +230,14 @@ export default function AchievementSection() {
                 }`}
               >
                 <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-transparent">
-                  <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
+                  <img
+                    src={student.avatar}
+                    alt={student.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "https://images.unsplash.com/photo-1531123897727-8f129e1bf30c?w=800&q=60";
+                    }}
+                  />
                 </div>
                 <div>
                   <h4 className={`text-sm font-bold ${isSelected ? "text-[#ffffff]" : "text-[var(--text-primary-500)]"}`}>
