@@ -87,6 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     queryClient.removeQueries({ queryKey: ['currentUser'] });
+    queryClient.removeQueries({ queryKey: ['userProfile'] });
     navigate(ROUTES.AUTH.LOGIN);
   }, [navigate, queryClient]);
 
