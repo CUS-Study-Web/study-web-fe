@@ -50,10 +50,29 @@ export const parseFlashcardsFromExcel = async (file: File): Promise<ParsedFlashc
       throw new Error("File bị thiếu cột. Vui lòng đảm bảo đủ 4 cột (Tiếng Anh, Phiên âm, Từ loại, Tiếng Việt).");
     }
     
-    // Looser check: Ensure at least the first and fourth columns have some title content.
-    // This avoids rigid string matching that breaks on typos/spaces, but prevents totally misaligned files.
-    if (!String(headerRow[0] || '').trim() || !String(headerRow[3] || '').trim()) {
-      throw new Error("Tiêu đề cột không hợp lệ. Vui lòng kiểm tra lại dòng đầu tiên của file.");
+    const expectedHeaders = ["Tiếng Anh", "Phiên âm", "Từ loại", "Tiếng Việt"];
+    
+    // Strict validation: exactly 4 columns with exact matching names
+    let isHeaderValid = true;
+    for (let i = 0; i < 4; i++) {
+      if (String(headerRow[i] || '').trim() !== expectedHeaders[i]) {
+        isHeaderValid = false;
+        break;
+      }
+    }
+
+    // Ensure there are no extra columns with data
+    if (headerRow.length > 4) {
+      for (let i = 4; i < headerRow.length; i++) {
+        if (String(headerRow[i] || '').trim() !== '') {
+          isHeaderValid = false;
+          break;
+        }
+      }
+    }
+
+    if (!isHeaderValid) {
+      throw new Error("Cấu trúc cột không hợp lệ. File phải có đúng 4 cột với tiêu đề chính xác: Tiếng Anh, Phiên âm, Từ loại, Tiếng Việt.");
     }
 
     // 4. Data extraction and validation
