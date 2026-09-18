@@ -94,3 +94,64 @@ export interface AssistantSummaryResponse {
   recentActivities: AssistantActivityResponse[];
   avatarUrl?: string;
 }
+
+export type ActionType =
+  | 'LOGIN'
+  | 'LOGOUT'
+  | 'REGISTER'
+  | 'SUBMIT_ASSESSMENT'
+  | 'REQUEST_VIP'
+  | 'CREATE_LESSON'
+  | 'UPDATE_LESSON'
+  | 'DELETE_LESSON'
+  | 'CREATE_ASSESSMENT'
+  | 'UPDATE_ASSESSMENT'
+  | 'DELETE_ASSESSMENT';
+
+export const STAT_ACTION_OPTIONS: { value: ActionType; label: string }[] = [
+  { value: 'LOGIN', label: 'Lượt đăng nhập' },
+  { value: 'REGISTER', label: 'Lượt đăng ký' },
+  { value: 'REQUEST_VIP', label: 'Yêu cầu mở VIP' },
+  { value: 'SUBMIT_ASSESSMENT', label: 'Nộp bài thi' },
+  { value: 'CREATE_LESSON', label: 'Tạo bài học' },
+  { value: 'UPDATE_LESSON', label: 'Cập nhật bài học' },
+  { value: 'DELETE_LESSON', label: 'Xóa bài học' },
+  { value: 'CREATE_ASSESSMENT', label: 'Tạo đề thi' },
+  { value: 'UPDATE_ASSESSMENT', label: 'Cập nhật đề thi' },
+  { value: 'DELETE_ASSESSMENT', label: 'Xóa đề thi' },
+  { value: 'LOGOUT', label: 'Đăng xuất' },
+];
+
+export interface DailyStatItemResponse {
+  date: string;
+  actionCounts: Record<string, number>;
+}
+
+export interface DailyStatsResponse {
+  startDate: string;
+  endDate: string;
+  totalDays: number;
+  items: DailyStatItemResponse[];
+}
+
+export interface MonthlyStatItemResponse {
+  month: number;
+  year: number;
+  actionCounts: Record<string, number>;
+}
+
+export interface MonthlyStatsResponse {
+  year: number;
+  items: MonthlyStatItemResponse[];
+}
+
+export interface DailyStatsParams {
+  date?: string;
+  days?: number;
+  actions?: string;
+}
+
+export interface MonthlyStatsParams {
+  year?: number;
+  actions?: string;
+}

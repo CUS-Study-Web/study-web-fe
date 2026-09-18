@@ -1,12 +1,6 @@
 import { useState } from 'react'
 import type { SysTab } from '../../types/admin'
 import {
-  DEFAULT_DAY_STATS,
-  MONTHLY_WEB_TRAFFIC_DATA,
-  MONTHLY_REGS_FULL,
-  MONTHLY_VIP
-} from './MockData'
-import {
   SystemTabsNav,
   SystemStatsOverview,
   StudentTab,
@@ -26,8 +20,6 @@ import { useGetAssistantsCountQuery } from '../../hooks/queries/useSystemAssista
 const AdminSystem = () => {
   const [activeTab, setActiveTab] = useState<SysTab>('students')
   const [showInDev, setShowInDev] = useState(false)
-  const [selDate, setSelDate] = useState('2026-07-23')
-  const [selMonth, setSelMonth] = useState('07')
 
   // Get pending VIP requests count
   const { data: vipCountData } = useGetVipRequestCountsQuery('WAITING');
@@ -68,13 +60,7 @@ const AdminSystem = () => {
       <div className="bg-white rounded-[18px] shadow-[var(--shadow-clay-sm)] border border-[rgba(220,233,222,0.5)]">
         <SystemTabsNav
           activeTab={activeTab}
-          onTabChange={(tab) => {
-            if (tab === 'stats') {
-              setShowInDev(true)
-            } else {
-              setActiveTab(tab)
-            }
-          }}
+          onTabChange={setActiveTab}
           pendingVipCount={pendingVipCount}
         />
 
@@ -85,18 +71,7 @@ const AdminSystem = () => {
 
           {activeTab === 'vip-requests' && <VipRequestsTab />}
 
-          {activeTab === 'stats' && (
-            <AccessStatsTab
-              selDate={selDate}
-              setSelDate={setSelDate}
-              selMonth={selMonth}
-              setSelMonth={setSelMonth}
-              dayStats={DEFAULT_DAY_STATS}
-              monthTraffic={MONTHLY_WEB_TRAFFIC_DATA}
-              monthRegs={MONTHLY_REGS_FULL}
-              monthVip={MONTHLY_VIP}
-            />
-          )}
+          {activeTab === 'stats' && <AccessStatsTab />}
         </div>
       </div>
 
