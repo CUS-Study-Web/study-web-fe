@@ -57,7 +57,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       {children}
       {notification.isOpen && (
         <div
-          className="fixed bottom-6 left-6 z-50 min-w-[320px] max-w-[400px] bg-white rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden"
+          className="fixed bottom-6 left-6 z-[9999] min-w-[320px] max-w-[400px] bg-white rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden"
           style={{
             animation: 'slideInBottomLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
           }}
