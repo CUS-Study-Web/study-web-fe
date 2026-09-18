@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import type { FlashcardTopicResponse } from '../../../types/api/flashcardTopic.api';
 import AssistantConfirmPopup from '../AssistantConfirmPopup';
 import { useNotification } from '../../common/NotificationProvider';
-import { validateDocumentFile } from '../../../utils/fileUtils';
+import { parseFlashcardsFromExcel } from '../../../utils/excelUtils';
 import { useGetFlashcardsByTopicQuery } from '../../../hooks/queries/useFlashcards';
 
 const EDIT_PER_PAGE = 20;
@@ -181,14 +181,31 @@ export function AssistantEditTopicPopup({
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       try {
-        validateDocumentFile(file);
-        // TODO: Handle file parsing here
-      } catch (err: any) {
-        showError(err.message);
+        const words = await parseFlashcardsFromExcel(file);
+        
+        if (words.length === 0) {
+          showError("File không có dữ liệu hoặc không đúng định dạng!");
+        } else {
+          const newWords = words.map((w, i) => ({
+            id: `temp-${Date.now()}-${i}`,
+            word: w.word,
+            phonetic: w.phonetic,
+            partOfSpeech: w.partOfSpeech,
+            meaning: w.meaning,
+            isNew: true
+          }));
+          
+          setEditWords(prev => [...prev, ...newWords]);
+          // Scroll to the end by updating page
+          const newTotal = activeWords.length + newWords.length;
+          setEditPage(Math.max(1, Math.ceil(newTotal / EDIT_PER_PAGE)));
+        }
+      } catch (error: any) {
+        showError(error.message || "Không thể đọc file Excel. Vui lòng kiểm tra định dạng.");
       }
       e.target.value = ''; // reset
     }

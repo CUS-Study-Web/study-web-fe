@@ -20,6 +20,7 @@ import {
   useUpdateFlashcardMutation,
   useDeleteFlashcardMutation
 } from '../../hooks/queries/useFlashcards';
+import type { ParsedFlashcard } from '../../utils/excelUtils';
 
 export default function AssistantFlashcards() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -86,15 +87,51 @@ export default function AssistantFlashcards() {
     }
   };
 
-  const handleCreateTopic = (name: string, _fileName: string, status: 'PUBLISH' | 'DRAFT') => {
-    createTopicMut.mutate({ title: name, status }, {
-      onSuccess: () => {
-        showSuccess("Tạo chủ đề thành công");
-      },
-      onError: (err: any) => {
-        showError(err.message || "Lỗi khi tạo chủ đề");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleCreateTopic = async (name: string, _fileName: string, status: 'PUBLISH' | 'DRAFT', parsedWords?: ParsedFlashcard[]) => {
+    if (!parsedWords || parsedWords.length === 0) {
+      showError("Không có dữ liệu từ vựng hợp lệ để tải lên.");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      // 1. Create topic
+      const topicRes = await createTopicMut.mutateAsync({ title: name, status });
+      const topicId = topicRes.data.id;
+
+      // 2. Process words: loop and create cards
+      let successCount = 0;
+      let errorCount = 0;
+      const totalWords = parsedWords.length;
+
+      for (const word of parsedWords) {
+        if (!word.word || !word.meaning) continue;
+        try {
+          await createCardMut.mutateAsync({
+            topicId,
+            payload: {
+              word: word.word,
+              meaning: word.meaning,
+              pronunciation: word.phonetic,
+              partOfSpeech: word.partOfSpeech
+            }
+          });
+          successCount++;
+        } catch (e) {
+          console.error(e);
+          errorCount++;
+        }
       }
-    });
+
+      showSuccess(`Đã tạo chủ đề và ${successCount}/${totalWords} từ vựng thành công! ${errorCount > 0 ? `(${errorCount} lỗi)` : ''}`);
+      setModal(null);
+    } catch (err: any) {
+      showError(err.message || "Lỗi khi tạo chủ đề");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleSaveTopicAndWords = async (words: EditableWord[], status: 'PUBLISH' | 'DRAFT') => {
@@ -214,6 +251,7 @@ export default function AssistantFlashcards() {
         <AssistantCreateTopicPopup
           onClose={() => setModal(null)}
           onCreate={handleCreateTopic}
+          isUploading={isUploading}
         />
       )}
       {modal === 'edit' && editTopic && (
