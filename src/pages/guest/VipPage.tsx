@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ROUTES } from "@/utils/routes";
 import { useGetPricingPageQuery } from "@/hooks/queries/usePricingPage";
+import { useVipInfoQuery } from "@/hooks/queries/useVipSubscription";
 import type { FeatureIconAccess } from "@/types/api/pricingPage.api";
 
 export default function VipPage() {
@@ -12,6 +13,17 @@ export default function VipPage() {
   const { data: pricingRes } = useGetPricingPageQuery();
   const pricingData = pricingRes?.data;
 
+  const { data: vipInfoRes } = useVipInfoQuery(isVip, user?.id);
+  const vipInfo = vipInfoRes?.data;
+
+  let daysLeft: number | null = null;
+  if (vipInfo?.vipEndDate) {
+    const end = new Date(vipInfo.vipEndDate);
+    const now = new Date();
+    const diffTime = end.getTime() - now.getTime();
+    daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
   const normalPkg = pricingData?.normalPackage;
   const vipPkg = pricingData?.vipPackage;
   const dynamicFeatures = pricingData?.features;
@@ -19,7 +31,7 @@ export default function VipPage() {
   const handleUpgradeClick = () => {
     if (!isVip) {
       if (isLoggedIn) {
-        navigate(ROUTES.UNDER_DEVELOPMENT);
+        navigate(ROUTES.LEARNER.VIP_REGISTER);
       } else {
         navigate(ROUTES.AUTH.REGISTER);
       }
@@ -141,22 +153,37 @@ export default function VipPage() {
             </div>
           </div>
 
-          <button
-            onClick={!isVip ? handleUpgradeClick : undefined}
-            className={`!w-full !py-3.5 !font-black !text-base !rounded-[var(--radius-lg)] !transition-all !text-center !flex !items-center !justify-center !gap-1.5 ${
-              isVip
-                ? "!bg-[#2d422a] !text-[#beccbf] !cursor-default"
-                : "!bg-gradient-to-b !from-[#ffcf33] !to-[#e6a800] !hover:from-[#ffd54f] !hover:to-[#ebaf0a] !text-[#1f1f1c] !shadow-lg !shadow-[#e6a800]/30 !active:scale-95 !cursor-pointer"
-            }`}
-          >
-            {isVip ? (
-              "Đang sử dụng"
-            ) : (
-              <>
-                {vipPkg?.buttonText || "Nâng cấp ngay"} <span>✦</span>
-              </>
+          <div className="w-full">
+            {isVip && daysLeft !== null && (
+              <div className="text-center mb-4">
+                <span className="inline-block bg-[#2d422a] border border-[#3e6041] text-[#ffc107] text-sm font-bold px-4 py-1.5 rounded-full shadow-sm">
+                  Còn {daysLeft > 0 ? daysLeft : 0} ngày sử dụng
+                </span>
+              </div>
             )}
-          </button>
+            {isVip && daysLeft === null && (
+              <div className="text-center mb-4">
+                <span className="inline-block bg-[#2d422a] border border-[#3e6041] text-[#ffc107] text-sm font-bold px-4 py-1.5 rounded-full shadow-sm">
+                  Chưa có dữ liệu
+                </span>
+              </div>
+            )}
+            <button
+              onClick={() => {
+                if (isVip) {
+                  navigate(`${ROUTES.LEARNER.VIP_REGISTER}?mode=renew`);
+                } else {
+                  handleUpgradeClick();
+                }
+              }}
+              className={`!w-full !py-3.5 !font-black !text-base !rounded-[var(--radius-lg)] !transition-all !text-center !flex !items-center !justify-center !gap-1.5 ${isVip
+                ? "!bg-gradient-to-b !from-[#ffcf33] !to-[#e6a800] !hover:from-[#ffd54f] !hover:to-[#ebaf0a] !text-[#1f1f1c] !shadow-lg !shadow-[#e6a800]/30 !active:scale-95 !cursor-pointer"
+                : "!bg-gradient-to-b !from-[#ffcf33] !to-[#e6a800] !hover:from-[#ffd54f] !hover:to-[#ebaf0a] !text-[#1f1f1c] !shadow-lg !shadow-[#e6a800]/30 !active:scale-95 !cursor-pointer"
+                }`}
+            >
+              {isVip ? <>Gia hạn VIP <span>✦</span></> : <>Nâng cấp ngay <span>✦</span></>}
+            </button>
+          </div>
         </div>
       </section>
 

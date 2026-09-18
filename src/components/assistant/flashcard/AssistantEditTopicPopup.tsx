@@ -49,6 +49,64 @@ function EditableCell({ value, placeholder, onChange, isHovered }: EditableCellP
   );
 }
 
+const PART_OF_SPEECH_OPTIONS = [
+  'Noun',
+  'Pronoun',
+  'Verb',
+  'Adjective',
+  'Adverb',
+  'Preposition',
+  'Conjunction',
+  'Interjection',
+  'Determiner'
+];
+
+interface EditableSelectCellProps {
+  value: string;
+  onChange: (val: string) => void;
+  isHovered: boolean;
+}
+
+function EditableSelectCell({ value, onChange, isHovered }: EditableSelectCellProps) {
+  const [isFocused, setIsFocused] = useState(false);
+
+  const getBorder = () => {
+    if (isFocused) return 'var(--brand-500)';
+    if (isHovered) return 'var(--border-strong)';
+    return 'transparent';
+  };
+  const getBg = () => {
+    if (isFocused) return 'var(--brand-soft-100)';
+    if (isHovered) return '#FAFCFA';
+    return 'transparent';
+  };
+
+  return (
+    <div className="px-3.5 py-2">
+      <select
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        className="w-full px-2 py-1.5 rounded-[7px] outline-none font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] transition-all duration-[140ms] appearance-none"
+        style={{
+          border: `1.5px solid ${getBorder()}`,
+          background: getBg(),
+          boxSizing: 'border-box',
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'right 8px center',
+        }}
+      >
+        <option value="" disabled>Chọn từ loại</option>
+        {PART_OF_SPEECH_OPTIONS.map(opt => (
+          <option key={opt} value={opt}>{opt}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 export type EditableWord = {
   id: string;
   word: string;
@@ -328,13 +386,22 @@ export function AssistantEditTopicPopup({
                   onMouseLeave={() => setHoveredRow(null)}
                 >
                   {columns.map(col => (
-                    <EditableCell
-                      key={col.key}
-                      value={word[col.key] as string}
-                      placeholder={col.placeholder}
-                      onChange={val => updateWord(word.id, col.key, val)}
-                      isHovered={hoveredRow === word.id}
-                    />
+                    col.key === 'partOfSpeech' ? (
+                      <EditableSelectCell
+                        key={col.key}
+                        value={word[col.key] as string}
+                        onChange={val => updateWord(word.id, col.key, val)}
+                        isHovered={hoveredRow === word.id}
+                      />
+                    ) : (
+                      <EditableCell
+                        key={col.key}
+                        value={word[col.key] as string}
+                        placeholder={col.placeholder}
+                        onChange={val => updateWord(word.id, col.key, val)}
+                        isHovered={hoveredRow === word.id}
+                      />
+                    )
                   ))}
                   <div className="flex items-center justify-center">
                     <div

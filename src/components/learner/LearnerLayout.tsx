@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../guest/Logo";
+import Footer from "../guest/Footer";
 import { ROUTES } from "../../utils/routes";
 
 interface LearnerLayoutProps {
@@ -47,6 +48,9 @@ export default function LearnerLayout({ children }: LearnerLayoutProps) {
       <main className="flex-grow max-w-[1440px] w-full mx-auto px-4 md:px-6 lg:px-8 xl:px-10 py-8">
         {children}
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

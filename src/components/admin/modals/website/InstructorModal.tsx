@@ -39,12 +39,24 @@ export const InstructorModal = ({ instructor, onSave, onClose }: InstructorModal
       showError('Tên giảng viên không được để trống')
       return
     }
+    if (name.trim().length > 50) {
+      showError('Tên giảng viên không được vượt quá 50 ký tự')
+      return
+    }
     if (!subject.trim()) {
       showError('Môn học không được để trống')
       return
     }
+    if (subject.trim().length > 50) {
+      showError('Môn học không được vượt quá 50 ký tự')
+      return
+    }
     if (!description.trim()) {
       showError('Mô tả không được để trống')
+      return
+    }
+    if (description.trim().length > 150) {
+      showError('Mô tả không được vượt quá 150 ký tự')
       return
     }
 
@@ -93,9 +105,15 @@ export const InstructorModal = ({ instructor, onSave, onClose }: InstructorModal
           <CircularDropzone preview={preview} onChange={handleImageChange} id="instr-img-input" />
 
           <div className="mb-3.5">
-            <label className={mLabel}>Tên giảng viên</label>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className={`${mLabel} !mb-0`}>Tên giảng viên</label>
+              <span className="text-[11px] text-[var(--text-secondary-300)] font-medium">
+                {name.length}/50
+              </span>
+            </div>
             <input
               value={name}
+              maxLength={50}
               onChange={(e) => setName(e.target.value)}
               className={mInput}
               placeholder="Ví dụ: Th.S Nguyễn Văn An"
@@ -104,9 +122,15 @@ export const InstructorModal = ({ instructor, onSave, onClose }: InstructorModal
           </div>
 
           <div className="mb-3.5">
-            <label className={mLabel}>Môn học phụ trách</label>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className={`${mLabel} !mb-0`}>Môn học phụ trách</label>
+              <span className="text-[11px] text-[var(--text-secondary-300)] font-medium">
+                {subject.length}/50
+              </span>
+            </div>
             <input
               value={subject}
+              maxLength={50}
               onChange={(e) => setSubject(e.target.value)}
               className={mInput}
               placeholder="Ví dụ: TOÁN HỌC, VẬT LÝ..."
@@ -115,9 +139,15 @@ export const InstructorModal = ({ instructor, onSave, onClose }: InstructorModal
           </div>
 
           <div className="mb-5">
-            <label className={mLabel}>Mô tả</label>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className={`${mLabel} !mb-0`}>Mô tả</label>
+              <span className="text-[11px] text-[var(--text-secondary-300)] font-medium">
+                {description.length}/150
+              </span>
+            </div>
             <textarea
               value={description}
+              maxLength={150}
               onChange={(e) => setDescription(e.target.value)}
               className={`${mInput} resize-y min-h-[80px]`}
               placeholder="Giới thiệu ngắn về giảng viên..."

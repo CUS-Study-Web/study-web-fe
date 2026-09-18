@@ -6,6 +6,7 @@ import {
   useUpdateFooterContentMutation,
 } from '../../../hooks/queries/useWebsiteManagement'
 import type { FooterLinkItemRequest, UpdateFooterRequest } from '../../../types/api/websiteManagement.api'
+import RouteCascader from './RouteCascader'
 
 type LinkRow = {
   id?: string
@@ -32,54 +33,116 @@ const Fld = ({ label, children }: { label: string; children: React.ReactNode }) 
   </div>
 )
 
+const MAX_LINKS_PER_CATEGORY = 8
+
+export const normalizeLinkUrl = (url: string): string => {
+  if (!url) return ''
+  const trimmed = url.trim()
+  if (!trimmed) return ''
+  if (
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('mailto:') ||
+    trimmed.startsWith('tel:') ||
+    trimmed.startsWith('//')
+  ) {
+    return trimmed
+  }
+  if (trimmed.startsWith('www.')) {
+    return `https://${trimmed}`
+  }
+  return trimmed.startsWith('/') ? trimmed : `/${trimmed}`
+}
+
 const NavColRows = ({
   rows,
   setRows,
 }: {
   rows: LinkRow[]
   setRows: React.Dispatch<React.SetStateAction<LinkRow[]>>
-}) => (
-  <div>
-    <div className="flex flex-col gap-2 mb-2.5">
-      {rows.map((row, i) => (
-        <div key={i} className="flex gap-2 items-center">
-          <input
-            placeholder="Tên hiển thị"
-            value={row.label}
-            maxLength={150}
-            className={`${mInput} flex-[0_0_140px] box-border`}
-            onChange={(e) => setRows((r) => r.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))}
-          />
-          <input
-            placeholder="URL (ví dụ: /courses/v-act)"
-            value={row.url}
-            maxLength={500}
-            className={`${mInput} flex-1`}
-            onChange={(e) => setRows((r) => r.map((x, j) => (j === i ? { ...x, url: e.target.value } : x)))}
-          />
-          <button
-            type="button"
-            onClick={() => setRows((r) => r.filter((_, j) => j !== i))}
-            className="w-8 h-8 flex-shrink-0 rounded-lg border !border-[var(--border-500)] bg-white cursor-pointer flex items-center justify-center hover:bg-[var(--surface-600)] transition-colors"
-            title="Xóa mục này"
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="stroke-[var(--error-500)]">
-              <polyline points="3 6 5 6 21 6" />
-              <path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2" />
-            </svg>
-          </button>
-        </div>
-      ))}
+}) => {
+  const isMaxReached = rows.length >= MAX_LINKS_PER_CATEGORY
+
+  const handleUrlBlur = (i: number, val: string) => {
+    const normalized = normalizeLinkUrl(val)
+    if (normalized !== val) {
+      setRows((r) => r.map((x, j) => (j === i ? { ...x, url: normalized } : x)))
+    }
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs text-[var(--text-secondary-400)] font-medium">
+          {rows.length}/{MAX_LINKS_PER_CATEGORY} mục
+        </span>
+        {isMaxReached && (
+          <span className="text-xs text-amber-600 font-semibold">
+            Đã đạt giới hạn tối đa {MAX_LINKS_PER_CATEGORY} mục
+          </span>
+        )}
+      </div>
+      <div className="flex flex-col gap-2 mb-2.5">
+        {rows.map((row, i) => (
+          <div key={i} className="flex gap-2 items-center">
+            <input
+              placeholder="Tên hiển thị"
+              value={row.label}
+              maxLength={150}
+              className={`${mInput} flex-[0_0_140px] box-border`}
+              onChange={(e) => setRows((r) => r.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))}
+            />
+            <RouteCascader
+              urlValue={row.url}
+              onSelect={(selectedLabel, selectedUrl) => {
+                setRows((r) =>
+                  r.map((x, j) =>
+                    j === i
+                      ? {
+                          ...x,
+                          label: selectedLabel,
+                          url: selectedUrl,
+                        }
+                      : x
+                  )
+                )
+              }}
+              onUrlChange={(newUrl) => {
+                setRows((r) => r.map((x, j) => (j === i ? { ...x, url: newUrl } : x)))
+              }}
+              onUrlBlur={() => handleUrlBlur(i, row.url)}
+            />
+            <button
+                type="button"
+                onClick={() => setRows((r) => r.filter((_, j) => j !== i))}
+                className="w-8 h-8 flex-shrink-0 rounded-lg border !border-[var(--border-500)] bg-white cursor-pointer flex items-center justify-center hover:bg-[var(--surface-600)] transition-colors"
+                title="Xóa mục này"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="stroke-[var(--error-500)]">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2" />
+                </svg>
+              </button>
+            </div>
+          ))}
+      </div>
+      <button
+        type="button"
+        disabled={isMaxReached}
+        onClick={() => {
+          if (!isMaxReached) {
+            setRows((r) => [...r, { label: '', url: '' }])
+          }
+        }}
+        className={`flex items-center gap-1.5 px-3.5 py-[7px] !rounded-[var(--radius-sm)] !border !border-[var(--border-500)] bg-white !text-[var(--text-secondary-600)] ![font-family:var(--font-heading)] !font-semibold !text-xs transition-colors ${
+          isMaxReached ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-[var(--surface-600)]'
+        }`}
+      >
+        + Thêm mục mới
+      </button>
     </div>
-    <button
-      type="button"
-      onClick={() => setRows((r) => [...r, { label: '', url: '' }])}
-      className="flex items-center gap-1.5 px-3.5 py-[7px] !rounded-[var(--radius-sm)] !border !border-[var(--border-500)] bg-white !text-[var(--text-secondary-600)] ![font-family:var(--font-heading)] !font-semibold !text-xs cursor-pointer hover:bg-[var(--surface-600)] transition-colors"
-    >
-      + Thêm mục mới
-    </button>
-  </div>
-)
+  )
+}
 
 const FooterTab = () => {
   const { data: response, isLoading, isError, error, refetch } = useGetFooterContentQuery()
@@ -177,6 +240,11 @@ const FooterTab = () => {
       return
     }
 
+    if (col1.length > MAX_LINKS_PER_CATEGORY || col2.length > MAX_LINKS_PER_CATEGORY) {
+      showError(`Mỗi danh mục chỉ được tối đa ${MAX_LINKS_PER_CATEGORY} liên kết.`)
+      return
+    }
+
     // Check link rows
     for (const item of [...col1, ...col2]) {
       if (!item.label.trim() || !item.url.trim()) {
@@ -189,14 +257,14 @@ const FooterTab = () => {
       ...col1.map((item, idx) => ({
         id: item.id,
         label: item.label.trim(),
-        url: item.url.trim(),
+        url: normalizeLinkUrl(item.url),
         sortOrder: idx,
         category: 'PROGRAM' as const,
       })),
       ...col2.map((item, idx) => ({
         id: item.id,
         label: item.label.trim(),
-        url: item.url.trim(),
+        url: normalizeLinkUrl(item.url),
         sortOrder: idx,
         category: 'ABOUT' as const,
       })),

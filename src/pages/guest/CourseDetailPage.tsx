@@ -9,6 +9,7 @@ import VipGateModal from "../../components/guest/VipGateModal";
 import { ROUTES } from "../../utils/routes";
 import { useGetCoursesQuery, useGetCourseDetailQuery } from "../../hooks/queries/useCourses";
 import { useGetExamsQuery } from "../../hooks/queries/useAssessments";
+import NotFoundPage from "../NotFoundPage";
 
 export default function CourseDetailPage() {
   const { courseId } = useParams<{ courseId: string }>();
@@ -20,7 +21,9 @@ export default function CourseDetailPage() {
   const courseKey = courseId ?? "";
 
   const { data: coursesData, isLoading: isLoadingCourses } = useGetCoursesQuery({ size: 100 });
-  const course = coursesData?.data.find((c) => c.id === courseKey);
+  const course = coursesData?.data.find(
+    (c) => c.id === courseKey || c.title.toLowerCase() === courseKey.toLowerCase()
+  );
 
   const { data: detailData, isLoading: isLoadingDetail } = useGetCourseDetailQuery(courseKey);
   const subjects = detailData?.data.subjects || [];
@@ -45,13 +48,7 @@ export default function CourseDetailPage() {
   }
 
   if (!course) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[var(--surface-500)]">
-        <div className="text-[var(--text-secondary)] font-[family-name:var(--font-body)] text-[14px]">
-          Không tìm thấy khóa học.
-        </div>
-      </div>
-    );
+    return <NotFoundPage />;
   }
 
   return (
