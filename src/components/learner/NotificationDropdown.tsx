@@ -1,9 +1,11 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
-import type { NotificationItem } from '../../types/api/notification.api';
-import { MOCK_NOTIFICATIONS } from '../../data/mockNotifications';
+import { useState, useRef, useEffect } from 'react';
 import { formatTimeAgo } from '../../utils/timeFormat';
-
-
+import { useAuth } from '../../contexts/AuthContext';
+import {
+  useGetNotificationsQuery,
+  useMarkNotificationAsReadMutation,
+  useMarkAllNotificationsAsReadMutation,
+} from '../../hooks/queries/useNotifications';
 
 // ==========================================
 // FILTER TAB TYPE
@@ -16,18 +18,27 @@ type FilterTab = 'all' | 'unread';
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
-  const [notifications, setNotifications] = useState<NotificationItem[]>(MOCK_NOTIFICATIONS);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const unreadCount = useMemo(
-    () => notifications.filter((n) => !n.isRead).length,
-    [notifications]
-  );
+  const { isLoggedIn, role } = useAuth();
+  const isLearner = isLoggedIn && role === 'learner';
 
-  const filteredNotifications = useMemo(
-    () => activeTab === 'unread' ? notifications.filter((n) => !n.isRead) : notifications,
-    [notifications, activeTab]
+  // ponytail: query size=1 for unread count badge
+  const { data: unreadData } = useGetNotificationsQuery(
+    { isRead: false, page: 0, size: 1 },
+    { enabled: isLearner }
   );
+  const unreadCount = unreadData?.paging?.total ?? 0;
+
+  // ponytail: query notifications list filtered by active tab
+  const { data: listData, isLoading } = useGetNotificationsQuery(
+    { isRead: activeTab === 'unread' ? false : undefined, page: 0, size: 20 },
+    { enabled: isLearner }
+  );
+  const notifications = listData?.data ?? [];
+
+  const markOneReadMutation = useMarkNotificationAsReadMutation();
+  const markAllReadMutation = useMarkAllNotificationsAsReadMutation();
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -52,13 +63,15 @@ export default function NotificationDropdown() {
   }, [isOpen]);
 
   const handleMarkAllRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    if (unreadCount > 0 && !markAllReadMutation.isPending) {
+      markAllReadMutation.mutate();
+    }
   };
 
-  const handleMarkOneRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
-    );
+  const handleMarkOneRead = (id: string, isRead: boolean) => {
+    if (!isRead && !markOneReadMutation.isPending) {
+      markOneReadMutation.mutate(id);
+    }
   };
 
   return (
@@ -101,7 +114,8 @@ export default function NotificationDropdown() {
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="bg-transparent border-none cursor-pointer font-[family:var(--font-heading)] font-semibold text-[12px] text-[var(--brand-base-600)] hover:text-[#1e4022] p-0 transition-colors"
+                disabled={markAllReadMutation.isPending}
+                className="bg-transparent border-none cursor-pointer font-[family:var(--font-heading)] font-semibold text-[12px] text-[var(--brand-base-600)] hover:text-[#1e4022] p-0 transition-colors disabled:opacity-50"
               >
                 Đánh dấu tất cả đã đọc
               </button>
@@ -130,7 +144,14 @@ export default function NotificationDropdown() {
 
           {/* Notification List */}
           <div className="max-h-[380px] overflow-y-auto py-2 px-2 scrollbar-thin">
-            {filteredNotifications.length === 0 ? (
+            {isLoading && notifications.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-10 px-4">
+                <div className="w-5 h-5 border-2 border-[var(--brand-base-600)] border-t-transparent rounded-full animate-spin mb-2" />
+                <div className="font-[family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)] text-center">
+                  Đang tải thông báo...
+                </div>
+              </div>
+            ) : notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 px-4">
                 <div className="text-[36px] mb-2 opacity-40">🔔</div>
                 <div className="font-[family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)] text-center">
@@ -138,11 +159,11 @@ export default function NotificationDropdown() {
                 </div>
               </div>
             ) : (
-              filteredNotifications.map((notif) => {
+              notifications.map((notif) => {
                 return (
                   <button
                     key={notif.id}
-                    onClick={() => handleMarkOneRead(notif.id)}
+                    onClick={() => handleMarkOneRead(notif.id, notif.isRead)}
                     className={`w-full flex items-start gap-3 px-4 py-3 rounded-[12px] cursor-pointer transition-all duration-150 text-left border-none ${
                       notif.isRead
                         ? 'bg-transparent hover:bg-[var(--surface-500)]'
@@ -151,9 +172,9 @@ export default function NotificationDropdown() {
                   >
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-start justify-between gap-2">
                         <span
-                          className={`font-[family:var(--font-heading)] text-[13px] leading-tight truncate ${
+                          className={`font-[family:var(--font-heading)] text-[13px] leading-tight break-words ${
                             notif.isRead
                               ? 'font-semibold text-[var(--text-secondary-600)]'
                               : 'font-bold text-[var(--text-primary-500)]'
@@ -162,11 +183,11 @@ export default function NotificationDropdown() {
                           {notif.title}
                         </span>
                         {!notif.isRead && (
-                          <span className="w-2 h-2 rounded-full bg-[var(--brand-base-600)] shrink-0" />
+                          <span className="w-2 h-2 rounded-full bg-[var(--brand-base-600)] shrink-0 mt-1" />
                         )}
                       </div>
                       <p
-                        className={`font-[family:var(--font-body)] text-[12px] leading-[1.4] mt-0.5 m-0 line-clamp-2 ${
+                        className={`font-[family:var(--font-body)] text-[12px] leading-[1.4] mt-1 m-0 break-words whitespace-pre-line ${
                           notif.isRead ? 'text-[var(--text-secondary-300)]' : 'text-[var(--text-secondary-600)]'
                         }`}
                       >
