@@ -38,8 +38,14 @@ export default function Avatar({ size = 'sm', showEdit, className = '' }: Avatar
       onSuccess: () => {
         setTimeout(() => showSuccess('Ảnh đại diện đã được cập nhật!'), 300);
       },
-      onError: () => {
-        setTimeout(() => showError('Tải ảnh thất bại. Vui lòng thử lại!'), 300);
+      onError: (error: any) => {
+        const isTooLarge =
+          error?.response?.status === 413 ||
+          error?.response?.data?.code === 'FILE_005';
+        const message = isTooLarge
+          ? 'Vượt quá size limit, hãy thử file nhỏ hơn'
+          : error?.response?.data?.message || 'Tải ảnh thất bại. Vui lòng thử lại!';
+        setTimeout(() => showError(message), 300);
       },
     });
   };
