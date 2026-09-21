@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../utils/routes';
-import { ACTIVITY_LOG, MONTHS } from './MockData';
+import { MONTHS } from './MockData';
 import { Suspense, lazy, useState } from 'react';
 import StatsCard from '../../components/StatsCard';
 import IconBox from '../../components/IconBox';
@@ -13,6 +13,7 @@ import {
 import {
   useGetDailyStatsQuery,
   useGetMonthlyStatsQuery,
+  useGetActivityLogsQuery,
 } from '../../hooks/queries/useSystemStats';
 
 const BarChart = lazy(() => import('../../components/Charts').then((m) => ({ default: m.BarChart })));
@@ -30,6 +31,20 @@ const formatDayLabel = (dateStr: string) => {
 const getActionLabel = (action: ActionType) =>
   STAT_ACTION_OPTIONS.find((o) => o.value === action)?.label || action;
 
+const formatTimeLabel = (timestamp: string) => {
+  if (!timestamp) return '';
+  try {
+    const d = new Date(timestamp);
+    if (isNaN(d.getTime())) return timestamp;
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    const seconds = String(d.getSeconds()).padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+  } catch {
+    return timestamp;
+  }
+};
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
@@ -44,7 +59,13 @@ const AdminDashboard = () => {
 
   const { data: dailyData, isLoading: isDailyLoading } = useGetDailyStatsQuery({ days: 7 });
   const { data: monthlyData, isLoading: isMonthlyLoading } = useGetMonthlyStatsQuery({ year: currentYear });
+  const { data: activityData, isLoading: isActivityLoading } = useGetActivityLogsQuery({
+    limit: 6,
+    days: 7,
+    role: 'ASSISTANT',
+  });
 
+  const activities = activityData?.data || [];
   const dailyItems = dailyData?.data?.items || [];
   const dailyLabels = dailyItems.map((item) => formatDayLabel(item.date));
 
@@ -148,15 +169,15 @@ const AdminDashboard = () => {
       {/* Charts row */}
       <div className="grid grid-cols-3 gap-[20px] mb-[28px]">
         {/* Chart 1: 7 days daily */}
-        <div className="surface-card p-[20px_22px] relative h-[310px] w-full flex flex-col">
+        <div className="surface-card p-[20px_22px] relative min-h-[310px] w-full flex flex-col">
           <div className="flex items-center justify-between gap-[8px] mb-[8px]">
-            <span className="[font-family:var(--font-heading)] font-bold text-[13px] text-[var(--text-primary)] truncate">
+            <span className="[font-family:var(--font-heading)] font-bold text-[13px] text-[var(--text-primary)] min-w-0 whitespace-normal leading-tight">
               {getActionLabel(chartAction1)} (7 ngày)
             </span>
             <select
               value={chartAction1}
               onChange={(e) => setChartAction1(e.target.value as ActionType)}
-              className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[3px] text-[var(--text-secondary-600)] outline-none cursor-pointer"
+              className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[3px] text-[var(--text-secondary-600)] outline-none cursor-pointer shrink-0"
             >
               {STAT_ACTION_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -183,15 +204,15 @@ const AdminDashboard = () => {
         </div>
 
         {/* Chart 2: Monthly LineChart */}
-        <div className="surface-card p-[20px_22px] relative h-[310px] w-full flex flex-col">
+        <div className="surface-card p-[20px_22px] relative min-h-[310px] w-full flex flex-col">
           <div className="flex items-center justify-between gap-[8px] mb-[8px]">
-            <span className="[font-family:var(--font-heading)] font-bold text-[13px] text-[var(--text-primary)] truncate">
+            <span className="[font-family:var(--font-heading)] font-bold text-[13px] text-[var(--text-primary)] min-w-0 whitespace-normal leading-tight">
               {getActionLabel(chartAction2)} ({currentYear})
             </span>
             <select
               value={chartAction2}
               onChange={(e) => setChartAction2(e.target.value as ActionType)}
-              className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[3px] text-[var(--text-secondary-600)] outline-none cursor-pointer"
+              className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[3px] text-[var(--text-secondary-600)] outline-none cursor-pointer shrink-0"
             >
               {STAT_ACTION_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -218,15 +239,15 @@ const AdminDashboard = () => {
         </div>
 
         {/* Chart 3: Monthly BarChart */}
-        <div className="surface-card p-[20px_22px] relative h-[310px] w-full flex flex-col">
+        <div className="surface-card p-[20px_22px] relative min-h-[310px] w-full flex flex-col">
           <div className="flex items-center justify-between gap-[8px] mb-[8px]">
-            <span className="[font-family:var(--font-heading)] font-bold text-[13px] text-[var(--text-primary)] truncate">
+            <span className="[font-family:var(--font-heading)] font-bold text-[13px] text-[var(--text-primary)] min-w-0 whitespace-normal leading-tight">
               {getActionLabel(chartAction3)} ({currentYear})
             </span>
             <select
               value={chartAction3}
               onChange={(e) => setChartAction3(e.target.value as ActionType)}
-              className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[3px] text-[var(--text-secondary-600)] outline-none cursor-pointer"
+              className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[3px] text-[var(--text-secondary-600)] outline-none cursor-pointer shrink-0"
             >
               {STAT_ACTION_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -257,7 +278,7 @@ const AdminDashboard = () => {
       <div className="surface-card px-[28px] py-[24px]">
         <div className="flex justify-between items-center mb-[20px]">
           <div className="[font-family:var(--font-heading)] font-bold text-[16px] text-[var(--text-primary)]">
-            Hoạt động gần đây
+            Hoạt động gần đây của trợ giảng
           </div>
           <button
             onClick={() => navigate(ROUTES.ADMIN.ACTIVITIES)}
@@ -267,19 +288,29 @@ const AdminDashboard = () => {
           </button>
         </div>
         <div className="flex flex-col">
-          {ACTIVITY_LOG.map((a, i) => (
+          {isActivityLoading && (
+            <div className="py-6 text-center text-xs text-[var(--text-secondary-400)]">
+              Đang tải hoạt động gần đây của trợ giảng...
+            </div>
+          )}
+          {!isActivityLoading && activities.length === 0 && (
+            <div className="py-6 text-center text-xs text-[var(--text-secondary-400)]">
+              Chưa có hoạt động nào gần đây của trợ giảng.
+            </div>
+          )}
+          {!isActivityLoading && activities.map((a, i) => (
             <div
-              key={`${a.text} - ${a.time}`}
+              key={`${a.timestamp}-${i}`}
               className={`flex items-center gap-[16px] py-[13px] ${
-                i < ACTIVITY_LOG.length - 1 ? ' activity-row-bordered' : ''
+                i < activities.length - 1 ? ' activity-row-bordered' : ''
               }`}
             >
               <div className="w-[8px] h-[8px] rounded-full bg-[var(--brand-500)] shrink-0" />
               <span className="[font-family:var(--font-body)] text-[13.5px] text-[var(--text-primary)] flex-1">
-                {a.text}
+                {a.description || a.actionType} {a.userName ? `(${a.userName})` : ''}
               </span>
               <span className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-200)] shrink-0">
-                {a.time}
+                {formatTimeLabel(a.timestamp)}
               </span>
             </div>
           ))}

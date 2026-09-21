@@ -77,12 +77,6 @@ export interface LearnerSummaryResponse {
   avatarUrl?: string;
 }
 
-export interface AssistantActivityResponse {
-  id: string;
-  description: string;
-  timestamp: string;
-}
-
 export interface AssistantSummaryResponse {
   id: string;
   name: string;
@@ -91,7 +85,6 @@ export interface AssistantSummaryResponse {
   status: AccountStatus;
   numExams: number;
   lastLogin?: string;
-  recentActivities: AssistantActivityResponse[];
   avatarUrl?: string;
 }
 
@@ -154,4 +147,19 @@ export interface DailyStatsParams {
 export interface MonthlyStatsParams {
   year?: number;
   actions?: string;
+}
+
+export interface ActivityLogItem {
+  timestamp: string;
+  userName: string;
+  actionType: ActionType;
+  description: string;
+}
+
+export interface ActivityLogsParams {
+  limit?: number;
+  days?: number;
+  actions?: string;
+  gmail?: string;
+  role?: 'LEARNER' | 'ASSISTANT' | 'ADMIN';
 }

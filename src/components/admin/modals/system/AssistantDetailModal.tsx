@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import AssistantFeatureInDevPopup from '../../../assistant/AssistantFeatureInDevPopup'
 import type { AssistantSummaryResponse } from '../../../../types/api/system.api'
+import { useGetActivityLogsQuery } from '../../../../hooks/queries/useSystemStats'
 
 type AssistantDetailModalProps = {
   asst: AssistantSummaryResponse
@@ -9,7 +10,12 @@ type AssistantDetailModalProps = {
 
 export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProps) => {
   const [showInDev, setShowInDev] = useState(false)
-  const actLog = asst.recentActivities || [];
+  const { data: logData, isLoading: isActivityLoading } = useGetActivityLogsQuery({
+    gmail: asst.gmail,
+    limit: 10,
+    days: 30,
+  })
+  const actLog = logData?.data || []
 
   return (
     <div
@@ -74,24 +80,32 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
 
           {/* Activity Log */}
           <div className="flex flex-col">
-            {actLog.length === 0 ? (
-                <div className="text-[13px] text-[var(--text-secondary-300)] text-center py-4">Chưa có hoạt động</div>
-            ) : actLog.map((a, i) => (
-              <div
-                key={a.id}
-                className={`flex gap-3 items-start py-2.5 ${
-                  i < actLog.length - 1 ? 'border-b border-[var(--border-100)]' : ''
-                }`}
-              >
-                <div className="w-[7px] h-[7px] rounded-full bg-[var(--brand-500)] shrink-0 mt-[5px]" />
-                <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-primary)] flex-1">
-                  {a.description}
-                </span>
-                <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-200)] shrink-0">
-                  {a.timestamp}
-                </span>
+            {isActivityLoading ? (
+              <div className="text-[13px] text-[var(--text-secondary-300)] text-center py-4">
+                Đang tải hoạt động...
               </div>
-            ))}
+            ) : actLog.length === 0 ? (
+              <div className="text-[13px] text-[var(--text-secondary-300)] text-center py-4">
+                Chưa có hoạt động
+              </div>
+            ) : (
+              actLog.map((a, i) => (
+                <div
+                  key={`${a.timestamp}-${i}`}
+                  className={`flex gap-3 items-start py-2.5 ${
+                    i < actLog.length - 1 ? 'border-b border-[var(--border-100)]' : ''
+                  }`}
+                >
+                  <div className="w-[7px] h-[7px] rounded-full bg-[var(--brand-500)] shrink-0 mt-[5px]" />
+                  <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-primary)] flex-1">
+                    {a.description || a.actionType}
+                  </span>
+                  <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-200)] shrink-0">
+                    {a.timestamp}
+                  </span>
+                </div>
+              ))
+            )}
           </div>
         </div>
 

@@ -2,6 +2,8 @@ import apiClient from './apiClient';
 import type { SingleResponse } from '../types/api/common.api';
 import {
   STAT_ACTION_OPTIONS,
+  type ActivityLogItem,
+  type ActivityLogsParams,
   type DailyStatsParams,
   type DailyStatsResponse,
   type MonthlyStatsParams,
@@ -31,6 +33,14 @@ export const systemStatsService = {
     const response = await apiClient.get<SingleResponse<MonthlyStatsResponse>>(
       '/api/system-management/stats/monthly',
       { params: finalParams }
+    );
+    return response.data;
+  },
+
+  getActivityLogs: async (params?: ActivityLogsParams) => {
+    const response = await apiClient.get<SingleResponse<ActivityLogItem[]>>(
+      '/api/system-management/activities',
+      { params }
     );
     return response.data;
   },

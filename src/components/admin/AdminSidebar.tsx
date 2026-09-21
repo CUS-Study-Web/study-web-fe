@@ -7,7 +7,7 @@ type AdminNavBarProps = {
 }
 
 const NAV = [
-  { to: ROUTES.UNDER_DEVELOPMENT, label: 'Trang Chủ' },
+  { to: ROUTES.ADMIN.DASHBOARD, label: 'Trang Chủ' },
   { to: ROUTES.ADMIN.SYSTEM, label: 'Quản Trị Hệ Thống' },
   { to: ROUTES.ADMIN.WEBSITE, label: 'Quản Lý Website' },
 ]
