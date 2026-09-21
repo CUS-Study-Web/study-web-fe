@@ -114,15 +114,15 @@ export const AccessStatsTab = ({
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-[16px]">
           {/* Daily Card 1 */}
-          <div className="bg-[var(--surface-500)] rounded-[16px] p-[18px_20px] h-[310px] flex flex-col">
+          <div className="bg-[var(--surface-500)] rounded-[16px] p-[18px_20px] min-h-[310px] flex flex-col">
             <div className="flex items-center justify-between gap-[8px] mb-[10px]">
-              <span className="[font-family:var(--font-heading)] font-bold text-[13.5px] text-[var(--text-primary)] truncate">
+              <span className="[font-family:var(--font-heading)] font-bold text-[13.5px] text-[var(--text-primary)] min-w-0 whitespace-normal leading-tight">
                 {getActionLabel(dailyAction1)}
               </span>
               <select
                 value={dailyAction1}
                 onChange={(e) => setDailyAction1(e.target.value as ActionType)}
-                className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[4px] text-[var(--text-secondary-600)] outline-none cursor-pointer"
+                className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[4px] text-[var(--text-secondary-600)] outline-none cursor-pointer shrink-0"
               >
                 {STAT_ACTION_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -149,15 +149,15 @@ export const AccessStatsTab = ({
           </div>
 
           {/* Daily Card 2 */}
-          <div className="bg-[var(--surface-500)] rounded-[16px] p-[18px_20px] h-[310px] flex flex-col">
+          <div className="bg-[var(--surface-500)] rounded-[16px] p-[18px_20px] min-h-[310px] flex flex-col">
             <div className="flex items-center justify-between gap-[8px] mb-[10px]">
-              <span className="[font-family:var(--font-heading)] font-bold text-[13.5px] text-[var(--text-primary)] truncate">
+              <span className="[font-family:var(--font-heading)] font-bold text-[13.5px] text-[var(--text-primary)] min-w-0 whitespace-normal leading-tight">
                 {getActionLabel(dailyAction2)}
               </span>
               <select
                 value={dailyAction2}
                 onChange={(e) => setDailyAction2(e.target.value as ActionType)}
-                className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[4px] text-[var(--text-secondary-600)] outline-none cursor-pointer"
+                className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[4px] text-[var(--text-secondary-600)] outline-none cursor-pointer shrink-0"
               >
                 {STAT_ACTION_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -184,15 +184,15 @@ export const AccessStatsTab = ({
           </div>
 
           {/* Daily Card 3 */}
-          <div className="bg-[var(--surface-500)] rounded-[16px] p-[18px_20px] h-[310px] flex flex-col">
+          <div className="bg-[var(--surface-500)] rounded-[16px] p-[18px_20px] min-h-[310px] flex flex-col">
             <div className="flex items-center justify-between gap-[8px] mb-[10px]">
-              <span className="[font-family:var(--font-heading)] font-bold text-[13.5px] text-[var(--text-primary)] truncate">
+              <span className="[font-family:var(--font-heading)] font-bold text-[13.5px] text-[var(--text-primary)] min-w-0 whitespace-normal leading-tight">
                 {getActionLabel(dailyAction3)}
               </span>
               <select
                 value={dailyAction3}
                 onChange={(e) => setDailyAction3(e.target.value as ActionType)}
-                className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[4px] text-[var(--text-secondary-600)] outline-none cursor-pointer"
+                className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[4px] text-[var(--text-secondary-600)] outline-none cursor-pointer shrink-0"
               >
                 {STAT_ACTION_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -253,15 +253,15 @@ export const AccessStatsTab = ({
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-[16px]">
           {/* Monthly Card 1 */}
-          <div className="bg-[var(--surface-500)] rounded-[16px] p-[18px_20px] h-[310px] flex flex-col">
+          <div className="bg-[var(--surface-500)] rounded-[16px] p-[18px_20px] min-h-[310px] flex flex-col">
             <div className="flex items-center justify-between gap-[8px] mb-[10px]">
-              <span className="[font-family:var(--font-heading)] font-bold text-[13.5px] text-[var(--text-primary)] truncate">
+              <span className="[font-family:var(--font-heading)] font-bold text-[13.5px] text-[var(--text-primary)] min-w-0 whitespace-normal leading-tight">
                 {getActionLabel(monthAction1)}
               </span>
               <select
                 value={monthAction1}
                 onChange={(e) => setMonthAction1(e.target.value as ActionType)}
-                className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[4px] text-[var(--text-secondary-600)] outline-none cursor-pointer"
+                className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[4px] text-[var(--text-secondary-600)] outline-none cursor-pointer shrink-0"
               >
                 {STAT_ACTION_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -288,15 +288,15 @@ export const AccessStatsTab = ({
           </div>
 
           {/* Monthly Card 2 */}
-          <div className="bg-[var(--surface-500)] rounded-[16px] p-[18px_20px] h-[310px] flex flex-col">
+          <div className="bg-[var(--surface-500)] rounded-[16px] p-[18px_20px] min-h-[310px] flex flex-col">
             <div className="flex items-center justify-between gap-[8px] mb-[10px]">
-              <span className="[font-family:var(--font-heading)] font-bold text-[13.5px] text-[var(--text-primary)] truncate">
+              <span className="[font-family:var(--font-heading)] font-bold text-[13.5px] text-[var(--text-primary)] min-w-0 whitespace-normal leading-tight">
                 {getActionLabel(monthAction2)}
               </span>
               <select
                 value={monthAction2}
                 onChange={(e) => setMonthAction2(e.target.value as ActionType)}
-                className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[4px] text-[var(--text-secondary-600)] outline-none cursor-pointer"
+                className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[4px] text-[var(--text-secondary-600)] outline-none cursor-pointer shrink-0"
               >
                 {STAT_ACTION_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -323,15 +323,15 @@ export const AccessStatsTab = ({
           </div>
 
           {/* Monthly Card 3 */}
-          <div className="bg-[var(--surface-500)] rounded-[16px] p-[18px_20px] h-[310px] flex flex-col">
+          <div className="bg-[var(--surface-500)] rounded-[16px] p-[18px_20px] min-h-[310px] flex flex-col">
             <div className="flex items-center justify-between gap-[8px] mb-[10px]">
-              <span className="[font-family:var(--font-heading)] font-bold text-[13.5px] text-[var(--text-primary)] truncate">
+              <span className="[font-family:var(--font-heading)] font-bold text-[13.5px] text-[var(--text-primary)] min-w-0 whitespace-normal leading-tight">
                 {getActionLabel(monthAction3)}
               </span>
               <select
                 value={monthAction3}
                 onChange={(e) => setMonthAction3(e.target.value as ActionType)}
-                className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[4px] text-[var(--text-secondary-600)] outline-none cursor-pointer"
+                className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[4px] text-[var(--text-secondary-600)] outline-none cursor-pointer shrink-0"
               >
                 {STAT_ACTION_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
