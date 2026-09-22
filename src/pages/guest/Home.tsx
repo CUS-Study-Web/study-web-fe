@@ -14,7 +14,7 @@ export default function Home() {
       return <Navigate to={ROUTES.ADMIN.DASHBOARD} replace />;
     }
     if (role === "assistant") {
-      return <Navigate to={ROUTES.ASSISTANT.COURSES} replace />;
+      return <Navigate to={ROUTES.ASSISTANT.DASHBOARD} replace />;
     }
   }
 
