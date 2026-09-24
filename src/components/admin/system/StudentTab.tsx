@@ -194,16 +194,9 @@ export const StudentTab = () => {
                       </span>
                     </div>
                   </td>
-                  <td
-                    className={`p-[12px_12px] [font-family:var(--font-heading)] font-bold text-[13px] ${
-                      u.averageScore >= 7
-                        ? "text-[var(--brand-500)]"
-                        : u.averageScore >= 5
-                        ? "text-[var(--warning-500)]"
-                        : "text-[var(--error-500)]"
-                    }`}
-                  >
+                  <td className="p-[12px_12px] [font-family:var(--font-heading)] font-bold text-[13px] text-[var(--text-primary)]">
                     {u.averageScore}
+                    {u.courseMaxScore != null && u.courseMaxScore > 0 ? ` / ${u.courseMaxScore}` : ''}
                   </td>
                   <td className="p-[12px_12px] [font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-600)]">
                     {u.lastLogin || "Chưa đăng nhập"}
