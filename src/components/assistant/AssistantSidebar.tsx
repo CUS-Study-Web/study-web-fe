@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { ASSISTANT_MENU } from './constants';
 import Logo from '../guest/Logo';
+import { LogOut } from 'lucide-react';
 
 interface AssistantSidebarProps {
   sideOpen: boolean;
@@ -35,29 +36,32 @@ export function AssistantSidebar({ sideOpen, setSideOpen, onLogout }: AssistantS
 
       {/* Navigation Menu */}
       <nav className="flex-1 py-3 px-2 flex flex-col gap-0.5">
-        {ASSISTANT_MENU.map((item) => (
-          <NavLink
-            key={item.key}
-            to={item.path}
-            className={({ isActive }) =>
-              `flex items-center px-3 py-[11px] rounded-xl border-none transition-colors duration-140 font-[family-name:var(--font-heading)] text-[length:var(--text-body-sm)] cursor-pointer
-              ${isActive
-                ? 'bg-white/15 !text-white font-bold'
-                : 'bg-transparent !text-[var(--brand-soft-500)] opacity-90 font-medium hover:bg-white/10'
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <span className="text-[18px] mr-3">{item.icon}</span>
-                {sideOpen && <span className="whitespace-nowrap">{item.label}</span>}
-                {isActive && sideOpen && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[var(--brand-soft-500)] shrink-0" />
-                )}
-              </>
-            )}
-          </NavLink>
-        ))}
+        {ASSISTANT_MENU.map((item) => {
+          const Icon = item.icon;
+          return (
+            <NavLink
+              key={item.key}
+              to={item.path}
+              className={({ isActive }) =>
+                `flex items-center px-3 py-[11px] rounded-xl border-none transition-colors duration-140 font-[family-name:var(--font-heading)] text-[length:var(--text-body-sm)] cursor-pointer
+                ${isActive
+                  ? 'bg-white/15 !text-white font-bold'
+                  : 'bg-transparent !text-[var(--brand-soft-500)] opacity-90 font-medium hover:bg-white/10'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <Icon className="w-5 h-5 mr-3 shrink-0" />
+                  {sideOpen && <span className="whitespace-nowrap">{item.label}</span>}
+                  {isActive && sideOpen && (
+                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[var(--brand-soft-500)] shrink-0" />
+                  )}
+                </>
+              )}
+            </NavLink>
+          );
+        })}
       </nav>
 
       {/* Sidebar Footer (Logout) */}
@@ -66,7 +70,7 @@ export function AssistantSidebar({ sideOpen, setSideOpen, onLogout }: AssistantS
           onClick={onLogout}
           className="flex items-center w-full px-3 py-[11px] rounded-xl border-none transition-colors duration-140 font-[family-name:var(--font-heading)] text-[length:var(--text-body-sm)] cursor-pointer bg-transparent !text-[var(--error-200)] font-medium hover:bg-[rgba(201,75,75,0.15)]"
         >
-          <span className="text-[18px] mr-3">🚪</span>
+          <LogOut className="w-5 h-5 mr-3 shrink-0" />
           {sideOpen && <span className="whitespace-nowrap">Đăng xuất</span>}
         </div>
       </div>

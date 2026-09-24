@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { Lock, Crown, Clock, HelpCircle, Users } from "lucide-react";
 import { ROUTES } from "../../utils/routes";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -35,9 +36,7 @@ export default function ExamCard({ id, courseId, course, title, time, questions,
       {showVipLock && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center bg-[var(--neutral-0)]/40 backdrop-blur-[2px]">
           <div className="w-14 h-14 bg-[var(--text-primary-800)] rounded-full flex items-center justify-center mb-2.5 shadow-lg">
-            <svg className="w-6 h-6 text-[#ffc107] fill-current" viewBox="0 0 24 24">
-              <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
-            </svg>
+            <Lock className="w-6 h-6 text-[#ffc107]" />
           </div>
           <div className="!text-[var(--text-primary-500)] font-black text-base mb-3" style={{ fontFamily: "var(--font-heading)" }}>
             Chỉ dành cho VIP
@@ -46,9 +45,7 @@ export default function ExamCard({ id, courseId, course, title, time, questions,
             to={ROUTES.VIP}
             className="flex items-center gap-1.5 px-6 py-2.5 bg-[var(--text-primary-800)] !text-[#ffc107] text-sm font-extrabold rounded-full shadow-md hover:bg-[var(--text-primary-900)] active:scale-95 transition-all cursor-pointer"
           >
-            <svg className="w-4 h-4 fill-current text-[#ffc107]" viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
+            <Crown className="w-4 h-4 text-[#ffc107]" />
             Đăng ký VIP
           </Link>
         </div>
@@ -74,21 +71,15 @@ export default function ExamCard({ id, courseId, course, title, time, questions,
         <div>
           <div className="flex items-center justify-between pt-4 border-t border-[var(--border-200)] mb-5">
             <div className="flex flex-col items-center gap-1">
-              <svg className="w-4 h-4 text-[var(--text-secondary-300)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <Clock className="w-4 h-4 text-[var(--text-secondary-300)]" />
               <span className="text-caption font-semibold text-[var(--text-secondary-500)]">{time}</span>
             </div>
             <div className="flex flex-col items-center gap-1">
-              <svg className="w-4 h-4 text-[var(--error-400)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
+              <HelpCircle className="w-4 h-4 text-[var(--error-400)]" />
               <span className="text-caption font-semibold text-[var(--text-secondary-500)]">{questions}</span>
             </div>
             <div className="flex flex-col items-center gap-1">
-              <svg className="w-4 h-4 text-[var(--info-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
+              <Users className="w-4 h-4 text-[var(--info-500)]" />
               <span className="text-caption font-semibold text-[var(--text-secondary-500)]">{attempts ?? '0'}</span>
             </div>
           </div>

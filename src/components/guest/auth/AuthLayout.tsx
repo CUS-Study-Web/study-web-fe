@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { ChevronLeft, Check } from "lucide-react";
 import Logo from "../Logo";
 import { ROUTES } from "../../../utils/routes";
 
@@ -51,7 +52,7 @@ export default function AuthLayout({
             to={ROUTES.HOME}
             className="flex items-center gap-1.5 px-4 py-1.5 bg-white/15 hover:bg-white/25 border border-white/20 !text-white font-bold text-xs rounded-full backdrop-blur-md transition-all active:scale-95 cursor-pointer shadow-xs"
           >
-            <span>‹</span> Quay lại
+            <ChevronLeft className="w-3.5 h-3.5" /> Quay lại
           </Link>
         </div>
 
@@ -74,8 +75,8 @@ export default function AuthLayout({
           <div className="space-y-3.5 text-sm font-semibold text-[#e8f0e9]">
             {leftFeatures.map((feat, idx) => (
               <div key={idx} className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-[var(--brand-base-600)] flex items-center justify-center text-[#ffc107] text-xs font-bold shadow-xs flex-shrink-0">
-                  ✓
+                <div className="w-6 h-6 rounded-full bg-[var(--brand-base-600)] flex items-center justify-center text-[#ffc107] shadow-xs flex-shrink-0">
+                  <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                 </div>
                 <span>{feat}</span>
               </div>

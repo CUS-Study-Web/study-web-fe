@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { ChevronLeft, Sparkles, Phone, Globe, CreditCard, QrCode, FileText, Upload, Send } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNotification } from "../../components/common/NotificationProvider";
 import { useSubscribeVipMutation, useRenewVipMutation } from "../../hooks/queries/useVipSubscription";
@@ -87,15 +88,7 @@ export default function LearnerVipRegisterPage() {
           onClick={() => navigate(ROUTES.VIP)}
           className="flex items-center gap-[6px] [font-family:var(--font-heading)] font-semibold text-[13px] text-[var(--text-secondary-300)] bg-transparent border-none cursor-pointer p-0 mb-[20px] hover:text-[var(--text-primary)] transition-colors duration-[var(--motion-fast)]"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M15 18l-6-6 6-6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <ChevronLeft className="w-4 h-4" />
           Quay lại
         </button>
 
@@ -104,8 +97,9 @@ export default function LearnerVipRegisterPage() {
           <div className="p-[28px]">
             {/* VIP badge */}
             <div className="inline-flex items-center gap-[6px] bg-[rgba(245,197,24,0.15)] border border-[rgba(212,160,23,0.35)] rounded-full px-[12px] py-[4px] mb-[14px]">
+              <Sparkles className="w-3.5 h-3.5 text-[var(--warning-500)]" />
               <span className="[font-family:var(--font-heading)] font-bold text-[11px] text-[var(--warning-500)] uppercase tracking-[0.5px]">
-                ✦ Tài khoản VIP
+                Tài khoản VIP
               </span>
             </div>
 
@@ -124,11 +118,11 @@ export default function LearnerVipRegisterPage() {
 
             <div className="border-t border-[var(--surface-500)] pt-[16px] flex flex-col gap-[8px]">
               {[
-                { icon: "📞", text: "Hotline hỗ trợ: [Điền số điện thoại của trung tâm]" },
-                { icon: "📘", text: "Fanpage: [Điền link Fanpage nếu có]" },
+                { icon: <Phone className="w-4 h-4 text-[var(--brand-base-500)]" />, text: "Hotline hỗ trợ: [Điền số điện thoại của trung tâm]" },
+                { icon: <Globe className="w-4 h-4 text-[var(--brand-base-500)]" />, text: "Fanpage: [Điền link Fanpage nếu có]" },
               ].map(({ icon, text }) => (
                 <div key={text} className="flex items-center gap-[10px]">
-                  <span className="text-[16px]">{icon}</span>
+                  <span className="shrink-0">{icon}</span>
                   <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
                     {text}
                   </span>
@@ -188,18 +182,7 @@ export default function LearnerVipRegisterPage() {
             {/* Transfer info block */}
             <div className="bg-[var(--brand-soft-200)] border border-[var(--brand-soft-600)] rounded-[var(--radius-sm)] p-[18px_20px]">
               <div className="[font-family:var(--font-heading)] font-extrabold text-[13px] text-[var(--brand-base-500)] uppercase tracking-[0.6px] mb-[12px] flex items-center gap-[8px]">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <rect
-                    x="2"
-                    y="5"
-                    width="20"
-                    height="14"
-                    rx="3"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
-                  <path d="M2 10h20" stroke="currentColor" strokeWidth="2" />
-                </svg>
+                <CreditCard size={16} />
                 Thông tin chuyển khoản
               </div>
               {[
@@ -239,38 +222,7 @@ export default function LearnerVipRegisterPage() {
               </p>
               <div className="flex justify-center">
                 <div className="w-[180px] h-[180px] bg-[var(--brand-soft-200)] border-2 border-[var(--brand-soft-600)] rounded-[16px] flex flex-col items-center justify-center gap-[10px]">
-                  <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
-                    <rect
-                      x="4"
-                      y="4"
-                      width="34"
-                      height="34"
-                      rx="4"
-                      stroke="var(--brand-base-500)"
-                      strokeWidth="3"
-                    />
-                    <rect x="12" y="12" width="18" height="18" rx="2" fill="var(--brand-base-500)" />
-                    <rect
-                      x="72"
-                      y="4"
-                      width="34"
-                      height="34"
-                      rx="4"
-                      stroke="var(--brand-base-500)"
-                      strokeWidth="3"
-                    />
-                    <rect x="80" y="12" width="18" height="18" rx="2" fill="var(--brand-base-500)" />
-                    <rect
-                      x="4"
-                      y="72"
-                      width="34"
-                      height="34"
-                      rx="4"
-                      stroke="var(--brand-base-500)"
-                      strokeWidth="3"
-                    />
-                    <rect x="12" y="80" width="18" height="18" rx="2" fill="var(--brand-base-500)" />
-                  </svg>
+                  <QrCode size={90} className="text-[var(--brand-base-500)]" />
                   <span className="[font-family:var(--font-body)] text-[11px] text-[var(--text-secondary-300)]">
                     Quét để thanh toán
                   </span>
@@ -307,39 +259,17 @@ export default function LearnerVipRegisterPage() {
                 />
                 {evidenceFile ? (
                   <div className="flex items-center justify-center gap-[10px]">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
-                        fill="var(--brand-base-500)"
-                      />
-                      <polyline
-                        points="14,2 14,8 20,8"
-                        fill="none"
-                        stroke="rgba(255,255,255,0.8)"
-                        strokeWidth="1.5"
-                      />
-                    </svg>
+                    <FileText size={20} className="text-[var(--brand-base-500)]" />
                     <span className="[font-family:var(--font-heading)] font-bold text-[14px] text-[var(--brand-base-500)]">
                       {evidenceFile.name}
                     </span>
                   </div>
                 ) : (
                   <>
-                    <svg
-                      width="32"
-                      height="32"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      className="mx-auto mb-[10px] block"
-                    >
-                      <path
-                        d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
-                        stroke={fileDragging ? "var(--brand-base-500)" : "var(--text-secondary-200)"}
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <Upload
+                      size={32}
+                      className={`mx-auto mb-[10px] block ${fileDragging ? "text-[var(--brand-base-500)]" : "text-[var(--text-secondary-200)]"}`}
+                    />
                     <div className="[font-family:var(--font-heading)] font-bold text-[14px] text-[var(--text-secondary-600)] mb-[4px]">
                       Kéo thả ảnh vào đây hoặc nhấn để chọn
                     </div>
@@ -371,15 +301,7 @@ export default function LearnerVipRegisterPage() {
             disabled={activeMutation.isPending}
             className="[font-family:var(--font-heading)] font-extrabold text-[16px] py-[16px] px-[56px] rounded-[var(--radius-md)] border-none bg-gradient-to-br from-[var(--brand-base-500)] to-[var(--brand-base-400)] text-white cursor-pointer shadow-[0_4px_20px_rgba(44,90,49,0.35)] transition-all duration-[var(--motion-fast)] flex items-center gap-[10px] hover:-translate-y-[2px] hover:shadow-[0_8px_28px_rgba(44,90,49,0.4)] active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"
-                stroke="#fff"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <Send size={18} strokeWidth={2} />
             {activeMutation.isPending
               ? "Đang gửi..."
               : isRenewMode ? "Gửi gia hạn" : "Gửi đăng ký"}

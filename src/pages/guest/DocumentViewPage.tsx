@@ -5,6 +5,7 @@ import { useGetDocumentDetailQuery, useDownloadDocumentMutation } from "../../ho
 import * as mammoth from "mammoth";
 import { downloadFileFromUrl } from "../../utils/fileUtils";
 import { useNotification } from "../../components/common/NotificationProvider";
+import { FileText, Download, Crown, Check } from "lucide-react";
 
 const COLOR_THEMES = [
   { bg: '#28522d', soft: 'rgba(40,82,45,0.1)' },
@@ -105,10 +106,28 @@ export default function DocumentViewPage() {
             {doc.title}
           </div>
 
-          <div className="flex gap-5 flex-wrap">
-            {[`📄 ${doc.numPages || 0} trang`, `↓ ${doc.downloadCount || 0} lượt tải`, doc.accessTier === 'VIP' ? "⭐ Yêu cầu VIP" : "✓ Miễn phí 100%"].map((item) => (
-              <span key={item} className="font-['Noto_Sans',sans-serif] text-[13px] text-[#DCE9DE]/80">{item}</span>
-            ))}
+          <div className="flex gap-5 flex-wrap items-center">
+            <span className="font-['Noto_Sans',sans-serif] text-[13px] text-[#DCE9DE]/80 inline-flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5" />
+              <span>{doc.numPages || 0} trang</span>
+            </span>
+            <span className="font-['Noto_Sans',sans-serif] text-[13px] text-[#DCE9DE]/80 inline-flex items-center gap-1.5">
+              <Download className="w-3.5 h-3.5" />
+              <span>{doc.downloadCount || 0} lượt tải</span>
+            </span>
+            <span className="font-['Noto_Sans',sans-serif] text-[13px] text-[#DCE9DE]/80 inline-flex items-center gap-1.5">
+              {doc.accessTier === 'VIP' ? (
+                <>
+                  <Crown className="w-3.5 h-3.5 text-[#ffc107]" />
+                  <span>Yêu cầu VIP</span>
+                </>
+              ) : (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Miễn phí 100%</span>
+                </>
+              )}
+            </span>
           </div>
         </div>
       </div>
@@ -183,9 +202,9 @@ export default function DocumentViewPage() {
                 style={{ background: colorTheme.bg }}
               >
                 {isDownloading ? (
-                  <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-1" />
                 ) : (
-                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3V12M9 12L5.5 8.5M9 12L12.5 8.5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><path d="M3 15H15" stroke="#fff" strokeWidth="2" strokeLinecap="round" /></svg>
+                  <Download className="w-4 h-4 text-white" />
                 )}
                 {isDownloading ? 'Đang lấy file...' : 'Tải xuống'}
               </button>

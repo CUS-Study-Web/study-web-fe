@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { ROUTES } from '../../utils/routes'
 import Logo from '../guest/Logo'
+import { User, LogOut } from 'lucide-react'
 
 type AdminNavBarProps = {
   onLogout?: () => void,
@@ -45,9 +46,7 @@ export default function AdminNavBar({ onLogout }: AdminNavBarProps) {
         <div className="flex items-center gap-3 shrink-0">
           <div className="flex items-center gap-[7px]">
             <div className="w-[30px] h-[30px] rounded-full bg-[var(--brand-soft-500)] flex items-center justify-center shrink-0">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="stroke-[var(--brand-500)]" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
-              </svg>
+              <User className="w-[15px] h-[15px] text-[var(--brand-500)]" />
             </div>
             <span className="[font-family:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)]">Quản trị viên</span>
           </div>
@@ -55,9 +54,7 @@ export default function AdminNavBar({ onLogout }: AdminNavBarProps) {
             onClick={onLogout}
             className="flex items-center gap-1.5 [font-family:var(--font-heading)] font-semibold text-[13px] px-4 py-[7px] rounded-[var(--radius-sm)] border border-[var(--border-500)] bg-white text-[var(--text-secondary-600)] cursor-pointer transition-colors duration-[var(--motion-fast)] hover:bg-[var(--surface-500)]"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="stroke-[var(--text-secondary-600)]" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
-            </svg>
+            <LogOut className="w-3.5 h-3.5 text-[var(--text-secondary-600)]" />
             Đăng Xuất
           </div>
         </div>

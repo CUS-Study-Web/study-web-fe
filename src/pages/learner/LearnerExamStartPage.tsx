@@ -1,5 +1,6 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import React, { Suspense } from "react";
+import { ArrowLeft, Clock, FileText, Users } from "lucide-react";
 import { ROUTES } from "../../utils/routes";
 const LineChart = React.lazy(() => import("../../components/Charts").then(module => ({ default: module.LineChart })));
 import AttemptHistoryItem from "../../components/learner/AttemptHistoryItem";
@@ -64,9 +65,7 @@ export default function LearnerExamStartPage() {
           className="absolute top-6 left-6 md:top-8 md:left-8 p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors cursor-pointer border-none flex items-center justify-center text-white"
           aria-label="Quay lại"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
+          <ArrowLeft className="w-5 h-5" />
         </div>
         <div className="max-w-[900px] mx-auto text-center">
           <div className="font-[family:var(--font-heading)] font-bold text-4xl !text-white mb-3.5 tracking-tight leading-tight">
@@ -77,12 +76,12 @@ export default function LearnerExamStartPage() {
           </div>
           <div className="flex justify-center gap-6 mb-8 flex-wrap">
             {[
-              { icon: "🕐", label: "Thời gian", value: exam.duration },
-              { icon: "📝", label: "Số câu hỏi", value: `${exam.questions} câu` },
-              { icon: "👥", label: "Lượt thi", value: `${exam.attempts} lượt` }
+              { icon: <Clock className="w-6 h-6 text-emerald-300 mx-auto" />, label: "Thời gian", value: exam.duration },
+              { icon: <FileText className="w-6 h-6 text-emerald-300 mx-auto" />, label: "Số câu hỏi", value: `${exam.questions} câu` },
+              { icon: <Users className="w-6 h-6 text-emerald-300 mx-auto" />, label: "Lượt thi", value: `${exam.attempts} lượt` }
             ].map(({ icon, label, value }) => (
               <div key={label} className="bg-white/10 rounded-[14px] px-5 py-3.5 text-center min-w-[120px]">
-                <div className="text-[22px] mb-1.5">{icon}</div>
+                <div className="mb-1.5 flex justify-center">{icon}</div>
                 <div className="font-[family:var(--font-heading)] font-bold text-base !text-white">{value}</div>
                 <div className="font-[family:var(--font-body)] text-xs !text-white opacity-50 mt-0.5">{label}</div>
               </div>

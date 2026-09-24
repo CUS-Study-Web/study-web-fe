@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../utils/routes";
 import PendingSolutionPopup from "../common/PendingSolutionPopup";
+import { Lock, CheckCircle2, FileText, Check } from "lucide-react";
 
 type Exercise = {
   id: string;
@@ -34,20 +35,11 @@ export default function ExerciseItem({ exercise, isLast, isLocked }: ExerciseIte
         {/* Icon Left */}
         <div className={`w-[42px] h-[42px] rounded-xl flex items-center justify-center shrink-0 ${isLocked ? "bg-[var(--surface-500)]" : completed ? "bg-[var(--brand-soft-500)]" : "bg-[var(--surface-500)]"}`}>
           {isLocked ? (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <rect x="3" y="11" width="18" height="11" rx="3" fill="#A0AAA2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#A0AAA2" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <Lock className="w-4 h-4 text-[#A0AAA2]" />
           ) : completed ? (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" fill="var(--brand-base-500)"/>
-              <path d="M7 12l3.5 3.5L17 8" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <CheckCircle2 className="w-5 h-5 text-[var(--brand-base-500)]" />
           ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="rgba(44,90,49,0.8)" />
-              <polyline points="14,2 14,8 20,8" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" />
-            </svg>
+            <FileText className="w-5 h-5 text-[var(--brand-base-500)]" />
           )}
         </div>
         {/* Content */}
@@ -57,8 +49,9 @@ export default function ExerciseItem({ exercise, isLast, isLocked }: ExerciseIte
               {exercise.title}
             </div>
             {completed && !isLocked && (
-              <span className="bg-[var(--brand-soft-500)] text-[var(--brand-base-500)] rounded-full px-2 py-0.5 font-[family:var(--font-heading)] font-bold text-[10px] whitespace-nowrap">
-                ✓ Đã hoàn thành
+              <span className="bg-[var(--brand-soft-500)] text-[var(--brand-base-500)] rounded-full px-2 py-0.5 font-[family:var(--font-heading)] font-bold text-[10px] whitespace-nowrap inline-flex items-center gap-1">
+                <Check className="w-3 h-3 stroke-[3]" />
+                <span>Đã hoàn thành</span>
               </span>
             )}
           </div>
@@ -71,10 +64,7 @@ export default function ExerciseItem({ exercise, isLast, isLocked }: ExerciseIte
       <div className="flex gap-2 shrink-0">
         {isLocked ? (
           <div className="flex items-center gap-1 font-bold text-[11px] text-[#A8761C] uppercase bg-[#FFFDF5] px-2 py-1 rounded">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-              <rect x="3" y="11" width="18" height="11" rx="3" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <Lock className="w-3 h-3 text-[#A8761C]" />
             VIP
           </div>
         ) : completed ? (

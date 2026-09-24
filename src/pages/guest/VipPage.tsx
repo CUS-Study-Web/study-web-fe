@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Check, X, Sparkles, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ROUTES } from "@/utils/routes";
 import { useGetPricingPageQuery } from "@/hooks/queries/usePricingPage";
@@ -53,13 +54,13 @@ export default function VipPage() {
         } flex items-start gap-2`}
       >
         {hasIcon && icon === "CHECKED" && (
-          <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">
-            ✓
+          <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <Check className="w-2.5 h-2.5 stroke-[3]" />
           </span>
         )}
         {hasIcon && icon === "UNCHECKED" && (
-          <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">
-            ✕
+          <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <X className="w-2.5 h-2.5 stroke-[3]" />
           </span>
         )}
         <div>
@@ -79,7 +80,7 @@ export default function VipPage() {
         <div className="max-w-4xl mx-auto text-center relative z-10">
           {/* Badge */}
           <div className="inline-flex items-center gap-1.5 bg-[#254228] border border-[#3e6041] text-[#ffc107] font-extrabold text-xs px-4.5 py-1.5 rounded-full uppercase tracking-wider mb-5 shadow-xs">
-            <span>✦</span> GÓI TÀI KHOẢN
+            <Sparkles className="w-3.5 h-3.5" /> GÓI TÀI KHOẢN
           </div>
 
           <h1
@@ -126,7 +127,7 @@ export default function VipPage() {
         <div className="bg-[#1a231b] text-white rounded-[var(--radius-xl)] p-8 shadow-2xl border border-[#2d422a] relative overflow-hidden flex flex-col justify-between ring-2 ring-[#ffc107]/40 hover:shadow-[0_20px_50px_rgba(255,193,7,0.15)] transition-all duration-300">
           {/* Top Right Popular Tag */}
           <div className="absolute top-6 right-6 bg-[#384236] border border-[#525f4f] text-[#ffc107] text-xs font-extrabold px-3 py-1 rounded-full flex items-center gap-1 shadow-xs">
-            <span>✦</span> {vipPkg?.tag || "Phổ biến"}
+            <Sparkles className="w-3 h-3" /> {vipPkg?.tag || "Phổ biến"}
           </div>
 
           <div>
@@ -181,7 +182,7 @@ export default function VipPage() {
                 : "!bg-gradient-to-b !from-[#ffcf33] !to-[#e6a800] !hover:from-[#ffd54f] !hover:to-[#ebaf0a] !text-[#1f1f1c] !shadow-lg !shadow-[#e6a800]/30 !active:scale-95 !cursor-pointer"
                 }`}
             >
-              {isVip ? <>Gia hạn VIP <span>✦</span></> : <>Nâng cấp ngay <span>✦</span></>}
+              {isVip ? <>Gia hạn VIP <Sparkles className="w-4 h-4" /></> : <>Nâng cấp ngay <Sparkles className="w-4 h-4" /></>}
             </button>
           </div>
         </div>
@@ -206,8 +207,8 @@ export default function VipPage() {
             <div className="col-span-4 p-4 md:p-5 text-[#7d827f] border-r border-[var(--border-300)]">
               TÀI KHOẢN THƯỜNG
             </div>
-            <div className="col-span-4 p-4 md:p-5 text-[#a8761c] bg-[#fffdf5]">
-              ✦ TÀI KHOẢN VIP
+            <div className="col-span-4 p-4 md:p-5 text-[#a8761c] bg-[#fffdf5] flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" /> TÀI KHOẢN VIP
             </div>
           </div>
 
@@ -234,11 +235,15 @@ export default function VipPage() {
                   Làm đề thi
                 </div>
                 <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
+                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <X className="w-2.5 h-2.5 stroke-[3]" />
+                  </span>
                   <span>Giới hạn một số đề, không xem được đáp án chi tiết</span>
                 </div>
                 <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
+                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Check className="w-2.5 h-2.5 stroke-[3]" />
+                  </span>
                   <span>Không giới hạn, xem được đáp án và lời giải chi tiết</span>
                 </div>
               </div>
@@ -248,11 +253,15 @@ export default function VipPage() {
                   Làm bài tập
                 </div>
                 <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
+                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <X className="w-2.5 h-2.5 stroke-[3]" />
+                  </span>
                   <span>Giới hạn 3 bài tập, không xem lời giải chi tiết</span>
                 </div>
                 <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
+                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Check className="w-2.5 h-2.5 stroke-[3]" />
+                  </span>
                   <span>Không giới hạn, xem được đáp án và lời giải chi tiết</span>
                 </div>
               </div>
@@ -262,11 +271,15 @@ export default function VipPage() {
                   Phòng thi thực chiến
                 </div>
                 <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
+                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <X className="w-2.5 h-2.5 stroke-[3]" />
+                  </span>
                   <span>Không có</span>
                 </div>
                 <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
+                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Check className="w-2.5 h-2.5 stroke-[3]" />
+                  </span>
                   <span>Có — Giúp học sinh mô phỏng quá trình làm bài thi thật</span>
                 </div>
               </div>
@@ -276,11 +289,15 @@ export default function VipPage() {
                   Tài liệu thi thử
                 </div>
                 <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
+                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <X className="w-2.5 h-2.5 stroke-[3]" />
+                  </span>
                   <span>Không có</span>
                 </div>
                 <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
+                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Check className="w-2.5 h-2.5 stroke-[3]" />
+                  </span>
                   <div>
                     <span className="inline-block bg-[#fef3c7] text-[#b45309] border border-[#fde68a] text-[10px] font-extrabold px-1.5 py-0.5 rounded mr-1.5 uppercase">
                       Đặc biệt
@@ -295,11 +312,15 @@ export default function VipPage() {
                   Buổi học GG Meet
                 </div>
                 <div className="col-span-4 p-4 md:p-5 text-[#7d827f] font-medium border-r border-[var(--border-300)] flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✕</span>
+                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <X className="w-2.5 h-2.5 stroke-[3]" />
+                  </span>
                   <span>Không có</span>
                 </div>
                 <div className="col-span-4 p-4 md:p-5 text-[#1f1f1c] font-bold bg-[#fffdf5] flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">✓</span>
+                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Check className="w-2.5 h-2.5 stroke-[3]" />
+                  </span>
                   <div>
                     <span className="inline-block bg-[#fef3c7] text-[#b45309] border border-[#fde68a] text-[10px] font-extrabold px-1.5 py-0.5 rounded mr-1.5 uppercase">
                       Đặc biệt
@@ -317,8 +338,8 @@ export default function VipPage() {
       <section className="max-w-4xl mx-auto px-4 mt-10">
         {/* Notice Alert Box */}
         <div className="bg-[#fffdf5] border border-[#fde68a] rounded-[20px] p-5 flex items-start gap-3.5 shadow-xs mb-12">
-          <div className="w-6 h-6 rounded-full bg-[#fef3c7] text-[#b45309] flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 border border-[#fde68a]">
-            !
+          <div className="w-6 h-6 rounded-full bg-[#fef3c7] text-[#b45309] flex items-center justify-center flex-shrink-0 mt-0.5 border border-[#fde68a]">
+            <AlertCircle className="w-3.5 h-3.5" />
           </div>
           <p className="text-sm text-[#78350f] font-medium leading-relaxed">
             <strong className="font-extrabold text-[#b45309]">Lưu ý:</strong> Tài khoản VIP được duy trì theo tháng. Bạn có thể hủy đăng ký bất kỳ lúc nào trước ngày gia hạn mà không mất thêm phí.
@@ -332,7 +353,7 @@ export default function VipPage() {
               onClick={handleUpgradeClick}
               className="px-10 py-4 bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] font-black text-lg rounded-[16px] shadow-xl shadow-[#e6a800]/40 hover:scale-105 active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2"
             >
-              Bắt đầu dùng VIP ngay <span>✦</span>
+              Bắt đầu dùng VIP ngay <Sparkles className="w-5 h-5" />
             </div>
             <div className="text-xs font-semibold text-[#7d827f] mt-3">
               Hủy bất kỳ lúc nào · Hỗ trợ 24/7 · Thanh toán an toàn

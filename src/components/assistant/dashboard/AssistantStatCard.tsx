@@ -1,11 +1,22 @@
+import React from 'react';
+import { Users, Paperclip, FileText, Activity } from 'lucide-react';
+
 export interface StatCardProps {
   label: string;
   value: string;
   delta: string;
-  icon: string;
+  icon: string | React.ReactNode;
   color: string;
   background: string;
 }
+
+const renderStatIcon = (icon: string | React.ReactNode, color: string) => {
+  if (typeof icon !== 'string') return icon;
+  if (icon === '👥' || icon === 'users') return <Users size={20} style={{ color }} />;
+  if (icon === '📎' || icon === 'paperclip') return <Paperclip size={20} style={{ color }} />;
+  if (icon === '📝' || icon === 'file-text') return <FileText size={20} style={{ color }} />;
+  return <Activity size={20} style={{ color }} />;
+};
 
 const AssistantStatCard = ({
   label,
@@ -22,7 +33,7 @@ const AssistantStatCard = ({
           className="w-10.5 h-10.5 rounded-xl flex items-center justify-center text-xl"
           style={{ backgroundColor: background }}
         >
-          {icon}
+          {renderStatIcon(icon, color)}
         </div>
       </div>
       <div>

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/routes";
 import Avatar from "./Avatar";
+import { User, BookOpen, Layers, LogOut, ChevronDown } from "lucide-react";
 
 export default function UserMenuPopup() {
   const { user, logout } = useAuth();
@@ -22,8 +23,6 @@ export default function UserMenuPopup() {
   }, [isOpen]);
 
   if (!user) return null;
-
-
 
   const handleLogout = () => {
     setIsOpen(false);
@@ -48,19 +47,9 @@ export default function UserMenuPopup() {
         className="absolute -right-4 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center cursor-pointer bg-transparent border-none"
         aria-label="Toggle menu"
       >
-        <svg
-          width="10"
-          height="10"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="var(--brand-base-600)"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
+        <ChevronDown
+          className={`w-3.5 h-3.5 text-[var(--brand-base-600)] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
 
       {/* Popup Menu */}
@@ -83,25 +72,28 @@ export default function UserMenuPopup() {
             <Link
               to={ROUTES.LEARNER.PROFILE}
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-5 py-2.5 text-sm font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-300)] hover:text-[var(--text-primary-500)] transition-colors duration-100"
+              className="flex items-center gap-2.5 px-5 py-2.5 text-sm font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-300)] hover:text-[var(--text-primary-500)] transition-colors duration-100"
             >
-              👤   Cá nhân
+              <User className="w-4 h-4 text-[var(--text-secondary-500)]" />
+              <span>Cá nhân</span>
             </Link>
 
             <Link
               to={ROUTES.LEARNER.MY_COURSES}
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-5 py-2.5 text-sm font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-300)] hover:text-[var(--text-primary-500)] transition-colors duration-100"
+              className="flex items-center gap-2.5 px-5 py-2.5 text-sm font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-300)] hover:text-[var(--text-primary-500)] transition-colors duration-100"
             >
-              📚   Khóa học của tôi
+              <BookOpen className="w-4 h-4 text-[var(--text-secondary-500)]" />
+              <span>Khóa học của tôi</span>
             </Link>
 
             <Link
               to={ROUTES.LEARNER.FLASHCARD_TOPICS}
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-5 py-2.5 text-sm font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-300)] hover:text-[var(--text-primary-500)] transition-colors duration-100"
+              className="flex items-center gap-2.5 px-5 py-2.5 text-sm font-semibold text-[var(--text-secondary-600)] hover:bg-[var(--surface-300)] hover:text-[var(--text-primary-500)] transition-colors duration-100"
             >
-              🃏   Flashcard
+              <Layers className="w-4 h-4 text-[var(--text-secondary-500)]" />
+              <span>Flashcard</span>
             </Link>
           </div>
 
@@ -109,9 +101,10 @@ export default function UserMenuPopup() {
           <div className="border-t border-[var(--border-200)] py-1.5">
             <div
               onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-5 py-2.5 text-sm font-semibold text-[#DC2626] hover:bg-[#FEF2F2] transition-colors duration-100 cursor-pointer border-none bg-transparent text-left"
+              className="flex items-center gap-2.5 w-full px-5 py-2.5 text-sm font-semibold text-[#DC2626] hover:bg-[#FEF2F2] transition-colors duration-100 cursor-pointer border-none bg-transparent text-left"
             >
-              🚪Đăng xuất
+              <LogOut className="w-4 h-4" />
+              <span>Đăng xuất</span>
             </div>
           </div>
         </div>
