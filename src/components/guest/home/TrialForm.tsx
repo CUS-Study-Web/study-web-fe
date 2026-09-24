@@ -76,11 +76,11 @@ export default function TrialForm() {
           {/* Text Area */}
           <div className="flex flex-col">
             <label className="text-xs font-bold !text-[#e8f0e9] mb-2 uppercase tracking-wider">
-              Bạn muốn thi thử môn gì?
+              Ghi chú
             </label>
             <textarea
               rows={4}
-              placeholder="Nhập thông tin bạn muốn thi thử..."
+              placeholder="Bạn có câu hỏi hay yêu cầu gì muốn gửi tới CUS không?"
               className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[var(--radius-md)] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition resize-none text-sm font-medium"
             />
           </div>
