@@ -36,7 +36,7 @@ const Fld = ({ label, children }: { label: string; children: React.ReactNode }) 
 
 const MAX_LINKS_PER_CATEGORY = 8
 
-export const normalizeLinkUrl = (url: string): string => {
+const normalizeLinkUrl = (url: string): string => {
   if (!url) return ''
   const trimmed = url.trim()
   if (!trimmed) return ''

@@ -44,10 +44,9 @@ export default function AdminAsstActivities() {
     days: 30,
     role: 'ASSISTANT',
   })
-  const rawActivities = logData?.data || []
-
+  const rawActivities = logData?.data
   const activities: AsstActivity[] = useMemo(
-    () => rawActivities.map(mapLogToAsstActivity),
+    () => (rawActivities ? rawActivities.map(mapLogToAsstActivity) : []),
     [rawActivities]
   )
 
