@@ -62,7 +62,7 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
     );
   };
 
-  const adminEmail = user?.gmail || 'admin@gmail.com';
+  const adminEmail = user?.gmail || 'Email not found';
   const inputClass =
     'w-full pl-3.5 pr-10 py-[11px] rounded-[11px] border border-[var(--border-500)] [font-family:var(--font-body)] text-sm text-[var(--text-primary)] outline-none bg-[#FAFCFA] transition-colors focus:border-[var(--brand-500)] focus:bg-white box-border';
   const labelClass =
@@ -198,7 +198,7 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
                 </div>
               </div>
               <div className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-400)] mt-1">
-                Gợi ý: Mật khẩu nên gồm cả chữ và số để tăng cường bảo mật.
+                Mật khẩu phải có ít nhất 8 kí tự.
               </div>
             </div>
 
