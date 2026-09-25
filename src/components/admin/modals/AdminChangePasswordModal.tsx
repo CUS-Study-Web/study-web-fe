@@ -21,7 +21,7 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
   const changePasswordMutation = useChangePasswordMutation();
   const isLoading = changePasswordMutation.isPending;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
@@ -55,7 +55,7 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
         onError: (err: any) => {
           setError(
             err?.response?.data?.message ||
-              'Đã có lỗi xảy ra khi cập nhật mật khẩu. Vui lòng thử lại!'
+            'Đã có lỗi xảy ra khi cập nhật mật khẩu. Vui lòng thử lại!'
           );
         },
       }
