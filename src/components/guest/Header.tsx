@@ -5,6 +5,7 @@ import { ROUTES } from "../../utils/routes";
 import { useAuth } from "../../contexts/AuthContext";
 import UserMenuPopup from "../learner/UserMenuPopup";
 import NotificationDropdown from "../learner/NotificationDropdown";
+import { Crown, Menu, X } from "lucide-react";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -69,9 +70,7 @@ export default function Header() {
                 to={ROUTES.VIP}
                 className={vipButtonClass}
               >
-                <svg className={vipIconClass} viewBox="0 0 24 24">
-                  <path d="M2 22h20v-2H2v2zm1-3h18l-2-9-5 4-2-6-2 6-5-4-2 9z" />
-                </svg>
+                <Crown className={vipIconClass} />
                 {vipButtonText}
               </Link>
               <NotificationDropdown />
@@ -95,10 +94,7 @@ export default function Header() {
                 to={ROUTES.VIP}
                 className={vipButtonClass}
               >
-                {/* Crown Icon */}
-                <svg className={vipIconClass} viewBox="0 0 24 24">
-                  <path d="M2 22h20v-2H2v2zm1-3h18l-2-9-5 4-2-6-2 6-5-4-2 9z" />
-                </svg>
+                <Crown className={vipIconClass} />
                 {vipButtonText}
               </Link>
             </>
@@ -117,9 +113,7 @@ export default function Header() {
               to={ROUTES.VIP}
               className="md:hidden flex items-center justify-center w-10 h-10 bg-[#FFC107] text-[#1f1f1c] rounded-[12px] shadow-xs"
             >
-              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                <path d="M2 22h20v-2H2v2zm1-3h18l-2-9-5 4-2-6-2 6-5-4-2 9z" />
-              </svg>
+              <Crown className="w-5 h-5 fill-current" />
             </Link>
           )}
 
@@ -129,13 +123,9 @@ export default function Header() {
             className="md:hidden flex items-center justify-center w-10 h-10 bg-[#FFC107] text-[#1f1f1c] rounded-[var(--radius-md)] shadow-xs"
           >
             {isOpen ? (
-              <svg className="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="w-6 h-6 stroke-current" />
             ) : (
-              <svg className="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              <Menu className="w-6 h-6 stroke-current" />
             )}
           </button>
         </div>

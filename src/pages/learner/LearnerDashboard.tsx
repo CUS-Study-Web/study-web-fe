@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Sparkles, BookOpen, FileText, Download } from "lucide-react";
 import { ROUTES } from "../../utils/routes";
 
 export default function LearnerDashboard() {
@@ -7,8 +8,8 @@ export default function LearnerDashboard() {
       {/* Welcome Banner */}
       <div className="bg-gradient-to-br from-[#18321b] via-[var(--brand-base-600)] to-[#122615] rounded-[var(--radius-xl)] p-8 sm:p-10 text-white shadow-lg relative overflow-hidden">
         <div className="relative z-10 max-w-2xl">
-          <div className="inline-block px-3 py-1 bg-[#ffc107] text-[#1f1f1c] text-xs font-black rounded-full uppercase tracking-wider mb-4">
-            ✦ Dành cho Học viên
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#ffc107] text-[#1f1f1c] text-xs font-black rounded-full uppercase tracking-wider mb-4">
+            <Sparkles className="w-3.5 h-3.5" /> Dành cho Học viên
           </div>
           <div
             className="text-3xl sm:text-4xl font-black tracking-tight mb-3 !text-white"
@@ -62,7 +63,9 @@ export default function LearnerDashboard() {
             to={ROUTES.COURSES}
             className="p-5 rounded-[var(--radius-lg)] border border-[var(--border-400)] bg-[var(--surface-200)] hover:border-[var(--brand-base-600)] hover:bg-[#edf4ee] transition-all group"
           >
-            <div className="text-2xl mb-2">📚</div>
+            <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-[var(--brand-base-600)] mb-3 group-hover:scale-105 transition-transform">
+              <BookOpen className="w-5 h-5" />
+            </div>
             <div className="font-extrabold text-sm text-[var(--text-primary-500)] group-hover:text-[var(--brand-base-600)]">
               Khóa học của tôi
             </div>
@@ -73,7 +76,9 @@ export default function LearnerDashboard() {
             to={ROUTES.TRIAL}
             className="p-5 rounded-[var(--radius-lg)] border border-[var(--border-400)] bg-[var(--surface-200)] hover:border-[var(--brand-base-600)] hover:bg-[#edf4ee] transition-all group"
           >
-            <div className="text-2xl mb-2">📝</div>
+            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-[#1d4ed8] mb-3 group-hover:scale-105 transition-transform">
+              <FileText className="w-5 h-5" />
+            </div>
             <div className="font-extrabold text-sm text-[var(--text-primary-500)] group-hover:text-[var(--brand-base-600)]">
               Luyện thi thử
             </div>
@@ -84,7 +89,9 @@ export default function LearnerDashboard() {
             to={ROUTES.DOCUMENTS}
             className="p-5 rounded-[var(--radius-lg)] border border-[var(--border-400)] bg-[var(--surface-200)] hover:border-[var(--brand-base-600)] hover:bg-[#edf4ee] transition-all group"
           >
-            <div className="text-2xl mb-2">📄</div>
+            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-[#b45309] mb-3 group-hover:scale-105 transition-transform">
+              <Download className="w-5 h-5" />
+            </div>
             <div className="font-extrabold text-sm text-[var(--text-primary-500)] group-hover:text-[var(--brand-base-600)]">
               Tài liệu học tập
             </div>

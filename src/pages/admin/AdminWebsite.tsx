@@ -14,6 +14,7 @@ import TrangChuTab from '@/components/admin/website/TrangChuTab'
 import FooterTab from '@/components/admin/website/FooterTab'
 import GoiCuocTab from '@/components/admin/website/GoiCuocTab'
 import { Spinner } from '@/components/Loading'
+import { MoreVertical, Pencil, Trash2, Plus } from 'lucide-react'
 
 // API Hooks
 import {
@@ -83,11 +84,7 @@ function DocTypeActionMenu({ onEdit, onDelete }: DocTypeActionMenuProps) {
         className="w-8 h-8 rounded-full border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
         aria-label="Tùy chọn"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--neutral-500)">
-          <circle cx="12" cy="5" r="1.5" />
-          <circle cx="12" cy="12" r="1.5" />
-          <circle cx="12" cy="19" r="1.5" />
-        </svg>
+        <MoreVertical className="w-4 h-4 text-[var(--neutral-500)]" />
       </button>
 
       {open && (
@@ -100,18 +97,14 @@ function DocTypeActionMenu({ onEdit, onDelete }: DocTypeActionMenuProps) {
             onClick={() => { setOpen(false); onEdit(); }}
             className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-            </svg>
+            <Pencil className="w-3.5 h-3.5 text-current" />
             Sửa
           </button>
           <button
             onClick={() => { setOpen(false); onDelete(); }}
             className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold !text-[#DC2626] text-left transition-colors hover:bg-[#FEF2F2]"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-            </svg>
+            <Trash2 className="w-3.5 h-3.5 text-current" />
             Xóa
           </button>
         </div>
@@ -326,9 +319,7 @@ const AdminWebsite = () => {
                 }}
                 className="flex items-center gap-2 px-[18px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--brand-500)] !text-white ![font-family:var(--font-heading)] !font-bold !text-[13px] cursor-pointer hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2.5" strokeLinecap="round">
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
+                <Plus size={13} strokeWidth={2.5} className="text-white" />
                 {currentTab.addLabel}
               </button>
             )}
@@ -394,11 +385,7 @@ const AdminWebsite = () => {
                                   }}
                                   className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
                                 >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="12" cy="12" r="1" />
-                                    <circle cx="12" cy="5" r="1" />
-                                    <circle cx="12" cy="19" r="1" />
-                                  </svg>
+                                  <MoreVertical className="w-4 h-4" />
                                 </button>
                                 {activeDropdownId === `course-${c.id}` && (
                                   <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
@@ -530,11 +517,7 @@ const AdminWebsite = () => {
                                   }}
                                   className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
                                 >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="12" cy="12" r="1" />
-                                    <circle cx="12" cy="5" r="1" />
-                                    <circle cx="12" cy="19" r="1" />
-                                  </svg>
+                                  <MoreVertical size={16} strokeWidth={2.5} />
                                 </button>
                                 {activeDropdownId === `instr-${inst.id}` && (
                                   <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
@@ -638,11 +621,7 @@ const AdminWebsite = () => {
                                   }}
                                   className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
                                 >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="12" cy="12" r="1" />
-                                    <circle cx="12" cy="5" r="1" />
-                                    <circle cx="12" cy="19" r="1" />
-                                  </svg>
+                                  <MoreVertical size={16} strokeWidth={2.5} />
                                 </button>
                                 {activeDropdownId === `ach-${a.id}` && (
                                   <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
@@ -736,11 +715,7 @@ const AdminWebsite = () => {
                                   }}
                                   className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
                                 >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="12" cy="12" r="1" />
-                                    <circle cx="12" cy="5" r="1" />
-                                    <circle cx="12" cy="19" r="1" />
-                                  </svg>
+                                  <MoreVertical size={16} strokeWidth={2.5} />
                                 </button>
                                 {activeDropdownId === `rev-${r.id}` && (
                                   <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">

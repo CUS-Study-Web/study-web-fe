@@ -10,6 +10,7 @@ import { ROUTES } from "../../utils/routes";
 import { useGetCoursesQuery, useGetCourseDetailQuery } from "../../hooks/queries/useCourses";
 import { useGetExamsQuery } from "../../hooks/queries/useAssessments";
 import NotFoundPage from "../NotFoundPage";
+import { BookOpen, FileText } from "lucide-react";
 
 export default function CourseDetailPage() {
   const { courseId } = useParams<{ courseId: string }>();
@@ -87,13 +88,15 @@ export default function CourseDetailPage() {
             onClick={() => setActiveTab("subjects")}
             className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "subjects" ? "bg-[var(--brand-base-500)] !text-white" : "bg-transparent text-[#6B746D]"}`}
           >
-            📚 Môn học ({subjects.length})
+            <BookOpen className="w-4 h-4" />
+            <span>Môn học ({subjects.length})</span>
           </div>
           <div
             onClick={() => setActiveTab("exams")}
             className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "exams" ? "bg-[var(--brand-base-500)] !text-white" : "bg-transparent text-[#6B746D]"}`}
           >
-            📝 Đề thi ({exams.length})
+            <FileText className="w-4 h-4" />
+            <span>Đề thi ({exams.length})</span>
           </div>
         </div>
       </div>

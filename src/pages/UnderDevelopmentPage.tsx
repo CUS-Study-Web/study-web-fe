@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Construction, Sparkles } from "lucide-react";
 import { ROUTES } from "../utils/routes";
 import Logo from "../components/guest/Logo";
 
@@ -24,13 +25,13 @@ export default function UnderDevelopmentPage() {
         </div>
 
         {/* Development Icon / Illustration */}
-        <div className="w-20 h-20 rounded-full bg-[#fff8e1] border-2 border-[#ffe082] flex items-center justify-center mb-6 text-4xl shadow-xs">
-          🚧
+        <div className="w-20 h-20 rounded-full bg-[#fff8e1] border-2 border-[#ffe082] flex items-center justify-center mb-6 shadow-xs">
+          <Construction className="w-10 h-10 text-amber-600" />
         </div>
 
         {/* Status Tag */}
-        <div className="px-4 py-1.5 bg-[#fef3c7] text-[#92400e] border border-[#fde68a] rounded-full text-xs font-black uppercase tracking-wider mb-4">
-          ✦ Đang phát triển
+        <div className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#fef3c7] text-[#92400e] border border-[#fde68a] rounded-full text-xs font-black uppercase tracking-wider mb-4">
+          <Sparkles className="w-3.5 h-3.5" /> Đang phát triển
         </div>
 
         {/* Title */}

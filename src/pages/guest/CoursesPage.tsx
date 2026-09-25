@@ -1,6 +1,7 @@
 import GuestPageLayout from "../../components/guest/GuestPageLayout";
 import CourseCard from "../../components/guest/CourseCard";
 import { Link } from "react-router-dom";
+import { BookOpen } from "lucide-react";
 import { ROUTES } from "../../utils/routes";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -25,15 +26,7 @@ export default function CoursesPage() {
       className="inline-flex items-center gap-2 mt-2 px-4 py-1.5 bg-white/15 hover:bg-white/25 border border-white/40 rounded-full !text-white text-sm font-bold backdrop-blur-md transition-all shadow-sm active:scale-95"
       style={{ fontFamily: "var(--font-heading)" }}
     >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <path 
-          d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-          stroke="#fff"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      <BookOpen size={16} strokeWidth={2} />
       Khóa học của tôi
     </Link>
   ) : undefined;

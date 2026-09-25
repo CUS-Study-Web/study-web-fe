@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ChevronLeft, Check, RotateCcw, BookOpen, PartyPopper, Lightbulb, AlertCircle, CheckCircle2 } from "lucide-react";
 import { ROUTES } from "../../utils/routes";
 import Header from "../../components/guest/Header";
 import { useGetLearnerFlashcardsStudyQuery, useUpdateLearnerFlashcardProgressMutation } from "../../hooks/queries/useFlashcards";
@@ -154,14 +155,16 @@ export default function LearnerFlashcardStudyPage() {
         onClick={() => navigate(ROUTES.LEARNER.FLASHCARD_TOPIC_DETAIL(topicId || "1"))}
         className="flex items-center gap-1.5 font-[family:var(--font-heading)] font-semibold text-[13px] text-[var(--text-secondary-600)] bg-white border-[1.5px] border-[var(--border-500)] rounded-[10px] px-3.5 py-[7px] cursor-pointer hover:bg-[var(--surface-100)] transition-colors"
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        <ChevronLeft className="w-3.5 h-3.5" />
         Danh sách từ vựng
       </div>
       <div className="text-center">
         <div className="font-[family:var(--font-heading)] font-bold text-[14px] text-[var(--text-secondary-600)]">{current} / {total}</div>
         <div className="font-[family:var(--font-body)] text-[11px] text-[var(--text-secondary-200)] mt-0.5">{label}</div>
       </div>
-      <div className="font-[family:var(--font-heading)] font-bold text-[13px] text-[var(--brand-base-500)]">✅ {remembered} đã nhớ</div>
+      <div className="font-[family:var(--font-heading)] font-bold text-[13px] text-[var(--brand-base-500)] flex items-center gap-1.5">
+        <Check className="w-4 h-4" /> {remembered} đã nhớ
+      </div>
     </div>
   );
 
@@ -237,16 +240,16 @@ export default function LearnerFlashcardStudyPage() {
                 </div>
                 <div
                   onClick={() => p1Mark(true)}
-                  className="flex-1 flex items-center justify-center font-[family:var(--font-heading)] !font-bold text-[14px] py-3 rounded-[13px] border-none bg-[var(--brand-base-500)] !text-white cursor-pointer shadow-sm transition-opacity duration-150 hover:opacity-90"
+                  className="flex-1 flex items-center justify-center gap-1.5 font-[family:var(--font-heading)] !font-bold text-[14px] py-3 rounded-[13px] border-none bg-[var(--brand-base-500)] !text-white cursor-pointer shadow-sm transition-opacity duration-150 hover:opacity-90"
                 >
-                  ✅ Đã nhớ
+                  <Check className="w-4 h-4" /> Đã nhớ
                 </div>
               </div>
               <div
                 onClick={() => handleStartPhase2()}
                 className="w-full flex items-center justify-center gap-1.5 font-[family:var(--font-heading)] !font-bold text-[14px] py-3 rounded-[13px] border-2 border-[var(--info-200)] bg-[var(--info-50)] !text-[var(--info-600)] cursor-pointer transition-opacity duration-150 hover:opacity-85"
               >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <RotateCcw className="w-4 h-4" />
                 Tiến hành ôn tập
               </div>
             </div>
@@ -257,7 +260,7 @@ export default function LearnerFlashcardStudyPage() {
         {phase === 2 && activeP2Words.length === 0 ? (
           p1Words.filter(w => getStatus(w.id) === "NOT_STUDIED").length > 0 ? (
             <div className="w-full max-w-[560px] bg-white rounded-[22px] border border-[var(--border-300)] py-12 px-8 flex flex-col items-center justify-center text-center shadow-[0_16px_32px_rgba(0,0,0,0.06)]">
-              <div className="text-[40px] mb-4">📚</div>
+              <BookOpen className="w-12 h-12 text-[var(--brand-base-500)] mb-4" />
               <div className="font-[family:var(--font-heading)] font-black text-[24px] text-[var(--text-primary-900)] mb-3 tracking-tight">
                 Đã hoàn thành ôn tập
               </div>
@@ -273,7 +276,7 @@ export default function LearnerFlashcardStudyPage() {
             </div>
           ) : (
             <div className="w-full max-w-[560px] bg-white rounded-[22px] border border-[var(--border-300)] py-12 px-8 flex flex-col items-center justify-center text-center shadow-[0_16px_32px_rgba(0,0,0,0.06)]">
-              <div className="text-[44px] mb-4">🎉</div>
+              <PartyPopper className="w-12 h-12 text-amber-500 mb-4" />
               <div className="font-[family:var(--font-heading)] font-black text-[24px] text-[var(--success-600)] mb-3 tracking-tight">
                 Chúc mừng!
               </div>
@@ -292,7 +295,7 @@ export default function LearnerFlashcardStudyPage() {
           <>
             {/* Phase 2 prototype note */}
             <div className="w-full max-w-[560px] bg-[var(--warning-50)] border border-[var(--warning-200)] rounded-[10px] py-2.5 px-4 mb-4.5 flex items-start gap-2">
-              <span className="text-[14px] shrink-0 mt-0.5">💡</span>
+              <Lightbulb className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <div className="font-[family:var(--font-body)] text-[12px] text-[var(--warning-800)] m-0 leading-[1.5]">
                 <strong>Giai đoạn Ôn tập</strong> — Hiển thị {activeP2Words.length} từ bạn chưa nhớ. Nhập đúng nghĩa → tự động chuyển thẻ. Nhập sai → hiển thị đáp án → "Tiếp tục".
               </div>
@@ -326,9 +329,9 @@ export default function LearnerFlashcardStudyPage() {
                 <div className={`mt-2.5 flex items-center gap-2 border rounded-[10px] py-2.5 px-3.5 ${isWrong ? 'bg-[var(--error-50)] border-[var(--error-200)]' : 'bg-[#F2FCF4] border-[#A8E0B3]'
                   }`}>
                   {isWrong ? (
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="shrink-0"><circle cx="12" cy="12" r="10" stroke="var(--error-500)" strokeWidth="2" /><path d="M12 8v4M12 16h.01" stroke="var(--error-500)" strokeWidth="2" strokeLinecap="round" /></svg>
+                    <AlertCircle size={15} className="shrink-0 text-[var(--error-500)]" />
                   ) : (
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="shrink-0"><circle cx="12" cy="12" r="10" stroke="#5DBB70" strokeWidth="2" /><path d="M8 12l3 3 5-6" stroke="#5DBB70" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    <CheckCircle2 size={15} className="shrink-0 text-[#5DBB70]" />
                   )}
                   <span className={`font-[family:var(--font-body)] text-[13px] ${isWrong ? 'text-[var(--error-600)]' : 'text-[#2C5A31]'}`}>
                     Đáp án đúng: <strong className="font-[family:var(--font-heading)] font-bold">{p2Card.meaning}</strong>

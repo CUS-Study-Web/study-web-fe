@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { Sigma } from 'lucide-react'
 import type { LeaderboardResponse } from '@/types/api/leaderboard.api'
 import { CircularDropzone, ModalHeader, mLabel, mInput, mSubmitBtnClass, Spinner } from './ModalHelpers'
 import {
@@ -292,9 +293,7 @@ export const AchievementModal = ({ achievement, onSave, onClose }: AchievementMo
                   className="text-[11.5px] font-bold text-[var(--brand-600)] hover:text-[var(--brand-700)] hover:underline cursor-pointer bg-transparent border-none p-0 flex items-center gap-1"
                   title="Cộng điểm các môn thành Tổng điểm"
                 >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 4h16v4H8v4h10v4H8v4h12" />
-                  </svg>
+                  <Sigma size={13} strokeWidth={2.5} />
                   Tự tính tổng điểm
                 </button>
               )}

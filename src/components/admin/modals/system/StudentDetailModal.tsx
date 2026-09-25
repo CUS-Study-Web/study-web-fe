@@ -1,3 +1,4 @@
+import { User, Crown } from 'lucide-react'
 import type { LearnerSummaryResponse } from '../../../../types/api/system.api'
 
 type StudentDetailModalProps = {
@@ -21,9 +22,7 @@ export const StudentDetailModal = ({ student, onClose }: StudentDetailModalProps
             {student.avatarUrl ? (
                <img src={student.avatarUrl} alt="avatar" className="w-full h-full rounded-full object-cover" />
             ) : (
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
-              </svg>
+              <User size={26} className="text-white" />
             )}
           </div>
           <div className="flex-1 min-w-0">
@@ -36,8 +35,8 @@ export const StudentDetailModal = ({ student, onClose }: StudentDetailModalProps
           </div>
           <div className="flex gap-2">
             {student.tier === 'VIP' && (
-              <span className="bg-[var(--warning-100)] text-[var(--warning-800)] rounded-full px-3 py-1 [font-family:var(--font-heading)] font-bold text-[11px] whitespace-nowrap">
-                ⭐ VIP
+              <span className="inline-flex items-center gap-1 bg-[var(--warning-100)] text-[var(--warning-800)] rounded-full px-3 py-1 [font-family:var(--font-heading)] font-bold text-[11px] whitespace-nowrap">
+                <Crown size={12} className="fill-[var(--warning-800)]" /> VIP
               </span>
             )}
             <span

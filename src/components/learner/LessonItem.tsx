@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PendingSolutionPopup from "../common/PendingSolutionPopup";
+import { Lock, Check, Clock } from "lucide-react";
 
 type Lesson = {
   id: number;
@@ -33,10 +34,7 @@ export default function LessonItem({ lesson, isLast, onWatch }: LessonItemProps)
           }`}
         >
           {lesson.isLocked ? (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <rect x="3" y="11" width="18" height="11" rx="3" fill="#A0AAA2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#A0AAA2" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <Lock className="w-3.5 h-3.5 text-[#A0AAA2]" />
           ) : (
             <span className="font-[family:var(--font-heading)] font-bold text-xs text-[var(--brand-base-500)]">
               {String(lesson.id).padStart(2, "0")}
@@ -52,21 +50,21 @@ export default function LessonItem({ lesson, isLast, onWatch }: LessonItemProps)
           >
             <span>{lesson.title}</span>
             {lesson.isClicked && (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="stroke-[#1D9A44]" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
+              <Check className="w-3.5 h-3.5 text-[#1D9A44] stroke-[2.5]" />
             )}
           </div>
-          <div className="font-[family:var(--font-body)] text-xs text-[#A0AAA2] mt-1">
-            ⏱ {lesson.duration}
+          <div className="font-[family:var(--font-body)] text-xs text-[#A0AAA2] mt-1 flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            <span>{lesson.duration}</span>
           </div>
         </div>
       </div>
       {/* Action Right */}
       <div className="mt-2 md:mt-0 self-start md:self-auto shrink-0">
         {lesson.isLocked ? (
-          <span className="font-[family:var(--font-heading)] font-semibold text-xs text-[#A0AAA2] whitespace-nowrap">
-            🔒 VIP
+          <span className="font-[family:var(--font-heading)] font-semibold text-xs text-[#A0AAA2] whitespace-nowrap inline-flex items-center gap-1">
+            <Lock className="w-3 h-3" />
+            <span>VIP</span>
           </span>
         ) : (
           <button 

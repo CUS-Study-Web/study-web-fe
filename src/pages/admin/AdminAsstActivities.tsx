@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
 import { ActivityFilterBar, ActivityGroupedList } from '../../components/admin/SystemComponents'
 import { useGetActivityLogsQuery } from '../../hooks/queries/useSystemStats'
 import type { ActivityLogItem } from '../../types/api/system.api'
@@ -43,10 +44,9 @@ export default function AdminAsstActivities() {
     days: 30,
     role: 'ASSISTANT',
   })
-  const rawActivities = logData?.data || []
-
+  const rawActivities = logData?.data
   const activities: AsstActivity[] = useMemo(
-    () => rawActivities.map(mapLogToAsstActivity),
+    () => (rawActivities ? rawActivities.map(mapLogToAsstActivity) : []),
     [rawActivities]
   )
 
@@ -120,15 +120,7 @@ export default function AdminAsstActivities() {
           onClick={() => navigate(-1)}
           className="flex items-center gap-[6px] bg-transparent border-none cursor-pointer ![font-family:var(--font-heading)] !font-semibold !text-[13px] !text-[var(--text-secondary-400)] p-0 hover:!text-[var(--text-primary)] transition-colors duration-[var(--motion-fast)]"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M19 12H5M12 5l-7 7 7 7"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <ArrowLeft size={16} />
           Quay lại
         </button>
         <h1 className="![font-family:var(--font-heading)] !font-extrabold !text-[26px] !text-[var(--text-primary)] m-0 tracking-[-0.5px]">

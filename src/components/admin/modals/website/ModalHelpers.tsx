@@ -1,3 +1,4 @@
+import { User, Upload } from 'lucide-react'
 import { useNotification } from '@/components/common/NotificationProvider'
 import { validateImageFile } from '@/utils/fileUtils'
 
@@ -12,10 +13,7 @@ export const CircularDropzone = ({ preview, onChange, id }: { preview: string | 
         {preview ? (
           <img src={preview} alt="preview" className="w-full h-full object-cover" />
         ) : (
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="stroke-[var(--text-secondary-300)]" strokeWidth="2" strokeLinecap="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
+          <User size={28} className="text-[var(--text-secondary-300)]" strokeWidth={2} />
         )}
         <input
           id={id}
@@ -51,11 +49,7 @@ export const RectDropzone = ({ preview, onChange, id }: { preview: string | unde
         <img src={preview} alt="preview" className="max-h-[120px] rounded-[var(--radius-sm)] mx-auto object-cover" />
       ) : (
         <>
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" className="mx-auto mb-2 stroke-[var(--text-secondary-300)]" strokeWidth="2" strokeLinecap="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="17 8 12 3 7 8" />
-            <line x1="12" y1="3" x2="12" y2="15" />
-          </svg>
+          <Upload size={36} className="mx-auto mb-2 text-[var(--text-secondary-300)]" strokeWidth={2} />
           <div className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
             Kéo thả hoặc <span className="text-[var(--brand-500)] font-semibold">chọn ảnh đại diện</span>
             <div className="text-[11px] mt-1 opacity-80">(Tối đa 10MB)</div>
