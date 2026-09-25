@@ -92,14 +92,13 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
               </div>
             </div>
           </div>
-          <button
-            type="button"
+          <div
             onClick={onClose}
             aria-label="Đóng modal"
             className="w-8 h-8 rounded-[8px] bg-white/15 border-none flex items-center justify-center cursor-pointer text-white hover:bg-white/25 transition-colors"
           >
             <X className="w-4 h-4 text-white" />
-          </button>
+          </div>
         </div>
 
         {/* Content */}
@@ -115,13 +114,12 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
               Mật khẩu quản trị viên đã được cập nhật thành công. Vui lòng sử dụng mật
               khẩu mới cho các lần đăng nhập tiếp theo vào hệ thống CUS.
             </p>
-            <button
-              type="button"
+            <div
               onClick={onClose}
               className="[font-family:var(--font-heading)] font-bold text-sm px-8 py-[11px] rounded-[12px] border-none bg-[var(--brand-500)] text-white cursor-pointer shadow-[0_4px_12px_rgba(44,90,49,0.22)] hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"
             >
               Hoàn tất
-            </button>
+            </div>
           </div>
         ) : (
           <form
@@ -132,13 +130,12 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
               <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm)] bg-[var(--error-50)] border border-[var(--error-200)] text-[var(--error-600)] text-[13px] [font-family:var(--font-body)]">
                 <AlertCircle className="w-4 h-4 shrink-0 text-[var(--error-500)]" />
                 <span className="flex-1">{error}</span>
-                <button
-                  type="button"
+                <div
                   onClick={() => setError('')}
                   className="bg-transparent border-none cursor-pointer text-[var(--error-400)] hover:text-[var(--error-600)] p-0 leading-none text-base"
                 >
                   ×
-                </button>
+                </div>
               </div>
             )}
 
@@ -158,8 +155,7 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
                   }}
                   className={inputClass}
                 />
-                <button
-                  type="button"
+                <div
                   className="absolute right-2.5 bg-transparent border-none cursor-pointer p-1 flex items-center justify-center text-[var(--text-secondary-400)] hover:text-[var(--text-primary)] transition-colors"
                   onClick={() => setShowCurrent(!showCurrent)}
                   title={showCurrent ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
@@ -169,7 +165,7 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
                   ) : (
                     <Eye className="w-[17px] h-[17px]" />
                   )}
-                </button>
+                </div>
               </div>
             </div>
 
@@ -189,8 +185,7 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
                   }}
                   className={inputClass}
                 />
-                <button
-                  type="button"
+                <div
                   className="absolute right-2.5 bg-transparent border-none cursor-pointer p-1 flex items-center justify-center text-[var(--text-secondary-400)] hover:text-[var(--text-primary)] transition-colors"
                   onClick={() => setShowNew(!showNew)}
                   title={showNew ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
@@ -200,7 +195,7 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
                   ) : (
                     <Eye className="w-[17px] h-[17px]" />
                   )}
-                </button>
+                </div>
               </div>
               <div className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-400)] mt-1">
                 Gợi ý: Mật khẩu nên gồm cả chữ và số để tăng cường bảo mật.
@@ -223,8 +218,7 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
                   }}
                   className={inputClass}
                 />
-                <button
-                  type="button"
+                <div
                   className="absolute right-2.5 bg-transparent border-none cursor-pointer p-1 flex items-center justify-center text-[var(--text-secondary-400)] hover:text-[var(--text-primary)] transition-colors"
                   onClick={() => setShowConfirm(!showConfirm)}
                   title={showConfirm ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
@@ -234,23 +228,22 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
                   ) : (
                     <Eye className="w-[17px] h-[17px]" />
                   )}
-                </button>
+                </div>
               </div>
             </div>
 
             {/* Buttons */}
             <div className="flex gap-2.5 justify-end pt-1.5">
-              <button
-                type="button"
+              <div
                 onClick={onClose}
                 className="[font-family:var(--font-heading)] font-semibold text-[13px] px-5 py-[9px] rounded-[var(--radius-sm)] border border-[var(--border-500)] bg-white text-[var(--text-secondary-600)] cursor-pointer hover:bg-[var(--surface-500)] transition-colors duration-[var(--motion-fast)]"
               >
                 Hủy
-              </button>
+              </div>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="[font-family:var(--font-heading)] font-bold text-[13px] px-[22px] py-[9px] rounded-[var(--radius-sm)] border border-transparent bg-[var(--brand-500)] text-white cursor-pointer shadow-[0_2px_8px_rgba(44,90,49,0.22)] hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)] disabled:bg-[#6F9473] disabled:cursor-not-allowed disabled:shadow-none"
+                className="[!font-family:var(--font-heading)] !font-bold !text-[13px] !px-[22px] !py-[9px] !rounded-[var(--radius-sm)] !border !border-transparent !bg-[var(--brand-500)] !text-white !cursor-pointer !shadow-[0_2px_8px_rgba(44,90,49,0.22)] !hover:bg-[var(--brand-600)] !transition-colors !duration-[var(--motion-fast)] !disabled:bg-[#6F9473] !disabled:cursor-not-allowed !disabled:shadow-none"
               >
                 {isLoading ? 'Đang lưu...' : 'Cập nhật mật khẩu'}
               </button>
