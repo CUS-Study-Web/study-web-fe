@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Lock, X, Check, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useChangePasswordMutation } from '../../../hooks/queries/useAuth';
 
@@ -61,132 +62,32 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
     );
   };
 
-  const inpWrapperStyle: React.CSSProperties = {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-  };
-
-  const inpStyle: React.CSSProperties = {
-    width: '100%',
-    padding: '11px 40px 11px 14px',
-    borderRadius: 11,
-    border: '1.5px solid #D4DCD5',
-    fontFamily: "'Noto Sans', sans-serif",
-    fontSize: 14,
-    color: '#1B1F1C',
-    outline: 'none',
-    boxSizing: 'border-box',
-    background: '#FAFCFA',
-    transition: 'border-color 140ms ease, box-shadow 140ms ease',
-  };
-
-  const eyeBtnStyle: React.CSSProperties = {
-    position: 'absolute',
-    right: 10,
-    background: 'transparent',
-    border: 'none',
-    cursor: 'pointer',
-    padding: 4,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#7E8B82',
-  };
-
-  const labelStyle: React.CSSProperties = {
-    fontFamily: "'Be Vietnam Pro', sans-serif",
-    fontWeight: 600,
-    fontSize: 13,
-    color: '#3D4540',
-    marginBottom: 6,
-    display: 'block',
-  };
-
   const adminEmail = user?.gmail || 'admin@gmail.com';
+  const inputClass =
+    'w-full pl-3.5 pr-10 py-[11px] rounded-[11px] border border-[var(--border-500)] [font-family:var(--font-body)] text-sm text-[var(--text-primary)] outline-none bg-[#FAFCFA] transition-colors focus:border-[var(--brand-500)] focus:bg-white box-border';
+  const labelClass =
+    'block [font-family:var(--font-heading)] font-semibold text-[13px] text-[var(--text-secondary-600)] mb-1.5';
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(17, 24, 20, 0.55)',
-        backdropFilter: 'blur(4px)',
-        zIndex: 1000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-      }}
+      className="fixed inset-0 bg-[#111814]/55 backdrop-blur-[4px] z-[1000] flex items-center justify-center p-5"
       onClick={onClose}
     >
       <div
-        style={{
-          background: '#fff',
-          borderRadius: 22,
-          width: '100%',
-          maxWidth: 480,
-          boxShadow: '0 28px 72px rgba(0,0,0,0.24)',
-          overflow: 'hidden',
-        }}
+        className="bg-white rounded-[22px] w-full max-w-[480px] shadow-[0_28px_72px_rgba(0,0,0,0.24)] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div
-          style={{
-            background: 'linear-gradient(135deg, #2C5A31, #1e4023)',
-            padding: '22px 26px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div
-              style={{
-                width: 42,
-                height: 42,
-                borderRadius: 12,
-                background: 'rgba(255,255,255,0.16)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-              }}
-            >
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
+        <div className="bg-gradient-to-br from-[var(--brand-500)] to-[var(--brand-700)] px-[26px] py-[22px] flex items-center justify-between">
+          <div className="flex items-center gap-3.5">
+            <div className="w-[42px] h-[42px] rounded-[12px] bg-white/15 flex items-center justify-center shrink-0">
+              <Lock className="w-[22px] h-[22px] text-white" />
             </div>
             <div>
-              <div
-                style={{
-                  fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontWeight: 800,
-                  fontSize: 17,
-                  color: '#fff',
-                }}
-              >
+              <div className="[font-family:var(--font-heading)] font-extrabold text-[17px] text-white">
                 Đổi mật khẩu Quản trị viên
               </div>
-              <div
-                style={{
-                  fontFamily: "'Noto Sans', sans-serif",
-                  fontSize: 12,
-                  color: 'rgba(220,233,222,0.85)',
-                  marginTop: 2,
-                }}
-              >
+              <div className="[font-family:var(--font-body)] text-xs text-[var(--brand-soft-300)] mt-0.5">
                 Tài khoản: {adminEmail}
               </div>
             </div>
@@ -195,91 +96,29 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
             type="button"
             onClick={onClose}
             aria-label="Đóng modal"
-            style={{
-              background: 'rgba(255,255,255,0.14)',
-              border: 'none',
-              borderRadius: 8,
-              width: 32,
-              height: 32,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              color: '#fff',
-              fontSize: 18,
-              transition: 'background 130ms ease',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background =
-                'rgba(255,255,255,0.25)';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background =
-                'rgba(255,255,255,0.14)';
-            }}
+            className="w-8 h-8 rounded-[8px] bg-white/15 border-none flex items-center justify-center cursor-pointer text-white hover:bg-white/25 transition-colors"
           >
-            ✕
+            <X className="w-4 h-4 text-white" />
           </button>
         </div>
 
         {/* Content */}
         {success ? (
-          <div style={{ padding: '36px 32px 30px', textAlign: 'center' }}>
-            <div
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: '50%',
-                background: '#DCE9DE',
-                color: '#2C5A31',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 16px',
-                fontSize: 28,
-                fontWeight: 700,
-              }}
-            >
-              ✓
+          <div className="px-8 pt-9 pb-[30px] text-center">
+            <div className="w-[60px] h-[60px] rounded-full bg-[var(--brand-soft-500)] text-[var(--brand-500)] flex items-center justify-center mx-auto mb-4 font-bold">
+              <Check className="w-7 h-7 text-[var(--brand-500)] stroke-[3]" />
             </div>
-            <h3
-              style={{
-                fontFamily: "'Be Vietnam Pro', sans-serif",
-                fontWeight: 700,
-                fontSize: 18,
-                color: '#1B1F1C',
-                margin: '0 0 8px',
-              }}
-            >
+            <h3 className="[font-family:var(--font-heading)] font-bold text-lg text-[var(--text-primary)] mb-2">
               Đổi mật khẩu thành công!
             </h3>
-            <p
-              style={{
-                fontFamily: "'Noto Sans', sans-serif",
-                fontSize: 13.5,
-                color: '#6B746D',
-                margin: '0 0 24px',
-                lineHeight: 1.55,
-              }}
-            >
+            <p className="[font-family:var(--font-body)] text-[13.5px] text-[var(--text-secondary-500)] mb-6 leading-[1.55]">
               Mật khẩu quản trị viên đã được cập nhật thành công. Vui lòng sử dụng mật
               khẩu mới cho các lần đăng nhập tiếp theo vào hệ thống CUS.
             </p>
             <button
               type="button"
               onClick={onClose}
-              style={{
-                fontFamily: "'Be Vietnam Pro', sans-serif",
-                fontWeight: 700,
-                fontSize: 14,
-                padding: '11px 32px',
-                borderRadius: 12,
-                border: 'none',
-                background: '#2C5A31',
-                color: '#fff',
-                cursor: 'pointer',
-                boxShadow: '0 4px 12px rgba(44,90,49,0.22)',
-              }}
+              className="[font-family:var(--font-heading)] font-bold text-sm px-8 py-[11px] rounded-[12px] border-none bg-[var(--brand-500)] text-white cursor-pointer shadow-[0_4px_12px_rgba(44,90,49,0.22)] hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"
             >
               Hoàn tất
             </button>
@@ -287,53 +126,28 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
         ) : (
           <form
             onSubmit={handleSubmit}
-            style={{
-              padding: '24px 26px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 16,
-            }}
+            className="px-[26px] py-6 flex flex-col gap-4"
           >
             {error && (
-              <div
-                style={{
-                  background: '#FDF2F2',
-                  border: '1px solid #F9D5D5',
-                  borderRadius: 10,
-                  padding: '10px 14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  color: '#C94B4B',
-                  fontSize: 13,
-                  fontFamily: "'Noto Sans', sans-serif",
-                }}
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  style={{ flexShrink: 0 }}
+              <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-[var(--radius-sm)] bg-[var(--error-50)] border border-[var(--error-200)] text-[var(--error-600)] text-[13px] [font-family:var(--font-body)]">
+                <AlertCircle className="w-4 h-4 shrink-0 text-[var(--error-500)]" />
+                <span className="flex-1">{error}</span>
+                <button
+                  type="button"
+                  onClick={() => setError('')}
+                  className="bg-transparent border-none cursor-pointer text-[var(--error-400)] hover:text-[var(--error-600)] p-0 leading-none text-base"
                 >
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-                <span>{error}</span>
+                  ×
+                </button>
               </div>
             )}
 
             {/* Mật khẩu hiện tại */}
             <div>
-              <label style={labelStyle}>
-                Mật khẩu hiện tại <span style={{ color: '#C94B4B' }}>*</span>
+              <label className={labelClass}>
+                Mật khẩu hiện tại <span className="text-[var(--error-500)]">*</span>
               </label>
-              <div style={inpWrapperStyle}>
+              <div className="relative flex items-center">
                 <input
                   type={showCurrent ? 'text' : 'password'}
                   placeholder="Nhập mật khẩu hiện tại"
@@ -342,48 +156,18 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
                     setCurrentPassword(e.target.value);
                     setError('');
                   }}
-                  style={inpStyle}
-                  onFocus={(e) => {
-                    (e.target as HTMLInputElement).style.borderColor = '#2C5A31';
-                  }}
-                  onBlur={(e) => {
-                    (e.target as HTMLInputElement).style.borderColor = '#D4DCD5';
-                  }}
+                  className={inputClass}
                 />
                 <button
                   type="button"
-                  style={eyeBtnStyle}
+                  className="absolute right-2.5 bg-transparent border-none cursor-pointer p-1 flex items-center justify-center text-[var(--text-secondary-400)] hover:text-[var(--text-primary)] transition-colors"
                   onClick={() => setShowCurrent(!showCurrent)}
                   title={showCurrent ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                 >
                   {showCurrent ? (
-                    <svg
-                      width="17"
-                      height="17"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                      <line x1="1" y1="1" x2="23" y2="23" />
-                    </svg>
+                    <EyeOff className="w-[17px] h-[17px]" />
                   ) : (
-                    <svg
-                      width="17"
-                      height="17"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
+                    <Eye className="w-[17px] h-[17px]" />
                   )}
                 </button>
               </div>
@@ -391,10 +175,10 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
 
             {/* Mật khẩu mới */}
             <div>
-              <label style={labelStyle}>
-                Mật khẩu mới <span style={{ color: '#C94B4B' }}>*</span>
+              <label className={labelClass}>
+                Mật khẩu mới <span className="text-[var(--error-500)]">*</span>
               </label>
-              <div style={inpWrapperStyle}>
+              <div className="relative flex items-center">
                 <input
                   type={showNew ? 'text' : 'password'}
                   placeholder="Tối thiểu 8 ký tự"
@@ -403,69 +187,32 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
                     setNewPassword(e.target.value);
                     setError('');
                   }}
-                  style={inpStyle}
-                  onFocus={(e) => {
-                    (e.target as HTMLInputElement).style.borderColor = '#2C5A31';
-                  }}
-                  onBlur={(e) => {
-                    (e.target as HTMLInputElement).style.borderColor = '#D4DCD5';
-                  }}
+                  className={inputClass}
                 />
                 <button
                   type="button"
-                  style={eyeBtnStyle}
+                  className="absolute right-2.5 bg-transparent border-none cursor-pointer p-1 flex items-center justify-center text-[var(--text-secondary-400)] hover:text-[var(--text-primary)] transition-colors"
                   onClick={() => setShowNew(!showNew)}
                   title={showNew ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                 >
                   {showNew ? (
-                    <svg
-                      width="17"
-                      height="17"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                      <line x1="1" y1="1" x2="23" y2="23" />
-                    </svg>
+                    <EyeOff className="w-[17px] h-[17px]" />
                   ) : (
-                    <svg
-                      width="17"
-                      height="17"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
+                    <Eye className="w-[17px] h-[17px]" />
                   )}
                 </button>
               </div>
-              <div
-                style={{
-                  fontFamily: "'Noto Sans', sans-serif",
-                  fontSize: 11.5,
-                  color: '#7E8B82',
-                  marginTop: 4,
-                }}
-              >
+              <div className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-400)] mt-1">
                 Gợi ý: Mật khẩu nên gồm cả chữ và số để tăng cường bảo mật.
               </div>
             </div>
 
             {/* Xác nhận mật khẩu mới */}
             <div>
-              <label style={labelStyle}>
-                Xác nhận mật khẩu mới <span style={{ color: '#C94B4B' }}>*</span>
+              <label className={labelClass}>
+                Xác nhận mật khẩu mới <span className="text-[var(--error-500)]">*</span>
               </label>
-              <div style={inpWrapperStyle}>
+              <div className="relative flex items-center">
                 <input
                   type={showConfirm ? 'text' : 'password'}
                   placeholder="Nhập lại mật khẩu mới"
@@ -474,94 +221,36 @@ export default function AdminChangePasswordModal({ onClose }: AdminChangePasswor
                     setConfirmPassword(e.target.value);
                     setError('');
                   }}
-                  style={inpStyle}
-                  onFocus={(e) => {
-                    (e.target as HTMLInputElement).style.borderColor = '#2C5A31';
-                  }}
-                  onBlur={(e) => {
-                    (e.target as HTMLInputElement).style.borderColor = '#D4DCD5';
-                  }}
+                  className={inputClass}
                 />
                 <button
                   type="button"
-                  style={eyeBtnStyle}
+                  className="absolute right-2.5 bg-transparent border-none cursor-pointer p-1 flex items-center justify-center text-[var(--text-secondary-400)] hover:text-[var(--text-primary)] transition-colors"
                   onClick={() => setShowConfirm(!showConfirm)}
                   title={showConfirm ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                 >
                   {showConfirm ? (
-                    <svg
-                      width="17"
-                      height="17"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                      <line x1="1" y1="1" x2="23" y2="23" />
-                    </svg>
+                    <EyeOff className="w-[17px] h-[17px]" />
                   ) : (
-                    <svg
-                      width="17"
-                      height="17"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
+                    <Eye className="w-[17px] h-[17px]" />
                   )}
                 </button>
               </div>
             </div>
 
             {/* Buttons */}
-            <div
-              style={{
-                display: 'flex',
-                gap: 10,
-                justifyContent: 'flex-end',
-                marginTop: 6,
-              }}
-            >
+            <div className="flex gap-2.5 justify-end pt-1.5">
               <button
                 type="button"
                 onClick={onClose}
-                style={{
-                  fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontWeight: 600,
-                  fontSize: 13,
-                  padding: '9px 20px',
-                  borderRadius: 10,
-                  border: '1.5px solid #D4DCD5',
-                  background: '#fff',
-                  color: '#3D4540',
-                  cursor: 'pointer',
-                }}
+                className="[font-family:var(--font-heading)] font-semibold text-[13px] px-5 py-[9px] rounded-[var(--radius-sm)] border border-[var(--border-500)] bg-white text-[var(--text-secondary-600)] cursor-pointer hover:bg-[var(--surface-500)] transition-colors duration-[var(--motion-fast)]"
               >
                 Hủy
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                style={{
-                  fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontWeight: 700,
-                  fontSize: 13,
-                  padding: '9px 22px',
-                  borderRadius: 10,
-                  border: 'none',
-                  background: isLoading ? '#6F9473' : '#2C5A31',
-                  color: '#fff',
-                  cursor: isLoading ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 2px 8px rgba(44,90,49,0.22)',
-                }}
+                className="[font-family:var(--font-heading)] font-bold text-[13px] px-[22px] py-[9px] rounded-[var(--radius-sm)] border border-transparent bg-[var(--brand-500)] text-white cursor-pointer shadow-[0_2px_8px_rgba(44,90,49,0.22)] hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)] disabled:bg-[#6F9473] disabled:cursor-not-allowed disabled:shadow-none"
               >
                 {isLoading ? 'Đang lưu...' : 'Cập nhật mật khẩu'}
               </button>
