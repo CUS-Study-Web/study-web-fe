@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Search, Eye } from 'lucide-react'
 import {
   useGetVipRequestsQuery,
   useApproveVipRequestMutation,
@@ -93,16 +94,10 @@ export const VipRequestsTab = () => {
         </div>
         <div className="flex flex-wrap gap-[8px] items-center">
           <div className="relative">
-            <svg
-              className="absolute left-[10px] top-1/2 -translate-y-1/2 pointer-events-none stroke-[var(--text-secondary-300)]"
-              width="13"
-              height="13"
-              viewBox="0 0 16 16"
-              fill="none"
-            >
-              <circle cx="7" cy="7" r="5" strokeWidth="1.6" />
-              <path d="M11 11l3 3" strokeWidth="1.6" strokeLinecap="round" />
-            </svg>
+            <Search
+              size={13}
+              className="absolute left-[10px] top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-secondary-300)]"
+            />
             <input
               value={vipSearch}
               onChange={(e) => setVipSearch(e.target.value)}
@@ -186,10 +181,7 @@ export const VipRequestsTab = () => {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-[4px] px-[10px] py-[4px] rounded-[8px] bg-[var(--info-50)] text-[var(--info-500)] [font-family:var(--font-heading)] font-semibold text-[11px] hover:bg-[var(--info-100)] transition-colors duration-130 no-underline"
                     >
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="2" />
-                        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
-                      </svg>
+                      <Eye size={12} />
                       Xem
                     </a>
                   ) : (

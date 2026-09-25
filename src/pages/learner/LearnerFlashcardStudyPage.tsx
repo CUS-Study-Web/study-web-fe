@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ChevronLeft, Check, RotateCcw, BookOpen, PartyPopper, Lightbulb } from "lucide-react";
+import { ChevronLeft, Check, RotateCcw, BookOpen, PartyPopper, Lightbulb, AlertCircle, CheckCircle2 } from "lucide-react";
 import { ROUTES } from "../../utils/routes";
 import Header from "../../components/guest/Header";
 import { useGetLearnerFlashcardsStudyQuery, useUpdateLearnerFlashcardProgressMutation } from "../../hooks/queries/useFlashcards";
@@ -329,9 +329,9 @@ export default function LearnerFlashcardStudyPage() {
                 <div className={`mt-2.5 flex items-center gap-2 border rounded-[10px] py-2.5 px-3.5 ${isWrong ? 'bg-[var(--error-50)] border-[var(--error-200)]' : 'bg-[#F2FCF4] border-[#A8E0B3]'
                   }`}>
                   {isWrong ? (
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="shrink-0"><circle cx="12" cy="12" r="10" stroke="var(--error-500)" strokeWidth="2" /><path d="M12 8v4M12 16h.01" stroke="var(--error-500)" strokeWidth="2" strokeLinecap="round" /></svg>
+                    <AlertCircle size={15} className="shrink-0 text-[var(--error-500)]" />
                   ) : (
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="shrink-0"><circle cx="12" cy="12" r="10" stroke="#5DBB70" strokeWidth="2" /><path d="M8 12l3 3 5-6" stroke="#5DBB70" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    <CheckCircle2 size={15} className="shrink-0 text-[#5DBB70]" />
                   )}
                   <span className={`font-[family:var(--font-body)] text-[13px] ${isWrong ? 'text-[var(--error-600)]' : 'text-[#2C5A31]'}`}>
                     Đáp án đúng: <strong className="font-[family:var(--font-heading)] font-bold">{p2Card.meaning}</strong>

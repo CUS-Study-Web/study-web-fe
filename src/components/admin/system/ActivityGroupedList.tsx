@@ -1,3 +1,4 @@
+import { User } from 'lucide-react'
 import type { AsstActivity } from '../../../types/admin'
 
 type ActivityGroupedListProps = {
@@ -27,9 +28,7 @@ export const ActivityGroupedList = ({
           {/* Group header */}
           <div className="flex items-center gap-[10px] p-[14px_22px] border-b border-[var(--border-100)] bg-[var(--surface-500)]">
             <div className="w-[32px] h-[32px] rounded-full bg-[var(--brand-soft-500)] flex items-center justify-center shrink-0">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="stroke-[var(--brand-500)]" strokeWidth="2" strokeLinecap="round">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
-              </svg>
+              <User size={15} className="text-[var(--brand-500)]" strokeWidth={2} />
             </div>
             <div className="[font-family:var(--font-heading)] font-bold text-[14px] text-[var(--text-primary)]">
               {name}

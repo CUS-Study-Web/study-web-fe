@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { User } from 'lucide-react'
 import AssistantFeatureInDevPopup from '../../../assistant/AssistantFeatureInDevPopup'
 import type { AssistantSummaryResponse } from '../../../../types/api/system.api'
 import { useGetActivityLogsQuery } from '../../../../hooks/queries/useSystemStats'
@@ -32,9 +33,7 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
             {asst.avatarUrl ? (
                 <img src={asst.avatarUrl} alt="avatar" className="w-full h-full rounded-full object-cover" />
             ) : (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
-                </svg>
+                <User size={22} className="text-white" />
             )}
           </div>
           <div className="min-w-0 flex-1">

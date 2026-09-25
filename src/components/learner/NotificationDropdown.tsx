@@ -120,11 +120,10 @@ export default function NotificationDropdown() {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`px-3.5 py-1.5 rounded-full text-[12px] font-bold cursor-pointer transition-all duration-150 border-none font-[family:var(--font-heading)] ${
-                  activeTab === tab.key
-                    ? 'bg-[#28522d] !text-white shadow-sm'
-                    : 'bg-[var(--surface-500)] text-[var(--text-secondary-400)] hover:bg-[#e6efe8]'
-                }`}
+                className={`px-3.5 py-1.5 rounded-full text-[12px] font-bold cursor-pointer transition-all duration-150 border-none font-[family:var(--font-heading)] ${activeTab === tab.key
+                  ? 'bg-[#28522d] !text-white shadow-sm'
+                  : 'bg-[var(--surface-500)] text-[var(--text-secondary-400)] hover:bg-[#e6efe8]'
+                  }`}
               >
                 {tab.label}
               </button>
@@ -153,21 +152,19 @@ export default function NotificationDropdown() {
                   <button
                     key={notif.id}
                     onClick={() => handleMarkOneRead(notif.id, notif.isRead)}
-                    className={`w-full flex items-start gap-3 px-4 py-3 rounded-[12px] cursor-pointer transition-all duration-150 text-left border-none ${
-                      notif.isRead
-                        ? 'bg-transparent hover:bg-[var(--surface-500)]'
-                        : 'bg-[#f0faf2] hover:bg-[#e4f5e8]'
-                    }`}
+                    className={`w-full flex items-start gap-3 px-4 py-3 rounded-[12px] cursor-pointer transition-all duration-150 text-left border-none ${notif.isRead
+                      ? 'bg-transparent hover:bg-[var(--surface-500)]'
+                      : 'bg-[#f0faf2] hover:bg-[#e4f5e8]'
+                      }`}
                   >
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <span
-                          className={`font-[family:var(--font-heading)] text-[13px] leading-tight break-words ${
-                            notif.isRead
-                              ? 'font-semibold text-[var(--text-secondary-600)]'
-                              : 'font-bold text-[var(--text-primary-500)]'
-                          }`}
+                          className={`font-[family:var(--font-heading)] text-[13px] leading-tight break-words ${notif.isRead
+                            ? 'font-semibold text-[var(--text-secondary-600)]'
+                            : 'font-bold text-[var(--text-primary-500)]'
+                            }`}
                         >
                           {notif.title}
                         </span>
@@ -176,9 +173,8 @@ export default function NotificationDropdown() {
                         )}
                       </div>
                       <p
-                        className={`font-[family:var(--font-body)] text-[12px] leading-[1.4] mt-1 m-0 break-words whitespace-pre-line ${
-                          notif.isRead ? 'text-[var(--text-secondary-300)]' : 'text-[var(--text-secondary-600)]'
-                        }`}
+                        className={`font-[family:var(--font-body)] text-[12px] leading-[1.4] mt-1 m-0 break-words whitespace-pre-line ${notif.isRead ? 'text-[var(--text-secondary-300)]' : 'text-[var(--text-secondary-600)]'
+                          }`}
                       >
                         {notif.message}
                       </p>

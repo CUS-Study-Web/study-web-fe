@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { X, Check } from 'lucide-react';
 
 type NotificationType = 'success' | 'error';
 
@@ -67,23 +68,17 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
               onClick={() => setNotification(prev => ({ ...prev, isOpen: false }))}
               className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="w-4 h-4" />
             </div>
 
             <div className="mr-3 mt-0.5 flex-shrink-0">
               {notification.type === 'success' ? (
                 <div className="w-6 h-6 rounded-full bg-[#10b981] flex items-center justify-center">
-                  <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
                 </div>
               ) : (
                 <div className="w-6 h-6 rounded-full bg-[#f87171] flex items-center justify-center">
-                  <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <X className="w-3.5 h-3.5 text-white" strokeWidth={3} />
                 </div>
               )}
             </div>

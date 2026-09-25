@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { User, Upload, Loader2 } from 'lucide-react'
 import { mLabel, mInput } from '../modals/website/ModalHelpers'
 import { useNotification } from '../../common/NotificationProvider'
 import { validateImageFile } from '../../../utils/fileUtils'
@@ -55,10 +56,7 @@ const SmallCircle = ({
         {preview ? (
           <img src={preview} alt={label} className="w-full h-full object-cover" />
         ) : (
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" className="stroke-[var(--text-secondary-300)]">
-            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
+          <User size={22} className="text-[var(--text-secondary-300)]" strokeWidth={2} />
         )}
         <input
           id={id}
@@ -103,11 +101,7 @@ const BigDropzone = ({
         <img src={preview} alt="preview" className="max-h-[140px] rounded-[var(--radius-sm)] object-cover" />
       ) : (
         <>
-          <svg width="38" height="38" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" className="stroke-[var(--text-secondary-300)]">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-            <polyline points="17 8 12 3 7 8" />
-            <line x1="12" y1="3" x2="12" y2="15" />
-          </svg>
+          <Upload size={38} className="text-[var(--text-secondary-300)]" strokeWidth={2} />
           <div className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
             Kéo thả hoặc <span className="text-[var(--brand-500)] font-semibold">chọn ảnh</span>
           </div>
@@ -306,10 +300,7 @@ const TrangChuTab = () => {
   if (isLoading) {
     return (
       <div className="py-16 text-center text-[var(--text-secondary-400)] flex flex-col items-center justify-center gap-3">
-        <svg className="animate-spin h-6 w-6 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
+        <Loader2 className="animate-spin h-6 w-6 text-[var(--brand-500)]" />
         <span className="[font-family:var(--font-heading)] text-sm font-semibold">Đang tải dữ liệu trang chủ...</span>
       </div>
     )
@@ -552,10 +543,7 @@ const TrangChuTab = () => {
           className="flex items-center gap-2 px-6 py-[11px] rounded-xl !border-none bg-[var(--brand-500)] !text-white ![font-family:var(--font-heading)] !font-bold !text-sm cursor-pointer hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)] disabled:opacity-50"
         >
           {updateMutation.isPending && (
-            <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+            <Loader2 className="animate-spin h-4 w-4 text-white" />
           )}
           {updateMutation.isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
         </button>

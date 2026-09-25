@@ -39,6 +39,20 @@ export default function VipPage() {
     }
   };
 
+const FEATURE_ICON_MAP: Record<FeatureIconAccess, React.ReactNode> = {
+  CHECKED: (
+    <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <Check className="w-2.5 h-2.5 stroke-[3]" />
+    </span>
+  ),
+  UNCHECKED: (
+    <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <X className="w-2.5 h-2.5 stroke-[3]" />
+    </span>
+  ),
+  NON_EXIST: null,
+}
+
   const renderFeatureCell = (
     icon: FeatureIconAccess,
     text: string,
@@ -53,16 +67,7 @@ export default function VipPage() {
             : "border-r border-[var(--border-300)] text-[#7d827f] font-medium"
         } flex items-start gap-2`}
       >
-        {hasIcon && icon === "CHECKED" && (
-          <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <Check className="w-2.5 h-2.5 stroke-[3]" />
-          </span>
-        )}
-        {hasIcon && icon === "UNCHECKED" && (
-          <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <X className="w-2.5 h-2.5 stroke-[3]" />
-          </span>
-        )}
+        {hasIcon && FEATURE_ICON_MAP[icon]}
         <div>
           <span>{text}</span>
         </div>

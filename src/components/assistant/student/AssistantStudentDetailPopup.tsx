@@ -1,3 +1,4 @@
+import { User, Star } from 'lucide-react';
 import type { LearnerSummaryResponse } from '../../../types/api/system.api';
 
 type Props = {
@@ -33,10 +34,7 @@ export default function AssistantStudentDetailPopup({ student, onClose }: Props)
             {student.avatarUrl ? (
               <img src={student.avatarUrl} alt={student.name} className="w-full h-full object-cover" />
             ) : (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
+              <User size={22} className="text-white" strokeWidth={2} />
             )}
           </div>
 
@@ -49,9 +47,7 @@ export default function AssistantStudentDetailPopup({ student, onClose }: Props)
             <div className="flex items-center gap-2 mt-1">
               {isVip && (
                 <span className="flex items-center gap-1 rounded-full bg-[#F6C644] px-3 py-[3px] text-[11px] font-bold text-[#6B4C00]">
-                  <svg className="h-[10px] w-[10px] fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                  </svg>
+                  <Star size={10} className="fill-current text-[#6B4C00]" />
                   VIP
                 </span>
               )}

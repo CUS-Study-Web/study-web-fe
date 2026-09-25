@@ -1,12 +1,4 @@
-import { FileText, GraduationCap, BookOpen, Activity } from 'lucide-react';
 import { ASST_RECENT_ACTIVITIES } from '../../../types/mockData';
-
-const renderActivityIcon = (icon: string) => {
-  if (icon === '📝' || icon === 'file-text') return <FileText size={16} className="text-[var(--brand-base-600)]" />;
-  if (icon === '👨‍🎓' || icon === 'student') return <GraduationCap size={16} className="text-[var(--brand-base-600)]" />;
-  if (icon === '📚' || icon === 'book') return <BookOpen size={16} className="text-[var(--brand-base-600)]" />;
-  return <Activity size={16} className="text-[var(--text-secondary)]" />;
-};
 
 const AssistantRecentActivity = () => {
   return (
@@ -15,28 +7,31 @@ const AssistantRecentActivity = () => {
         Hoạt động gần đây
       </div>
       <div className="flex flex-col gap-0">
-        {ASST_RECENT_ACTIVITIES.map((activity, index) => (
-          <div
-            key={activity.id}
-            className={`flex items-start gap-3 py-3 ${index !== ASST_RECENT_ACTIVITIES.length - 1
-                ? 'border-b border-[var(--border-subtle)]'
-                : ''
-              }`}
-          >
-            <div className="w-8.5 h-8.5 rounded-[var(--radius-sm)] bg-[var(--surface-muted)] flex items-center justify-center shrink-0 text-base">
-              {renderActivityIcon(activity.icon)}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-primary)] leading-[1.5]">
-                {activity.text}
+        {ASST_RECENT_ACTIVITIES.map((activity, index) => {
+          const Icon = activity.icon;
+          return (
+            <div
+              key={activity.id}
+              className={`flex items-start gap-3 py-3 ${index !== ASST_RECENT_ACTIVITIES.length - 1
+                  ? 'border-b border-[var(--border-subtle)]'
+                  : ''
+                }`}
+            >
+              <div className="w-8.5 h-8.5 rounded-[var(--radius-sm)] bg-[var(--surface-muted)] flex items-center justify-center shrink-0 text-base">
+                <Icon size={16} className="text-[var(--brand-base-600)]" />
               </div>
-              <div className="font-[family-name:var(--font-body)] text-[length:var(--text-caption)] text-[var(--text-secondary)] mt-[3px]">
-                {activity.time}
+              <div className="flex-1 min-w-0">
+                <div className="font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-primary)] leading-[1.5]">
+                  {activity.text}
+                </div>
+                <div className="font-[family-name:var(--font-body)] text-[length:var(--text-caption)] text-[var(--text-secondary)] mt-[3px]">
+                  {activity.time}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+        );
+      })}
+    </div>
     </div>
   );
 };
