@@ -48,6 +48,7 @@ import AssistantEditExam from "../pages/assistant/AssistantEditExam";
 import AssistantCreateExercise from "../pages/assistant/AssistantCreateExercise";
 import AssistantEditExercise from "../pages/assistant/AssistantEditExercise";
 import AssistantMaterials from "../pages/assistant/AssistantMaterials";
+import AssistantOfflineExam from "../pages/assistant/AssistantOfflineExam";
 import AssistantStudents from "../pages/assistant/AssistantStudents";
 import AssistantFlashcards from "../pages/assistant/AssistantFlashcards";
 
@@ -199,6 +200,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.ASSISTANT.COURSE_EDIT_EXERCISE()} element={<AssistantEditExercise />} />
         <Route path={ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL()} element={<AssistantSubjectDetail />} />
         <Route path={ROUTES.ASSISTANT.MATERIALS} element={<AssistantMaterials />} />
+        <Route path={ROUTES.ASSISTANT.OFFLINE_EXAM} element={<AssistantOfflineExam />} />
         <Route path={ROUTES.ASSISTANT.STUDENTS} element={<AssistantStudents />} />
         <Route path={ROUTES.ASSISTANT.FLASHCARDS} element={<AssistantFlashcards />} />
       </Route>
