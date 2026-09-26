@@ -41,6 +41,7 @@ export const ROUTES = {
     MATERIALS: '/assistant/materials',
     STUDENTS: '/assistant/students',
     FLASHCARDS: '/assistant/flashcards',
+    OFFLINE_EXAM: '/assistant/offline-exam',
   },
   ADMIN: {
     ROOT: '/admin',

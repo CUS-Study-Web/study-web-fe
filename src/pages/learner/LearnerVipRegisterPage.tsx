@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNotification } from "../../components/common/NotificationProvider";
-import { useSubscribeVipMutation, useRenewVipMutation } from "../../hooks/queries/useVipSubscription";
+import { useSubscribeVipMutation, useRenewVipMutation, useVipFormContentQuery } from "../../hooks/queries/useVipSubscription";
 import { ROUTES } from "../../utils/routes";
 
 export default function LearnerVipRegisterPage() {
@@ -15,6 +15,8 @@ export default function LearnerVipRegisterPage() {
   const subscribeMutation = useSubscribeVipMutation();
   const renewMutation = useRenewVipMutation();
   const activeMutation = isRenewMode ? renewMutation : subscribeMutation;
+  const { data: formContentRes } = useVipFormContentQuery();
+  const formContent = formContentRes?.data;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Pre-fill from user profile
@@ -110,30 +112,32 @@ export default function LearnerVipRegisterPage() {
             </div>
 
             <h1 className="[font-family:var(--font-heading)] font-black text-[22px] text-[var(--text-primary)] m-0 mb-[12px] leading-[1.35]">
-              {isRenewMode
+              {formContent?.formTitle || (isRenewMode
                 ? "Gia hạn Khóa học VIP — Trung tâm Luyện thi ĐGNL - CUS"
-                : "Đăng ký Khóa học VIP — Trung tâm Luyện thi ĐGNL - CUS"}
+                : "Đăng ký Khóa học VIP — Trung tâm Luyện thi ĐGNL - CUS")}
             </h1>
 
-            <p className="[font-family:var(--font-body)] text-[14px] text-[var(--text-secondary-600)] leading-[1.75] m-0 mb-[20px]">
-              Chào mừng bạn đến với Trung tâm Luyện thi ĐGNL - CUS! Tài khoản VIP giúp các bạn
-              học viên có quyền truy cập vào các khóa học của CUS và mở khóa nhiều tài liệu giúp
-              đạt mục tiêu điểm số cao nhất trong kỳ thi. Bạn vui lòng điền đầy đủ và chính xác
-              các thông tin dưới đây để trung tâm hỗ trợ xếp lớp và hoàn tất thủ tục đăng ký nhé.
+            <p className="[font-family:var(--font-body)] text-[14px] text-[var(--text-secondary-600)] leading-[1.75] m-0 mb-[20px] whitespace-pre-wrap">
+              {formContent?.description || "Chào mừng bạn đến với Trung tâm Luyện thi ĐGNL - CUS! Tài khoản VIP giúp các bạn học viên có quyền truy cập vào các khóa học của CUS và mở khóa nhiều tài liệu giúp đạt mục tiêu điểm số cao nhất trong kỳ thi. Bạn vui lòng điền đầy đủ và chính xác các thông tin dưới đây để trung tâm hỗ trợ xếp lớp và hoàn tất thủ tục đăng ký nhé."}
             </p>
 
             <div className="border-t border-[var(--surface-500)] pt-[16px] flex flex-col gap-[8px]">
-              {[
-                { icon: "📞", text: "Hotline hỗ trợ: [Điền số điện thoại của trung tâm]" },
-                { icon: "📘", text: "Fanpage: [Điền link Fanpage nếu có]" },
-              ].map(({ icon, text }) => (
-                <div key={text} className="flex items-center gap-[10px]">
-                  <span className="text-[16px]">{icon}</span>
-                  <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
-                    {text}
-                  </span>
-                </div>
-              ))}
+              <div className="flex items-center gap-[10px]">
+                <span className="text-[16px]">📞</span>
+                <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                  Hotline hỗ trợ: {formContent?.hotline || "[Điền số điện thoại của trung tâm]"}
+                </span>
+              </div>
+              <div className="flex items-center gap-[10px]">
+                <span className="text-[16px]">📘</span>
+                <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)] flex items-center gap-[4px]">
+                  Fanpage: {formContent?.fanpageLink ? (
+                    <a href={formContent.fanpageLink} target="_blank" rel="noopener noreferrer" className="text-[var(--brand-base-500)] hover:underline">
+                      {formContent.fanpageLink}
+                    </a>
+                  ) : "[Điền link Fanpage nếu có]"}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -203,9 +207,9 @@ export default function LearnerVipRegisterPage() {
                 Thông tin chuyển khoản
               </div>
               {[
-                ["Ngân hàng", "[Tên Ngân Hàng]"],
-                ["Số tài khoản", "[Số tài khoản]"],
-                ["Chủ tài khoản", "[Tên chủ tài khoản]"],
+                ["Ngân hàng", formContent?.bankName || "[Tên Ngân Hàng]"],
+                ["Số tài khoản", formContent?.accountNumber || "[Số tài khoản]"],
+                ["Chủ tài khoản", formContent?.accountHolder || "[Tên chủ tài khoản]"],
               ].map(([key, value]) => (
                 <div
                   key={key}
@@ -220,11 +224,13 @@ export default function LearnerVipRegisterPage() {
                   Cú pháp chuyển khoản:
                 </div>
                 <div className="[font-family:var(--font-heading)] font-bold text-[13px] text-[var(--brand-base-500)]">
-                  Họ Tên - SĐT - VIP
+                  {formContent?.transferContent || "Họ Tên - SĐT - VIP"}
                 </div>
-                <div className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-200)] mt-[2px]">
-                  Ví dụ: Nguyen Van A - 0987654321 - VIP
-                </div>
+                {!formContent?.transferContent && (
+                  <div className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-200)] mt-[2px]">
+                    Ví dụ: Nguyen Van A - 0987654321 - VIP
+                  </div>
+                )}
               </div>
             </div>
 
@@ -238,43 +244,47 @@ export default function LearnerVipRegisterPage() {
                 thành công.
               </p>
               <div className="flex justify-center">
-                <div className="w-[180px] h-[180px] bg-[var(--brand-soft-200)] border-2 border-[var(--brand-soft-600)] rounded-[16px] flex flex-col items-center justify-center gap-[10px]">
-                  <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
-                    <rect
-                      x="4"
-                      y="4"
-                      width="34"
-                      height="34"
-                      rx="4"
-                      stroke="var(--brand-base-500)"
-                      strokeWidth="3"
-                    />
-                    <rect x="12" y="12" width="18" height="18" rx="2" fill="var(--brand-base-500)" />
-                    <rect
-                      x="72"
-                      y="4"
-                      width="34"
-                      height="34"
-                      rx="4"
-                      stroke="var(--brand-base-500)"
-                      strokeWidth="3"
-                    />
-                    <rect x="80" y="12" width="18" height="18" rx="2" fill="var(--brand-base-500)" />
-                    <rect
-                      x="4"
-                      y="72"
-                      width="34"
-                      height="34"
-                      rx="4"
-                      stroke="var(--brand-base-500)"
-                      strokeWidth="3"
-                    />
-                    <rect x="12" y="80" width="18" height="18" rx="2" fill="var(--brand-base-500)" />
-                  </svg>
-                  <span className="[font-family:var(--font-body)] text-[11px] text-[var(--text-secondary-300)]">
-                    Quét để thanh toán
-                  </span>
-                </div>
+                {formContent?.accountHolderQrUrl ? (
+                  <img src={formContent.accountHolderQrUrl} alt="Mã QR thanh toán" className="w-[180px] h-[180px] object-contain rounded-[16px] border-2 border-[var(--brand-soft-600)] shadow-sm" />
+                ) : (
+                  <div className="w-[180px] h-[180px] bg-[var(--brand-soft-200)] border-2 border-[var(--brand-soft-600)] rounded-[16px] flex flex-col items-center justify-center gap-[10px]">
+                    <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
+                      <rect
+                        x="4"
+                        y="4"
+                        width="34"
+                        height="34"
+                        rx="4"
+                        stroke="var(--brand-base-500)"
+                        strokeWidth="3"
+                      />
+                      <rect x="12" y="12" width="18" height="18" rx="2" fill="var(--brand-base-500)" />
+                      <rect
+                        x="72"
+                        y="4"
+                        width="34"
+                        height="34"
+                        rx="4"
+                        stroke="var(--brand-base-500)"
+                        strokeWidth="3"
+                      />
+                      <rect x="80" y="12" width="18" height="18" rx="2" fill="var(--brand-base-500)" />
+                      <rect
+                        x="4"
+                        y="72"
+                        width="34"
+                        height="34"
+                        rx="4"
+                        stroke="var(--brand-base-500)"
+                        strokeWidth="3"
+                      />
+                      <rect x="12" y="80" width="18" height="18" rx="2" fill="var(--brand-base-500)" />
+                    </svg>
+                    <span className="[font-family:var(--font-body)] text-[11px] text-[var(--text-secondary-300)]">
+                      Quét để thanh toán
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
