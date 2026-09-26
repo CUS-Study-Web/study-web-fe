@@ -1,6 +1,6 @@
 import apiClient from './apiClient';
 import type { SingleResponse, SuccessResponse } from '../types/api/common.api';
-import type { VipInfoResponse } from '../types/api/vipSubscription.api';
+import type { VipInfoResponse, VipFormContentResponse } from '../types/api/vipSubscription.api';
 
 export const vipSubscriptionService = {
   subscribeVip: async (formData: FormData) => {
@@ -23,6 +23,20 @@ export const vipSubscriptionService = {
 
   getVipInfo: async () => {
     const response = await apiClient.get<SingleResponse<VipInfoResponse>>('/api/user/vip-info');
+    return response.data;
+  },
+
+  getVipFormContent: async () => {
+    const response = await apiClient.get<SingleResponse<VipFormContentResponse>>('/api/vip-form-content/guest');
+    return response.data;
+  },
+
+  updateVipFormContent: async (formData: FormData) => {
+    const response = await apiClient.put<SingleResponse<VipFormContentResponse>>('/api/vip-form-content', formData, {
+      headers: {
+        'Content-Type': undefined,
+      },
+    });
     return response.data;
   }
 };
