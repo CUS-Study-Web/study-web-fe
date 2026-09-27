@@ -82,7 +82,7 @@ export default function QuanLyVipTab() {
                 Email
               </th>
               <th className="px-[18px] py-[13px] [font-family:var(--font-heading)] font-bold text-[12.5px] text-[#1B1F1C] uppercase tracking-[0.3px] whitespace-nowrap">
-                Môn thi
+                Kỳ thi
               </th>
               <th className="px-[18px] py-[13px] [font-family:var(--font-heading)] font-bold text-[12.5px] text-[#1B1F1C] uppercase tracking-[0.3px] whitespace-nowrap">
                 Ngày đăng ký
@@ -131,7 +131,7 @@ export default function QuanLyVipTab() {
                 <td className="px-[18px] py-[14px] [font-family:var(--font-body)] text-[13px] text-[#3D4540] whitespace-nowrap">
                   {row.email}
                 </td>
-                {/* 4. Môn thi */}
+                {/* 4. Kỳ thi */}
                 <td className="px-[18px] py-[14px] whitespace-nowrap">
                   <span className="inline-block px-[11px] py-[4px] rounded-[8px] bg-[#EEF5EF] border border-[#DCE9DE] text-[#2C5A31] [font-family:var(--font-heading)] font-semibold text-[12px]">
                     {row.subject}

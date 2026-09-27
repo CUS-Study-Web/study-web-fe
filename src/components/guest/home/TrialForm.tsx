@@ -24,8 +24,8 @@ export default function TrialForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.phoneNumber || !formData.email) {
-      showError('Vui lòng điền đầy đủ các trường bắt buộc (Họ tên, Điện thoại, Email).');
+    if (!formData.name || !formData.phoneNumber || !formData.email || !formData.subject) {
+      showError('Vui lòng điền đầy đủ các trường bắt buộc (Họ tên, Điện thoại, Email, Kỳ thi).');
       return;
     }
     
@@ -113,18 +113,19 @@ export default function TrialForm() {
               />
             </div>
 
-            {/* Môn thi */}
+            {/* Kỳ thi */}
             <div className="flex flex-col">
               <label className="text-xs font-bold !text-[#e8f0e9] mb-2 uppercase tracking-wider">
-                Môn thi
+                Kỳ thi <span className="text-[#ef4444]">*</span>
               </label>
               <select
                 name="subject"
                 value={formData.subject}
                 onChange={handleChange}
+                required
                 className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[var(--radius-md)] px-4 py-3.5 !text-white focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition text-sm font-medium"
               >
-                <option value="" className="bg-[#18321b] text-[#729075]">Chọn môn thi...</option>
+                <option value="" className="bg-[#18321b] text-[#729075]">Chọn kỳ thi...</option>
                 {courses.map((course) => (
                   <option key={course.id} value={course.title} className="bg-[#18321b] text-white">
                     {course.title}
@@ -137,14 +138,14 @@ export default function TrialForm() {
           {/* Text Area */}
           <div className="flex flex-col">
             <label className="text-xs font-bold !text-[#e8f0e9] mb-2 uppercase tracking-wider">
-              Bạn muốn thi thử môn gì?
+              Ghi chú của thí sinh
             </label>
             <textarea
               name="note"
               value={formData.note}
               onChange={handleChange}
               rows={4}
-              placeholder="Nhập thông tin bạn muốn thi thử..."
+              placeholder="Nhập ghi chú của bạn..."
               className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[var(--radius-md)] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition resize-none text-sm font-medium"
             />
           </div>
