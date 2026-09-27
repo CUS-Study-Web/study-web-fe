@@ -3,8 +3,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronLeft, Sparkles, Phone, Globe, CreditCard, QrCode, FileText, Upload, Send } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNotification } from "../../components/common/NotificationProvider";
-import { useSubscribeVipMutation, useRenewVipMutation } from "../../hooks/queries/useVipSubscription";
+import { useSubscribeVipMutation, useRenewVipMutation, useVipFormContentQuery } from "../../hooks/queries/useVipSubscription";
 import { ROUTES } from "../../utils/routes";
+import { validatePhone } from "../../utils/phoneUtils";
 
 export default function LearnerVipRegisterPage() {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ export default function LearnerVipRegisterPage() {
   const subscribeMutation = useSubscribeVipMutation();
   const renewMutation = useRenewVipMutation();
   const activeMutation = isRenewMode ? renewMutation : subscribeMutation;
+  const { data: formContentRes } = useVipFormContentQuery();
+  const formContent = formContentRes?.data;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Pre-fill from user profile
@@ -50,6 +53,11 @@ export default function LearnerVipRegisterPage() {
   const handleSubmit = () => {
     if (!name.trim() || !phone.trim() || !email.trim() || !birth || !evidenceFile) {
       showError("Vui lòng điền đầy đủ các trường bắt buộc và tải lên minh chứng.");
+      return;
+    }
+
+    if (!validatePhone(phone)) {
+      showError("Số điện thoại không hợp lệ.");
       return;
     }
 
@@ -104,30 +112,32 @@ export default function LearnerVipRegisterPage() {
             </div>
 
             <h1 className="[font-family:var(--font-heading)] font-black text-[22px] text-[var(--text-primary)] m-0 mb-[12px] leading-[1.35]">
-              {isRenewMode
+              {formContent?.formTitle || (isRenewMode
                 ? "Gia hạn Khóa học VIP — Trung tâm Luyện thi ĐGNL - CUS"
-                : "Đăng ký Khóa học VIP — Trung tâm Luyện thi ĐGNL - CUS"}
+                : "Đăng ký Khóa học VIP — Trung tâm Luyện thi ĐGNL - CUS")}
             </h1>
 
-            <p className="[font-family:var(--font-body)] text-[14px] text-[var(--text-secondary-600)] leading-[1.75] m-0 mb-[20px]">
-              Chào mừng bạn đến với Trung tâm Luyện thi ĐGNL - CUS! Tài khoản VIP giúp các bạn
-              học viên có quyền truy cập vào các khóa học của CUS và mở khóa nhiều tài liệu giúp
-              đạt mục tiêu điểm số cao nhất trong kỳ thi. Bạn vui lòng điền đầy đủ và chính xác
-              các thông tin dưới đây để trung tâm hỗ trợ xếp lớp và hoàn tất thủ tục đăng ký nhé.
+            <p className="[font-family:var(--font-body)] text-[14px] text-[var(--text-secondary-600)] leading-[1.75] m-0 mb-[20px] whitespace-pre-wrap">
+              {formContent?.description || "Chào mừng bạn đến với Trung tâm Luyện thi ĐGNL - CUS! Tài khoản VIP giúp các bạn học viên có quyền truy cập vào các khóa học của CUS và mở khóa nhiều tài liệu giúp đạt mục tiêu điểm số cao nhất trong kỳ thi. Bạn vui lòng điền đầy đủ và chính xác các thông tin dưới đây để trung tâm hỗ trợ xếp lớp và hoàn tất thủ tục đăng ký nhé."}
             </p>
 
             <div className="border-t border-[var(--surface-500)] pt-[16px] flex flex-col gap-[8px]">
-              {[
-                { icon: <Phone className="w-4 h-4 text-[var(--brand-base-500)]" />, text: "Hotline hỗ trợ: [Điền số điện thoại của trung tâm]" },
-                { icon: <Globe className="w-4 h-4 text-[var(--brand-base-500)]" />, text: "Fanpage: [Điền link Fanpage nếu có]" },
-              ].map(({ icon, text }) => (
-                <div key={text} className="flex items-center gap-[10px]">
-                  <span className="shrink-0">{icon}</span>
-                  <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
-                    {text}
-                  </span>
-                </div>
-              ))}
+              <div className="flex items-center gap-[10px]">
+                <Phone className="w-4 h-4 text-[var(--brand-base-500)] shrink-0" />
+                <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                  Hotline hỗ trợ: {formContent?.hotline || "[Điền số điện thoại của trung tâm]"}
+                </span>
+              </div>
+              <div className="flex items-center gap-[10px]">
+                <Globe className="w-4 h-4 text-[var(--brand-base-500)] shrink-0" />
+                <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)] flex items-center gap-[4px]">
+                  Fanpage: {formContent?.fanpageLink ? (
+                    <a href={formContent.fanpageLink} target="_blank" rel="noopener noreferrer" className="text-[var(--brand-base-500)] hover:underline">
+                      {formContent.fanpageLink}
+                    </a>
+                  ) : "[Điền link Fanpage nếu có]"}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -186,9 +196,9 @@ export default function LearnerVipRegisterPage() {
                 Thông tin chuyển khoản
               </div>
               {[
-                ["Ngân hàng", "[Tên Ngân Hàng]"],
-                ["Số tài khoản", "[Số tài khoản]"],
-                ["Chủ tài khoản", "[Tên chủ tài khoản]"],
+                ["Ngân hàng", formContent?.bankName || "[Tên Ngân Hàng]"],
+                ["Số tài khoản", formContent?.accountNumber || "[Số tài khoản]"],
+                ["Chủ tài khoản", formContent?.accountHolder || "[Tên chủ tài khoản]"],
               ].map(([key, value]) => (
                 <div
                   key={key}
@@ -203,11 +213,13 @@ export default function LearnerVipRegisterPage() {
                   Cú pháp chuyển khoản:
                 </div>
                 <div className="[font-family:var(--font-heading)] font-bold text-[13px] text-[var(--brand-base-500)]">
-                  Họ Tên - SĐT - VIP
+                  {formContent?.transferContent || "Họ Tên - SĐT - VIP"}
                 </div>
-                <div className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-200)] mt-[2px]">
-                  Ví dụ: Nguyen Van A - 0987654321 - VIP
-                </div>
+                {!formContent?.transferContent && (
+                  <div className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-200)] mt-[2px]">
+                    Ví dụ: Nguyen Van A - 0987654321 - VIP
+                  </div>
+                )}
               </div>
             </div>
 
@@ -221,12 +233,16 @@ export default function LearnerVipRegisterPage() {
                 thành công.
               </p>
               <div className="flex justify-center">
-                <div className="w-[180px] h-[180px] bg-[var(--brand-soft-200)] border-2 border-[var(--brand-soft-600)] rounded-[16px] flex flex-col items-center justify-center gap-[10px]">
-                  <QrCode size={90} className="text-[var(--brand-base-500)]" />
-                  <span className="[font-family:var(--font-body)] text-[11px] text-[var(--text-secondary-300)]">
-                    Quét để thanh toán
-                  </span>
-                </div>
+                {formContent?.accountHolderQrUrl ? (
+                  <img src={formContent.accountHolderQrUrl} alt="Mã QR thanh toán" className="w-[180px] h-[180px] object-contain rounded-[16px] border-2 border-[var(--brand-soft-600)] shadow-sm" />
+                ) : (
+                  <div className="w-[180px] h-[180px] bg-[var(--brand-soft-200)] border-2 border-[var(--brand-soft-600)] rounded-[16px] flex flex-col items-center justify-center gap-[10px]">
+                    <QrCode size={90} className="text-[var(--brand-base-500)]" />
+                    <span className="[font-family:var(--font-body)] text-[11px] text-[var(--text-secondary-300)]">
+                      Quét để thanh toán
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -244,11 +260,10 @@ export default function LearnerVipRegisterPage() {
                 onDragLeave={() => setFileDragging(false)}
                 onDrop={handleFileDrop}
                 onClick={handleFileSelect}
-                className={`border-2 border-dashed rounded-[var(--radius-sm)] p-[28px_20px] text-center cursor-pointer transition-all duration-[var(--motion-fast)] ${
-                  fileDragging
-                    ? "border-[var(--brand-base-500)] bg-[var(--brand-soft-200)]"
-                    : "border-[var(--brand-soft-600)] bg-[var(--surface-50)] hover:border-[var(--brand-base-300)]"
-                }`}
+                className={`border-2 border-dashed rounded-[var(--radius-sm)] p-[28px_20px] text-center cursor-pointer transition-all duration-[var(--motion-fast)] ${fileDragging
+                  ? "border-[var(--brand-base-500)] bg-[var(--brand-soft-200)]"
+                  : "border-[var(--brand-soft-600)] bg-[var(--surface-50)] hover:border-[var(--brand-base-300)]"
+                  }`}
               >
                 <input
                   ref={fileInputRef}
@@ -299,7 +314,7 @@ export default function LearnerVipRegisterPage() {
           <button
             onClick={handleSubmit}
             disabled={activeMutation.isPending}
-            className="[font-family:var(--font-heading)] font-extrabold text-[16px] py-[16px] px-[56px] rounded-[var(--radius-md)] border-none bg-gradient-to-br from-[var(--brand-base-500)] to-[var(--brand-base-400)] text-white cursor-pointer shadow-[0_4px_20px_rgba(44,90,49,0.35)] transition-all duration-[var(--motion-fast)] flex items-center gap-[10px] hover:-translate-y-[2px] hover:shadow-[0_8px_28px_rgba(44,90,49,0.4)] active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+            className="[font-family:var(--font-heading)] font-extrabold text-[16px] py-[16px] px-[56px] rounded-[var(--radius-md)] border-none bg-gradient-to-br from-[var(--brand-base-500)] to-[var(--brand-base-400)] !text-white cursor-pointer shadow-[0_4px_20px_rgba(44,90,49,0.35)] transition-all duration-[var(--motion-fast)] flex items-center gap-[10px] hover:-translate-y-[2px] hover:shadow-[0_8px_28px_rgba(44,90,49,0.4)] active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
             <Send size={18} strokeWidth={2} />
             {activeMutation.isPending

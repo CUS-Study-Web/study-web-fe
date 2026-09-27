@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { User } from 'lucide-react'
-import AssistantFeatureInDevPopup from '../../../assistant/AssistantFeatureInDevPopup'
+import { ROUTES } from '../../../../utils/routes'
 import type { AssistantSummaryResponse } from '../../../../types/api/system.api'
 import { useGetActivityLogsQuery } from '../../../../hooks/queries/useSystemStats'
 
@@ -9,8 +9,21 @@ type AssistantDetailModalProps = {
   onClose: () => void
 }
 
+const formatDateTime = (isoString?: string) => {
+  if (!isoString) return ''
+  const d = new Date(isoString)
+  if (isNaN(d.getTime())) return isoString
+  const day = String(d.getDate()).padStart(2, '0')
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const year = d.getFullYear()
+  const hours = String(d.getHours()).padStart(2, '0')
+  const minutes = String(d.getMinutes()).padStart(2, '0')
+  const seconds = String(d.getSeconds()).padStart(2, '0')
+  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+}
+
 export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProps) => {
-  const [showInDev, setShowInDev] = useState(false)
+  const navigate = useNavigate()
   const { data: logData, isLoading: isActivityLoading } = useGetActivityLogsQuery({
     gmail: asst.gmail,
     limit: 10,
@@ -31,9 +44,9 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
         <div className="bg-gradient-to-br from-[var(--brand-500)] to-[var(--brand-700)] px-[30px] py-[26px] flex items-center gap-4">
           <div className="w-[50px] h-[50px] rounded-full bg-white/20 flex items-center justify-center shrink-0">
             {asst.avatarUrl ? (
-                <img src={asst.avatarUrl} alt="avatar" className="w-full h-full rounded-full object-cover" />
+              <img src={asst.avatarUrl} alt="avatar" className="w-full h-full rounded-full object-cover" />
             ) : (
-                <User size={22} className="text-white" />
+              <User size={22} className="text-white" />
             )}
           </div>
           <div className="min-w-0 flex-1">
@@ -70,7 +83,10 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
               Hoạt động gần đây
             </div>
             <button
-              onClick={() => setShowInDev(true)}
+              onClick={() => {
+                onClose()
+                navigate(ROUTES.ADMIN.ACTIVITIES)
+              }}
               className="bg-transparent border-none cursor-pointer ![font-family:var(--font-heading)] !font-bold !text-[12px] !text-[var(--brand-500)] p-0 underline underline-offset-[3px]"
             >
               Xem tất cả
@@ -91,16 +107,15 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
               actLog.map((a, i) => (
                 <div
                   key={`${a.timestamp}-${i}`}
-                  className={`flex gap-3 items-start py-2.5 ${
-                    i < actLog.length - 1 ? 'border-b border-[var(--border-100)]' : ''
-                  }`}
+                  className={`flex gap-3 items-start py-2.5 ${i < actLog.length - 1 ? 'border-b border-[var(--border-100)]' : ''
+                    }`}
                 >
                   <div className="w-[7px] h-[7px] rounded-full bg-[var(--brand-500)] shrink-0 mt-[5px]" />
                   <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-primary)] flex-1">
                     {a.description || a.actionType}
                   </span>
                   <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-200)] shrink-0">
-                    {a.timestamp}
+                    {formatDateTime(a.timestamp)}
                   </span>
                 </div>
               ))
@@ -118,8 +133,6 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
           </button>
         </div>
       </div>
-
-      {showInDev && <AssistantFeatureInDevPopup onClose={() => setShowInDev(false)} />}
     </div>
   )
 }

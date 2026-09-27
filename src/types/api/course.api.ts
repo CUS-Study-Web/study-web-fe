@@ -11,6 +11,7 @@ export interface CourseSummaryResponse {
   subjectCount: number;
   examCount: number;
   learningProgress?: number;
+  maxScores?: number;
 }
 
 export interface CourseDetailResponse {
@@ -26,4 +27,5 @@ export interface CourseRequest {
   description?: string;
   thumbnailImage?: File;
   status?: 'DRAFT' | 'DEVELOPING' | 'PUBLISH';
+  maxScores?: number;
 }

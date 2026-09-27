@@ -13,6 +13,7 @@ type WebsiteTabsNavProps = {
 const WebsiteTabsNav = ({ activeTab, onTabChange }: WebsiteTabsNavProps) => {
   const tabs: TabItem[] = [
     { key: "trang-chu",    label: "Trang chủ" },
+    { key: "vip-form",     label: "Cấu hình Form VIP" },
     { key: "footer",       label: "Footer" },
     { key: "goi-cuoc",     label: "Gói cước" },
     { key: "courses",      label: "Danh sách khóa học" },

@@ -11,6 +11,7 @@ import {
 } from '@/components/admin/modals/WebsiteModals'
 import { ConfirmMiniModal } from '@/components/admin/modals/website/ConfirmMiniModal'
 import TrangChuTab from '@/components/admin/website/TrangChuTab'
+import VipFormTab from '@/components/admin/website/VipFormTab'
 import FooterTab from '@/components/admin/website/FooterTab'
 import GoiCuocTab from '@/components/admin/website/GoiCuocTab'
 import { Spinner } from '@/components/Loading'
@@ -179,6 +180,7 @@ const AdminWebsite = () => {
 
   const tabsConfig: Record<WTab, { label: string; addLabel?: string; addModal?: ModalKey }> = {
     "trang-chu": { label: "Trang chủ" },
+    "vip-form": { label: "Cấu hình Form VIP" },
     "footer": { label: "Footer" },
     "goi-cuoc": { label: "Gói cước" },
     "courses": { label: "Danh sách khóa học", addLabel: "Thêm khóa học", addModal: "add-course" },
@@ -327,6 +329,7 @@ const AdminWebsite = () => {
 
           {/* CMS form tabs */}
           {activeTab === "trang-chu" && <TrangChuTab />}
+          {activeTab === "vip-form" && <VipFormTab />}
           {activeTab === "footer" && <FooterTab />}
           {activeTab === "goi-cuoc" && <GoiCuocTab />}
 
@@ -338,7 +341,7 @@ const AdminWebsite = () => {
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
-                        {["Tiêu đề", "Tiêu đề phụ", "Mô tả", "Trạng thái", ""].map((h) => (
+                        {["Tiêu đề", "Tiêu đề phụ", "Điểm tối đa", "Mô tả", "Trạng thái", ""].map((h) => (
                           <th key={h} className={thClass}>{h}</th>
                         ))}
                       </tr>
@@ -346,7 +349,7 @@ const AdminWebsite = () => {
                     <tbody>
                       {isLoadingCourses && (
                         <tr>
-                          <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                          <td colSpan={6} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
                             Đang tải dữ liệu...
                           </td>
                         </tr>
@@ -358,6 +361,9 @@ const AdminWebsite = () => {
                         >
                           <td className={`${tdBoldClass} max-w-[200px] truncate`} title={c.title}>{c.title}</td>
                           <td className={`${tdCellClass} max-w-[200px] truncate`} title={c.subTitle}>{c.subTitle}</td>
+                          <td className={`${tdCellClass} whitespace-nowrap`}>
+                            {c.maxScores != null && c.maxScores > 0 ? c.maxScores : '-'}
+                          </td>
                           <td className={`${tdCellClass} max-w-[260px] truncate`} title={c.description}>{c.description}</td>
                           <td className={tdCellClass}>
                             <span className={`px-2 py-1 rounded-[var(--radius-sm)] text-[11px] font-bold ${
@@ -414,7 +420,7 @@ const AdminWebsite = () => {
                       ))}
                       {!isLoadingCourses && courses.length === 0 && (
                         <tr>
-                          <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                          <td colSpan={6} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
                             Không có khóa học nào.
                           </td>
                         </tr>
