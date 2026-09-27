@@ -4,19 +4,21 @@ import { Hand, Users, Paperclip, FileText } from 'lucide-react';
 import AssistantStatCard from '../../components/assistant/dashboard/AssistantStatCard';
 import AssistantQuickActions from '../../components/assistant/dashboard/AssistantQuickActions';
 import AssistantRecentActivity from '../../components/assistant/dashboard/AssistantRecentActivity';
-import { useAssistantDashboard } from '../../hooks/queries/useAssistantDashboard';
+import Loading from '../../components/Loading';
+import { useGetAssistantDashboardQuery } from '../../hooks/queries/useAssistantDashboard';
+
+const formatDelta = (delta?: number) => {
+  const d = delta ?? 0;
+  return `${d > 0 ? `+${d}` : d} tuần này`;
+};
 
 const AssistantDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { data: dashboardData, isLoading, isError } = useAssistantDashboard();
+  const { data: dashboardData, isLoading, isError } = useGetAssistantDashboardQuery();
 
   if (isLoading) {
-    return (
-      <div className="w-full flex justify-center items-center h-64">
-        <div className="text-[var(--text-secondary)]">Đang tải dữ liệu...</div>
-      </div>
-    );
+    return <Loading className="h-64" />;
   }
 
   if (isError) {
@@ -32,31 +34,31 @@ const AssistantDashboard = () => {
   const statCards = [
     {
       id: 1,
-      label: "Tổng học viên",
-      value: stats?.totalLearners.value.toLocaleString('vi-VN') || "0",
-      delta: `${stats?.totalLearners.delta && stats.totalLearners.delta > 0 ? '+' : ''}${stats?.totalLearners.delta || 0} tuần này`,
+      label: 'Tổng học viên',
+      value: stats?.totalLearners?.value?.toLocaleString('vi-VN') ?? '0',
+      delta: formatDelta(stats?.totalLearners?.delta),
       icon: Users,
-      color: "#2C5A31",
-      background: "#DCE9DE"
+      color: '#2C5A31',
+      background: '#DCE9DE',
     },
     {
       id: 2,
-      label: "Bài tập đã đăng",
-      value: stats?.totalExercises.value.toLocaleString('vi-VN') || "0",
-      delta: `${stats?.totalExercises.delta && stats.totalExercises.delta > 0 ? '+' : ''}${stats?.totalExercises.delta || 0} tuần này`,
+      label: 'Bài tập đã đăng',
+      value: stats?.totalExercises?.value?.toLocaleString('vi-VN') ?? '0',
+      delta: formatDelta(stats?.totalExercises?.delta),
       icon: Paperclip,
-      color: "#2F6FAE",
-      background: "#DDEAF8"
+      color: '#2F6FAE',
+      background: '#DDEAF8',
     },
     {
       id: 3,
-      label: "Đề thi đã tạo",
-      value: stats?.totalExams.value.toLocaleString('vi-VN') || "0",
-      delta: `${stats?.totalExams.delta && stats.totalExams.delta > 0 ? '+' : ''}${stats?.totalExams.delta || 0} tuần này`,
+      label: 'Đề thi đã tạo',
+      value: stats?.totalExams?.value?.toLocaleString('vi-VN') ?? '0',
+      delta: formatDelta(stats?.totalExams?.delta),
       icon: FileText,
-      color: "#B45309",
-      background: "#FEF3C7"
-    }
+      color: '#B45309',
+      background: '#FEF3C7',
+    },
   ];
 
   return (

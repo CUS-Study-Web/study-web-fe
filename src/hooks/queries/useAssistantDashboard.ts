@@ -1,14 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 import { assistantDashboardService } from '../../services/assistantDashboardService';
 
-export const ASSISTANT_KEYS = {
+export const assistantKeys = {
   all: ['assistant'] as const,
-  dashboard: () => [...ASSISTANT_KEYS.all, 'dashboard'] as const,
+  dashboard: () => [...assistantKeys.all, 'dashboard'] as const,
 };
 
-export const useAssistantDashboard = () => {
+export const ASSISTANT_KEYS = assistantKeys;
+
+export const useGetAssistantDashboardQuery = () => {
   return useQuery({
-    queryKey: ASSISTANT_KEYS.dashboard(),
+    queryKey: assistantKeys.dashboard(),
     queryFn: () => assistantDashboardService.getDashboardStats(),
   });
 };
+
+export const useAssistantDashboard = useGetAssistantDashboardQuery;
+

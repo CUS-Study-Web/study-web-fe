@@ -1,4 +1,4 @@
-import { GraduationCap, BookOpen, FileText, Bell } from 'lucide-react';
+import { GraduationCap, BookOpen, FileText, Bell, Paperclip } from 'lucide-react';
 
 interface ActivityItem {
   id: string;
@@ -17,6 +17,10 @@ const renderIconForType = (type: string) => {
       return <GraduationCap size={16} className="text-[var(--brand-base-600)]" />;
     case 'course':
       return <BookOpen size={16} className="text-[var(--brand-base-600)]" />;
+    case 'homework':
+      return <Paperclip size={16} className="text-[#2F6FAE]" />;
+    case 'exam':
+      return <FileText size={16} className="text-[#B45309]" />;
     case 'material':
       return <FileText size={16} className="text-[var(--brand-base-600)]" />;
     default:
