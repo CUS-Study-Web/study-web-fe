@@ -1,8 +1,10 @@
+import type { LucideIcon } from 'lucide-react';
+
 export interface StatCardProps {
   label: string;
   value: string;
   delta: string;
-  icon: string;
+  icon: LucideIcon;
   color: string;
   background: string;
 }
@@ -11,7 +13,7 @@ const AssistantStatCard = ({
   label,
   value,
   delta,
-  icon,
+  icon: Icon,
   color,
   background,
 }: StatCardProps) => {
@@ -22,7 +24,7 @@ const AssistantStatCard = ({
           className="w-10.5 h-10.5 rounded-xl flex items-center justify-center text-xl"
           style={{ backgroundColor: background }}
         >
-          {icon}
+          <Icon size={20} style={{ color }} />
         </div>
       </div>
       <div>

@@ -1,3 +1,5 @@
+import { GraduationCap, BookOpen, FileText, Bell } from 'lucide-react';
+
 interface ActivityItem {
   id: string;
   type: string;
@@ -9,16 +11,16 @@ interface AssistantRecentActivityProps {
   activities?: ActivityItem[];
 }
 
-const getIconForType = (type: string) => {
+const renderIconForType = (type: string) => {
   switch (type) {
     case 'student':
-      return '🎓';
+      return <GraduationCap size={16} className="text-[var(--brand-base-600)]" />;
     case 'course':
-      return '📚';
+      return <BookOpen size={16} className="text-[var(--brand-base-600)]" />;
     case 'material':
-      return '📄';
+      return <FileText size={16} className="text-[var(--brand-base-600)]" />;
     default:
-      return '🔔';
+      return <Bell size={16} className="text-[var(--text-secondary)]" />;
   }
 };
 
@@ -49,13 +51,14 @@ const AssistantRecentActivity = ({ activities = [] }: AssistantRecentActivityPro
         {activities.map((activity, index) => (
           <div
             key={activity.id}
-            className={`flex items-start gap-3 py-3 ${index !== activities.length - 1
+            className={`flex items-start gap-3 py-3 ${
+              index !== activities.length - 1
                 ? 'border-b border-[var(--border-subtle)]'
                 : ''
-              }`}
+            }`}
           >
             <div className="w-8.5 h-8.5 rounded-[var(--radius-sm)] bg-[var(--surface-muted)] flex items-center justify-center shrink-0 text-base">
-              {getIconForType(activity.type)}
+              {renderIconForType(activity.type)}
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-primary)] leading-[1.5]">

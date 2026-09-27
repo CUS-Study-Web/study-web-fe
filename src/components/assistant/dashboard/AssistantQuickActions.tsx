@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../utils/routes';
+import { Upload, Layers, BookOpen, Users } from 'lucide-react';
 
 interface AssistantQuickActionsProps {
   navigate: ReturnType<typeof useNavigate>;
@@ -13,25 +14,25 @@ const AssistantQuickActions = ({ navigate }: AssistantQuickActionsProps) => {
 
   const actions = [
     {
-      emoji: '📤',
+      icon: Upload,
       label: 'Tải lên tài liệu',
       onClick: () => navigate(`${materialsPath}?upload=1`),
       primary: true,
     },
     {
-      emoji: '🃏',
+      icon: Layers,
       label: 'Tạo chủ đề Flashcard',
       onClick: () => navigate(`${flashcardsPath}?create=1`),
       primary: false,
     },
     {
-      emoji: '📎',
+      icon: BookOpen,
       label: 'Quản lý nội dung khóa học',
       onClick: () => navigate(coursesPath),
       primary: false,
     },
     {
-      emoji: '👥',
+      icon: Users,
       label: 'Danh sách học viên',
       onClick: () => navigate(studentsPath),
       primary: false,
@@ -44,23 +45,26 @@ const AssistantQuickActions = ({ navigate }: AssistantQuickActionsProps) => {
         Thao tác nhanh
       </div>
       <div className="grid grid-cols-2 gap-3">
-        {actions.map((action) => (
-          <div
-            key={action.label}
-            role="button"
-            onClick={action.onClick}
-            className={`flex items-center gap-3 py-4 px-4.5 rounded-[var(--radius-md)] cursor-pointer text-left transition-all duration-140 hover:-translate-y-0.5 ${
-              action.primary
-                ? 'bg-[var(--brand-500)] text-[var(--text-inverse)] border-none shadow-[0_2px_8px_rgba(44,90,49,0.25)]'
-                : 'bg-[var(--brand-soft-200)] text-[var(--brand-500)] border-[1.5px] border-solid border-[var(--brand-soft-500)]'
-            }`}
-          >
-            <span className="text-[22px]">{action.emoji}</span>
-            <span className="font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)]">
-              {action.label}
-            </span>
-          </div>
-        ))}
+        {actions.map((action) => {
+          const Icon = action.icon;
+          return (
+            <div
+              key={action.label}
+              role="button"
+              onClick={action.onClick}
+              className={`flex items-center gap-3 py-4 px-4.5 rounded-[var(--radius-md)] cursor-pointer text-left transition-all duration-140 hover:-translate-y-0.5 ${
+                action.primary
+                  ? 'bg-[var(--brand-500)] text-[var(--text-inverse)] border-none shadow-[0_2px_8px_rgba(44,90,49,0.25)]'
+                  : 'bg-[var(--brand-soft-200)] text-[var(--brand-500)] border-[1.5px] border-solid border-[var(--brand-soft-500)]'
+              }`}
+            >
+              <Icon className="w-5 h-5 shrink-0" />
+              <span className="font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-body-sm)]">
+                {action.label}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

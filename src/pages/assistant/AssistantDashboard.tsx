@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { Hand, Users, Paperclip, FileText } from 'lucide-react';
 import AssistantStatCard from '../../components/assistant/dashboard/AssistantStatCard';
 import AssistantQuickActions from '../../components/assistant/dashboard/AssistantQuickActions';
 import AssistantRecentActivity from '../../components/assistant/dashboard/AssistantRecentActivity';
@@ -34,7 +35,7 @@ const AssistantDashboard = () => {
       label: "Tổng học viên",
       value: stats?.totalLearners.value.toLocaleString('vi-VN') || "0",
       delta: `${stats?.totalLearners.delta && stats.totalLearners.delta > 0 ? '+' : ''}${stats?.totalLearners.delta || 0} tuần này`,
-      icon: "👥",
+      icon: Users,
       color: "#2C5A31",
       background: "#DCE9DE"
     },
@@ -43,7 +44,7 @@ const AssistantDashboard = () => {
       label: "Bài tập đã đăng",
       value: stats?.totalExercises.value.toLocaleString('vi-VN') || "0",
       delta: `${stats?.totalExercises.delta && stats.totalExercises.delta > 0 ? '+' : ''}${stats?.totalExercises.delta || 0} tuần này`,
-      icon: "📎",
+      icon: Paperclip,
       color: "#2F6FAE",
       background: "#DDEAF8"
     },
@@ -52,7 +53,7 @@ const AssistantDashboard = () => {
       label: "Đề thi đã tạo",
       value: stats?.totalExams.value.toLocaleString('vi-VN') || "0",
       delta: `${stats?.totalExams.delta && stats.totalExams.delta > 0 ? '+' : ''}${stats?.totalExams.delta || 0} tuần này`,
-      icon: "📝",
+      icon: FileText,
       color: "#B45309",
       background: "#FEF3C7"
     }
@@ -62,8 +63,9 @@ const AssistantDashboard = () => {
     <div className="w-full">
       {/* Welcome Section */}
       <div className="mb-7">
-        <div className="font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-h3)] text-[var(--text-primary)] m-0 mb-1">
-          Xin chào, {user?.name || 'Trợ giảng'}! 👋
+        <div className="font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-h3)] text-[var(--text-primary)] m-0 mb-1 flex items-center gap-2">
+          <span>Xin chào, {user?.name || 'Trợ giảng'}!</span>
+          <Hand className="w-6 h-6 text-[#E5A823] -rotate-12 inline-block transition-transform duration-300 hover:rotate-12 hover:scale-110" />
         </div>
         <div className="font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-secondary)] m-0">
           Dưới đây là tổng quan hoạt động hôm nay.
@@ -90,4 +92,3 @@ const AssistantDashboard = () => {
 };
 
 export default AssistantDashboard;
-

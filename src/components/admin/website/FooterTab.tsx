@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Trash2, Loader2 } from 'lucide-react'
 import { mLabel, mInput } from '../modals/website/ModalHelpers'
 import { useNotification } from '../../common/NotificationProvider'
 import {
@@ -35,7 +36,7 @@ const Fld = ({ label, children }: { label: string; children: React.ReactNode }) 
 
 const MAX_LINKS_PER_CATEGORY = 8
 
-export const normalizeLinkUrl = (url: string): string => {
+const normalizeLinkUrl = (url: string): string => {
   if (!url) return ''
   const trimmed = url.trim()
   if (!trimmed) return ''
@@ -118,10 +119,7 @@ const NavColRows = ({
                 className="w-8 h-8 flex-shrink-0 rounded-lg border !border-[var(--border-500)] bg-white cursor-pointer flex items-center justify-center hover:bg-[var(--surface-600)] transition-colors"
                 title="Xóa mục này"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="stroke-[var(--error-500)]">
-                  <polyline points="3 6 5 6 21 6" />
-                  <path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2" />
-                </svg>
+                <Trash2 size={13} className="text-[var(--error-500)]" />
               </button>
             </div>
           ))}
@@ -293,10 +291,7 @@ const FooterTab = () => {
   if (isLoading) {
     return (
       <div className="py-16 text-center text-[var(--text-secondary-400)] flex flex-col items-center justify-center gap-3">
-        <svg className="animate-spin h-6 w-6 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
+        <Loader2 size={24} className="animate-spin text-[var(--brand-500)]" />
         <span className="[font-family:var(--font-heading)] text-sm font-semibold">Đang tải dữ liệu footer...</span>
       </div>
     )
@@ -490,10 +485,7 @@ const FooterTab = () => {
           className="flex items-center gap-2 px-6 py-[11px] rounded-xl !border-none bg-[var(--brand-500)] !text-white ![font-family:var(--font-heading)] !font-bold !text-sm cursor-pointer hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)] disabled:opacity-50"
         >
           {updateMutation.isPending && (
-            <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+            <Loader2 size={16} className="animate-spin text-white" />
           )}
           {updateMutation.isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
         </button>

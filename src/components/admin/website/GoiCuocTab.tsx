@@ -13,6 +13,7 @@ import type {
   PricingPageUpdateRequest,
 } from '@/types/api/pricingPage.api'
 import { useNotification } from '@/components/common/NotificationProvider'
+import { Star, Trash2 } from 'lucide-react'
 
 const SectionCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div className="bg-[var(--surface-500)] rounded-2xl border border-[var(--border-300)] p-6 mb-4">
@@ -58,8 +59,8 @@ type LocalFeatureRow = {
 }
 
 const ICON_OPTS: { value: FeatureIconAccess; label: string }[] = [
-  { value: 'CHECKED', label: '✅ Tick xanh' },
-  { value: 'UNCHECKED', label: '❌ X đỏ' },
+  { value: 'CHECKED', label: 'Tick xanh (Có)' },
+  { value: 'UNCHECKED', label: 'Dấu X đỏ (Không)' },
   { value: 'NON_EXIST', label: '— Không có' },
 ]
 
@@ -345,8 +346,9 @@ const GoiCuocForm = () => {
 
           {/* VIP tier */}
           <div className="bg-white border-2 rounded-[var(--radius-md)] p-5 relative" style={{ borderColor: '#F5C518' }}>
-            <div className="absolute -top-3 left-4 rounded-full px-3 py-[3px] [font-family:var(--font-heading)] font-extrabold text-[11px] text-[var(--text-primary)]" style={{ background: '#F5C518' }}>
-              ★ GÓI NỔI BẬT
+            <div className="absolute -top-3 left-4 rounded-full px-3 py-[3px] [font-family:var(--font-heading)] font-extrabold text-[11px] text-[var(--text-primary)] inline-flex items-center gap-1" style={{ background: '#F5C518' }}>
+              <Star className="w-3 h-3 fill-current" />
+              <span>GÓI NỔI BẬT</span>
             </div>
             <div className="[font-family:var(--font-heading)] font-extrabold text-[13px] text-[var(--warning-500)] uppercase tracking-[0.5px] mb-4 pb-2.5" style={{ borderBottom: '1px solid #FEF3C7' }}>
               Tài khoản VIP
@@ -530,10 +532,7 @@ const GoiCuocForm = () => {
                   onClick={() => removeFeature(row.id)}
                   className="w-8 h-8 rounded-lg border border-[var(--error-100)] bg-[var(--error-50)] cursor-pointer flex items-center justify-center hover:bg-[var(--error-100)] transition-colors duration-140 shrink-0"
                 >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="stroke-[var(--error-500)]">
-                    <polyline points="3 6 5 6 21 6" />
-                    <path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2" />
-                  </svg>
+                  <Trash2 size={13} className="text-[var(--error-500)]" />
                 </button>
               </div>
             </div>

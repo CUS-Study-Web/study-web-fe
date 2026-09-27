@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { User } from 'lucide-react'
 import { ROUTES } from '../../../../utils/routes'
 import type { AssistantSummaryResponse } from '../../../../types/api/system.api'
 import { useGetActivityLogsQuery } from '../../../../hooks/queries/useSystemStats'
@@ -43,11 +44,9 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
         <div className="bg-gradient-to-br from-[var(--brand-500)] to-[var(--brand-700)] px-[30px] py-[26px] flex items-center gap-4">
           <div className="w-[50px] h-[50px] rounded-full bg-white/20 flex items-center justify-center shrink-0">
             {asst.avatarUrl ? (
-                <img src={asst.avatarUrl} alt="avatar" className="w-full h-full rounded-full object-cover" />
+              <img src={asst.avatarUrl} alt="avatar" className="w-full h-full rounded-full object-cover" />
             ) : (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
-                </svg>
+              <User size={22} className="text-white" />
             )}
           </div>
           <div className="min-w-0 flex-1">
@@ -108,9 +107,8 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
               actLog.map((a, i) => (
                 <div
                   key={`${a.timestamp}-${i}`}
-                  className={`flex gap-3 items-start py-2.5 ${
-                    i < actLog.length - 1 ? 'border-b border-[var(--border-100)]' : ''
-                  }`}
+                  className={`flex gap-3 items-start py-2.5 ${i < actLog.length - 1 ? 'border-b border-[var(--border-100)]' : ''
+                    }`}
                 >
                   <div className="w-[7px] h-[7px] rounded-full bg-[var(--brand-500)] shrink-0 mt-[5px]" />
                   <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-primary)] flex-1">

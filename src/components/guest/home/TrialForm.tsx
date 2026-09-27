@@ -28,7 +28,7 @@ export default function TrialForm() {
       showError('Vui lòng điền đầy đủ các trường bắt buộc (Họ tên, Điện thoại, Email, Kỳ thi).');
       return;
     }
-    
+
     try {
       setIsLoading(true);
       await registerFormService.submitGuestRegisterForm(formData);
@@ -138,14 +138,14 @@ export default function TrialForm() {
           {/* Text Area */}
           <div className="flex flex-col">
             <label className="text-xs font-bold !text-[#e8f0e9] mb-2 uppercase tracking-wider">
-              Ghi chú của thí sinh
+              Ghi chú
             </label>
             <textarea
               name="note"
               value={formData.note}
               onChange={handleChange}
               rows={4}
-              placeholder="Nhập ghi chú của bạn..."
+              placeholder="Bạn có câu hỏi hay yêu cầu gì muốn gửi tới CUS không?"
               className="w-full bg-[#18321b] border border-[#2c5a31] rounded-[var(--radius-md)] px-4 py-3.5 !text-white placeholder-[#729075] focus:outline-none focus:border-[#FFC107] focus:ring-1 focus:ring-[#FFC107] transition resize-none text-sm font-medium"
             />
           </div>

@@ -1,3 +1,5 @@
+import React from 'react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 import '../styles/StatsCard.css'
 
 type StatsCardProps = {
@@ -24,8 +26,8 @@ const StatsCard = ({
         <div className="flex items-start justify-between mb-[14px]">
           {icon || <div />}
           {trend !== undefined && (
-            <span className={`stats-trend stats-trend--${isUp ? 'up' : 'down'}`}>
-              {isUp ? '▲' : '▼'} {Math.abs(trend)}%
+            <span className={`stats-trend stats-trend--${isUp ? 'up' : 'down'} inline-flex items-center gap-1`}>
+              {isUp ? <TrendingUp size={12} /> : <TrendingDown size={12} />} {Math.abs(trend)}%
             </span>
           )}
         </div>

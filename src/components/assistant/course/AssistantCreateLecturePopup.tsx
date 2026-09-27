@@ -3,6 +3,7 @@ import { useGetCourseDetailQuery } from '../../../hooks/queries/useCourses';
 import { useCreateLessonMutation } from '../../../hooks/queries/useLessons';
 import { useNotification } from '../../../components/common/NotificationProvider';
 import type { LessonRequest } from '../../../types/api/lesson.api';
+import { Video, X } from 'lucide-react';
 
 interface AssistantCreateLecturePopupProps {
   courseKey: string;
@@ -89,8 +90,8 @@ export default function AssistantCreateLecturePopup({ courseKey, courseName, def
         {/* Header */}
         <div className="flex items-start justify-between mb-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-[10px] bg-[var(--brand-soft-300)] flex items-center justify-center text-[20px]">
-              🎬
+            <div className="w-10 h-10 rounded-[10px] bg-[var(--brand-soft-300)] flex items-center justify-center">
+              <Video className="w-5 h-5 text-[var(--brand-700)]" />
             </div>
             <div>
               <div className="font-[family-name:var(--font-heading)] font-bold text-[16px] text-[var(--text-primary)]">
@@ -101,12 +102,13 @@ export default function AssistantCreateLecturePopup({ courseKey, courseName, def
               </div>
             </div>
           </div>
-          <div
+          <button
+            type="button"
             onClick={onClose}
-            className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-[var(--surface-muted)] cursor-pointer text-[var(--text-secondary)] text-[18px] leading-none select-none"
+            className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-[var(--surface-muted)] cursor-pointer text-[var(--text-secondary)] transition-colors border-none bg-transparent"
           >
-            ×
-          </div>
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Row: Khóa học + Môn học */}
