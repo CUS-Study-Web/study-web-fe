@@ -1,8 +1,9 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { ActivityFilterBar, ActivityGroupedList } from '../../components/admin/SystemComponents'
 import { useGetActivityLogsQuery } from '../../hooks/queries/useSystemStats'
+import Pagination from '../../components/common/Pagination'
 import type { ActivityLogItem } from '../../types/api/system.api'
 import type { AsstActivity } from '../../types/admin'
 
@@ -69,6 +70,9 @@ export default function AdminAsstActivities() {
   const [selYear, setSelYear] = useState(thisYearStr)
   const [selAsst, setSelAsst] = useState('Tất cả')
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 10
+
   const days = useMemo(() => {
     const list = [...new Set(activities.map((a) => a.date))].sort().reverse()
     return list.length > 0 ? list : [todayStr]
@@ -108,15 +112,27 @@ export default function AdminAsstActivities() {
     })
   }, [activities, mode, selDay, selWeek, selMonth, selYear, selAsst])
 
-  // Group by assistant name
+  // Reset page when filter changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [mode, selDay, selWeek, selMonth, selYear, selAsst])
+
+  const totalPages = Math.ceil(filtered.length / pageSize) || 1
+
+  const paginatedFiltered = useMemo(() => {
+    const start = (currentPage - 1) * pageSize
+    return filtered.slice(start, start + pageSize)
+  }, [filtered, currentPage, pageSize])
+
+  // Group by assistant name for current page
   const asstGroups = useMemo(() => {
-    const grouped: Record<string, typeof filtered> = {}
-    for (const item of filtered) {
+    const grouped: Record<string, typeof paginatedFiltered> = {}
+    for (const item of paginatedFiltered) {
       if (!grouped[item.asst]) grouped[item.asst] = []
       grouped[item.asst].push(item)
     }
     return Object.entries(grouped)
-  }, [filtered])
+  }, [paginatedFiltered])
 
   return (
     <div className="max-w-[960px] mx-auto px-[28px] pt-[40px] pb-[80px]">
@@ -158,7 +174,23 @@ export default function AdminAsstActivities() {
           Đang tải lịch sử hoạt động...
         </div>
       ) : (
-        <ActivityGroupedList filtered={filtered} asstGroups={asstGroups} />
+        <>
+          <ActivityGroupedList filtered={paginatedFiltered} asstGroups={asstGroups} />
+          {filtered.length > 0 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-[24px] gap-[12px] bg-white rounded-[14px] border border-[var(--border-300)] p-[14px_20px]">
+              <div className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-400)]">
+                Hiển thị {paginatedFiltered.length} trên tổng số {filtered.length} hoạt động
+              </div>
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              )}
+            </div>
+          )}
+        </>
       )}
     </div>
   )

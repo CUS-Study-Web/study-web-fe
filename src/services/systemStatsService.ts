@@ -1,5 +1,5 @@
 import apiClient from './apiClient';
-import type { SingleResponse } from '../types/api/common.api';
+import type { PageResponse, SingleResponse } from '../types/api/common.api';
 import {
   STAT_ACTION_OPTIONS,
   type ActivityLogItem,
@@ -38,7 +38,7 @@ export const systemStatsService = {
   },
 
   getActivityLogs: async (params?: ActivityLogsParams) => {
-    const response = await apiClient.get<SingleResponse<ActivityLogItem[]>>(
+    const response = await apiClient.get<PageResponse<ActivityLogItem>>(
       '/api/system-management/activities',
       { params }
     );

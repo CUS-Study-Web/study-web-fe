@@ -158,6 +158,7 @@ export interface ActivityLogItem {
 }
 
 export interface ActivityLogsParams {
+  page?: number;
   limit?: number;
   days?: number;
   actions?: string;

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { User } from 'lucide-react'
 import { ROUTES } from '../../../../utils/routes'
@@ -24,12 +25,16 @@ const formatDateTime = (isoString?: string) => {
 
 export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProps) => {
   const navigate = useNavigate()
+  const [actPage, setActPage] = useState<number>(1)
   const { data: logData, isLoading: isActivityLoading } = useGetActivityLogsQuery({
     gmail: asst.gmail,
-    limit: 10,
+    page: actPage - 1,
+    limit: 5,
     days: 30,
   })
   const actLog = logData?.data || []
+  const logPaging = logData?.paging
+  const totalLogPages = logPaging?.totalPages || (actLog.length > 0 ? 1 : 0)
 
   return (
     <div
@@ -119,6 +124,31 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
                   </span>
                 </div>
               ))
+            )}
+            {!isActivityLoading && totalLogPages > 1 && (
+              <div className="flex items-center justify-between pt-2.5 mt-2 border-t border-[var(--border-100)]">
+                <span className="text-[11.5px] text-[var(--text-secondary-300)] [font-family:var(--font-body)]">
+                  Trang {actPage} / {totalLogPages} {logPaging?.total ? `(${logPaging.total} hoạt động)` : ''}
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setActPage((p) => Math.max(1, p - 1))}
+                    disabled={actPage === 1}
+                    className="px-2 py-0.5 rounded border border-[var(--border-300)] bg-white text-[11px] font-semibold text-[var(--text-secondary-600)] disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed hover:bg-[var(--surface-500)]"
+                  >
+                    &lt;
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActPage((p) => Math.min(totalLogPages, p + 1))}
+                    disabled={actPage === totalLogPages}
+                    className="px-2 py-0.5 rounded border border-[var(--border-300)] bg-white text-[11px] font-semibold text-[var(--text-secondary-600)] disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed hover:bg-[var(--surface-500)]"
+                  >
+                    &gt;
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </div>

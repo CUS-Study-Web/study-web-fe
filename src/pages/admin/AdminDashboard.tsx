@@ -64,13 +64,17 @@ const AdminDashboard = () => {
     { year: currentYear - 1 },
     { enabled: currentMonth === 1 }
   );
+  const [activityPage, setActivityPage] = useState(1);
   const { data: activityData, isLoading: isActivityLoading } = useGetActivityLogsQuery({
+    page: activityPage - 1,
     limit: 6,
     days: 7,
     role: 'ASSISTANT',
   });
 
   const activities = activityData?.data || [];
+  const activityPaging = activityData?.paging;
+  const totalActivityPages = activityPaging?.totalPages || (activities.length > 0 ? 1 : 0);
   const allDailyItems = dailyData?.data?.items || [];
   const currentWeekItems = allDailyItems.slice(-7);
   const dailyLabels = currentWeekItems.map((item) => formatDayLabel(item.date));
@@ -334,6 +338,31 @@ const AdminDashboard = () => {
               </span>
             </div>
           ))}
+          {!isActivityLoading && totalActivityPages > 1 && (
+            <div className="flex items-center justify-between pt-[14px] mt-[6px] border-t border-[var(--border-100)]">
+              <span className="text-[12px] text-[var(--text-secondary-400)] [font-family:var(--font-body)]">
+                Trang {activityPage} / {totalActivityPages} {activityPaging?.total ? `(${activityPaging.total} hoạt động)` : ''}
+              </span>
+              <div className="flex items-center gap-[6px]">
+                <button
+                  type="button"
+                  onClick={() => setActivityPage((p) => Math.max(1, p - 1))}
+                  disabled={activityPage === 1}
+                  className="px-[10px] py-[3px] rounded-[6px] border border-[var(--border-300)] bg-white text-[12px] text-[var(--text-secondary-600)] font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--surface-500)] cursor-pointer"
+                >
+                  &lt;
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActivityPage((p) => Math.min(totalActivityPages, p + 1))}
+                  disabled={activityPage === totalActivityPages}
+                  className="px-[10px] py-[3px] rounded-[6px] border border-[var(--border-300)] bg-white text-[12px] text-[var(--text-secondary-600)] font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--surface-500)] cursor-pointer"
+                >
+                  &gt;
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
