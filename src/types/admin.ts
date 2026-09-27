@@ -1,4 +1,4 @@
-type SysTab = "students" | "assistants" | "stats" | "vip-requests"
+type SysTab = "students" | "assistants" | "stats" | "vip-requests" | "quan-ly-vip"
 
 type Student = {
   id: number
@@ -68,6 +68,7 @@ export type Review = ReviewResponse
 
 type AsstActivity = {
   date: string
+  time?: string
   week: string
   month: string
   year: string
@@ -75,7 +76,7 @@ type AsstActivity = {
   asst: string
 }
 
-type WTab = "trang-chu" | "footer" | "goi-cuoc" | "courses" | "doc-types" | "instructors" | "achievements" | "reviews"
+type WTab = "trang-chu" | "vip-form" | "footer" | "goi-cuoc" | "courses" | "doc-types" | "instructors" | "achievements" | "reviews"
 
 type ModalKey =
   | "add-course"

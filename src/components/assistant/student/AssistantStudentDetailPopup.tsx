@@ -111,9 +111,10 @@ export default function AssistantStudentDetailPopup({ student, onClose }: Props)
             </div>
 
             <div className="rounded-xl bg-[#F9FBFA] p-4 border border-[#E4EBE5]">
-              <div className="text-[11px] font-bold text-[#6B746D] uppercase tracking-[0.4px] mb-2">Điểm trung bình</div>
+              <div className="text-[11px] font-bold text-[#6B746D] uppercase tracking-[0.4px] mb-2">Điểm trung bình / Điểm tối đa</div>
               <div className="text-[#1B1F1C] text-[15px] font-medium" style={{ fontFamily: "'Noto Sans', sans-serif" }}>
-                {student.averageScore != null ? student.averageScore.toFixed(1) : '0.0'} / 10
+                {student.averageScore != null ? student.averageScore.toFixed(1) : '0.0'}
+                {student.courseMaxScore != null && student.courseMaxScore > 0 ? ` / ${student.courseMaxScore}` : ''}
               </div>
             </div>
 

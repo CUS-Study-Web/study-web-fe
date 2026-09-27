@@ -75,6 +75,7 @@ export interface LearnerSummaryResponse {
   vipStartDate?: string;
   vipEndDate?: string;
   avatarUrl?: string;
+  courseMaxScore?: number;
 }
 
 export interface AssistantSummaryResponse {
