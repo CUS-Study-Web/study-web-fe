@@ -11,6 +11,7 @@ import {
 } from '@/components/admin/modals/WebsiteModals'
 import { ConfirmMiniModal } from '@/components/admin/modals/website/ConfirmMiniModal'
 import TrangChuTab from '@/components/admin/website/TrangChuTab'
+import VipFormTab from '@/components/admin/website/VipFormTab'
 import FooterTab from '@/components/admin/website/FooterTab'
 import GoiCuocTab from '@/components/admin/website/GoiCuocTab'
 import { Spinner } from '@/components/Loading'
@@ -186,6 +187,7 @@ const AdminWebsite = () => {
 
   const tabsConfig: Record<WTab, { label: string; addLabel?: string; addModal?: ModalKey }> = {
     "trang-chu": { label: "Trang chủ" },
+    "vip-form": { label: "Cấu hình Form VIP" },
     "footer": { label: "Footer" },
     "goi-cuoc": { label: "Gói cước" },
     "courses": { label: "Danh sách khóa học", addLabel: "Thêm khóa học", addModal: "add-course" },
@@ -336,6 +338,7 @@ const AdminWebsite = () => {
 
           {/* CMS form tabs */}
           {activeTab === "trang-chu" && <TrangChuTab />}
+          {activeTab === "vip-form" && <VipFormTab />}
           {activeTab === "footer" && <FooterTab />}
           {activeTab === "goi-cuoc" && <GoiCuocTab />}
 

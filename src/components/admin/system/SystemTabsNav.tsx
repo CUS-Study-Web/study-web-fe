@@ -17,6 +17,7 @@ export const SystemTabsNav = ({ activeTab, onTabChange, pendingVipCount }: Syste
     { key: "students", label: "Quản lý học viên" },
     { key: "assistants", label: "Quản lý trợ giảng" },
     { key: "vip-requests", label: "Duyệt yêu cầu VIP", badge: pendingVipCount },
+    { key: "quan-ly-vip", label: "Quản lý đăng ký thi offline" },
     { key: "stats", label: "Thống kê truy cập" }
   ]
 
