@@ -34,8 +34,9 @@ export default function TrialForm() {
       await registerFormService.submitGuestRegisterForm(formData);
       showSuccess('Đăng ký thi thử thành công! Chúng tôi sẽ sớm liên hệ với bạn.');
       setFormData({ name: '', phoneNumber: '', email: '', subject: '', note: '' });
-    } catch (error) {
-      showError('Có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.');
+    } catch (error: any) {
+      const message = error?.response?.data?.message || 'Có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.';
+      showError(message);
       console.error(error);
     } finally {
       setIsLoading(false);
