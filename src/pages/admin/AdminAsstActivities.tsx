@@ -23,10 +23,15 @@ const mapLogToAsstActivity = (log: ActivityLogItem): AsstActivity => {
   const day = valid ? String(d.getDate()).padStart(2, '0') : '01'
   const month = valid ? String(d.getMonth() + 1).padStart(2, '0') : '01'
   const year = valid ? String(d.getFullYear()) : '2026'
+  const hours = valid ? String(d.getHours()).padStart(2, '0') : '00'
+  const minutes = valid ? String(d.getMinutes()).padStart(2, '0') : '00'
+  const seconds = valid ? String(d.getSeconds()).padStart(2, '0') : '00'
   const week = valid ? `W${getWeekNumber(d)}` : 'W01'
   const dateStr = `${day}/${month}/${year}`
+  const timeStr = `${hours}:${minutes}:${seconds}`
   return {
     date: dateStr,
+    time: timeStr,
     week,
     month,
     year,

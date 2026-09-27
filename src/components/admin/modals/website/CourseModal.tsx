@@ -75,6 +75,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
   const [subtitle, setSubtitle] = useState(course.subTitle || '')
   const [badgeTitle, setBadgeTitle] = useState(course.badgeTitle || '')
   const [status, setStatus] = useState<'DRAFT' | 'DEVELOPING' | 'PUBLISH'>(course.status || 'DRAFT')
+  const [maxScores, setMaxScores] = useState<number | ''>(course.maxScores ?? '')
   const [description, setDescription] = useState(course.description || '')
   const [previewImage, setPreviewImage] = useState<string | undefined>(course.imageUrl)
   const [thumbnailImage, setThumbnailImage] = useState<File | undefined>()
@@ -88,6 +89,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
     badgeTitle: course.badgeTitle || '',
     status: course.status || 'DRAFT',
     description: course.description || '',
+    maxScores: course.maxScores || '',
   })
 
   const { showSuccess, showError } = useNotification()
@@ -122,6 +124,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
     subtitle !== orig.subtitle ||
     badgeTitle !== orig.badgeTitle ||
     status !== orig.status ||
+    maxScores !== orig.maxScores ||
     description !== orig.description
 
   // ── Course image handler
@@ -150,6 +153,11 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
       return
     }
 
+    if (maxScores !== '' && Number(maxScores) <= 0) {
+      showError('Điểm tối đa khóa học phải lớn hơn 0!')
+      return
+    }
+
     setIsSavingCourse(true)
     const start = Date.now()
     const formData = new FormData()
@@ -157,6 +165,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
     formData.append('subtitle', subtitle)
     formData.append('badgeTitle', badgeTitle)
     formData.append('status', status)
+    if (maxScores !== '' && maxScores !== undefined) formData.append('maxScores', String(maxScores))
     formData.append('description', description)
     if (thumbnailImage) formData.append('thumbnailImage', thumbnailImage)
 
@@ -165,7 +174,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
       const elapsed = Date.now() - start
       if (elapsed < 500) await new Promise((r) => setTimeout(r, 500 - elapsed))
       // Update snapshot so button goes back to disabled
-      originalCourseRef.current = { title, subtitle, badgeTitle, status, description }
+      originalCourseRef.current = { title, subtitle, badgeTitle, status, description, maxScores }
       setThumbnailImage(undefined)
       showSuccess('Cập nhật thông tin khóa học thành công!')
     } catch (err: any) {
@@ -263,6 +272,19 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
                   <option value="DEVELOPING">Đang cập nhật (DEVELOPING)</option>
                   <option value="PUBLISH">Công khai (PUBLISH)</option>
                 </select>
+              </div>
+
+              <div className="mb-3.5">
+                <label className={mLabel}>Điểm tối đa khóa học</label>
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={maxScores}
+                  onChange={(e) => setMaxScores(e.target.value === '' ? '' : Math.max(1, parseInt(e.target.value, 10) || 1))}
+                  className={mInput}
+                  placeholder="VD: 100 hoặc 36"
+                />
               </div>
 
               <div className="mb-5">

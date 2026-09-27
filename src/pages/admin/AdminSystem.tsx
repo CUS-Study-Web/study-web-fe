@@ -6,7 +6,8 @@ import {
   StudentTab,
   AssistantTab,
   VipRequestsTab,
-  AccessStatsTab
+  AccessStatsTab,
+  QuanLyVipTab
 } from '../../components/admin/SystemComponents'
 import AssistantFeatureInDevPopup from '../../components/assistant/AssistantFeatureInDevPopup'
 import { useGetVipRequestCountsQuery } from '../../hooks/queries/useSystemVipRequests'
@@ -70,6 +71,8 @@ const AdminSystem = () => {
           {activeTab === 'assistants' && <AssistantTab />}
 
           {activeTab === 'vip-requests' && <VipRequestsTab />}
+
+          {activeTab === 'quan-ly-vip' && <QuanLyVipTab />}
 
           {activeTab === 'stats' && <AccessStatsTab />}
         </div>

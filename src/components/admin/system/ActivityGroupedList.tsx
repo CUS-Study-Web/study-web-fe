@@ -53,7 +53,7 @@ export const ActivityGroupedList = ({
                   {item.text}
                 </span>
                 <span className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-300)] shrink-0">
-                  {item.date}
+                  {item.time ? `${item.date} ${item.time}` : item.date}
                 </span>
               </div>
             ))}
