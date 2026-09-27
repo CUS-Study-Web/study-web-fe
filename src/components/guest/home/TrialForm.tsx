@@ -3,6 +3,8 @@ import { useGetCoursesQuery } from '../../../hooks/queries/useCourses';
 import { registerFormService } from '../../../services/registerFormService';
 import type { SubmitGuestRegisterFormRequest } from '../../../types/api/registerForm.api';
 import { useNotification } from '../../common/NotificationProvider';
+import { validatePhone } from '../../../utils/phoneUtils';
+import { validateEmail } from '../../../utils/emailUtils';
 
 export default function TrialForm() {
   const [formData, setFormData] = useState<SubmitGuestRegisterFormRequest>({
@@ -26,6 +28,16 @@ export default function TrialForm() {
     e.preventDefault();
     if (!formData.name || !formData.phoneNumber || !formData.email || !formData.subject) {
       showError('Vui lòng điền đầy đủ các trường bắt buộc (Họ tên, Điện thoại, Email, Kỳ thi).');
+      return;
+    }
+
+    if (!validatePhone(formData.phoneNumber)) {
+      showError('Số điện thoại không hợp lệ.');
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      showError('Địa chỉ email không hợp lệ.');
       return;
     }
 
