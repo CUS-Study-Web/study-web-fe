@@ -14,4 +14,8 @@
     background-color: var(--error-50);
     color: var(--error-500);
   }
+  .stats-trend--neutral {
+    background-color: var(--border-300);
+    color: var(--text-secondary-400);
+  }
 }
