@@ -68,6 +68,7 @@ export type Review = ReviewResponse
 
 type AsstActivity = {
   date: string
+  time?: string
   week: string
   month: string
   year: string

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import AssistantFeatureInDevPopup from '../../../assistant/AssistantFeatureInDevPopup'
+import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../../../../utils/routes'
 import type { AssistantSummaryResponse } from '../../../../types/api/system.api'
 import { useGetActivityLogsQuery } from '../../../../hooks/queries/useSystemStats'
 
@@ -8,8 +8,21 @@ type AssistantDetailModalProps = {
   onClose: () => void
 }
 
+const formatDateTime = (isoString?: string) => {
+  if (!isoString) return ''
+  const d = new Date(isoString)
+  if (isNaN(d.getTime())) return isoString
+  const day = String(d.getDate()).padStart(2, '0')
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const year = d.getFullYear()
+  const hours = String(d.getHours()).padStart(2, '0')
+  const minutes = String(d.getMinutes()).padStart(2, '0')
+  const seconds = String(d.getSeconds()).padStart(2, '0')
+  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+}
+
 export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProps) => {
-  const [showInDev, setShowInDev] = useState(false)
+  const navigate = useNavigate()
   const { data: logData, isLoading: isActivityLoading } = useGetActivityLogsQuery({
     gmail: asst.gmail,
     limit: 10,
@@ -71,7 +84,10 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
               Hoạt động gần đây
             </div>
             <button
-              onClick={() => setShowInDev(true)}
+              onClick={() => {
+                onClose()
+                navigate(ROUTES.ADMIN.ACTIVITIES)
+              }}
               className="bg-transparent border-none cursor-pointer ![font-family:var(--font-heading)] !font-bold !text-[12px] !text-[var(--brand-500)] p-0 underline underline-offset-[3px]"
             >
               Xem tất cả
@@ -101,7 +117,7 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
                     {a.description || a.actionType}
                   </span>
                   <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-200)] shrink-0">
-                    {a.timestamp}
+                    {formatDateTime(a.timestamp)}
                   </span>
                 </div>
               ))
@@ -119,8 +135,6 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
           </button>
         </div>
       </div>
-
-      {showInDev && <AssistantFeatureInDevPopup onClose={() => setShowInDev(false)} />}
     </div>
   )
 }
