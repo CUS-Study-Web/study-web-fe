@@ -6,6 +6,7 @@ import { systemKeys } from './systemKeys';
 export interface StatsQueryOptions {
   refetchInterval?: number | false;
   refetchIntervalInBackground?: boolean;
+  enabled?: boolean;
 }
 
 export const DEFAULT_STATS_POLL_INTERVAL = 30_000;
@@ -19,6 +20,7 @@ export const useGetDailyStatsQuery = (
     queryFn: () => systemStatsService.getDailyStats(params),
     refetchInterval: options?.refetchInterval ?? DEFAULT_STATS_POLL_INTERVAL,
     refetchIntervalInBackground: options?.refetchIntervalInBackground,
+    enabled: options?.enabled,
   });
 };
 
@@ -31,6 +33,7 @@ export const useGetMonthlyStatsQuery = (
     queryFn: () => systemStatsService.getMonthlyStats(params),
     refetchInterval: options?.refetchInterval ?? DEFAULT_STATS_POLL_INTERVAL,
     refetchIntervalInBackground: options?.refetchIntervalInBackground,
+    enabled: options?.enabled,
   });
 };
 
@@ -43,5 +46,6 @@ export const useGetActivityLogsQuery = (
     queryFn: () => systemStatsService.getActivityLogs(params),
     refetchInterval: options?.refetchInterval ?? DEFAULT_STATS_POLL_INTERVAL,
     refetchIntervalInBackground: options?.refetchIntervalInBackground,
+    enabled: options?.enabled,
   });
 };

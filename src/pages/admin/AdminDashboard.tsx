@@ -52,14 +52,18 @@ const AdminDashboard = () => {
   // Selected actions for each visualization
   const [chartAction1, setChartAction1] = useState<ActionType>('LOGIN');
   const [chartAction2, setChartAction2] = useState<ActionType>('REGISTER');
-  const [chartAction3, setChartAction3] = useState<ActionType>('LOGIN');
+  const [chartAction3, setChartAction3] = useState<ActionType>('REQUEST_VIP');
 
   // Queries
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
 
-  const { data: dailyData, isLoading: isDailyLoading } = useGetDailyStatsQuery({ days: 7 });
+  const { data: dailyData, isLoading: isDailyLoading } = useGetDailyStatsQuery({ days: 14 });
   const { data: monthlyData, isLoading: isMonthlyLoading } = useGetMonthlyStatsQuery({ year: currentYear });
+  const { data: prevYearMonthlyData } = useGetMonthlyStatsQuery(
+    { year: currentYear - 1 },
+    { enabled: currentMonth === 1 }
+  );
   const { data: activityData, isLoading: isActivityLoading } = useGetActivityLogsQuery({
     limit: 6,
     days: 7,
@@ -67,8 +71,10 @@ const AdminDashboard = () => {
   });
 
   const activities = activityData?.data || [];
-  const dailyItems = dailyData?.data?.items || [];
-  const dailyLabels = dailyItems.map((item) => formatDayLabel(item.date));
+  const allDailyItems = dailyData?.data?.items || [];
+  const currentWeekItems = allDailyItems.slice(-7);
+  const dailyLabels = currentWeekItems.map((item) => formatDayLabel(item.date));
+  const prevWeekItems = allDailyItems.slice(0, Math.max(0, allDailyItems.length - 7));
 
   const monthlyItems = monthlyData?.data?.items || [];
   // Ensure we map across all 12 months
@@ -80,21 +86,56 @@ const AdminDashboard = () => {
     });
   };
 
+  // Helper to calculate percentage change
+  // If there are no data for previous week/month (missing items or previous count is 0),
+  // return null to explicitly display '~0%' since comparison with nulls/zero baseline is invalid.
+  const calculateTrend = (
+    current: number,
+    previous: number | undefined | null,
+    hasPrevData: boolean
+  ): number | null => {
+    if (!hasPrevData || previous === undefined || previous === null || previous === 0) {
+      return null;
+    }
+    const pct = ((current - previous) / previous) * 100;
+    return Number(pct.toFixed(1));
+  };
+
   // Quick stats computed from real responses
-  const weeklyLoginsCount = dailyItems.reduce(
+  const weeklyLoginsCount = currentWeekItems.reduce(
     (acc, cur) => acc + (cur.actionCounts?.['LOGIN'] ?? 0),
     0
   );
+  const prevWeeklyLoginsCount = prevWeekItems.reduce(
+    (acc, cur) => acc + (cur.actionCounts?.['LOGIN'] ?? 0),
+    0
+  );
+  const hasPrevWeekData = prevWeekItems.length > 0 && prevWeeklyLoginsCount > 0;
+  const weeklyLoginsTrend = calculateTrend(weeklyLoginsCount, prevWeeklyLoginsCount, hasPrevWeekData);
+
   const currentMonthItem = monthlyItems.find((m) => m.month === currentMonth);
+  const prevMonthItem =
+    currentMonth > 1
+      ? monthlyItems.find((m) => m.month === currentMonth - 1)
+      : prevYearMonthlyData?.data?.items?.find((m) => m.month === 12);
+
   const monthlyRegsCount = currentMonthItem?.actionCounts?.['REGISTER'] ?? 0;
+  const prevMonthlyRegsCount = prevMonthItem?.actionCounts?.['REGISTER'] ?? 0;
+  const hasPrevMonthRegsData = Boolean(prevMonthItem) && prevMonthlyRegsCount > 0;
+  const monthlyRegsTrend = calculateTrend(monthlyRegsCount, prevMonthlyRegsCount, hasPrevMonthRegsData);
+
   const monthlyVipCount = currentMonthItem?.actionCounts?.['REQUEST_VIP'] ?? 0;
+  const prevMonthlyVipCount = prevMonthItem?.actionCounts?.['REQUEST_VIP'] ?? 0;
+  const hasPrevMonthVipData = Boolean(prevMonthItem) && prevMonthlyVipCount > 0;
+  const monthlyVipTrend = calculateTrend(monthlyVipCount, prevMonthlyVipCount, hasPrevMonthVipData);
 
   const quickStats = [
     {
       label: 'Lượt đăng nhập',
       sublabel: 'Tuần này',
       value: weeklyLoginsCount,
-      trend: +12.4,
+      trend: weeklyLoginsTrend,
+      trendLabel: 'so với tuần trước',
       color: 'var(--brand-500)',
       icon: (
         <IconBox bg="var(--brand-soft-500)">
@@ -106,7 +147,8 @@ const AdminDashboard = () => {
       label: 'Lượt đăng ký',
       sublabel: 'Tháng này',
       value: monthlyRegsCount,
-      trend: +8.2,
+      trend: monthlyRegsTrend,
+      trendLabel: 'so với tháng trước',
       color: 'var(--info-500)',
       icon: (
         <IconBox bg="var(--info-50)">
@@ -118,7 +160,8 @@ const AdminDashboard = () => {
       label: 'Lượt mở VIP',
       sublabel: 'Tháng này',
       value: monthlyVipCount,
-      trend: -3.5,
+      trend: monthlyVipTrend,
+      trendLabel: 'so với tháng trước',
       color: 'var(--warning-500)',
       icon: (
         <IconBox bg="var(--warning-50)">
@@ -172,7 +215,7 @@ const AdminDashboard = () => {
                   title={getActionLabel(chartAction1)}
                   label={getActionLabel(chartAction1)}
                   labels={dailyLabels}
-                  data={dailyItems.map((item) => item.actionCounts?.[chartAction1] ?? 0)}
+                  data={currentWeekItems.map((item) => item.actionCounts?.[chartAction1] ?? 0)}
                   color="var(--brand-500)"
                 />
               )}
@@ -243,7 +286,7 @@ const AdminDashboard = () => {
                   label={getActionLabel(chartAction3)}
                   labels={MONTHS}
                   data={getMonthlyDataForAction(chartAction3)}
-                  color="var(--info-500)"
+                  color="var(--warning-500)"
                 />
               )}
             </Suspense>
