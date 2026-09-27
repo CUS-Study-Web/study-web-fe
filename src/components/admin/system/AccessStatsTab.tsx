@@ -1,4 +1,5 @@
 import { Suspense, lazy, useState } from 'react';
+import { Calendar } from 'lucide-react';
 import Loading from '../../Loading';
 import {
   STAT_ACTION_OPTIONS,
@@ -96,10 +97,7 @@ export const AccessStatsTab = ({
             Thống kê theo ngày (7 ngày gần nhất)
           </div>
           <div className="flex items-center gap-[8px] px-[14px] py-[7px] bg-white rounded-[10px] border border-[var(--border-500)] shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <rect x="3" y="4" width="18" height="18" rx="2" stroke="#6B746D" strokeWidth="2" />
-              <path d="M16 2v4M8 2v4M3 10h18" stroke="#6B746D" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <Calendar size={14} className="text-[#6B746D]" />
             <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-600)]">
               Chọn ngày:
             </span>
@@ -227,10 +225,7 @@ export const AccessStatsTab = ({
             Thống kê theo tháng (Chia 4 tuần)
           </div>
           <div className="flex items-center gap-[8px] px-[14px] py-[7px] bg-white rounded-[10px] border border-[var(--border-500)] shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <rect x="3" y="4" width="18" height="18" rx="2" stroke="#6B746D" strokeWidth="2" />
-              <path d="M16 2v4M8 2v4M3 10h18" stroke="#6B746D" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <Calendar size={14} className="text-[#6B746D]" />
             <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-600)]">
               Chọn tháng:
             </span>

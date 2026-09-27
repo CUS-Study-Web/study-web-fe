@@ -1,9 +1,11 @@
+import type { LucideIcon } from 'lucide-react';
+
 export interface AssistantActivity {
   id: number;
   type: string;
   text: string;
   time: string;
-  icon: string;
+  icon: LucideIcon;
 }
 
 export interface AssistantSubject {
@@ -93,7 +95,7 @@ export interface AssistantStatCard {
   label: string;
   value: string;
   delta: string;
-  icon: string;
+  icon: LucideIcon;
   color: string;
   background: string;
 }

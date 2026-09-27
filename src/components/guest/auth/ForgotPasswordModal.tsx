@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Check } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "../../../services/authService";
 import { useNotification } from "../../../components/common/NotificationProvider";
@@ -382,9 +383,7 @@ export default function ForgotPasswordModal({
         {step === 4 && (
           <div className="text-center py-4">
             <div className="w-16 h-16 rounded-full bg-[var(--success-50)] text-[var(--success-600)] flex items-center justify-center mx-auto mb-4 border border-[var(--success-200)] shadow-sm">
-              <svg className="w-8 h-8 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
+              <Check size={32} strokeWidth={2.5} />
             </div>
 
             <h3

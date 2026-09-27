@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { Upload, AlertTriangle } from 'lucide-react';
 import { useNotification } from '../../common/NotificationProvider';
 import { parseFlashcardsFromExcel, type ParsedFlashcard } from '../../../utils/excelUtils';
 
@@ -174,21 +175,11 @@ export function AssistantCreateTopicPopup({ onClose, onCreate, isUploading }: As
               onClick={isUploading ? undefined : handleDropzoneClick}
             >
               {/* Upload icon */}
-              <svg
-                width="36"
-                height="36"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke={isDragOver ? 'var(--brand-500)' : 'var(--neutral-400)'}
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="block mx-auto mb-2.5"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
+              <Upload
+                className={`w-9 h-9 block mx-auto mb-2.5 transition-colors ${
+                  isDragOver ? 'text-[var(--brand-500)]' : 'text-[var(--neutral-400)]'
+                }`}
+              />
 
               {fileName ? (
                 <div>
@@ -219,7 +210,7 @@ export function AssistantCreateTopicPopup({ onClose, onCreate, isUploading }: As
                 border: '1px solid var(--warning-100)',
               }}
             >
-              <span className="text-[14px] shrink-0">⚠️</span>
+              <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
               <div
                 className="font-[family-name:var(--font-body)] text-[12px] leading-[1.55]"
                 style={{ color: 'var(--warning-800)' }}

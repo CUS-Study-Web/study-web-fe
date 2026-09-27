@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { ChevronLeft, BookOpen, FileText } from "lucide-react";
 import { ROUTES } from "../../utils/routes";
 import { COURSES_DATA } from "../../utils/coursesData";
 import ProgressBar from "../../components/learner/ProgressBar";
@@ -80,9 +81,7 @@ export default function LearnerSubjectDetailPage() {
               to={ROUTES.COURSE_DETAIL(courseKey)}
               className="inline-flex items-center gap-1.5 rounded-full transition-all bg-white/15 border border-white/25 px-3.5 py-1 mb-4 !text-white"
             >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <path d="M10 12L6 8l4-4" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <ChevronLeft className="w-3.5 h-3.5 text-white" />
               <span className="font-[family:var(--font-heading)] font-semibold text-xs text-white">
                 {course.title} — Môn học
               </span>
@@ -127,13 +126,15 @@ export default function LearnerSubjectDetailPage() {
             onClick={() => setActiveTab("lessons")}
             className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "lessons" ? "bg-[var(--brand-base-500)] !text-white" : "bg-transparent text-[#6B746D]"}`}
           >
-            📖 Bài giảng ({lessons.length})
+            <BookOpen className="w-4 h-4" />
+            <span>Bài giảng ({lessons.length})</span>
           </div>
           <div
             onClick={() => setActiveTab("exercises")}
             className={`flex items-center gap-2 rounded-full transition-all whitespace-nowrap cursor-pointer font-[family:var(--font-heading)] font-bold text-sm px-6 py-2.5 ${activeTab === "exercises" ? "bg-[var(--brand-base-500)] !text-white" : "bg-transparent text-[#6B746D]"}`}
           >
-            📎 Bài tập ({exercises.length})
+            <FileText className="w-4 h-4" />
+            <span>Bài tập ({exercises.length})</span>
           </div>
         </div>
       </div>

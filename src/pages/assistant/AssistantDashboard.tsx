@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { Hand } from 'lucide-react';
 import AssistantStatCard from '../../components/assistant/dashboard/AssistantStatCard';
 import AssistantQuickActions from '../../components/assistant/dashboard/AssistantQuickActions';
 import AssistantRecentActivity from '../../components/assistant/dashboard/AssistantRecentActivity';
@@ -11,8 +12,9 @@ const AssistantDashboard = () => {
     <div className="w-full">
       {/* Welcome Section */}
       <div className="mb-7">
-        <div className="font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-h3)] text-[var(--text-primary)] m-0 mb-1">
-          Xin chào, Trợ giảng! 👋
+        <div className="font-[family-name:var(--font-heading)] font-bold text-[length:var(--text-h3)] text-[var(--text-primary)] m-0 mb-1 flex items-center gap-2">
+          <span>Xin chào, Trợ giảng!</span>
+          <Hand className="w-6 h-6 text-[#E5A823] -rotate-12 inline-block transition-transform duration-300 hover:rotate-12 hover:scale-110" />
         </div>
         <div className="font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-secondary)] m-0">
           Dưới đây là tổng quan hoạt động hôm nay.

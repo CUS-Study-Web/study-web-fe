@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { GraduationCap } from "lucide-react";
 
 interface LogoProps {
   imageSrc?: string;
@@ -36,12 +37,9 @@ export default function Logo({
         />
       ) : (
         <div
-          className={`${sizeClasses[size].box} bg-[#28522d] flex items-center justify-center text-white shadow-xs transition-transform group-hover:scale-105`}
+          className={`${sizeClasses[size].box} bg-[#004109] flex items-center justify-center text-white shadow-xs transition-transform group-hover:scale-105`}
         >
-          {/* Crest SVG Fallback */}
-          <svg className={`${sizeClasses[size].icon} fill-current text-white`} viewBox="0 0 24 24">
-            <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5zm0 17.5c-4.14 0-7.5-3.36-7.5-7.5s3.36-7.5 7.5-7.5 7.5 3.36 7.5 7.5-3.36 7.5-7.5 7.5zm-3-8l2.5 2.5 5.5-5.5 1.5 1.5-7 7-4-4 1.5-1.5z" />
-          </svg>
+          <GraduationCap className={`${sizeClasses[size].icon} text-white`} />
         </div>
       )}
 

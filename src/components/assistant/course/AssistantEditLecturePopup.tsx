@@ -2,6 +2,7 @@ import { useState } from 'react';
 import AssistantConfirmPopup from '../AssistantConfirmPopup';
 import { useUpdateLessonMutation } from '../../../hooks/queries/useLessons';
 import { useNotification } from '../../common/NotificationProvider';
+import { Pencil, X } from 'lucide-react';
 
 interface AssistantEditLecturePopupProps {
   courseKey: string;
@@ -107,8 +108,8 @@ export default function AssistantEditLecturePopup({
           {/* Header */}
           <div className="flex items-start justify-between mb-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-[10px] bg-[var(--brand-soft-300)] flex items-center justify-center text-[20px]">
-                ✏️
+              <div className="w-10 h-10 rounded-[10px] bg-[var(--brand-soft-300)] flex items-center justify-center">
+                <Pencil className="w-5 h-5 text-[var(--brand-700)]" />
               </div>
               <div>
                 <div className="font-[family-name:var(--font-heading)] font-bold text-[16px] text-[var(--text-primary)]">
@@ -119,12 +120,13 @@ export default function AssistantEditLecturePopup({
                 </div>
               </div>
             </div>
-            <div
+            <button
+              type="button"
               onClick={onClose}
-              className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-[var(--surface-muted)] cursor-pointer text-[var(--text-secondary)] text-[18px] leading-none select-none"
+              className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-[var(--surface-muted)] cursor-pointer text-[var(--text-secondary)] transition-colors border-none bg-transparent"
             >
-              ×
-            </div>
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
           {/* Row: Khóa học + Môn học */}

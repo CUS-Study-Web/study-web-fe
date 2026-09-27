@@ -6,6 +6,7 @@ import {
   useMarkNotificationAsReadMutation,
   useMarkAllNotificationsAsReadMutation,
 } from '../../hooks/queries/useNotifications';
+import { Bell, BellOff } from 'lucide-react';
 
 // ==========================================
 // FILTER TAB TYPE
@@ -82,19 +83,7 @@ export default function NotificationDropdown() {
         className="relative flex items-center justify-center w-10 h-10 rounded-full bg-transparent hover:bg-[#e6efe8] active:scale-95 transition-all duration-150 cursor-pointer border-none"
         aria-label="Thông báo"
       >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#333a35"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-        </svg>
+        <Bell className="w-5 h-5 text-[#333a35]" />
         {/* Badge */}
         {unreadCount > 0 && (
           <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center px-1 bg-[#EF4444] text-white text-[10px] font-bold rounded-full leading-none shadow-sm">
@@ -131,11 +120,10 @@ export default function NotificationDropdown() {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`px-3.5 py-1.5 rounded-full text-[12px] font-bold cursor-pointer transition-all duration-150 border-none font-[family:var(--font-heading)] ${
-                  activeTab === tab.key
-                    ? 'bg-[#28522d] !text-white shadow-sm'
-                    : 'bg-[var(--surface-500)] text-[var(--text-secondary-400)] hover:bg-[#e6efe8]'
-                }`}
+                className={`px-3.5 py-1.5 rounded-full text-[12px] font-bold cursor-pointer transition-all duration-150 border-none font-[family:var(--font-heading)] ${activeTab === tab.key
+                  ? 'bg-[#28522d] !text-white shadow-sm'
+                  : 'bg-[var(--surface-500)] text-[var(--text-secondary-400)] hover:bg-[#e6efe8]'
+                  }`}
               >
                 {tab.label}
               </button>
@@ -153,7 +141,7 @@ export default function NotificationDropdown() {
               </div>
             ) : notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 px-4">
-                <div className="text-[36px] mb-2 opacity-40">🔔</div>
+                <BellOff className="w-9 h-9 text-[var(--text-secondary-300)] mb-2" />
                 <div className="font-[family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)] text-center">
                   {activeTab === 'unread' ? 'Không có thông báo chưa đọc' : 'Chưa có thông báo nào'}
                 </div>
@@ -164,21 +152,19 @@ export default function NotificationDropdown() {
                   <button
                     key={notif.id}
                     onClick={() => handleMarkOneRead(notif.id, notif.isRead)}
-                    className={`w-full flex items-start gap-3 px-4 py-3 rounded-[12px] cursor-pointer transition-all duration-150 text-left border-none ${
-                      notif.isRead
-                        ? 'bg-transparent hover:bg-[var(--surface-500)]'
-                        : 'bg-[#f0faf2] hover:bg-[#e4f5e8]'
-                    }`}
+                    className={`w-full flex items-start gap-3 px-4 py-3 rounded-[12px] cursor-pointer transition-all duration-150 text-left border-none ${notif.isRead
+                      ? 'bg-transparent hover:bg-[var(--surface-500)]'
+                      : 'bg-[#f0faf2] hover:bg-[#e4f5e8]'
+                      }`}
                   >
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <span
-                          className={`font-[family:var(--font-heading)] text-[13px] leading-tight break-words ${
-                            notif.isRead
-                              ? 'font-semibold text-[var(--text-secondary-600)]'
-                              : 'font-bold text-[var(--text-primary-500)]'
-                          }`}
+                          className={`font-[family:var(--font-heading)] text-[13px] leading-tight break-words ${notif.isRead
+                            ? 'font-semibold text-[var(--text-secondary-600)]'
+                            : 'font-bold text-[var(--text-primary-500)]'
+                            }`}
                         >
                           {notif.title}
                         </span>
@@ -187,9 +173,8 @@ export default function NotificationDropdown() {
                         )}
                       </div>
                       <p
-                        className={`font-[family:var(--font-body)] text-[12px] leading-[1.4] mt-1 m-0 break-words whitespace-pre-line ${
-                          notif.isRead ? 'text-[var(--text-secondary-300)]' : 'text-[var(--text-secondary-600)]'
-                        }`}
+                        className={`font-[family:var(--font-body)] text-[12px] leading-[1.4] mt-1 m-0 break-words whitespace-pre-line ${notif.isRead ? 'text-[var(--text-secondary-300)]' : 'text-[var(--text-secondary-600)]'
+                          }`}
                       >
                         {notif.message}
                       </p>

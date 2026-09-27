@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { FileText, Minus, Plus, Download, Check, CheckCircle2, XCircle } from "lucide-react";
 import Header from "../../components/guest/Header";
 import ExamQuestionViewerItem from "../../components/learner/ExamQuestionViewerItem";
 import ExamAnswerSelector from "../../components/learner/ExamAnswerSelector";
@@ -127,7 +128,10 @@ export default function LearnerTakeExamPage() {
         {/* Left: PDF viewer */}
         <div className="flex flex-col h-[calc(100vh-100px)] min-h-[700px]">
           <div className="mb-4">
-            <div className="font-[family:var(--font-heading)] font-bold text-xl text-[#1B1F1C]">📄 {exam.title}</div>
+            <div className="font-[family:var(--font-heading)] font-bold text-xl text-[#1B1F1C] flex items-center gap-2">
+              <FileText className="w-5 h-5 text-[var(--brand-base-500)]" />
+              <span>{exam.title}</span>
+            </div>
           </div>
           
           <div className="flex-1 relative rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-[#E4EBE5] overflow-hidden bg-white">
@@ -153,7 +157,7 @@ export default function LearnerTakeExamPage() {
                     className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors"
                     title="Thu nhỏ"
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <Minus className="w-3.5 h-3.5" />
                   </button>
                   <span className="text-[12px] font-medium text-gray-600 w-10 text-center">
                     {docxZoom}%
@@ -163,7 +167,7 @@ export default function LearnerTakeExamPage() {
                     className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors"
                     title="Phóng to"
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <Plus className="w-3.5 h-3.5" />
                   </button>
                   <div className="w-[1px] h-4 bg-gray-200 mx-1"></div>
                   <button
@@ -174,7 +178,7 @@ export default function LearnerTakeExamPage() {
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-gray-50 text-[12px] font-medium text-[var(--brand-600)] border border-[var(--brand-200)] transition-colors"
                     title="Tải xuống"
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <Download className="w-3.5 h-3.5" />
                     Tải về
                   </button>
                 </div>
@@ -222,7 +226,7 @@ export default function LearnerTakeExamPage() {
               <div className="p-5 border-b border-[#F0F4F1] shrink-0">
                 <div className="flex items-center gap-3.5 mb-4">
                   <div className="w-12 h-12 rounded-full bg-[var(--brand-soft-500)] flex items-center justify-center shrink-0">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="var(--brand-base-500)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    <Check className="w-6 h-6 text-[var(--brand-base-500)]" />
                   </div>
                   <div>
                     <div className="font-[family:var(--font-heading)] font-bold text-lg text-[var(--text-primary-500)] leading-tight">Đã nộp bài!</div>
@@ -270,8 +274,8 @@ export default function LearnerTakeExamPage() {
                       </div>
                       <div className="w-4 shrink-0 flex items-center justify-center">
                         {userAns && (isCorrectQuestion
-                          ? <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="var(--brand-base-500)" /><path d="M4 7l2.5 2.5L10 4.5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                          : <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="var(--error-500)" /><path d="M5 5l4 4M9 5l-4 4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" /></svg>
+                          ? <CheckCircle2 className="w-3.5 h-3.5 text-[var(--brand-base-500)]" />
+                          : <XCircle className="w-3.5 h-3.5 text-[var(--error-500)]" />
                         )}
                       </div>
                     </div>

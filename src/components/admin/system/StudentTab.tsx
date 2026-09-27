@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Search, Crown } from 'lucide-react'
 import type { LearnerSummaryResponse } from '../../../types/api/system.api'
 import { StudentDetailModal, CreateVipModal } from '../modals/system'
 import { ConfirmMiniModal } from '../modals/website/ConfirmMiniModal'
@@ -95,16 +96,10 @@ export const StudentTab = () => {
         </div>
         <div className="flex gap-[10px] items-center w-full sm:w-auto">
           <div className="relative flex-1 sm:flex-none">
-            <svg
-              className="absolute left-[11px] top-1/2 -translate-y-1/2 pointer-events-none stroke-[var(--text-secondary-300)]"
-              width="14"
-              height="14"
-              viewBox="0 0 16 16"
-              fill="none"
-            >
-              <circle cx="7" cy="7" r="5" strokeWidth="1.6" />
-              <path d="M11 11l3 3" strokeWidth="1.6" strokeLinecap="round" />
-            </svg>
+            <Search
+              size={14}
+              className="absolute left-[11px] top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-secondary-300)]"
+            />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -114,9 +109,10 @@ export const StudentTab = () => {
           </div>
           <button
             onClick={() => setShowVipModal(true)}
-            className="![font-family:var(--font-heading)] !font-bold !text-[12px] px-[16px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--warning-500)] !text-white cursor-pointer whitespace-nowrap hover:bg-[var(--warning-600)] transition-colors duration-[var(--motion-fast)]"
+            className="![font-family:var(--font-heading)] !font-bold !text-[12px] px-[16px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--warning-500)] !text-white cursor-pointer whitespace-nowrap hover:bg-[var(--warning-600)] transition-colors duration-[var(--motion-fast)] inline-flex items-center gap-1.5"
           >
-            ⭐ Tạo tài khoản VIP
+            <Crown size={14} />
+            Tạo tài khoản VIP
           </button>
         </div>
       </div>
@@ -165,8 +161,8 @@ export const StudentTab = () => {
                       {u.gmail}
                     </div>
                     {u.tier === 'VIP' && (
-                      <span className="inline-block mt-[4px] bg-[var(--warning-50)] text-[var(--warning-500)] rounded-full px-[7px] py-[1px] [font-family:var(--font-heading)] font-bold text-[10px]">
-                        ⭐ VIP
+                      <span className="inline-flex items-center gap-1 mt-[4px] bg-[var(--warning-50)] text-[var(--warning-500)] rounded-full px-[7px] py-[1px] [font-family:var(--font-heading)] font-bold text-[10px]">
+                        <Crown size={10} className="fill-[var(--warning-500)]" /> VIP
                       </span>
                     )}
                   </td>

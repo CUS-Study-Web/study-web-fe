@@ -1,3 +1,4 @@
+import { Users, Paperclip, FileText, GraduationCap, BookOpen } from 'lucide-react';
 import type {
   AssistantLecture,
   AssistantExercise,
@@ -21,7 +22,7 @@ export const ASST_STAT_CARDS: AssistantStatCard[] = [
     label: "Tổng học viên",
     value: "1.284",
     delta: "+32 tuần này",
-    icon: "👥",
+    icon: Users,
     color: "#2C5A31",
     background: "#DCE9DE"
   },
@@ -30,7 +31,7 @@ export const ASST_STAT_CARDS: AssistantStatCard[] = [
     label: "Bài tập đã đăng",
     value: "36",
     delta: "+4 tuần này",
-    icon: "📎",
+    icon: Paperclip,
     color: "#2F6FAE",
     background: "#DDEAF8"
   },
@@ -39,7 +40,7 @@ export const ASST_STAT_CARDS: AssistantStatCard[] = [
     label: "Đề thi đã tạo",
     value: "47",
     delta: "+5 tuần này",
-    icon: "📝",
+    icon: FileText,
     color: "#B7791F",
     background: "#FBF0DC"
   },
@@ -51,35 +52,35 @@ export const ASST_RECENT_ACTIVITIES: AssistantActivity[] = [
     type: "material",
     text: "Đề thi Toán nâng cao 2024 - Đề 12 đã được tải lên",
     time: "5 phút trước",
-    icon: "📝"
+    icon: FileText
   },
   {
     id: 2,
     type: "student",
     text: "Học viên Nguyễn Văn A đã đăng ký khóa V-ACT",
     time: "10 phút trước",
-    icon: "👨‍🎓"
+    icon: GraduationCap
   },
   {
     id: 3,
     type: "course",
     text: "Khóa học V-SAT đã được cập nhật nội dung",
     time: "30 phút trước",
-    icon: "📚"
+    icon: BookOpen
   },
   {
     id: 4,
     type: "material",
     text: "Đề thi thử THPT Quốc Gia môn Hóa đã được phê duyệt",
     time: "1 giờ trước",
-    icon: "📝"
+    icon: FileText
   },
   {
     id: 5,
     type: "student",
     text: "Học viên Trần Thị B đã hoàn thành bài tập Toán",
     time: "2 giờ trước",
-    icon: "👨‍🎓"
+    icon: GraduationCap
   }
 ];
 

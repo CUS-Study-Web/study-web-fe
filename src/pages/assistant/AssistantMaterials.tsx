@@ -10,6 +10,7 @@ import AssistantFeatureInDevPopup from '../../components/assistant/AssistantFeat
 import AssistantMaterialSortPopup from '../../components/assistant/material/AssistantMaterialSortPopup';
 import { getDisplayFileType, FILE_TYPE_COLORS } from '../../utils/fileUtils';
 import { useNotification } from '../../components/common/NotificationProvider';
+import { MoreVertical, Eye, Pencil, Trash2, Upload, Search, Globe, Crown } from 'lucide-react';
 
 const FileTypeBadge = ({ type }: { type: string }) => {
   const displayType = getDisplayFileType(type);
@@ -23,8 +24,9 @@ const FileTypeBadge = ({ type }: { type: string }) => {
 const AccessBadge = ({ access }: { access: string }) => {
   const isPublic = access === "PUBLIC";
   return (
-    <span className={`px-3 py-1.5 rounded-full font-[family-name:var(--font-heading)] font-bold text-[13px] ${isPublic ? 'bg-[var(--brand-soft-500)] text-[var(--brand-500)]' : 'bg-[var(--warning-100)] text-[var(--warning-600)]'}`}>
-      {isPublic ? "🌐 Public" : "⭐ VIP"}
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-[family-name:var(--font-heading)] font-bold text-[13px] ${isPublic ? 'bg-[var(--brand-soft-500)] text-[var(--brand-500)]' : 'bg-[var(--warning-100)] text-[var(--warning-600)]'}`}>
+      {isPublic ? <Globe className="w-3.5 h-3.5" /> : <Crown className="w-3.5 h-3.5" />}
+      <span>{isPublic ? "Public" : "VIP"}</span>
     </span>
   );
 };
@@ -81,11 +83,7 @@ function MaterialActionMenu({ doc, onView, onEdit, onDelete }: MaterialActionMen
         className="w-8 h-8 rounded-full border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
         aria-label="Tùy chọn"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--neutral-500)">
-          <circle cx="12" cy="5" r="1.5" />
-          <circle cx="12" cy="12" r="1.5" />
-          <circle cx="12" cy="19" r="1.5" />
-        </svg>
+        <MoreVertical className="w-4 h-4 text-[var(--neutral-500)]" />
       </button>
 
       {open && (
@@ -105,10 +103,7 @@ function MaterialActionMenu({ doc, onView, onEdit, onDelete }: MaterialActionMen
             onClick={() => { setOpen(false); onView(doc); }}
             className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
+            <Eye className="w-3.5 h-3.5 text-current" />
             Xem
           </button>
 
@@ -117,9 +112,7 @@ function MaterialActionMenu({ doc, onView, onEdit, onDelete }: MaterialActionMen
             onClick={() => { setOpen(false); onEdit(doc); }}
             className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-            </svg>
+            <Pencil className="w-3.5 h-3.5 text-current" />
             Sửa
           </button>
 
@@ -128,9 +121,7 @@ function MaterialActionMenu({ doc, onView, onEdit, onDelete }: MaterialActionMen
             onClick={() => { setOpen(false); onDelete(doc.id); }}
             className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] !text-[#DC2626] text-left transition-colors hover:bg-[#FEF2F2]"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-            </svg>
+            <Trash2 className="w-3.5 h-3.5 text-current" />
             Xóa
           </button>
         </div>
@@ -265,11 +256,7 @@ export default function AssistantMaterials() {
           className="flex items-center gap-2 px-5 py-2 rounded-[var(--radius-md)] border-none bg-[var(--brand-500)] hover:bg-[var(--brand-600)] font-[family-name:var(--font-heading)] font-semibold text-[14px] cursor-pointer shadow-sm hover:shadow-md active:scale-95 transition-all duration-200"
           style={{ color: 'var(--neutral-0)' }}
         >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--neutral-0)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="17 8 12 3 7 8" />
-            <line x1="12" y1="3" x2="12" y2="15" />
-          </svg>
+          <Upload className="w-4 h-4 text-white" />
           Tải lên
         </div>
       </div>
@@ -325,10 +312,7 @@ export default function AssistantMaterials() {
 
       <div className="bg-[var(--surface-card)] rounded-[18px] border border-[var(--border-default)] shadow-[var(--shadow-clay-sm)] overflow-hidden flex flex-col">
         <div className="p-[14px_20px] border-b border-[var(--border-subtle)] flex items-center gap-2.5">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--neutral-700)]">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
+          <Search className="w-4 h-4 text-[var(--neutral-700)]" />
           <input
             type="text"
             placeholder="Tìm kiếm theo tiêu đề..."

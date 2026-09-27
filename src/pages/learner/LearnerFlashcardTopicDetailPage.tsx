@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { ChevronRight, Play, Check } from "lucide-react";
 import { ROUTES } from "../../utils/routes";
 import Header from "../../components/guest/Header";
 import Footer from "../../components/guest/Footer";
@@ -79,7 +80,7 @@ export default function LearnerFlashcardTopicDetailPage() {
               className="bg-transparent border-none cursor-pointer font-[family:var(--font-heading)] font-semibold text-[13px] text-[var(--brand-soft-500)]/70 p-0 hover:text-[var(--brand-soft-500)] transition-colors">
               Flashcard
             </div>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" className="text-[var(--brand-soft-500)]/50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <ChevronRight size={14} className="text-[var(--brand-soft-500)]/50" />
             <div className="font-[family:var(--font-heading)] font-semibold text-[13px] text-[var(--brand-soft-500)]">{topic.title}</div>
           </div>
 
@@ -111,7 +112,7 @@ export default function LearnerFlashcardTopicDetailPage() {
             <div className="flex flex-col items-end gap-1.5">
               <div onClick={() => navigate(ROUTES.LEARNER.FLASHCARD_STUDY(String(topic.id)))}
                 className="font-[family:var(--font-heading)] font-extrabold text-[15px] py-3.5 px-9 rounded-[14px] border-none bg-[#F5C518] text-[#1B1F1C] cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all duration-150 flex items-center gap-2 hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(0,0,0,0.4)]">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 3l14 9-14 9V3z" fill="#1B1F1C" /></svg>
+                <Play size={16} fill="#1B1F1C" />
                 Học ngay
               </div>
             </div>
@@ -170,7 +171,7 @@ export default function LearnerFlashcardTopicDetailPage() {
                       <td className="py-3.5 px-4.5 text-center">
                         {w.status === 'REMEMBERED' ? (
                           <span className="bg-[var(--brand-soft-500)] text-[var(--brand-base-500)] rounded-full py-1 px-3 font-[family:var(--font-heading)] font-bold text-[11px] whitespace-nowrap inline-flex items-center gap-1">
-                            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="var(--brand-base-500)" /><path d="M3.5 6l2 2 3-3" stroke="#fff" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                            <Check size={12} strokeWidth={2.5} />
                             Đã nhớ
                           </span>
                         ) : w.status === 'NOT_REMEMBERED' ? (
