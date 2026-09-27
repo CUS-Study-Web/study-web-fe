@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useNotification } from "../../components/common/NotificationProvider";
 import { useSubscribeVipMutation, useRenewVipMutation, useVipFormContentQuery } from "../../hooks/queries/useVipSubscription";
 import { ROUTES } from "../../utils/routes";
+import { validatePhone } from "../../utils/phoneUtils";
 
 export default function LearnerVipRegisterPage() {
   const navigate = useNavigate();
@@ -51,6 +52,11 @@ export default function LearnerVipRegisterPage() {
   const handleSubmit = () => {
     if (!name.trim() || !phone.trim() || !email.trim() || !birth || !evidenceFile) {
       showError("Vui lòng điền đầy đủ các trường bắt buộc và tải lên minh chứng.");
+      return;
+    }
+
+    if (!validatePhone(phone)) {
+      showError("Số điện thoại không hợp lệ.");
       return;
     }
 
@@ -379,7 +385,7 @@ export default function LearnerVipRegisterPage() {
           <button
             onClick={handleSubmit}
             disabled={activeMutation.isPending}
-            className="[font-family:var(--font-heading)] font-extrabold text-[16px] py-[16px] px-[56px] rounded-[var(--radius-md)] border-none bg-gradient-to-br from-[var(--brand-base-500)] to-[var(--brand-base-400)] text-white cursor-pointer shadow-[0_4px_20px_rgba(44,90,49,0.35)] transition-all duration-[var(--motion-fast)] flex items-center gap-[10px] hover:-translate-y-[2px] hover:shadow-[0_8px_28px_rgba(44,90,49,0.4)] active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+            className="[font-family:var(--font-heading)] font-extrabold text-[16px] py-[16px] px-[56px] rounded-[var(--radius-md)] border-none bg-gradient-to-br from-[var(--brand-base-500)] to-[var(--brand-base-400)] !text-white cursor-pointer shadow-[0_4px_20px_rgba(44,90,49,0.35)] transition-all duration-[var(--motion-fast)] flex items-center gap-[10px] hover:-translate-y-[2px] hover:shadow-[0_8px_28px_rgba(44,90,49,0.4)] active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path

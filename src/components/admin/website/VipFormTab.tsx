@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useNotification } from "../../common/NotificationProvider"
 import { useVipFormContentQuery, useUpdateVipFormContentMutation } from "../../../hooks/queries/useVipSubscription"
+import { validatePhone } from "../../../utils/phoneUtils"
 
 export default function VipFormTab() {
   const { showSuccess, showError } = useNotification()
@@ -72,6 +73,11 @@ export default function VipFormTab() {
   }
 
   const handleSave = () => {
+    if (hotline && !validatePhone(hotline)) {
+      showError("Hotline không hợp lệ. Vui lòng nhập đúng định dạng số điện thoại Việt Nam.");
+      return;
+    }
+
     const formData = new FormData();
     if (formTitle) formData.append("formTitle", formTitle);
     if (formDesc) formData.append("description", formDesc);
@@ -88,7 +94,7 @@ export default function VipFormTab() {
         showSuccess("Lưu cấu hình Form VIP thành công!")
       },
       onError: (err: any) => {
-        showError(err.message || "Có lỗi xảy ra khi lưu form!")
+        showError(err.response?.data?.message || err.message || "Có lỗi xảy ra khi lưu form!")
       }
     })
   }
@@ -279,7 +285,7 @@ export default function VipFormTab() {
           type="button"
           onClick={handleSave}
           disabled={isPending}
-          className="px-[28px] py-[11px] rounded-[12px] border-none bg-[#2C5A31] text-white [font-family:var(--font-heading)] font-bold text-[14px] cursor-pointer shadow-[0_2px_10px_rgba(44,90,49,0.28)] transition-colors duration-150 hover:bg-[#234A28] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-[28px] py-[11px] rounded-[12px] border-none bg-[#2C5A31] !text-white [font-family:var(--font-heading)] font-bold text-[14px] cursor-pointer shadow-[0_2px_10px_rgba(44,90,49,0.28)] transition-colors duration-150 hover:bg-[#234A28] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending ? "Đang lưu..." : "Lưu thay đổi"}
         </button>
