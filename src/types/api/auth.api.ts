@@ -6,6 +6,24 @@ export interface UserResponse {
   birth: string; // YYYY-MM-DD
   gender: 'MALE' | 'FEMALE';
   school: string;
+  avatarUrl?: string;
+  role?: 'ADMIN' | 'LEARNER' | 'ASSISTANT';
+  tier?: 'VIP' | 'NORMAL';
+  status?: 'ACTIVE' | 'INACTIVE' | 'BANNED';
+  vipStartDate?: string;
+  vipEndDate?: string;
+  joinDate?: string;
+  lastLogin?: string;
+}
+
+export interface UpdateProfileRequest {
+  name?: string;
+  phone?: string;
+  birth?: string; // YYYY-MM-DD
+  gender?: 'MALE' | 'FEMALE' | '';
+  school?: string;
+  vipStartDate?: string;
+  vipEndDate?: string;
 }
 
 export interface AuthResponse {

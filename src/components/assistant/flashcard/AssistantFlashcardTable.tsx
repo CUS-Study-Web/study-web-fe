@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import type { FlashcardTopic } from '../../../types/assistant';
+import type { FlashcardTopicResponse, FlashcardMetricsResponse } from '../../../types/api/flashcardTopic.api';
 
 // ─── Summary Chips ────────────────────────────────────────────────────────────
 
@@ -33,30 +33,27 @@ function SummaryChip({ label, value, color, bg }: SummaryChipProps) {
 }
 
 interface AssistantSummaryChipsProps {
-  topics: FlashcardTopic[];
+  metrics?: FlashcardMetricsResponse;
 }
 
-export function AssistantSummaryChips({ topics }: AssistantSummaryChipsProps) {
-  const totalWords = topics.reduce((s, t) => s + t.words, 0);
-  const activeCount = topics.filter(t => t.status === 'published').length;
-
+export function AssistantSummaryChips({ metrics }: AssistantSummaryChipsProps) {
   return (
-    <div className="flex gap-3 mb-6 flex-wrap">
+    <div className="flex gap-3 flex-wrap">
       <SummaryChip
         label="Tổng chủ đề"
-        value={topics.length}
+        value={metrics?.totalTopics ?? 0}
         color="var(--brand-500)"
         bg="var(--brand-soft-500)"
       />
       <SummaryChip
         label="Tổng từ vựng"
-        value={totalWords}
+        value={metrics?.totalWords ?? 0}
         color="var(--info-500)"
         bg="var(--info-100)"
       />
       <SummaryChip
         label="Đang dùng"
-        value={activeCount}
+        value={metrics?.activeTopics ?? 0}
         color="#9B4E8D"
         bg="#F5E6F3"
       />
@@ -67,9 +64,9 @@ export function AssistantSummaryChips({ topics }: AssistantSummaryChipsProps) {
 // ─── Kebab Menu — portal-style to avoid table overflow clipping ───────────────
 
 interface KebabMenuProps {
-  topicId: number;
-  openKebab: number | null;
-  setOpenKebab: (id: number | null) => void;
+  topicId: string;
+  openKebab: string | null;
+  setOpenKebab: (id: string | null) => void;
   onDownload: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -142,7 +139,7 @@ function KebabMenu({ topicId, openKebab, setOpenKebab, onDownload, onEdit, onDel
       ),
       color: '#DC2626',
       hoverBg: '#FEF2F2',
-      action: () => { onDelete(); },
+      action: () => { onDelete(); setOpenKebab(null); },
     },
   ];
 
@@ -197,12 +194,12 @@ function KebabMenu({ topicId, openKebab, setOpenKebab, onDownload, onEdit, onDel
 // ─── Topic Table ──────────────────────────────────────────────────────────────
 
 interface AssistantTopicTableProps {
-  topics: FlashcardTopic[];
-  openKebab: number | null;
-  setOpenKebab: (id: number | null) => void;
-  onDownloadTopic: (id: number) => void;
-  onEditTopic: (topic: FlashcardTopic) => void;
-  onDeleteTopic: (id: number) => void;
+  topics: FlashcardTopicResponse[];
+  openKebab: string | null;
+  setOpenKebab: (id: string | null) => void;
+  onDownloadTopic: (id: string) => void;
+  onEditTopic: (topic: FlashcardTopicResponse) => void;
+  onDeleteTopic: (id: string) => void;
 }
 
 const ROW_GRID = 'grid-cols-[2fr_1fr_1fr_1fr_64px]';
@@ -223,7 +220,16 @@ export function AssistantTopicTable({
   onEditTopic,
   onDeleteTopic,
 }: AssistantTopicTableProps) {
-  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+
+  const formatDate = (isoString: string) => {
+    try {
+      const date = new Date(isoString);
+      return date.toLocaleDateString('vi-VN');
+    } catch {
+      return isoString;
+    }
+  };
 
   return (
     <div
@@ -262,19 +268,19 @@ export function AssistantTopicTable({
             </div>
             {/* Word count */}
             <div className="px-5 py-3.5 text-center font-[family-name:var(--font-heading)] font-bold text-[14px] text-[var(--brand-500)]">
-              {topic.words}
+              {topic.numWords}
             </div>
             {/* Date */}
             <div className="px-5 py-3.5 font-[family-name:var(--font-body)] text-[13px] text-[var(--neutral-500)] whitespace-nowrap">
-              {topic.created}
+              {formatDate(topic.createdAt)}
             </div>
             {/* Status */}
             <div className="px-5 py-3.5 flex items-center">
-              <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${topic.status === 'published'
+              <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-[family-name:var(--font-heading)] font-semibold text-[11px] ${topic.status === 'PUBLISH'
                 ? 'bg-[var(--success-100)] text-[var(--success-700)]'
                 : 'bg-[var(--warning-100)] text-[var(--warning-700)]'
                 }`}>
-                {topic.status === 'published' ? 'Đã xuất bản' : 'Nháp'}
+                {topic.status === 'PUBLISH' ? 'Đã xuất bản' : 'Nháp'}
               </span>
             </div>
             {/* Actions */}

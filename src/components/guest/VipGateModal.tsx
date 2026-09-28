@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Crown, Sparkles } from "lucide-react";
 
 interface VipGateModalProps {
   isOpen: boolean;
@@ -22,14 +23,13 @@ export default function VipGateModal({
       <div className="bg-white rounded-[var(--radius-xl)] max-w-md w-full p-6 sm:p-8 shadow-2xl border border-[var(--border-300)] text-center relative overflow-hidden select-none">
         {/* Crown / Lock Badge */}
         <div className="w-16 h-16 rounded-full bg-[#18321b] flex items-center justify-center mx-auto mb-5 shadow-lg border-2 border-[#ffc107]/40">
-          <svg className="w-8 h-8 text-[#ffc107] fill-current" viewBox="0 0 24 24">
-            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-          </svg>
+          <Crown className="w-8 h-8 text-[#ffc107]" />
         </div>
 
         {/* Title */}
-        <span className="inline-block bg-[#fffdf5] border border-[#fde68a] text-[#b45309] text-xs font-extrabold uppercase px-3 py-1 rounded-full tracking-wider mb-3">
-          ✦ TÀI KHOẢN VIP
+        <span className="inline-flex items-center gap-1.5 bg-[#fffdf5] border border-[#fde68a] text-[#b45309] text-xs font-extrabold uppercase px-3 py-1 rounded-full tracking-wider mb-3">
+          <Crown className="w-3.5 h-3.5" />
+          <span>TÀI KHOẢN VIP</span>
         </span>
 
         <h3
@@ -53,7 +53,8 @@ export default function VipGateModal({
             }}
             className="w-full py-3.5 bg-gradient-to-b from-[#ffcf33] to-[#e6a800] hover:from-[#ffd54f] hover:to-[#ebaf0a] !text-[#1f1f1c] font-black text-base rounded-[var(--radius-lg)] shadow-md shadow-[#e6a800]/30 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
           >
-            Nâng cấp VIP ngay (80.000đ/tháng) ✦
+            <span>Nâng cấp VIP ngay (80.000đ/tháng)</span>
+            <Sparkles className="w-4 h-4" />
           </button>
 
           <button

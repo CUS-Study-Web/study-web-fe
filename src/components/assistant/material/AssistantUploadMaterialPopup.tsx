@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { FileText, X, Download, RefreshCw, Trash2, Minus, Plus, Upload } from 'lucide-react';
 import { useNotification } from '../../common/NotificationProvider';
 import { validateDocumentFile, downloadFileFromUrl } from '../../../utils/fileUtils';
 import { isValidUrl } from '../../../utils/urlUtils';
@@ -192,9 +193,7 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
         <div className="flex items-center justify-between px-7 py-5 border-b border-[var(--border-default)] shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[var(--brand-100)] flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-[var(--brand-600)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+              <FileText className="w-5 h-5 text-[var(--brand-600)]" />
             </div>
             <div>
               <div className="font-[family-name:var(--font-heading)] font-extrabold text-[length:var(--text-body-lg)] text-[var(--text-primary)] leading-tight">
@@ -205,8 +204,8 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
               </div>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-muted)] bg-transparent border-none cursor-pointer text-xl transition-colors">
-            ×
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-muted)] bg-transparent border-none cursor-pointer transition-colors">
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -217,10 +216,7 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
             {selectedFile ? (
               <div className="flex flex-col flex-1 min-h-0 rounded-[12px] overflow-hidden border border-[var(--border-default)] bg-white">
                 <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[var(--border-default)] bg-white shrink-0">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-secondary)]">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                  </svg>
+                  <FileText className="w-3.5 h-3.5 text-[var(--text-secondary)] shrink-0" />
                   <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] font-medium truncate flex-1">
                     {selectedFile.name}
                   </span>
@@ -234,13 +230,16 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
                     }}
                     className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
                   >
+                    <Download className="w-3 h-3" />
                     Tải về
                   </button>
                   <button type="button" onClick={() => fileInputRef.current?.click()} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
+                    <RefreshCw className="w-3 h-3" />
                     Đổi file
                   </button>
                   <input ref={fileInputRef} type="file" accept=".pdf,.docx" className="hidden" onChange={handleFileChange} />
                   <button type="button" onClick={handleRemoveFile} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
+                    <Trash2 className="w-3 h-3" />
                     Xóa
                   </button>
                 </div>
@@ -253,11 +252,11 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
                       <div className="text-[12px] font-semibold text-[var(--text-secondary)]">Xem trước DOCX</div>
                       <div className="flex items-center gap-2">
                         <button onClick={() => setDocxZoom(z => Math.max(50, z - 10))} className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors" title="Thu nhỏ">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                          <Minus className="w-3.5 h-3.5" />
                         </button>
                         <span className="text-[12px] font-medium text-gray-600 w-10 text-center">{docxZoom}%</span>
                         <button onClick={() => setDocxZoom(z => Math.min(200, z + 10))} className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors" title="Phóng to">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                          <Plus className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
@@ -270,10 +269,7 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
                 ) : (
                   <div className="flex-1 flex flex-col items-center justify-center gap-3 bg-[var(--surface-muted)]">
                     <div className="w-16 h-16 rounded-[12px] bg-white border border-[var(--border-default)] flex items-center justify-center shadow-sm">
-                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-secondary)]">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <polyline points="14 2 14 8 20 8" />
-                      </svg>
+                      <FileText className="w-7 h-7 text-[var(--text-secondary)]" />
                     </div>
                     <div className="font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)]">File đã được chọn</div>
                     <div className="font-[family-name:var(--font-body)] text-[12px] text-[var(--text-tertiary)]">Không có bản xem trước cho định dạng này</div>
@@ -289,11 +285,7 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
                   }`}
               >
                 <div className="w-14 h-14 rounded-full bg-[var(--surface-muted)] border border-[var(--border-default)] flex items-center justify-center">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-secondary)]">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                  </svg>
+                  <Upload className="w-5 h-5 text-[var(--text-secondary)]" />
                 </div>
                 <div className="font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--brand-600)]">
                   Kéo thả file tài liệu vào đây
@@ -352,8 +344,8 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
                 <div>
                   <label className={labelClass}>Quyền truy cập</label>
                   <select value={access} onChange={(e) => setAccess(e.target.value)} className={selectClass}>
-                    <option value="public">🌐 Public</option>
-                    <option value="vip">⭐ VIP</option>
+                    <option value="public">Public</option>
+                    <option value="vip">VIP</option>
                   </select>
                 </div>
               </div>
@@ -373,9 +365,9 @@ export default function AssistantUploadMaterialPopup({ onClose }: AssistantUploa
                     return (
                       <span key={badge.id} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-xs font-semibold bg-[var(--brand-100)] text-[var(--brand-600)]">
                         {badge.name}
-                        <div onClick={(e) => { e.stopPropagation(); toggleBadge(badge.id); }} className="hover:text-[var(--brand-800)] opacity-60 hover:opacity-100 transition-opacity">
-                          ×
-                        </div>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); toggleBadge(badge.id); }} className="hover:text-[var(--brand-800)] opacity-60 hover:opacity-100 transition-opacity bg-transparent border-none p-0 cursor-pointer">
+                          <X className="w-3 h-3" />
+                        </button>
                       </span>
                     )
                   })}

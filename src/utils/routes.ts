@@ -24,7 +24,9 @@ export const ROUTES = {
     EXERCISE_START: (courseId: string | number = ':courseId', subjectId: string | number = ':subjectId', exerciseId: string | number = ':exerciseId') => `/learner/courses/${courseId}/subjects/${subjectId}/exercises/${exerciseId}/start`,
     TAKE_EXERCISE: (courseId: string | number = ':courseId', subjectId: string | number = ':subjectId', exerciseId: string | number = ':exerciseId') => `/learner/courses/${courseId}/subjects/${subjectId}/exercises/${exerciseId}/take`,
     FLASHCARD_TOPICS: '/learner/flashcards',
+    FLASHCARD_TOPIC_DETAIL: (topicId: string | number = ':topicId') => `/learner/flashcards/${topicId}`,
     FLASHCARD_STUDY: (topicId: string | number = ':topicId') => `/learner/flashcards/${topicId}/study`,
+    VIP_REGISTER: '/learner/vip-register',
   },
   ASSISTANT: {
     ROOT: '/assistant',
@@ -39,6 +41,7 @@ export const ROUTES = {
     MATERIALS: '/assistant/materials',
     STUDENTS: '/assistant/students',
     FLASHCARDS: '/assistant/flashcards',
+    OFFLINE_EXAM: '/assistant/offline-exam',
   },
   ADMIN: {
     ROOT: '/admin',

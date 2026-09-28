@@ -1,91 +1,372 @@
-import { useNavigate } from 'react-router-dom'
-import { ROUTES } from '../../utils/routes'
-import {QUICK_STATS, ACTIVITY_LOG, DAYS_IN_WEEK, MONTHS_TO_7, MONTHS, WEEKLY_LOGINS, MONTHLY_REGS, MONTHLY_WEB_TRAFFIC} from './MockData'
-import { Suspense, lazy } from 'react'
-import StatsCard from '../../components/StatsCard'
-import '../../styles/AdminDashboard.css'
-import Loading from '../../components/Loading'
+import { useNavigate } from 'react-router-dom';
+import { Globe, Users, Star } from 'lucide-react';
+import { ROUTES } from '../../utils/routes';
+import { MONTHS } from './MockData';
+import { Suspense, lazy, useState } from 'react';
+import StatsCard from '../../components/StatsCard';
+import IconBox from '../../components/IconBox';
+import '../../styles/AdminDashboard.css';
+import Loading from '../../components/Loading';
+import {
+  STAT_ACTION_OPTIONS,
+  type ActionType,
+} from '../../types/api/system.api';
+import {
+  useGetDailyStatsQuery,
+  useGetMonthlyStatsQuery,
+  useGetActivityLogsQuery,
+} from '../../hooks/queries/useSystemStats';
 
-const BarChart = lazy(() => import('../../components/Charts').then((m) => ({ default: m.BarChart })))
-const LineChart = lazy(() => import('../../components/Charts').then((m) => ({ default: m.LineChart })))
+const BarChart = lazy(() => import('../../components/Charts').then((m) => ({ default: m.BarChart })));
+const LineChart = lazy(() => import('../../components/Charts').then((m) => ({ default: m.LineChart })));
+
+const formatDayLabel = (dateStr: string) => {
+  if (!dateStr) return '';
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    return `${parts[2]}/${parts[1]}`;
+  }
+  return dateStr;
+};
+
+const getActionLabel = (action: ActionType) =>
+  STAT_ACTION_OPTIONS.find((o) => o.value === action)?.label || action;
+
+const formatTimeLabel = (timestamp: string) => {
+  if (!timestamp) return '';
+  try {
+    const d = new Date(timestamp);
+    if (isNaN(d.getTime())) return timestamp;
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    const seconds = String(d.getSeconds()).padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+  } catch {
+    return timestamp;
+  }
+};
 
 const AdminDashboard = () => {
-    const navigate = useNavigate()
-    return (
-      <div className="max-w-[1280px] mx-auto px-[28px] pt-[40px] pb-[80px]">
-        {/* Introduction */}
-        <div className="mb-[32px]">
-          <h1 className="mb-[6px] tracking-[-0.5px]">Tổng quan Quản trị viên</h1>
-          <p>Chào mừng trở lại! Đây là hoạt động của hệ thống CUS hôm nay.</p>
-        </div>
+  const navigate = useNavigate();
 
-        {/* Quick status */}
-        <div className="grid grid-cols-3 gap-[20px] mb-[32px]">
-            {QUICK_STATS.map((s) => {
-                return <StatsCard key={s.label} {...s}/>
-            })}
-        </div>
+  // Selected actions for each visualization
+  const [chartAction1, setChartAction1] = useState<ActionType>('LOGIN');
+  const [chartAction2, setChartAction2] = useState<ActionType>('REGISTER');
+  const [chartAction3, setChartAction3] = useState<ActionType>('REQUEST_VIP');
 
-        {/* Charts row */}
-        <div className="grid grid-cols-3 gap-[20px] mb-[28px]">
-          <div className="surface-card p-[22px_24px] relative h-[280px] w-full">
+  // Queries
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+
+  const { data: dailyData, isLoading: isDailyLoading } = useGetDailyStatsQuery({ days: 14 });
+  const { data: monthlyData, isLoading: isMonthlyLoading } = useGetMonthlyStatsQuery({ year: currentYear });
+  const { data: prevYearMonthlyData } = useGetMonthlyStatsQuery(
+    { year: currentYear - 1 },
+    { enabled: currentMonth === 1 }
+  );
+  const [activityPage, setActivityPage] = useState(1);
+  const { data: activityData, isLoading: isActivityLoading } = useGetActivityLogsQuery({
+    page: activityPage - 1,
+    limit: 6,
+    days: 7,
+    role: 'ASSISTANT',
+  });
+
+  const activities = activityData?.data || [];
+  const activityPaging = activityData?.paging;
+  const totalActivityPages = activityPaging?.totalPages || (activities.length > 0 ? 1 : 0);
+  const allDailyItems = dailyData?.data?.items || [];
+  const currentWeekItems = allDailyItems.slice(-7);
+  const dailyLabels = currentWeekItems.map((item) => formatDayLabel(item.date));
+  const prevWeekItems = allDailyItems.slice(0, Math.max(0, allDailyItems.length - 7));
+
+  const monthlyItems = monthlyData?.data?.items || [];
+  // Ensure we map across all 12 months
+  const getMonthlyDataForAction = (action: ActionType) => {
+    return Array.from({ length: 12 }, (_, i) => {
+      const monthNum = i + 1;
+      const found = monthlyItems.find((item) => item.month === monthNum);
+      return found?.actionCounts?.[action] ?? 0;
+    });
+  };
+
+  // Helper to calculate percentage change
+  // If there are no data for previous week/month (missing items or previous count is 0),
+  // return null to explicitly display '~0%' since comparison with nulls/zero baseline is invalid.
+  const calculateTrend = (
+    current: number,
+    previous: number | undefined | null,
+    hasPrevData: boolean
+  ): number | null => {
+    if (!hasPrevData || previous === undefined || previous === null || previous === 0) {
+      return null;
+    }
+    const pct = ((current - previous) / previous) * 100;
+    return Number(pct.toFixed(1));
+  };
+
+  // Quick stats computed from real responses
+  const weeklyLoginsCount = currentWeekItems.reduce(
+    (acc, cur) => acc + (cur.actionCounts?.['LOGIN'] ?? 0),
+    0
+  );
+  const prevWeeklyLoginsCount = prevWeekItems.reduce(
+    (acc, cur) => acc + (cur.actionCounts?.['LOGIN'] ?? 0),
+    0
+  );
+  const hasPrevWeekData = prevWeekItems.length > 0 && prevWeeklyLoginsCount > 0;
+  const weeklyLoginsTrend = calculateTrend(weeklyLoginsCount, prevWeeklyLoginsCount, hasPrevWeekData);
+
+  const currentMonthItem = monthlyItems.find((m) => m.month === currentMonth);
+  const prevMonthItem =
+    currentMonth > 1
+      ? monthlyItems.find((m) => m.month === currentMonth - 1)
+      : prevYearMonthlyData?.data?.items?.find((m) => m.month === 12);
+
+  const monthlyRegsCount = currentMonthItem?.actionCounts?.['REGISTER'] ?? 0;
+  const prevMonthlyRegsCount = prevMonthItem?.actionCounts?.['REGISTER'] ?? 0;
+  const hasPrevMonthRegsData = Boolean(prevMonthItem) && prevMonthlyRegsCount > 0;
+  const monthlyRegsTrend = calculateTrend(monthlyRegsCount, prevMonthlyRegsCount, hasPrevMonthRegsData);
+
+  const monthlyVipCount = currentMonthItem?.actionCounts?.['REQUEST_VIP'] ?? 0;
+  const prevMonthlyVipCount = prevMonthItem?.actionCounts?.['REQUEST_VIP'] ?? 0;
+  const hasPrevMonthVipData = Boolean(prevMonthItem) && prevMonthlyVipCount > 0;
+  const monthlyVipTrend = calculateTrend(monthlyVipCount, prevMonthlyVipCount, hasPrevMonthVipData);
+
+  const quickStats = [
+    {
+      label: 'Lượt đăng nhập',
+      sublabel: 'Tuần này',
+      value: weeklyLoginsCount,
+      trend: weeklyLoginsTrend,
+      trendLabel: 'so với tuần trước',
+      color: 'var(--brand-500)',
+      icon: (
+        <IconBox bg="var(--brand-soft-500)">
+          <Globe size={22} className="text-[var(--brand-500)]" strokeWidth={2} />
+        </IconBox>
+      ),
+    },
+    {
+      label: 'Lượt đăng ký',
+      sublabel: 'Tháng này',
+      value: monthlyRegsCount,
+      trend: monthlyRegsTrend,
+      trendLabel: 'so với tháng trước',
+      color: 'var(--info-500)',
+      icon: (
+        <IconBox bg="var(--info-50)">
+          <Users size={22} className="text-[var(--info-500)]" strokeWidth={2} />
+        </IconBox>
+      ),
+    },
+    {
+      label: 'Lượt mở VIP',
+      sublabel: 'Tháng này',
+      value: monthlyVipCount,
+      trend: monthlyVipTrend,
+      trendLabel: 'so với tháng trước',
+      color: 'var(--warning-500)',
+      icon: (
+        <IconBox bg="var(--warning-50)">
+          <Star size={22} className="text-[var(--warning-500)]" strokeWidth={2} />
+        </IconBox>
+      ),
+    },
+  ];
+
+  return (
+    <div className="max-w-[1280px] mx-auto px-[28px] pt-[40px] pb-[80px]">
+      {/* Introduction */}
+      <div className="mb-[32px]">
+        <h1 className="mb-[6px] tracking-[-0.5px]">Tổng quan Quản trị viên</h1>
+        <p>Chào mừng trở lại! Đây là hoạt động của hệ thống CUS hôm nay.</p>
+      </div>
+
+      {/* Quick status */}
+      <div className="grid grid-cols-3 gap-[20px] mb-[32px]">
+        {quickStats.map((s) => (
+          <StatsCard key={s.label} {...s} />
+        ))}
+      </div>
+
+      {/* Charts row */}
+      <div className="grid grid-cols-3 gap-[20px] mb-[28px]">
+        {/* Chart 1: 7 days daily */}
+        <div className="surface-card p-[20px_22px] relative min-h-[310px] w-full flex flex-col">
+          <div className="flex items-center justify-between gap-[8px] mb-[8px]">
+            <span className="[font-family:var(--font-heading)] font-bold text-[13px] text-[var(--text-primary)] min-w-0 whitespace-normal leading-tight">
+              {getActionLabel(chartAction1)} (7 ngày)
+            </span>
+            <select
+              value={chartAction1}
+              onChange={(e) => setChartAction1(e.target.value as ActionType)}
+              className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[3px] text-[var(--text-secondary-600)] outline-none cursor-pointer shrink-0"
+            >
+              {STAT_ACTION_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex-1 min-h-0">
             <Suspense fallback={<Loading />}>
-              <BarChart
-                title="Đăng nhập trong tuần (7 ngày gần nhất)"
-                label="Số lần đăng nhập"
-                labels={DAYS_IN_WEEK}
-                data={WEEKLY_LOGINS}
-                color="var(--brand-500)"
-              />            
+              {isDailyLoading ? (
+                <Loading />
+              ) : (
+                <BarChart
+                  title={getActionLabel(chartAction1)}
+                  label={getActionLabel(chartAction1)}
+                  labels={dailyLabels}
+                  data={currentWeekItems.map((item) => item.actionCounts?.[chartAction1] ?? 0)}
+                  color="var(--brand-500)"
+                />
+              )}
             </Suspense>
           </div>
-          <div className="surface-card p-[22px_24px] relative h-[280px] w-full">
-            <Suspense fallback={<Loading />}>
-              <LineChart
-                title="Đăng ký theo tháng (Tháng 1-7/2025)"
-                label="Số lượt đăng ký"
-                labels={MONTHS_TO_7}
-                data={MONTHLY_REGS}
-                color="var(--info-500)"
-              />
-            </Suspense>
+        </div>
+
+        {/* Chart 2: Monthly LineChart */}
+        <div className="surface-card p-[20px_22px] relative min-h-[310px] w-full flex flex-col">
+          <div className="flex items-center justify-between gap-[8px] mb-[8px]">
+            <span className="[font-family:var(--font-heading)] font-bold text-[13px] text-[var(--text-primary)] min-w-0 whitespace-normal leading-tight">
+              {getActionLabel(chartAction2)} ({currentYear})
+            </span>
+            <select
+              value={chartAction2}
+              onChange={(e) => setChartAction2(e.target.value as ActionType)}
+              className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[3px] text-[var(--text-secondary-600)] outline-none cursor-pointer shrink-0"
+            >
+              {STAT_ACTION_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
           </div>
-          <div className="surface-card p-[22px_24px] relative h-[280px] w-full">
+          <div className="flex-1 min-h-0">
             <Suspense fallback={<Loading />}>
-              <BarChart
-                title="Truy cập web theo tháng (Tháng 1-7/2025)"
-                label="Số lượt truy cập"
-                labels={MONTHS}
-                data={MONTHLY_WEB_TRAFFIC}
-                color="var(--info-500)"
-              />
+              {isMonthlyLoading ? (
+                <Loading />
+              ) : (
+                <LineChart
+                  title={getActionLabel(chartAction2)}
+                  label={getActionLabel(chartAction2)}
+                  labels={MONTHS}
+                  data={getMonthlyDataForAction(chartAction2)}
+                  color="var(--info-500)"
+                />
+              )}
             </Suspense>
           </div>
         </div>
 
-        {/* Activity log */}
-        <div className="surface-card px-[28px] py-[24px]">
-          <div className="flex justify-between items-center mb-[20px]">
-            <div className="[font-family:var(--font-heading)] font-bold text-[16px] text-[var(--text-primary)]">Hoạt động gần đây</div>
-            <button onClick={() => navigate(ROUTES.ADMIN.ACTIVITIES)} 
-                    className="![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--brand-500)] !cursor-pointer">
-              Xem tất cả
-            </button>
+        {/* Chart 3: Monthly BarChart */}
+        <div className="surface-card p-[20px_22px] relative min-h-[310px] w-full flex flex-col">
+          <div className="flex items-center justify-between gap-[8px] mb-[8px]">
+            <span className="[font-family:var(--font-heading)] font-bold text-[13px] text-[var(--text-primary)] min-w-0 whitespace-normal leading-tight">
+              {getActionLabel(chartAction3)} ({currentYear})
+            </span>
+            <select
+              value={chartAction3}
+              onChange={(e) => setChartAction3(e.target.value as ActionType)}
+              className="text-[12px] [font-family:var(--font-body)] bg-white border border-[var(--border-500)] rounded-[8px] px-[8px] py-[3px] text-[var(--text-secondary-600)] outline-none cursor-pointer shrink-0"
+            >
+              {STAT_ACTION_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
           </div>
-          <div className="flex flex-col">
-            {ACTIVITY_LOG.map((a, i) => (
-              <div
-                key={`${a.text} - ${a.time}`}
-                className={`flex items-center gap-[16px] py-[13px] ${i < ACTIVITY_LOG.length - 1 ? ' activity-row-bordered' : ''}`}>
-                <div className="w-[8px] h-[8px] rounded-full bg-[var(--brand-500)] shrink-0" />
-                <span className="[font-family:var(--font-body)] text-[13.5px] text-[var(--text-primary)] flex-1">{a.text}</span>
-                <span className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-200)] shrink-0">{a.time}</span>
-              </div>
-            ))}
+          <div className="flex-1 min-h-0">
+            <Suspense fallback={<Loading />}>
+              {isMonthlyLoading ? (
+                <Loading />
+              ) : (
+                <BarChart
+                  title={getActionLabel(chartAction3)}
+                  label={getActionLabel(chartAction3)}
+                  labels={MONTHS}
+                  data={getMonthlyDataForAction(chartAction3)}
+                  color="var(--warning-500)"
+                />
+              )}
+            </Suspense>
           </div>
         </div>
       </div>
-    )
-}
 
-export default AdminDashboard
+      {/* Activity log */}
+      <div className="surface-card px-[28px] py-[24px]">
+        <div className="flex justify-between items-center mb-[20px]">
+          <div className="[font-family:var(--font-heading)] font-bold text-[16px] text-[var(--text-primary)]">
+            Hoạt động gần đây của trợ giảng
+          </div>
+          <button
+            onClick={() => navigate(ROUTES.ADMIN.ACTIVITIES)}
+            className="![font-family:var(--font-heading)] !font-semibold !text-[12px] !text-[var(--brand-500)] !cursor-pointer"
+          >
+            Xem tất cả
+          </button>
+        </div>
+        <div className="flex flex-col">
+          {isActivityLoading && (
+            <div className="py-6 text-center text-xs text-[var(--text-secondary-400)]">
+              Đang tải hoạt động gần đây của trợ giảng...
+            </div>
+          )}
+          {!isActivityLoading && activities.length === 0 && (
+            <div className="py-6 text-center text-xs text-[var(--text-secondary-400)]">
+              Chưa có hoạt động nào gần đây của trợ giảng.
+            </div>
+          )}
+          {!isActivityLoading && activities.map((a, i) => (
+            <div
+              key={`${a.timestamp}-${i}`}
+              className={`flex items-center gap-[16px] py-[13px] ${
+                i < activities.length - 1 ? ' activity-row-bordered' : ''
+              }`}
+            >
+              <div className="w-[8px] h-[8px] rounded-full bg-[var(--brand-500)] shrink-0" />
+              <span className="[font-family:var(--font-body)] text-[13.5px] text-[var(--text-primary)] flex-1">
+                {a.description || a.actionType} {a.userName ? `(${a.userName})` : ''}
+              </span>
+              <span className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-200)] shrink-0">
+                {formatTimeLabel(a.timestamp)}
+              </span>
+            </div>
+          ))}
+          {!isActivityLoading && totalActivityPages > 1 && (
+            <div className="flex items-center justify-between pt-[14px] mt-[6px] border-t border-[var(--border-100)]">
+              <span className="text-[12px] text-[var(--text-secondary-400)] [font-family:var(--font-body)]">
+                Trang {activityPage} / {totalActivityPages} {activityPaging?.total ? `(${activityPaging.total} hoạt động)` : ''}
+              </span>
+              <div className="flex items-center gap-[6px]">
+                <button
+                  type="button"
+                  onClick={() => setActivityPage((p) => Math.max(1, p - 1))}
+                  disabled={activityPage === 1}
+                  className="px-[10px] py-[3px] rounded-[6px] border border-[var(--border-300)] bg-white text-[12px] text-[var(--text-secondary-600)] font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--surface-500)] cursor-pointer"
+                >
+                  &lt;
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActivityPage((p) => Math.min(totalActivityPages, p + 1))}
+                  disabled={activityPage === totalActivityPages}
+                  className="px-[10px] py-[3px] rounded-[6px] border border-[var(--border-300)] bg-white text-[12px] text-[var(--text-secondary-600)] font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--surface-500)] cursor-pointer"
+                >
+                  &gt;
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;

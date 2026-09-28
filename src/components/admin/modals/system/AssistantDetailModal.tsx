@@ -1,15 +1,40 @@
 import { useState } from 'react'
-import AssistantFeatureInDevPopup from '../../../assistant/AssistantFeatureInDevPopup'
+import { useNavigate } from 'react-router-dom'
+import { User } from 'lucide-react'
+import { ROUTES } from '../../../../utils/routes'
 import type { AssistantSummaryResponse } from '../../../../types/api/system.api'
+import { useGetActivityLogsQuery } from '../../../../hooks/queries/useSystemStats'
 
 type AssistantDetailModalProps = {
   asst: AssistantSummaryResponse
   onClose: () => void
 }
 
+const formatDateTime = (isoString?: string) => {
+  if (!isoString) return ''
+  const d = new Date(isoString)
+  if (isNaN(d.getTime())) return isoString
+  const day = String(d.getDate()).padStart(2, '0')
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const year = d.getFullYear()
+  const hours = String(d.getHours()).padStart(2, '0')
+  const minutes = String(d.getMinutes()).padStart(2, '0')
+  const seconds = String(d.getSeconds()).padStart(2, '0')
+  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+}
+
 export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProps) => {
-  const [showInDev, setShowInDev] = useState(false)
-  const actLog = asst.recentActivities || [];
+  const navigate = useNavigate()
+  const [actPage, setActPage] = useState<number>(1)
+  const { data: logData, isLoading: isActivityLoading } = useGetActivityLogsQuery({
+    gmail: asst.gmail,
+    page: actPage - 1,
+    limit: 5,
+    days: 30,
+  })
+  const actLog = logData?.data || []
+  const logPaging = logData?.paging
+  const totalLogPages = logPaging?.totalPages || (actLog.length > 0 ? 1 : 0)
 
   return (
     <div
@@ -24,11 +49,9 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
         <div className="bg-gradient-to-br from-[var(--brand-500)] to-[var(--brand-700)] px-[30px] py-[26px] flex items-center gap-4">
           <div className="w-[50px] h-[50px] rounded-full bg-white/20 flex items-center justify-center shrink-0">
             {asst.avatarUrl ? (
-                <img src={asst.avatarUrl} alt="avatar" className="w-full h-full rounded-full object-cover" />
+              <img src={asst.avatarUrl} alt="avatar" className="w-full h-full rounded-full object-cover" />
             ) : (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
-                </svg>
+              <User size={22} className="text-white" />
             )}
           </div>
           <div className="min-w-0 flex-1">
@@ -65,7 +88,10 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
               Hoạt động gần đây
             </div>
             <button
-              onClick={() => setShowInDev(true)}
+              onClick={() => {
+                onClose()
+                navigate(ROUTES.ADMIN.ACTIVITIES)
+              }}
               className="bg-transparent border-none cursor-pointer ![font-family:var(--font-heading)] !font-bold !text-[12px] !text-[var(--brand-500)] p-0 underline underline-offset-[3px]"
             >
               Xem tất cả
@@ -74,24 +100,56 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
 
           {/* Activity Log */}
           <div className="flex flex-col">
-            {actLog.length === 0 ? (
-                <div className="text-[13px] text-[var(--text-secondary-300)] text-center py-4">Chưa có hoạt động</div>
-            ) : actLog.map((a, i) => (
-              <div
-                key={a.id}
-                className={`flex gap-3 items-start py-2.5 ${
-                  i < actLog.length - 1 ? 'border-b border-[var(--border-100)]' : ''
-                }`}
-              >
-                <div className="w-[7px] h-[7px] rounded-full bg-[var(--brand-500)] shrink-0 mt-[5px]" />
-                <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-primary)] flex-1">
-                  {a.description}
-                </span>
-                <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-200)] shrink-0">
-                  {a.timestamp}
-                </span>
+            {isActivityLoading ? (
+              <div className="text-[13px] text-[var(--text-secondary-300)] text-center py-4">
+                Đang tải hoạt động...
               </div>
-            ))}
+            ) : actLog.length === 0 ? (
+              <div className="text-[13px] text-[var(--text-secondary-300)] text-center py-4">
+                Chưa có hoạt động
+              </div>
+            ) : (
+              actLog.map((a, i) => (
+                <div
+                  key={`${a.timestamp}-${i}`}
+                  className={`flex gap-3 items-start py-2.5 ${i < actLog.length - 1 ? 'border-b border-[var(--border-100)]' : ''
+                    }`}
+                >
+                  <div className="w-[7px] h-[7px] rounded-full bg-[var(--brand-500)] shrink-0 mt-[5px]" />
+                  <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-primary)] flex-1">
+                    {a.description || a.actionType}
+                  </span>
+                  <span className="[font-family:var(--font-body)] text-[11.5px] text-[var(--text-secondary-200)] shrink-0">
+                    {formatDateTime(a.timestamp)}
+                  </span>
+                </div>
+              ))
+            )}
+            {!isActivityLoading && totalLogPages > 1 && (
+              <div className="flex items-center justify-between pt-2.5 mt-2 border-t border-[var(--border-100)]">
+                <span className="text-[11.5px] text-[var(--text-secondary-300)] [font-family:var(--font-body)]">
+                  Trang {actPage} / {totalLogPages} {logPaging?.total ? `(${logPaging.total} hoạt động)` : ''}
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setActPage((p) => Math.max(1, p - 1))}
+                    disabled={actPage === 1}
+                    className="px-2 py-0.5 rounded border border-[var(--border-300)] bg-white text-[11px] font-semibold text-[var(--text-secondary-600)] disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed hover:bg-[var(--surface-500)]"
+                  >
+                    &lt;
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActPage((p) => Math.min(totalLogPages, p + 1))}
+                    disabled={actPage === totalLogPages}
+                    className="px-2 py-0.5 rounded border border-[var(--border-300)] bg-white text-[11px] font-semibold text-[var(--text-secondary-600)] disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed hover:bg-[var(--surface-500)]"
+                  >
+                    &gt;
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -105,8 +163,6 @@ export const AssistantDetailModal = ({ asst, onClose }: AssistantDetailModalProp
           </button>
         </div>
       </div>
-
-      {showInDev && <AssistantFeatureInDevPopup onClose={() => setShowInDev(false)} />}
     </div>
   )
 }

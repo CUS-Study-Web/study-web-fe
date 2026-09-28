@@ -1,11 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import type { Course, Instructor, Achievement, Review, WTab, ModalKey, DocType } from '../../types/admin'
-import {
-  WEBSITE_INSTRUCTORS,
-  WEBSITE_ACHIEVEMENTS,
-  WEBSITE_REVIEWS
-} from './MockData'
-import WebsiteTabsNav from '../../components/admin/website/WebsiteTabsNav'
+import type { Course, Instructor, Achievement, Review, WTab, ModalKey, DocType } from '@/types/admin'
+import WebsiteTabsNav from '@/components/admin/website/WebsiteTabsNav'
 import {
   CourseModal,
   AddCourseModal,
@@ -13,59 +8,74 @@ import {
   AchievementModal,
   ReviewModal,
   DocumentTypeModal,
-} from '../../components/admin/modals/WebsiteModals'
-import { ConfirmMiniModal } from '../../components/admin/modals/website/ConfirmMiniModal'
-import TrangChuTab from '../../components/admin/website/TrangChuTab'
-import FooterTab from '../../components/admin/website/FooterTab'
-import GoiCuocTab from '../../components/admin/website/GoiCuocTab'
+} from '@/components/admin/modals/WebsiteModals'
+import { ConfirmMiniModal } from '@/components/admin/modals/website/ConfirmMiniModal'
+import TrangChuTab from '@/components/admin/website/TrangChuTab'
+import VipFormTab from '@/components/admin/website/VipFormTab'
+import FooterTab from '@/components/admin/website/FooterTab'
+import GoiCuocTab from '@/components/admin/website/GoiCuocTab'
+import { Spinner } from '@/components/Loading'
+import { MoreVertical, Pencil, Trash2, Plus } from 'lucide-react'
 
 // API Hooks
 import {
   useGetAdminCoursesQuery,
   useDeleteCourseMutation,
-} from '../../hooks/queries/useCourses'
+} from '@/hooks/queries/useCourses'
 import {
   useGetBadgesQuery,
-  useDeleteBadgeMutation
-} from '../../hooks/queries/useBadges'
-import { useNotification } from '../../components/common/NotificationProvider'
+  useDeleteBadgeMutation,
+} from '@/hooks/queries/useBadges'
+import {
+  useGetAdminTeachersQuery,
+  useDeleteTeacherMutation,
+} from '@/hooks/queries/useTeachers'
+import {
+  useGetAdminLeaderboardsQuery,
+  useDeleteLeaderboardMutation,
+} from '@/hooks/queries/useLeaderboards'
+import {
+  useGetAdminReviewsQuery,
+  useDeleteReviewMutation,
+} from '@/hooks/queries/useReviews'
+import { useNotification } from '@/components/common/NotificationProvider'
 
 interface DocTypeActionMenuProps {
-  onEdit: () => void;
-  onDelete: () => void;
+  onEdit: () => void
+  onDelete: () => void
 }
 
 function DocTypeActionMenu({ onEdit, onDelete }: DocTypeActionMenuProps) {
-  const [open, setOpen] = useState(false);
-  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
-  const btnRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false)
+  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 })
+  const btnRef = useRef<HTMLButtonElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   const handleToggle = () => {
     if (!open && btnRef.current) {
-      const rect = btnRef.current.getBoundingClientRect();
-      setMenuPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
+      const rect = btnRef.current.getBoundingClientRect()
+      setMenuPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right })
     }
-    setOpen((prev) => !prev);
-  };
+    setOpen((prev) => !prev)
+  }
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) return
     const handleClose = (e: MouseEvent | KeyboardEvent) => {
-      if (e instanceof KeyboardEvent && e.key !== 'Escape') return;
+      if (e instanceof KeyboardEvent && e.key !== 'Escape') return
       if (e instanceof MouseEvent) {
-        if (btnRef.current?.contains(e.target as Node)) return;
-        if (menuRef.current?.contains(e.target as Node)) return;
+        if (btnRef.current?.contains(e.target as Node)) return
+        if (menuRef.current?.contains(e.target as Node)) return
       }
-      setOpen(false);
-    };
-    document.addEventListener('mousedown', handleClose);
-    document.addEventListener('keydown', handleClose);
+      setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClose)
+    document.addEventListener('keydown', handleClose)
     return () => {
-      document.removeEventListener('mousedown', handleClose);
-      document.removeEventListener('keydown', handleClose);
-    };
-  }, [open]);
+      document.removeEventListener('mousedown', handleClose)
+      document.removeEventListener('keydown', handleClose)
+    }
+  }, [open])
 
   return (
     <>
@@ -75,11 +85,7 @@ function DocTypeActionMenu({ onEdit, onDelete }: DocTypeActionMenuProps) {
         className="w-8 h-8 rounded-full border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
         aria-label="Tùy chọn"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--neutral-500)">
-          <circle cx="12" cy="5" r="1.5" />
-          <circle cx="12" cy="12" r="1.5" />
-          <circle cx="12" cy="19" r="1.5" />
-        </svg>
+        <MoreVertical className="w-4 h-4 text-[var(--neutral-500)]" />
       </button>
 
       {open && (
@@ -92,35 +98,29 @@ function DocTypeActionMenu({ onEdit, onDelete }: DocTypeActionMenuProps) {
             onClick={() => { setOpen(false); onEdit(); }}
             className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-            </svg>
+            <Pencil className="w-3.5 h-3.5 text-current" />
             Sửa
           </button>
           <button
             onClick={() => { setOpen(false); onDelete(); }}
             className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold !text-[#DC2626] text-left transition-colors hover:bg-[#FEF2F2]"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-            </svg>
+            <Trash2 className="w-3.5 h-3.5 text-current" />
             Xóa
           </button>
         </div>
       )}
     </>
-  );
+  )
 }
 
 const AdminWebsite = () => {
   const [activeTab, setActiveTab] = useState<WTab>("courses")
   const [showModal, setShowModal] = useState<ModalKey | null>(null)
-  const [showDevPopup, setShowDevPopup] = useState(false)
 
   // API state for courses
   const { data: coursesData, isLoading: isLoadingCourses } = useGetAdminCoursesQuery({ size: 100 })
   const courses = coursesData?.data || []
-
   const deleteCourse = useDeleteCourseMutation()
 
   // API state for doc types (badges)
@@ -128,10 +128,20 @@ const AdminWebsite = () => {
   const docTypes = badgesData?.data || []
   const deleteBadge = useDeleteBadgeMutation()
 
-  // Local list states (mocked ones)
-  const [instructors, setInstructors] = useState<Instructor[]>(WEBSITE_INSTRUCTORS)
-  const [achievements, setAchievements] = useState<Achievement[]>(WEBSITE_ACHIEVEMENTS)
-  const [reviews, setReviews] = useState<Review[]>(WEBSITE_REVIEWS)
+  // API state for instructors (teachers)
+  const { data: teachersData, isLoading: isLoadingTeachers } = useGetAdminTeachersQuery({ size: 100 })
+  const instructors = teachersData?.data || []
+  const deleteTeacher = useDeleteTeacherMutation()
+
+  // API state for achievements (leaderboards)
+  const { data: leaderboardsData, isLoading: isLoadingLeaderboards } = useGetAdminLeaderboardsQuery({ size: 100 })
+  const achievements = leaderboardsData?.data || []
+  const deleteLeaderboard = useDeleteLeaderboardMutation()
+
+  // API state for reviews
+  const { data: reviewsData, isLoading: isLoadingReviews } = useGetAdminReviewsQuery({ size: 100 })
+  const reviews = reviewsData?.data || []
+  const deleteReview = useDeleteReviewMutation()
 
   // Edit item trackers
   const [editingCourse, setEditingCourse] = useState<Course | undefined>(undefined)
@@ -139,13 +149,17 @@ const AdminWebsite = () => {
   const [editingAchievement, setEditingAchievement] = useState<Achievement | undefined>(undefined)
   const [editingReview, setEditingReview] = useState<Review | undefined>(undefined)
   const [editingDocType, setEditingDocType] = useState<DocType | undefined>(undefined)
+
+  // Deletion targets
+  const [courseToDelete, setCourseToDelete] = useState<Course | null>(null)
   const [docTypeToDelete, setDocTypeToDelete] = useState<DocType | null>(null)
+  const [instructorToDelete, setInstructorToDelete] = useState<Instructor | null>(null)
+  const [achievementToDelete, setAchievementToDelete] = useState<Achievement | null>(null)
+  const [reviewToDelete, setReviewToDelete] = useState<Review | null>(null)
 
   // Dropdown row state
   const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null)
-
   const [deletingId, setDeletingId] = useState<string | null>(null)
-  const [courseToDelete, setCourseToDelete] = useState<Course | null>(null)
   const { showSuccess, showError } = useNotification()
 
   // Close dropdown on click outside
@@ -160,16 +174,13 @@ const AdminWebsite = () => {
   }, [])
 
   const handleTabChange = (tab: WTab) => {
-    if (tab !== "courses" && tab !== "doc-types") {
-      setShowDevPopup(true)
-      return
-    }
     setActiveTab(tab)
     setActiveDropdownId(null)
   }
 
   const tabsConfig: Record<WTab, { label: string; addLabel?: string; addModal?: ModalKey }> = {
     "trang-chu": { label: "Trang chủ" },
+    "vip-form": { label: "Cấu hình Form VIP" },
     "footer": { label: "Footer" },
     "goi-cuoc": { label: "Gói cước" },
     "courses": { label: "Danh sách khóa học", addLabel: "Thêm khóa học", addModal: "add-course" },
@@ -180,55 +191,6 @@ const AdminWebsite = () => {
   }
 
   const currentTab = tabsConfig[activeTab]
-
-  // Add / Edit Handlers
-  // handleSaveCourse removed — CourseModal now handles all course/subject mutations internally.
-
-  const handleSaveInstructor = (data: Partial<Instructor>) => {
-    if (editingInstructor) {
-      setInstructors((prev) => prev.map((i) => (i.id === editingInstructor.id ? { ...i, ...data } as Instructor : i)))
-    } else {
-      const newInstr: Instructor = {
-        id: Date.now(),
-        name: data.name || '',
-        bio: data.bio || '',
-        image: data.image
-      }
-      setInstructors((prev) => [...prev, newInstr])
-    }
-  }
-
-  const handleSaveAchievement = (data: Partial<Achievement>) => {
-    if (editingAchievement) {
-      setAchievements((prev) => prev.map((a) => (a.id === editingAchievement.id ? { ...a, ...data } as Achievement : a)))
-    } else {
-      const newAch: Achievement = {
-        id: Date.now(),
-        name: data.name || '',
-        exam: data.exam || '',
-        totalScore: data.totalScore || '',
-        subScores: data.subScores || '',
-        image: data.image
-      }
-      setAchievements((prev) => [...prev, newAch])
-    }
-  }
-
-  const handleSaveReview = (data: Partial<Review>) => {
-    if (editingReview) {
-      setReviews((prev) => prev.map((r) => (r.id === editingReview.id ? { ...r, ...data } as Review : r)))
-    } else {
-      const newRev: Review = {
-        id: Date.now(),
-        name: data.name || '',
-        course: data.course || '',
-        time: data.time || '',
-        comment: data.comment || '',
-        image: data.image
-      }
-      setReviews((prev) => [...prev, newRev])
-    }
-  }
 
   // Delete Handlers
   const handleDeleteCourse = async (id: string) => {
@@ -249,33 +211,57 @@ const AdminWebsite = () => {
     }
   }
 
-  const handleDeleteInstructor = async (id: number) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa giảng viên này?")) {
-      setDeletingId(`instr-${id}`)
-      await new Promise(r => setTimeout(r, 500))
-      setInstructors((prev) => prev.filter((i) => i.id !== id))
+  const handleDeleteInstructor = async (id: string) => {
+    setDeletingId(`instr-${id}`)
+    const startTime = Date.now()
+    try {
+      await deleteTeacher.mutateAsync(id)
+      const elapsed = Date.now() - startTime
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
       showSuccess("Xóa giảng viên thành công!")
+    } catch {
+      const elapsed = Date.now() - startTime
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
+      showError("Lỗi khi xóa giảng viên!")
+    } finally {
       setDeletingId(null)
+      setInstructorToDelete(null)
     }
   }
 
-  const handleDeleteAchievement = async (id: number) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa thành tích này?")) {
-      setDeletingId(`ach-${id}`)
-      await new Promise(r => setTimeout(r, 500))
-      setAchievements((prev) => prev.filter((a) => a.id !== id))
+  const handleDeleteAchievement = async (id: string) => {
+    setDeletingId(`ach-${id}`)
+    const startTime = Date.now()
+    try {
+      await deleteLeaderboard.mutateAsync(id)
+      const elapsed = Date.now() - startTime
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
       showSuccess("Xóa thành tích thành công!")
+    } catch {
+      const elapsed = Date.now() - startTime
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
+      showError("Lỗi khi xóa thành tích!")
+    } finally {
       setDeletingId(null)
+      setAchievementToDelete(null)
     }
   }
 
-  const handleDeleteReview = async (id: number) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa cảm nhận này?")) {
-      setDeletingId(`rev-${id}`)
-      await new Promise(r => setTimeout(r, 500))
-      setReviews((prev) => prev.filter((r) => r.id !== id))
+  const handleDeleteReview = async (id: string) => {
+    setDeletingId(`rev-${id}`)
+    const startTime = Date.now()
+    try {
+      await deleteReview.mutateAsync(id)
+      const elapsed = Date.now() - startTime
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
       showSuccess("Xóa cảm nhận thành công!")
+    } catch {
+      const elapsed = Date.now() - startTime
+      if (elapsed < 500) await new Promise(r => setTimeout(r, 500 - elapsed))
+      showError("Lỗi khi xóa cảm nhận!")
+    } finally {
       setDeletingId(null)
+      setReviewToDelete(null)
     }
   }
 
@@ -335,9 +321,7 @@ const AdminWebsite = () => {
                 }}
                 className="flex items-center gap-2 px-[18px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--brand-500)] !text-white ![font-family:var(--font-heading)] !font-bold !text-[13px] cursor-pointer hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2.5" strokeLinecap="round">
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
+                <Plus size={13} strokeWidth={2.5} className="text-white" />
                 {currentTab.addLabel}
               </button>
             )}
@@ -345,18 +329,19 @@ const AdminWebsite = () => {
 
           {/* CMS form tabs */}
           {activeTab === "trang-chu" && <TrangChuTab />}
+          {activeTab === "vip-form" && <VipFormTab />}
           {activeTab === "footer" && <FooterTab />}
           {activeTab === "goi-cuoc" && <GoiCuocTab />}
 
           {/* Tab Tables */}
           {(activeTab === "courses" || activeTab === "doc-types" || activeTab === "instructors" || activeTab === "achievements" || activeTab === "reviews") && (
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-300)] overflow-visible">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-300)] overflow-x-auto">
               <div>
                 {activeTab === "courses" && (
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
-                        {["Tiêu đề", "Tiêu đề phụ", "Mô tả", "Trạng thái", ""].map((h) => (
+                        {["Tiêu đề", "Tiêu đề phụ", "Điểm tối đa", "Mô tả", "Trạng thái", ""].map((h) => (
                           <th key={h} className={thClass}>{h}</th>
                         ))}
                       </tr>
@@ -364,7 +349,7 @@ const AdminWebsite = () => {
                     <tbody>
                       {isLoadingCourses && (
                         <tr>
-                          <td colSpan={4} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                          <td colSpan={6} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
                             Đang tải dữ liệu...
                           </td>
                         </tr>
@@ -372,12 +357,14 @@ const AdminWebsite = () => {
                       {!isLoadingCourses && courses.map((c, i) => (
                         <tr
                           key={c.id}
-                          className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"
-                            }`}
+                          className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"}`}
                         >
-                          <td className={tdBoldClass}>{c.title}</td>
-                          <td className={tdCellClass}>{c.subTitle}</td>
-                          <td className={`${tdCellClass} max-w-[260px] truncate`}>{c.description}</td>
+                          <td className={`${tdBoldClass} max-w-[200px] truncate`} title={c.title}>{c.title}</td>
+                          <td className={`${tdCellClass} max-w-[200px] truncate`} title={c.subTitle}>{c.subTitle}</td>
+                          <td className={`${tdCellClass} whitespace-nowrap`}>
+                            {c.maxScores != null && c.maxScores > 0 ? c.maxScores : '-'}
+                          </td>
+                          <td className={`${tdCellClass} max-w-[260px] truncate`} title={c.description}>{c.description}</td>
                           <td className={tdCellClass}>
                             <span className={`px-2 py-1 rounded-[var(--radius-sm)] text-[11px] font-bold ${
                               c.status === 'PUBLISH' ? 'bg-[#E3F5E7] text-[#1D9A44]' : 
@@ -390,10 +377,7 @@ const AdminWebsite = () => {
                           <td className={`${tdCellClass} relative whitespace-nowrap`}>
                             {deletingId === `course-${c.id}` ? (
                               <div className="flex justify-end pr-2">
-                                <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
+                                <Spinner size="md" color="brand" />
                               </div>
                             ) : (
                               <div className="flex justify-end">
@@ -404,11 +388,7 @@ const AdminWebsite = () => {
                                   }}
                                   className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
                                 >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="12" cy="12" r="1" />
-                                    <circle cx="12" cy="5" r="1" />
-                                    <circle cx="12" cy="19" r="1" />
-                                  </svg>
+                                  <MoreVertical className="w-4 h-4" />
                                 </button>
                                 {activeDropdownId === `course-${c.id}` && (
                                   <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
@@ -440,7 +420,7 @@ const AdminWebsite = () => {
                       ))}
                       {!isLoadingCourses && courses.length === 0 && (
                         <tr>
-                          <td colSpan={4} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                          <td colSpan={6} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
                             Không có khóa học nào.
                           </td>
                         </tr>
@@ -472,10 +452,7 @@ const AdminWebsite = () => {
                             </span>
                             <div className="relative">
                               {deletingId === `doctype-${type.id}` ? (
-                                <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
+                                <Spinner size="md" color="brand" />
                               ) : (
                                 <DocTypeActionMenu
                                   onEdit={() => {
@@ -497,27 +474,42 @@ const AdminWebsite = () => {
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
-                        {["Giảng viên", "Mô tả", ""].map((h) => (
+                        {["Giảng viên", "Môn học", "Mô tả", ""].map((h) => (
                           <th key={h} className={thClass}>{h}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
-                      {instructors.map((inst, i) => (
+                      {isLoadingTeachers && (
+                        <tr>
+                          <td colSpan={4} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                            Đang tải dữ liệu...
+                          </td>
+                        </tr>
+                      )}
+                      {!isLoadingTeachers && instructors.map((inst, i) => (
                         <tr
                           key={inst.id}
-                          className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"
-                            }`}
+                          className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"}`}
                         >
-                          <td className={tdBoldClass}>{inst.name}</td>
-                          <td className={tdCellClass}>{inst.bio}</td>
+                          <td className={tdBoldClass}>
+                            <div className="flex items-center gap-3">
+                              {inst.avatarUrl ? (
+                                <img src={inst.avatarUrl} alt={inst.name} className="w-9 h-9 rounded-full object-cover shrink-0 border border-[var(--border-300)]" />
+                              ) : (
+                                <div className="w-9 h-9 rounded-full bg-[var(--brand-50)] text-[var(--brand-500)] flex items-center justify-center font-bold text-xs shrink-0">
+                                  {inst.name.charAt(0)}
+                                </div>
+                              )}
+                              <span className="max-w-[180px] truncate block" title={inst.name}>{inst.name}</span>
+                            </div>
+                          </td>
+                          <td className={`${tdCellClass} max-w-[160px] truncate`} title={inst.subject}>{inst.subject}</td>
+                          <td className={`${tdCellClass} max-w-[260px] truncate`} title={inst.description}>{inst.description}</td>
                           <td className={`${tdCellClass} relative whitespace-nowrap`}>
                             {deletingId === `instr-${inst.id}` ? (
                               <div className="flex justify-end pr-2">
-                                <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
+                                <Spinner size="md" color="brand" />
                               </div>
                             ) : (
                               <div className="flex justify-end">
@@ -528,11 +520,7 @@ const AdminWebsite = () => {
                                   }}
                                   className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
                                 >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="12" cy="12" r="1" />
-                                    <circle cx="12" cy="5" r="1" />
-                                    <circle cx="12" cy="19" r="1" />
-                                  </svg>
+                                  <MoreVertical size={16} strokeWidth={2.5} />
                                 </button>
                                 {activeDropdownId === `instr-${inst.id}` && (
                                   <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
@@ -548,7 +536,7 @@ const AdminWebsite = () => {
                                     </button>
                                     <button
                                       onClick={() => {
-                                        handleDeleteInstructor(inst.id)
+                                        setInstructorToDelete(inst)
                                         setActiveDropdownId(null)
                                       }}
                                       className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
@@ -562,9 +550,9 @@ const AdminWebsite = () => {
                           </td>
                         </tr>
                       ))}
-                      {instructors.length === 0 && (
+                      {!isLoadingTeachers && instructors.length === 0 && (
                         <tr>
-                          <td colSpan={3} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                          <td colSpan={4} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
                             Không có giảng viên nào.
                           </td>
                         </tr>
@@ -577,29 +565,55 @@ const AdminWebsite = () => {
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="bg-[var(--surface-500)] border-b border-[var(--border-300)]">
-                        {["Học viên", "Kì thi", "Tổng điểm", "Điểm thành phần", ""].map((h) => (
+                        {["Học viên", "Khóa học", "Tổng điểm", "Danh hiệu", "Điểm thành phần", ""].map((h) => (
                           <th key={h} className={thClass}>{h}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
-                      {achievements.map((a, i) => (
+                      {isLoadingLeaderboards && (
+                        <tr>
+                          <td colSpan={6} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                            Đang tải dữ liệu...
+                          </td>
+                        </tr>
+                      )}
+                      {!isLoadingLeaderboards && achievements.map((a, i) => (
                         <tr
                           key={a.id}
-                          className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"
-                            }`}
+                          className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"}`}
                         >
-                          <td className={tdBoldClass}>{a.name}</td>
-                          <td className={tdCellClass}>{a.exam}</td>
-                          <td className={tdCellClass}>{a.totalScore}</td>
-                          <td className={`${tdCellClass} max-w-[220px] truncate`}>{a.subScores}</td>
+                          <td className={tdBoldClass}>
+                            <div className="flex items-center gap-3">
+                              {a.avatarUrl ? (
+                                <img src={a.avatarUrl} alt={a.studentName} className="w-9 h-9 rounded-full object-cover shrink-0 border border-[var(--border-300)]" />
+                              ) : (
+                                <div className="w-9 h-9 rounded-full bg-[var(--brand-50)] text-[var(--brand-500)] flex items-center justify-center font-bold text-xs shrink-0">
+                                  {a.studentName.charAt(0)}
+                                </div>
+                              )}
+                              <span className="max-w-[180px] truncate block" title={a.studentName}>{a.studentName}</span>
+                            </div>
+                          </td>
+                          <td className={`${tdCellClass} max-w-[180px] truncate`} title={a.courseName}>{a.courseName}</td>
+                          <td className={tdBoldClass}>{a.sumScore}</td>
+                          <td className={`${tdCellClass} max-w-[200px] truncate`} title={a.achievement || '—'}>{a.achievement || '—'}</td>
+                          <td
+                            className={`${tdCellClass} max-w-[220px] truncate`}
+                            title={
+                              a.scores && a.scores.length > 0
+                                ? a.scores.map((s) => `${s.subjectName}: ${s.score}`).join(' · ')
+                                : '—'
+                            }
+                          >
+                            {a.scores && a.scores.length > 0
+                              ? a.scores.map((s) => `${s.subjectName}: ${s.score}`).join(' · ')
+                              : '—'}
+                          </td>
                           <td className={`${tdCellClass} relative whitespace-nowrap`}>
                             {deletingId === `ach-${a.id}` ? (
                               <div className="flex justify-end pr-2">
-                                <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
+                                <Spinner size="md" color="brand" />
                               </div>
                             ) : (
                               <div className="flex justify-end">
@@ -610,11 +624,7 @@ const AdminWebsite = () => {
                                   }}
                                   className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
                                 >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="12" cy="12" r="1" />
-                                    <circle cx="12" cy="5" r="1" />
-                                    <circle cx="12" cy="19" r="1" />
-                                  </svg>
+                                  <MoreVertical size={16} strokeWidth={2.5} />
                                 </button>
                                 {activeDropdownId === `ach-${a.id}` && (
                                   <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
@@ -630,7 +640,7 @@ const AdminWebsite = () => {
                                     </button>
                                     <button
                                       onClick={() => {
-                                        handleDeleteAchievement(a.id)
+                                        setAchievementToDelete(a)
                                         setActiveDropdownId(null)
                                       }}
                                       className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
@@ -644,9 +654,9 @@ const AdminWebsite = () => {
                           </td>
                         </tr>
                       ))}
-                      {achievements.length === 0 && (
+                      {!isLoadingLeaderboards && achievements.length === 0 && (
                         <tr>
-                          <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                          <td colSpan={6} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
                             Không có thành tích nào.
                           </td>
                         </tr>
@@ -665,23 +675,39 @@ const AdminWebsite = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {reviews.map((r, i) => (
+                      {isLoadingReviews && (
+                        <tr>
+                          <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                            Đang tải dữ liệu...
+                          </td>
+                        </tr>
+                      )}
+                      {!isLoadingReviews && reviews.map((r, i) => (
                         <tr
                           key={r.id}
-                          className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"
-                            }`}
+                          className={`border-b border-[var(--border-100)] transition-colors duration-130 hover:bg-[var(--surface-500)] ${i % 2 === 0 ? "bg-white" : "bg-[var(--surface-200)]"}`}
                         >
-                          <td className={tdBoldClass}>{r.name}</td>
-                          <td className={tdCellClass}>{r.course}</td>
-                          <td className={tdCellClass}>{r.time}</td>
-                          <td className={`${tdCellClass} max-w-[260px] truncate`}>{r.comment}</td>
+                          <td className={tdBoldClass}>
+                            <div className="flex items-center gap-3">
+                              {r.avatarUrl ? (
+                                <img src={r.avatarUrl} alt={r.studentName} className="w-9 h-9 rounded-full object-cover shrink-0 border border-[var(--border-300)]" />
+                              ) : (
+                                <div className="w-9 h-9 rounded-full bg-[var(--brand-50)] text-[var(--brand-500)] flex items-center justify-center font-bold text-xs shrink-0">
+                                  {r.studentName.charAt(0)}
+                                </div>
+                              )}
+                              <span className="max-w-[180px] truncate block" title={r.studentName}>{r.studentName}</span>
+                            </div>
+                          </td>
+                          <td className={`${tdCellClass} max-w-[180px] truncate`} title={r.course?.title || 'Khóa học'}>
+                            {r.course?.title || 'Khóa học'}
+                          </td>
+                          <td className={`${tdCellClass} max-w-[140px] truncate`} title={r.timeText}>{r.timeText}</td>
+                          <td className={`${tdCellClass} max-w-[260px] truncate`} title={r.comment}>{r.comment}</td>
                           <td className={`${tdCellClass} relative whitespace-nowrap`}>
                             {deletingId === `rev-${r.id}` ? (
                               <div className="flex justify-end pr-2">
-                                <svg className="animate-spin h-5 w-5 text-[var(--brand-500)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
+                                <Spinner size="md" color="brand" />
                               </div>
                             ) : (
                               <div className="flex justify-end">
@@ -692,11 +718,7 @@ const AdminWebsite = () => {
                                   }}
                                   className="p-[6px] hover:bg-[var(--surface-600)] rounded-full text-[var(--text-secondary-300)] hover:text-[var(--text-primary)] transition-colors duration-130 cursor-pointer"
                                 >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="12" cy="12" r="1" />
-                                    <circle cx="12" cy="5" r="1" />
-                                    <circle cx="12" cy="19" r="1" />
-                                  </svg>
+                                  <MoreVertical size={16} strokeWidth={2.5} />
                                 </button>
                                 {activeDropdownId === `rev-${r.id}` && (
                                   <div className="absolute right-[12px] top-[38px] bg-white border border-[var(--border-300)] rounded-[10px] shadow-[var(--shadow-clay-sm)] py-[6px] z-[50] min-w-[100px]">
@@ -712,7 +734,7 @@ const AdminWebsite = () => {
                                     </button>
                                     <button
                                       onClick={() => {
-                                        handleDeleteReview(r.id)
+                                        setReviewToDelete(r)
                                         setActiveDropdownId(null)
                                       }}
                                       className="w-full text-left px-[14px] py-[8px] !text-[13px] ![font-family:var(--font-heading)] !font-semibold !text-[var(--error-500)] hover:bg-[var(--surface-500)] cursor-pointer transition-colors duration-130 block border-none bg-transparent"
@@ -726,7 +748,7 @@ const AdminWebsite = () => {
                           </td>
                         </tr>
                       ))}
-                      {reviews.length === 0 && (
+                      {!isLoadingReviews && reviews.length === 0 && (
                         <tr>
                           <td colSpan={5} className="p-[36px] text-center [font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
                             Không có cảm nhận nào.
@@ -751,24 +773,24 @@ const AdminWebsite = () => {
       )}
 
       {showModal === "add-instructor" && (
-        <InstructorModal onSave={handleSaveInstructor} onClose={() => setShowModal(null)} />
+        <InstructorModal onClose={() => setShowModal(null)} />
       )}
       {showModal === "edit-instructor" && (
-        <InstructorModal instructor={editingInstructor} onSave={handleSaveInstructor} onClose={() => setShowModal(null)} />
+        <InstructorModal instructor={editingInstructor} onClose={() => setShowModal(null)} />
       )}
 
       {showModal === "add-achievement" && (
-        <AchievementModal onSave={handleSaveAchievement} onClose={() => setShowModal(null)} />
+        <AchievementModal onClose={() => setShowModal(null)} />
       )}
       {showModal === "edit-achievement" && (
-        <AchievementModal achievement={editingAchievement} onSave={handleSaveAchievement} onClose={() => setShowModal(null)} />
+        <AchievementModal achievement={editingAchievement} onClose={() => setShowModal(null)} />
       )}
 
       {showModal === "add-review" && (
-        <ReviewModal onSave={handleSaveReview} onClose={() => setShowModal(null)} />
+        <ReviewModal onClose={() => setShowModal(null)} />
       )}
       {showModal === "edit-review" && (
-        <ReviewModal review={editingReview} onSave={handleSaveReview} onClose={() => setShowModal(null)} />
+        <ReviewModal review={editingReview} onClose={() => setShowModal(null)} />
       )}
 
       {showModal === "add-doc-type" && (
@@ -794,7 +816,8 @@ const AdminWebsite = () => {
           onClose={() => setCourseToDelete(null)}
         />
       )}
-      
+
+      {/* Delete Confirm Modal for DocType */}
       {docTypeToDelete && (
         <ConfirmMiniModal
           title="Xác nhận xóa loại tài liệu"
@@ -811,15 +834,57 @@ const AdminWebsite = () => {
         />
       )}
 
-      {showDevPopup && (
+      {/* Delete Confirm Modal for Instructor */}
+      {instructorToDelete && (
         <ConfirmMiniModal
-          title="Đang phát triển"
-          message="Tính năng đang được phát triển. Vui lòng quay lại sau!"
-          confirmText="Đóng"
-          onConfirm={() => setShowDevPopup(false)}
-          onClose={() => setShowDevPopup(false)}
+          title="Xác nhận xóa giảng viên"
+          message={
+            <span>
+              Bạn có chắc chắn muốn xóa giảng viên <strong>"{instructorToDelete.name}"</strong>?
+            </span>
+          }
+          isDanger
+          confirmText="Xóa giảng viên"
+          isSubmitting={deletingId === `instr-${instructorToDelete.id}`}
+          onConfirm={() => handleDeleteInstructor(instructorToDelete.id)}
+          onClose={() => setInstructorToDelete(null)}
         />
       )}
+
+      {/* Delete Confirm Modal for Achievement */}
+      {achievementToDelete && (
+        <ConfirmMiniModal
+          title="Xác nhận xóa thành tích"
+          message={
+            <span>
+              Bạn có chắc chắn muốn xóa thành tích của học viên <strong>"{achievementToDelete.studentName}"</strong>?
+            </span>
+          }
+          isDanger
+          confirmText="Xóa thành tích"
+          isSubmitting={deletingId === `ach-${achievementToDelete.id}`}
+          onConfirm={() => handleDeleteAchievement(achievementToDelete.id)}
+          onClose={() => setAchievementToDelete(null)}
+        />
+      )}
+
+      {/* Delete Confirm Modal for Review */}
+      {reviewToDelete && (
+        <ConfirmMiniModal
+          title="Xác nhận xóa cảm nhận"
+          message={
+            <span>
+              Bạn có chắc chắn muốn xóa cảm nhận của học viên <strong>"{reviewToDelete.studentName}"</strong>?
+            </span>
+          }
+          isDanger
+          confirmText="Xóa cảm nhận"
+          isSubmitting={deletingId === `rev-${reviewToDelete.id}`}
+          onConfirm={() => handleDeleteReview(reviewToDelete.id)}
+          onClose={() => setReviewToDelete(null)}
+        />
+      )}
+
     </div>
   )
 }

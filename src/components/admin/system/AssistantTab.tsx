@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Search, Plus } from 'lucide-react'
 import type { AssistantSummaryResponse } from '../../../types/api/system.api'
 import { AssistantDetailModal, CreateAssistantModal } from '../modals/system'
 import { ConfirmMiniModal } from '../modals/website/ConfirmMiniModal'
@@ -85,16 +86,10 @@ export const AssistantTab = () => {
         </div>
         <div className="flex gap-[10px] items-center w-full sm:w-auto">
           <div className="relative flex-1 sm:flex-none">
-            <svg
-              className="absolute left-[11px] top-1/2 -translate-y-1/2 pointer-events-none stroke-[var(--text-secondary-300)]"
-              width="14"
-              height="14"
-              viewBox="0 0 16 16"
-              fill="none"
-            >
-              <circle cx="7" cy="7" r="5" strokeWidth="1.6" />
-              <path d="M11 11l3 3" strokeWidth="1.6" strokeLinecap="round" />
-            </svg>
+            <Search
+              size={14}
+              className="absolute left-[11px] top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-secondary-300)]"
+            />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -106,9 +101,7 @@ export const AssistantTab = () => {
             onClick={() => setShowCreateAsst(true)}
             className="flex items-center gap-[7px] ![font-family:var(--font-heading)] !font-bold !text-[13px] px-[18px] py-[9px] rounded-[var(--radius-sm)] border-none bg-[var(--brand-500)] !text-white cursor-pointer hover:bg-[var(--brand-600)] transition-colors duration-[var(--motion-fast)]"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="stroke-white" strokeWidth="2.5" strokeLinecap="round">
-              <path d="M12 5v14M5 12h14" />
-            </svg>
+            <Plus size={14} strokeWidth={2.5} />
             Tạo tài khoản
           </button>
         </div>

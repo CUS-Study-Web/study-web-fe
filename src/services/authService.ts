@@ -52,7 +52,7 @@ export const authService = {
   },
 
   getCurrentUser: async (): Promise<SingleResponse<UserResponse>> => {
-    const response = await apiClient.get<SingleResponse<UserResponse>>('/api/user/me');
+    const response = await apiClient.get<SingleResponse<UserResponse>>('/api/user/profile');
     return response.data;
   },
 

@@ -1,0 +1,364 @@
+import { useState, useRef } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ChevronLeft, Sparkles, Phone, Globe, CreditCard, QrCode, FileText, Upload, Send } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useNotification } from "../../components/common/NotificationProvider";
+import { useSubscribeVipMutation, useRenewVipMutation, useVipFormContentQuery } from "../../hooks/queries/useVipSubscription";
+import { ROUTES } from "../../utils/routes";
+import { validatePhone } from "../../utils/phoneUtils";
+
+export default function LearnerVipRegisterPage() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isRenewMode = searchParams.get("mode") === "renew";
+
+  const { user } = useAuth();
+  const { showSuccess, showError } = useNotification();
+  const subscribeMutation = useSubscribeVipMutation();
+  const renewMutation = useRenewVipMutation();
+  const activeMutation = isRenewMode ? renewMutation : subscribeMutation;
+  const { data: formContentRes } = useVipFormContentQuery();
+  const formContent = formContentRes?.data;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Pre-fill from user profile
+  const [name, setName] = useState(user?.name ?? "");
+  const [phone, setPhone] = useState(user?.phone ?? "");
+  const [email, setEmail] = useState(user?.gmail ?? "");
+  const [birth, setBirth] = useState(user?.birth ?? "");
+  const [note, setNote] = useState("");
+  const [evidenceFile, setEvidenceFile] = useState<File | null>(null);
+  const [fileDragging, setFileDragging] = useState(false);
+
+  const handleFileDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setFileDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setEvidenceFile(file);
+    }
+  };
+
+  const handleFileSelect = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setEvidenceFile(file);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!name.trim() || !phone.trim() || !email.trim() || !birth || !evidenceFile) {
+      showError("Vui lòng điền đầy đủ các trường bắt buộc và tải lên minh chứng.");
+      return;
+    }
+
+    if (!validatePhone(phone)) {
+      showError("Số điện thoại không hợp lệ.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", name.trim());
+    formData.append("email", email.trim());
+    formData.append("birth", birth);
+    formData.append("phone", phone.trim());
+    formData.append("evidence", evidenceFile);
+    if (note.trim()) {
+      formData.append("note", note.trim());
+    }
+
+    const successMessage = isRenewMode
+      ? "Gửi gia hạn VIP thành công! Trung tâm sẽ liên hệ xác nhận trong vòng 24 giờ."
+      : "Gửi đăng ký VIP thành công! Trung tâm sẽ liên hệ xác nhận trong vòng 24 giờ.";
+
+    activeMutation.mutate(formData, {
+      onSuccess: () => {
+        showSuccess(successMessage);
+        navigate(ROUTES.VIP);
+      },
+      onError: (error: any) => {
+        const message =
+          error?.response?.data?.message || "Đã xảy ra lỗi. Vui lòng thử lại.";
+        showError(message);
+      },
+    });
+  };
+
+  return (
+    <div className="bg-[var(--surface-500)] min-h-screen py-[36px] px-[24px] pb-[80px]">
+      <div className="max-w-[800px] mx-auto">
+        {/* Back link */}
+        <button
+          onClick={() => navigate(ROUTES.VIP)}
+          className="flex items-center gap-[6px] [font-family:var(--font-heading)] font-semibold text-[13px] text-[var(--text-secondary-300)] bg-transparent border-none cursor-pointer p-0 mb-[20px] hover:text-[var(--text-primary)] transition-colors duration-[var(--motion-fast)]"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Quay lại
+        </button>
+
+        {/* CARD 1 — Header */}
+        <div className="bg-white rounded-[var(--radius-sm)] border border-[var(--border-300)] shadow-sm mb-[16px] overflow-hidden border-t-[6px] border-t-[var(--brand-base-500)]">
+          <div className="p-[28px]">
+            {/* VIP badge */}
+            <div className="inline-flex items-center gap-[6px] bg-[rgba(245,197,24,0.15)] border border-[rgba(212,160,23,0.35)] rounded-full px-[12px] py-[4px] mb-[14px]">
+              <Sparkles className="w-3.5 h-3.5 text-[var(--warning-500)]" />
+              <span className="[font-family:var(--font-heading)] font-bold text-[11px] text-[var(--warning-500)] uppercase tracking-[0.5px]">
+                Tài khoản VIP
+              </span>
+            </div>
+
+            <h1 className="[font-family:var(--font-heading)] font-black text-[22px] text-[var(--text-primary)] m-0 mb-[12px] leading-[1.35]">
+              {formContent?.formTitle || (isRenewMode
+                ? "Gia hạn Khóa học VIP — Trung tâm Luyện thi ĐGNL - CUS"
+                : "Đăng ký Khóa học VIP — Trung tâm Luyện thi ĐGNL - CUS")}
+            </h1>
+
+            <p className="[font-family:var(--font-body)] text-[14px] text-[var(--text-secondary-600)] leading-[1.75] m-0 mb-[20px] whitespace-pre-wrap">
+              {formContent?.description || "Chào mừng bạn đến với Trung tâm Luyện thi ĐGNL - CUS! Tài khoản VIP giúp các bạn học viên có quyền truy cập vào các khóa học của CUS và mở khóa nhiều tài liệu giúp đạt mục tiêu điểm số cao nhất trong kỳ thi. Bạn vui lòng điền đầy đủ và chính xác các thông tin dưới đây để trung tâm hỗ trợ xếp lớp và hoàn tất thủ tục đăng ký nhé."}
+            </p>
+
+            <div className="border-t border-[var(--surface-500)] pt-[16px] flex flex-col gap-[8px]">
+              <div className="flex items-center gap-[10px]">
+                <Phone className="w-4 h-4 text-[var(--brand-base-500)] shrink-0" />
+                <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
+                  Hotline hỗ trợ: {formContent?.hotline || "[Điền số điện thoại của trung tâm]"}
+                </span>
+              </div>
+              <div className="flex items-center gap-[10px]">
+                <Globe className="w-4 h-4 text-[var(--brand-base-500)] shrink-0" />
+                <span className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)] flex items-center gap-[4px]">
+                  Fanpage: {formContent?.fanpageLink ? (
+                    <a href={formContent.fanpageLink} target="_blank" rel="noopener noreferrer" className="text-[var(--brand-base-500)] hover:underline">
+                      {formContent.fanpageLink}
+                    </a>
+                  ) : "[Điền link Fanpage nếu có]"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CARD 2 — Thông tin học viên */}
+        <div className="bg-white rounded-[var(--radius-sm)] border border-[var(--border-300)] shadow-sm mb-[16px] overflow-hidden">
+          <SectionTitle text="Phần 1: Thông tin học viên" />
+          <div className="px-[24px] pt-[18px] pb-[24px] flex flex-col gap-[16px]">
+            <FormField label="Họ và tên" required>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Nhập họ và tên..."
+                className="w-full px-[14px] py-[11px] rounded-[var(--radius-sm)] border border-[var(--border-500)] [font-family:var(--font-body)] text-[14px] text-[var(--text-primary)] outline-none bg-white focus:border-[var(--brand-500)] transition-colors duration-[var(--motion-fast)]"
+              />
+            </FormField>
+
+            <FormField label="Số điện thoại" required>
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Nhập số điện thoại của bạn..."
+                className="w-full px-[14px] py-[11px] rounded-[var(--radius-sm)] border border-[var(--border-500)] [font-family:var(--font-body)] text-[14px] text-[var(--text-primary)] outline-none bg-white focus:border-[var(--brand-500)] transition-colors duration-[var(--motion-fast)]"
+              />
+            </FormField>
+
+            <FormField label="Địa chỉ email" required>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Nhập địa chỉ email..."
+                className="w-full px-[14px] py-[11px] rounded-[var(--radius-sm)] border border-[var(--border-500)] [font-family:var(--font-body)] text-[14px] text-[var(--text-primary)] outline-none bg-white focus:border-[var(--brand-500)] transition-colors duration-[var(--motion-fast)]"
+              />
+            </FormField>
+
+            <FormField label="Ngày sinh" required>
+              <input
+                type="date"
+                value={birth}
+                onChange={(e) => setBirth(e.target.value)}
+                className="w-full px-[14px] py-[11px] rounded-[var(--radius-sm)] border border-[var(--border-500)] [font-family:var(--font-body)] text-[14px] text-[var(--text-primary)] outline-none bg-white focus:border-[var(--brand-500)] transition-colors duration-[var(--motion-fast)]"
+              />
+            </FormField>
+          </div>
+        </div>
+
+        {/* CARD 3 — Thanh toán */}
+        <div className="bg-white rounded-[var(--radius-sm)] border border-[var(--border-300)] shadow-sm mb-[16px] overflow-hidden">
+          <SectionTitle text="Phần 2: Thông tin thanh toán & minh chứng" />
+          <div className="px-[24px] pt-[18px] pb-[24px] flex flex-col gap-[20px]">
+            {/* Transfer info block */}
+            <div className="bg-[var(--brand-soft-200)] border border-[var(--brand-soft-600)] rounded-[var(--radius-sm)] p-[18px_20px]">
+              <div className="[font-family:var(--font-heading)] font-extrabold text-[13px] text-[var(--brand-base-500)] uppercase tracking-[0.6px] mb-[12px] flex items-center gap-[8px]">
+                <CreditCard size={16} />
+                Thông tin chuyển khoản
+              </div>
+              {[
+                ["Ngân hàng", formContent?.bankName || "[Tên Ngân Hàng]"],
+                ["Số tài khoản", formContent?.accountNumber || "[Số tài khoản]"],
+                ["Chủ tài khoản", formContent?.accountHolder || "[Tên chủ tài khoản]"],
+              ].map(([key, value]) => (
+                <div
+                  key={key}
+                  className="flex gap-[8px] mb-[6px] [font-family:var(--font-body)] text-[13px]"
+                >
+                  <span className="text-[var(--text-secondary-300)] min-w-[130px]">{key}:</span>
+                  <span className="text-[var(--text-primary)] font-semibold">{value}</span>
+                </div>
+              ))}
+              <div className="mt-[10px] bg-white rounded-[8px] p-[10px_12px] border border-dashed border-[var(--brand-soft-600)]">
+                <div className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-300)] mb-[3px]">
+                  Cú pháp chuyển khoản:
+                </div>
+                <div className="[font-family:var(--font-heading)] font-bold text-[13px] text-[var(--brand-base-500)]">
+                  {formContent?.transferContent || "Họ Tên - SĐT - VIP"}
+                </div>
+                {!formContent?.transferContent && (
+                  <div className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-200)] mt-[2px]">
+                    Ví dụ: Nguyen Van A - 0987654321 - VIP
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* QR code */}
+            <div>
+              <label className="block [font-family:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] mb-[6px]">
+                Mã QR thanh toán
+              </label>
+              <p className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)] m-0 mb-[12px] leading-[1.6]">
+                Bạn vui lòng quét mã QR bên dưới để thanh toán, sau đó chụp lại màn hình giao dịch
+                thành công.
+              </p>
+              <div className="flex justify-center">
+                {formContent?.accountHolderQrUrl ? (
+                  <img src={formContent.accountHolderQrUrl} alt="Mã QR thanh toán" className="w-[180px] h-[180px] object-contain rounded-[16px] border-2 border-[var(--brand-soft-600)] shadow-sm" />
+                ) : (
+                  <div className="w-[180px] h-[180px] bg-[var(--brand-soft-200)] border-2 border-[var(--brand-soft-600)] rounded-[16px] flex flex-col items-center justify-center gap-[10px]">
+                    <QrCode size={90} className="text-[var(--brand-base-500)]" />
+                    <span className="[font-family:var(--font-body)] text-[11px] text-[var(--text-secondary-300)]">
+                      Quét để thanh toán
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Upload dropzone */}
+            <div>
+              <label className="block [font-family:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] mb-[6px]">
+                Tải lên minh chứng chuyển khoản (ảnh chụp màn hình){" "}
+                <span className="text-[var(--error-500)]">*</span>
+              </label>
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setFileDragging(true);
+                }}
+                onDragLeave={() => setFileDragging(false)}
+                onDrop={handleFileDrop}
+                onClick={handleFileSelect}
+                className={`border-2 border-dashed rounded-[var(--radius-sm)] p-[28px_20px] text-center cursor-pointer transition-all duration-[var(--motion-fast)] ${fileDragging
+                  ? "border-[var(--brand-base-500)] bg-[var(--brand-soft-200)]"
+                  : "border-[var(--brand-soft-600)] bg-[var(--surface-50)] hover:border-[var(--brand-base-300)]"
+                  }`}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                {evidenceFile ? (
+                  <div className="flex items-center justify-center gap-[10px]">
+                    <FileText size={20} className="text-[var(--brand-base-500)]" />
+                    <span className="[font-family:var(--font-heading)] font-bold text-[14px] text-[var(--brand-base-500)]">
+                      {evidenceFile.name}
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <Upload
+                      size={32}
+                      className={`mx-auto mb-[10px] block ${fileDragging ? "text-[var(--brand-base-500)]" : "text-[var(--text-secondary-200)]"}`}
+                    />
+                    <div className="[font-family:var(--font-heading)] font-bold text-[14px] text-[var(--text-secondary-600)] mb-[4px]">
+                      Kéo thả ảnh vào đây hoặc nhấn để chọn
+                    </div>
+                    <div className="[font-family:var(--font-body)] text-[12px] text-[var(--text-secondary-200)]">
+                      PNG, JPG, JPEG — tối đa 10MB
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Message textarea */}
+            <FormField label="Bạn muốn nhắn gửi thêm điều gì đến trung tâm không?">
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder="Ví dụ: Tôi muốn đăng ký khóa V-ACT, bắt đầu từ tháng 8..."
+                rows={4}
+                className="w-full px-[14px] py-[11px] rounded-[var(--radius-sm)] border border-[var(--border-500)] [font-family:var(--font-body)] text-[14px] text-[var(--text-primary)] outline-none bg-white resize-y leading-[1.6] focus:border-[var(--brand-500)] transition-colors duration-[var(--motion-fast)]"
+              />
+            </FormField>
+          </div>
+        </div>
+
+        {/* Submit */}
+        <div className="flex justify-center pt-[8px]">
+          <button
+            onClick={handleSubmit}
+            disabled={activeMutation.isPending}
+            className="[font-family:var(--font-heading)] font-extrabold text-[16px] py-[16px] px-[56px] rounded-[var(--radius-md)] border-none bg-gradient-to-br from-[var(--brand-base-500)] to-[var(--brand-base-400)] !text-white cursor-pointer shadow-[0_4px_20px_rgba(44,90,49,0.35)] transition-all duration-[var(--motion-fast)] flex items-center gap-[10px] hover:-translate-y-[2px] hover:shadow-[0_8px_28px_rgba(44,90,49,0.4)] active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+          >
+            <Send size={18} strokeWidth={2} />
+            {activeMutation.isPending
+              ? "Đang gửi..."
+              : isRenewMode ? "Gửi gia hạn" : "Gửi đăng ký"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Sub-components ────────────────────────────────────────────────────────── */
+
+function SectionTitle({ text }: { text: string }) {
+  return (
+    <div className="px-[24px] pt-[20px] mb-[4px]">
+      <div className="flex items-center gap-[10px] mb-[4px]">
+        <div className="w-[4px] h-[20px] bg-[var(--brand-base-500)] rounded-[2px]" />
+        <span className="[font-family:var(--font-heading)] font-extrabold text-[13px] text-[var(--brand-base-500)] uppercase tracking-[0.6px]">
+          {text}
+        </span>
+      </div>
+      <div className="h-[1px] bg-[var(--brand-base-500)] opacity-20 mt-[10px] ml-[14px]" />
+    </div>
+  );
+}
+
+function FormField({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="block [font-family:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] mb-[6px]">
+        {label}
+        {required && <span className="text-[var(--error-500)]"> *</span>}
+      </label>
+      {children}
+    </div>
+  );
+}

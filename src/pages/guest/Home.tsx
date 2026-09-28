@@ -11,10 +11,10 @@ export default function Home() {
   // Redirect staff users to their dashboards instead of showing the public homepage
   if (isLoggedIn) {
     if (role === "admin") {
-      return <Navigate to={ROUTES.ADMIN.WEBSITE} replace />;
+      return <Navigate to={ROUTES.ADMIN.DASHBOARD} replace />;
     }
     if (role === "assistant") {
-      return <Navigate to={ROUTES.ASSISTANT.COURSES} replace />;
+      return <Navigate to={ROUTES.ASSISTANT.DASHBOARD} replace />;
     }
   }
 

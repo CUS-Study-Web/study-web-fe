@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Pencil, X, FileText, Download, RefreshCw, Trash2, Minus, Plus, Upload } from 'lucide-react';
 import type { DocumentResponse } from '../../../types/api/document.api';
 import AssistantConfirmPopup from '../AssistantConfirmPopup';
 import { useNotification } from '../../common/NotificationProvider';
@@ -245,9 +246,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
           <div className="flex items-center justify-between px-7 py-5 border-b border-[var(--border-default)] shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-[var(--brand-100)] flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-[var(--brand-600)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
+                <Pencil className="w-5 h-5 text-[var(--brand-600)]" />
               </div>
               <div>
                 <div className="font-[family-name:var(--font-heading)] font-extrabold text-[length:var(--text-body-lg)] text-[var(--text-primary)] leading-tight">
@@ -258,8 +257,8 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                 </div>
               </div>
             </div>
-            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-muted)] bg-transparent border-none cursor-pointer text-xl transition-colors">
-              ×
+            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-muted)] bg-transparent border-none cursor-pointer transition-colors">
+              <X className="w-5 h-5" />
             </button>
           </div>
 
@@ -275,10 +274,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
               {selectedFile ? (
                 <div className="flex flex-col flex-1 min-h-0 rounded-[12px] overflow-hidden border border-[var(--border-default)] bg-white">
                   <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[var(--border-default)] bg-white shrink-0">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-secondary)]">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                    </svg>
+                    <FileText className="w-3.5 h-3.5 text-[var(--text-secondary)] shrink-0" />
                     <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] font-medium truncate flex-1">
                       {selectedFile.name}
                     </span>
@@ -292,13 +288,16 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                       }}
                       className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
                     >
+                      <Download className="w-3 h-3" />
                       Tải về
                     </button>
                     <button type="button" onClick={() => fileInputRef.current?.click()} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
+                      <RefreshCw className="w-3 h-3" />
                       Đổi file
                     </button>
                     <input ref={fileInputRef} type="file" accept=".pdf,.docx" className="hidden" onChange={handleFileChange} />
                     <button type="button" onClick={handleRemoveFile} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
+                      <Trash2 className="w-3 h-3" />
                       Xóa
                     </button>
                   </div>
@@ -311,11 +310,11 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                         <div className="text-[12px] font-semibold text-[var(--text-secondary)]">Xem trước DOCX</div>
                         <div className="flex items-center gap-2">
                           <button onClick={() => setDocxZoom(z => Math.max(50, z - 10))} className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors" title="Thu nhỏ">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <Minus className="w-3.5 h-3.5" />
                           </button>
                           <span className="text-[12px] font-medium text-gray-600 w-10 text-center">{docxZoom}%</span>
                           <button onClick={() => setDocxZoom(z => Math.min(200, z + 10))} className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors" title="Phóng to">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <Plus className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </div>
@@ -328,10 +327,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                   ) : (
                     <div className="flex-1 flex flex-col items-center justify-center gap-3 bg-[var(--surface-muted)]">
                       <div className="w-16 h-16 rounded-[12px] bg-white border border-[var(--border-default)] flex items-center justify-center shadow-sm">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-secondary)]">
-                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                          <polyline points="14 2 14 8 20 8" />
-                        </svg>
+                        <FileText className="w-7 h-7 text-[var(--text-secondary)]" />
                       </div>
                       <div className="font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--text-primary)]">File đã được chọn</div>
                       <div className="font-[family-name:var(--font-body)] text-[12px] text-[var(--text-tertiary)]">Không có bản xem trước cho định dạng này</div>
@@ -341,10 +337,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
               ) : !isMaterialFileRemoved ? (
                 <div className="flex flex-col flex-1 min-h-0 rounded-[12px] overflow-hidden border border-[var(--border-default)] bg-white relative">
                   <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[var(--border-default)] bg-white shrink-0">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-secondary)]">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                    </svg>
+                    <FileText className="w-3.5 h-3.5 text-[var(--text-secondary)] shrink-0" />
                     <span className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-primary)] font-medium truncate flex-1">
                       {material?.title}.{material?.fileType?.toLowerCase() || 'pdf'}
                     </span>
@@ -358,13 +351,16 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                       }}
                       className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none"
                     >
+                      <Download className="w-3 h-3" />
                       Tải về
                     </button>
                     <button type="button" onClick={() => fileInputRef.current?.click()} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
+                      <RefreshCw className="w-3 h-3" />
                       Đổi file
                     </button>
                     <input ref={fileInputRef} type="file" accept=".pdf,.docx" className="hidden" onChange={handleFileChange} />
                     <button type="button" onClick={() => setIsMaterialFileRemoved(true)} className="flex items-center gap-1 px-3 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--surface-muted)] transition-colors select-none">
+                      <Trash2 className="w-3 h-3" />
                       Xóa
                     </button>
                   </div>
@@ -377,11 +373,11 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                         <div className="text-[12px] font-semibold text-[var(--text-secondary)]">Xem trước DOCX</div>
                         <div className="flex items-center gap-2">
                           <button onClick={() => setDocxZoom(z => Math.max(50, z - 10))} className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors" title="Thu nhỏ">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <Minus className="w-3.5 h-3.5" />
                           </button>
                           <span className="text-[12px] font-medium text-gray-600 w-10 text-center">{docxZoom}%</span>
                           <button onClick={() => setDocxZoom(z => Math.min(200, z + 10))} className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors" title="Phóng to">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <Plus className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </div>
@@ -393,14 +389,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                     </div>
                   ) : (
                     <div className="flex-1 flex flex-col items-center justify-center gap-3 bg-[var(--surface-muted)]">
-                      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="10" y="6" width="36" height="46" rx="4" fill="#e5e7eb" stroke="#9ca3af" strokeWidth="2" />
-                        <path d="M38 6v12h10" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <rect x="10" y="6" width="38" height="12" rx="4" fill="none" />
-                        <line x1="18" y1="30" x2="46" y2="30" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" />
-                        <line x1="18" y1="38" x2="46" y2="38" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" />
-                        <line x1="18" y1="46" x2="34" y2="46" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" />
-                      </svg>
+                      <FileText className="w-12 h-12 text-gray-400 stroke-1" />
                       <div className="font-[family-name:var(--font-body)] text-[13px] text-[var(--text-secondary)]">
                         Bản xem trước tài liệu {material?.fileType || 'DOCX'}
                       </div>
@@ -413,11 +402,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                     }`}
                 >
                   <div className="w-14 h-14 rounded-full bg-[var(--surface-muted)] border border-[var(--border-default)] flex items-center justify-center">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-secondary)]">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="17 8 12 3 7 8" />
-                      <line x1="12" y1="3" x2="12" y2="15" />
-                    </svg>
+                    <Upload className="w-5 h-5 text-[var(--text-secondary)]" />
                   </div>
                   <div className="font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--brand-600)]">
                     Kéo thả file tài liệu vào đây
@@ -436,11 +421,7 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
               {isDragOver && (
                 <div className="absolute inset-5 z-50 bg-white/90 backdrop-blur-sm border-2 border-dashed border-[var(--brand-500)] rounded-[12px] flex flex-col items-center justify-center gap-4 pointer-events-none">
                   <div className="w-14 h-14 rounded-full bg-[var(--brand-50)] border border-[var(--brand-200)] flex items-center justify-center shadow-sm">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--brand-600)]">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="17 8 12 3 7 8" />
-                      <line x1="12" y1="3" x2="12" y2="15" />
-                    </svg>
+                    <Upload className="w-5 h-5 text-[var(--brand-600)]" />
                   </div>
                   <div className="font-[family-name:var(--font-heading)] font-semibold text-[14px] text-[var(--brand-600)]">
                     Thả file vào đây để thay thế
@@ -492,8 +473,8 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                   <div>
                     <label className={labelClass}>Quyền truy cập</label>
                     <select value={access} onChange={(e) => setAccess(e.target.value)} className={selectClass}>
-                      <option value="public">🌐 Public</option>
-                      <option value="vip">⭐ VIP</option>
+                      <option value="public">Public</option>
+                      <option value="vip">VIP</option>
                     </select>
                   </div>
                 </div>
@@ -513,8 +494,8 @@ export default function AssistantEditMaterialPopup({ material, onClose }: Assist
                       return (
                         <span key={badge.id} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-xs font-semibold bg-[var(--brand-100)] text-[var(--brand-600)]">
                           {badge.name}
-                          <button type="button" onClick={(e) => { e.stopPropagation(); toggleBadge(badge.id); }} className="hover:text-[var(--brand-800)] opacity-60 hover:opacity-100 transition-opacity">
-                            ×
+                          <button type="button" onClick={(e) => { e.stopPropagation(); toggleBadge(badge.id); }} className="hover:text-[var(--brand-800)] opacity-60 hover:opacity-100 transition-opacity bg-transparent border-none p-0 cursor-pointer">
+                            <X className="w-3 h-3" />
                           </button>
                         </span>
                       )

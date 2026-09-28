@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Loader2, Trash2, Check, Plus } from 'lucide-react'
 import type { CourseSummaryResponse } from '../../../../types/api/course.api'
 import { useGetCourseDetailQuery, useUpdateCourseMutation, useGetAdminCoursesQuery } from '../../../../hooks/queries/useCourses'
 import { RectDropzone, ModalHeader, mLabel, mInput } from './ModalHelpers'
@@ -35,36 +36,19 @@ type CourseModalProps = {
 // ─── Spinner ──────────────────────────────────────────────────────────────────
 
 const Spinner = () => (
-  <svg
-    className="animate-spin h-4 w-4 text-white inline-block"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-    <path
-      className="opacity-75"
-      fill="currentColor"
-      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-    />
-  </svg>
+  <Loader2 className="animate-spin h-4 w-4 text-white inline-block" />
 )
 
 // ─── Trash icon ───────────────────────────────────────────────────────────────
 
 const TrashIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="stroke-[var(--error-500)]" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="3 6 5 6 21 6" />
-    <path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2" />
-  </svg>
+  <Trash2 size={15} className="text-[var(--error-500)]" />
 )
 
 // ─── Check icon ──────────────────────────────────────────────────────────────
 
 const CheckIcon = ({ active }: { active: boolean }) => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className={active ? 'stroke-white' : 'stroke-[var(--brand-200)]'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12" />
-  </svg>
+  <Check size={15} className={active ? 'text-white' : 'text-[var(--brand-200)]'} strokeWidth={2.5} />
 )
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -75,6 +59,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
   const [subtitle, setSubtitle] = useState(course.subTitle || '')
   const [badgeTitle, setBadgeTitle] = useState(course.badgeTitle || '')
   const [status, setStatus] = useState<'DRAFT' | 'DEVELOPING' | 'PUBLISH'>(course.status || 'DRAFT')
+  const [maxScores, setMaxScores] = useState<number | ''>(course.maxScores ?? '')
   const [description, setDescription] = useState(course.description || '')
   const [previewImage, setPreviewImage] = useState<string | undefined>(course.imageUrl)
   const [thumbnailImage, setThumbnailImage] = useState<File | undefined>()
@@ -88,6 +73,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
     badgeTitle: course.badgeTitle || '',
     status: course.status || 'DRAFT',
     description: course.description || '',
+    maxScores: course.maxScores || '',
   })
 
   const { showSuccess, showError } = useNotification()
@@ -122,6 +108,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
     subtitle !== orig.subtitle ||
     badgeTitle !== orig.badgeTitle ||
     status !== orig.status ||
+    maxScores !== orig.maxScores ||
     description !== orig.description
 
   // ── Course image handler
@@ -150,6 +137,11 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
       return
     }
 
+    if (maxScores !== '' && Number(maxScores) <= 0) {
+      showError('Điểm tối đa khóa học phải lớn hơn 0!')
+      return
+    }
+
     setIsSavingCourse(true)
     const start = Date.now()
     const formData = new FormData()
@@ -157,6 +149,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
     formData.append('subtitle', subtitle)
     formData.append('badgeTitle', badgeTitle)
     formData.append('status', status)
+    if (maxScores !== '' && maxScores !== undefined) formData.append('maxScores', String(maxScores))
     formData.append('description', description)
     if (thumbnailImage) formData.append('thumbnailImage', thumbnailImage)
 
@@ -165,7 +158,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
       const elapsed = Date.now() - start
       if (elapsed < 500) await new Promise((r) => setTimeout(r, 500 - elapsed))
       // Update snapshot so button goes back to disabled
-      originalCourseRef.current = { title, subtitle, badgeTitle, status, description }
+      originalCourseRef.current = { title, subtitle, badgeTitle, status, description, maxScores }
       setThumbnailImage(undefined)
       showSuccess('Cập nhật thông tin khóa học thành công!')
     } catch (err: any) {
@@ -265,6 +258,19 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
                 </select>
               </div>
 
+              <div className="mb-3.5">
+                <label className={mLabel}>Điểm tối đa khóa học</label>
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={maxScores}
+                  onChange={(e) => setMaxScores(e.target.value === '' ? '' : Math.max(1, parseInt(e.target.value, 10) || 1))}
+                  className={mInput}
+                  placeholder="VD: 100 hoặc 36"
+                />
+              </div>
+
               <div className="mb-5">
                 <label className={mLabel}>Mô tả khóa học</label>
                 <textarea
@@ -323,9 +329,7 @@ export const CourseModal = ({ course, onClose }: CourseModalProps) => {
               {subjectRows.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-10 text-center">
                   <div className="w-10 h-10 rounded-full bg-[var(--surface-500)] flex items-center justify-center mb-3">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="stroke-[var(--text-secondary-300)]" strokeWidth="2" strokeLinecap="round">
-                      <path d="M12 5v14M5 12h14" />
-                    </svg>
+                    <Plus size={18} className="text-[var(--text-secondary-300)]" />
                   </div>
                   <p className="[font-family:var(--font-body)] text-[13px] text-[var(--text-secondary-300)]">
                     Chưa có môn học nào.

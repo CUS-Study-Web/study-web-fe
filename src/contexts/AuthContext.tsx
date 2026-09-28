@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (role === 'admin') {
         navigate(ROUTES.ADMIN.WEBSITE);
       } else if (role === 'assistant') {
-        navigate(ROUTES.ASSISTANT.COURSES);
+        navigate(ROUTES.ASSISTANT.DASHBOARD);
       } else {
         navigate(ROUTES.LEARNER.MY_COURSES);
       }
@@ -87,6 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     queryClient.removeQueries({ queryKey: ['currentUser'] });
+    queryClient.removeQueries({ queryKey: ['userProfile'] });
     navigate(ROUTES.AUTH.LOGIN);
   }, [navigate, queryClient]);
 

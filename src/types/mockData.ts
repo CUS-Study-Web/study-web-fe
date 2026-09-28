@@ -1,3 +1,4 @@
+import { Users, Paperclip, FileText, GraduationCap, BookOpen } from 'lucide-react';
 import type {
   AssistantLecture,
   AssistantExercise,
@@ -21,7 +22,7 @@ export const ASST_STAT_CARDS: AssistantStatCard[] = [
     label: "Tổng học viên",
     value: "1.284",
     delta: "+32 tuần này",
-    icon: "👥",
+    icon: Users,
     color: "#2C5A31",
     background: "#DCE9DE"
   },
@@ -30,7 +31,7 @@ export const ASST_STAT_CARDS: AssistantStatCard[] = [
     label: "Bài tập đã đăng",
     value: "36",
     delta: "+4 tuần này",
-    icon: "📎",
+    icon: Paperclip,
     color: "#2F6FAE",
     background: "#DDEAF8"
   },
@@ -39,7 +40,7 @@ export const ASST_STAT_CARDS: AssistantStatCard[] = [
     label: "Đề thi đã tạo",
     value: "47",
     delta: "+5 tuần này",
-    icon: "📝",
+    icon: FileText,
     color: "#B7791F",
     background: "#FBF0DC"
   },
@@ -51,35 +52,35 @@ export const ASST_RECENT_ACTIVITIES: AssistantActivity[] = [
     type: "material",
     text: "Đề thi Toán nâng cao 2024 - Đề 12 đã được tải lên",
     time: "5 phút trước",
-    icon: "📝"
+    icon: FileText
   },
   {
     id: 2,
     type: "student",
     text: "Học viên Nguyễn Văn A đã đăng ký khóa V-ACT",
     time: "10 phút trước",
-    icon: "👨‍🎓"
+    icon: GraduationCap
   },
   {
     id: 3,
     type: "course",
     text: "Khóa học V-SAT đã được cập nhật nội dung",
     time: "30 phút trước",
-    icon: "📚"
+    icon: BookOpen
   },
   {
     id: 4,
     type: "material",
     text: "Đề thi thử THPT Quốc Gia môn Hóa đã được phê duyệt",
     time: "1 giờ trước",
-    icon: "📝"
+    icon: FileText
   },
   {
     id: 5,
     type: "student",
     text: "Học viên Trần Thị B đã hoàn thành bài tập Toán",
     time: "2 giờ trước",
-    icon: "👨‍🎓"
+    icon: GraduationCap
   }
 ];
 
@@ -543,33 +544,31 @@ export const DEMO_SUBJECT_TOPICS: Record<string, SubjectTopic[]> = {
 // --- Flashcard mock data ---
 
 export const DEMO_FLASHCARD_TOPICS: FlashcardTopic[] = [
-  { id: 1, title: 'Từ vựng cốt lõi ĐGNL', words: 50, created: '10/01/2025', status: 'published' },
-  { id: 2, title: 'Động từ bất quy tắc', words: 80, created: '15/02/2025', status: 'published' },
-  { id: 3, title: 'Thành ngữ tiếng Anh', words: 60, created: '22/03/2025', status: 'draft' },
-  { id: 4, title: 'Từ vựng học thuật (Academic)', words: 120, created: '05/04/2025', status: 'published' },
-  { id: 5, title: 'Từ vựng V-ACT', words: 40, created: '18/05/2025', status: 'draft' },
+  { id: '1', title: 'IELTS Academic Vocabulary', words: 120, created: '24/10/2023', status: 'PUBLISH' },
+  { id: '2', title: 'Business English Basics', words: 85, created: '20/10/2023', status: 'PUBLISH' },
+  { id: '3', title: 'TOEIC Essential Words', words: 60, created: '18/10/2023', status: 'DRAFT' },
+  { id: '4', title: 'Daily Conversation', words: 200, created: '15/10/2023', status: 'PUBLISH' },
+  { id: '5', title: 'IT & Software Terms', words: 45, created: '10/10/2023', status: 'DRAFT' },
 ];
 
 export const DEMO_VOCABULARY_WORDS: VocabularyWord[] = [
-  { id: 1, en: 'Perseverance', phonetic: '/ˌpɜː.sɪˈvɪər.əns/', type: 'Noun', vi: 'Sự kiên trì, bền bỉ', ex: 'Perseverance is key to success.' },
-  { id: 2, en: 'Ambiguous', phonetic: '/æmˈbɪɡ.ju.əs/', type: 'Adjective', vi: 'Mơ hồ, không rõ ràng', ex: 'The instructions were ambiguous.' },
-  { id: 3, en: 'Eloquent', phonetic: '/ˈel.ə.kwənt/', type: 'Adjective', vi: 'Hùng hồn, lưu loát', ex: 'She gave an eloquent speech.' },
-  { id: 4, en: 'Diligent', phonetic: '/ˈdɪl.ɪ.dʒənt/', type: 'Adjective', vi: 'Chăm chỉ, cần cù', ex: 'He is a diligent student.' },
-  { id: 5, en: 'Phenomenon', phonetic: '/fɪˈnɒm.ɪ.nən/', type: 'Noun', vi: 'Hiện tượng', ex: 'The northern lights are a natural phenomenon.' },
-  { id: 6, en: 'Resilient', phonetic: '/rɪˈzɪl.i.ənt/', type: 'Adjective', vi: 'Kiên cường, dẻ dai', ex: 'Children are resilient and adaptable.' },
-  { id: 7, en: 'Meticulous', phonetic: '/məˈtɪk.ju.ləs/', type: 'Adjective', vi: 'Tỷ mỉ, cẩn thận', ex: 'She was meticulous in her work.' },
-  { id: 8, en: 'Perseverance', phonetic: '/ˌpɜː.sɪˈvɪər.əns/', type: 'Noun', vi: 'Sự kiên trì, bền bỉ', ex: 'Perseverance is key to success.' },
-  { id: 9, en: 'Ambiguous', phonetic: '/æmˈbɪɡ.ju.əs/', type: 'Adjective', vi: 'Mơ hồ, không rõ ràng', ex: 'The instructions were ambiguous.' },
-  { id: 10, en: 'Eloquent', phonetic: '/ˈel.ə.kwənt/', type: 'Adjective', vi: 'Hùng hồn, lưu loát', ex: 'She gave an eloquent speech.' },
-  { id: 11, en: 'Diligent', phonetic: '/ˈdɪl.ɪ.dʒənt/', type: 'Adjective', vi: 'Chăm chỉ, cần cù', ex: 'He is a diligent student.' },
-  { id: 12, en: 'Phenomenon', phonetic: '/fɪˈnɒm.ɪ.nən/', type: 'Noun', vi: 'Hiện tượng', ex: 'The northern lights are a natural phenomenon.' },
-  { id: 13, en: 'Resilient', phonetic: '/rɪˈzɪl.i.ənt/', type: 'Adjective', vi: 'Kiên cường, dẻ dai', ex: 'Children are resilient and adaptable.' },
-  { id: 14, en: 'Meticulous', phonetic: '/məˈtɪk.ju.ləs/', type: 'Adjective', vi: 'Tỷ mỉ, cẩn thận', ex: 'She was meticulous in her work.' },
-  { id: 15, en: 'Perseverance', phonetic: '/ˌpɜː.sɪˈvɪər.əns/', type: 'Noun', vi: 'Sự kiên trì, bền bỉ', ex: 'Perseverance is key to success.' },
-  { id: 16, en: 'Ambiguous', phonetic: '/æmˈbɪɡ.ju.əs/', type: 'Adjective', vi: 'Mơ hồ, không rõ ràng', ex: 'The instructions were ambiguous.' },
-  { id: 17, en: 'Eloquent', phonetic: '/ˈel.ə.kwənt/', type: 'Adjective', vi: 'Hùng hồn, lưu loát', ex: 'She gave an eloquent speech.' },
-  { id: 18, en: 'Diligent', phonetic: '/ˈdɪl.ɪ.dʒənt/', type: 'Adjective', vi: 'Chăm chỉ, cần cù', ex: 'He is a diligent student.' },
-  { id: 19, en: 'Phenomenon', phonetic: '/fɪˈnɒm.ɪ.nən/', type: 'Noun', vi: 'Hiện tượng', ex: 'The northern lights are a natural phenomenon.' },
-  { id: 20, en: 'Resilient', phonetic: '/rɪˈzɪl.i.ənt/', type: 'Adjective', vi: 'Kiên cường, dẻ dai', ex: 'Children are resilient and adaptable.' },
-  { id: 21, en: 'Meticulous', phonetic: '/məˈtɪk.ju.ləs/', type: 'Adjective', vi: 'Tỷ mỉ, cẩn thận', ex: 'She was meticulous in her work.' },
+  { id: '3', en: 'Eloquent', phonetic: '/ˈel.ə.kwənt/', type: 'Adjective', vi: 'Hùng hồn, lưu loát' },
+  { id: '4', en: 'Diligent', phonetic: '/ˈdɪl.ɪ.dʒənt/', type: 'Adjective', vi: 'Chăm chỉ, cần cù' },
+  { id: '5', en: 'Phenomenon', phonetic: '/fɪˈnɒm.ɪ.nən/', type: 'Noun', vi: 'Hiện tượng' },
+  { id: '6', en: 'Resilient', phonetic: '/rɪˈzɪl.i.ənt/', type: 'Adjective', vi: 'Kiên cường, dẻ dai' },
+  { id: '7', en: 'Meticulous', phonetic: '/məˈtɪk.ju.ləs/', type: 'Adjective', vi: 'Tỷ mỉ, cẩn thận' },
+  { id: '8', en: 'Perseverance', phonetic: '/ˌpɜː.sɪˈvɪər.əns/', type: 'Noun', vi: 'Sự kiên trì, bền bỉ' },
+  { id: '9', en: 'Ambiguous', phonetic: '/æmˈbɪɡ.ju.əs/', type: 'Adjective', vi: 'Mơ hồ, không rõ ràng' },
+  { id: '10', en: 'Eloquent', phonetic: '/ˈel.ə.kwənt/', type: 'Adjective', vi: 'Hùng hồn, lưu loát' },
+  { id: '11', en: 'Diligent', phonetic: '/ˈdɪl.ɪ.dʒənt/', type: 'Adjective', vi: 'Chăm chỉ, cần cù' },
+  { id: '12', en: 'Phenomenon', phonetic: '/fɪˈnɒm.ɪ.nən/', type: 'Noun', vi: 'Hiện tượng' },
+  { id: '13', en: 'Resilient', phonetic: '/rɪˈzɪl.i.ənt/', type: 'Adjective', vi: 'Kiên cường, dẻ dai' },
+  { id: '14', en: 'Meticulous', phonetic: '/məˈtɪk.ju.ləs/', type: 'Adjective', vi: 'Tỷ mỉ, cẩn thận' },
+  { id: '15', en: 'Perseverance', phonetic: '/ˌpɜː.sɪˈvɪər.əns/', type: 'Noun', vi: 'Sự kiên trì, bền bỉ' },
+  { id: '16', en: 'Ambiguous', phonetic: '/æmˈbɪɡ.ju.əs/', type: 'Adjective', vi: 'Mơ hồ, không rõ ràng' },
+  { id: '17', en: 'Eloquent', phonetic: '/ˈel.ə.kwənt/', type: 'Adjective', vi: 'Hùng hồn, lưu loát' },
+  { id: '18', en: 'Diligent', phonetic: '/ˈdɪl.ɪ.dʒənt/', type: 'Adjective', vi: 'Chăm chỉ, cần cù' },
+  { id: '19', en: 'Phenomenon', phonetic: '/fɪˈnɒm.ɪ.nən/', type: 'Noun', vi: 'Hiện tượng' },
+  { id: '20', en: 'Resilient', phonetic: '/rɪˈzɪl.i.ənt/', type: 'Adjective', vi: 'Kiên cường, dẻ dai' },
+  { id: '21', en: 'Meticulous', phonetic: '/məˈtɪk.ju.ləs/', type: 'Adjective', vi: 'Tỷ mỉ, cẩn thận' },
 ];

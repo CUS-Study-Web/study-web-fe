@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Lock, Crown, FileText, Download, Clock } from "lucide-react";
 import { ROUTES } from "../../utils/routes";
 
 interface DocumentCardProps {
@@ -74,9 +75,7 @@ export default function DocumentCard({
       {isVip && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center bg-[var(--neutral-0)]/40 backdrop-blur-[2px]">
           <div className="w-14 h-14 bg-[var(--text-primary-800)] rounded-full flex items-center justify-center mb-2.5 shadow-lg">
-            <svg className="w-6 h-6 text-[#ffc107] fill-current" viewBox="0 0 24 24">
-              <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
-            </svg>
+            <Lock className="w-6 h-6 text-[#ffc107]" />
           </div>
           <p className="text-body-lg !text-[var(--text-primary-500)] font-black mb-3">
             Chỉ dành cho VIP
@@ -85,9 +84,7 @@ export default function DocumentCard({
             to={ROUTES.VIP}
             className="flex items-center gap-1.5 px-6 py-2.5 bg-[var(--text-primary-800)] !text-[#ffc107] text-sm font-extrabold rounded-full shadow-md hover:bg-[var(--text-primary-900)] active:scale-95 transition-all cursor-pointer"
           >
-            <svg className="w-4 h-4 fill-current text-[#ffc107]" viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
+            <Crown className="w-4 h-4 text-[#ffc107]" />
             Đăng ký VIP
           </Link>
         </div>
@@ -99,9 +96,7 @@ export default function DocumentCard({
         <div className={`p-5 flex gap-3.5 relative items-start ${theme.headerBg}`}>
           {/* Icon block */}
           <div className={`w-11 h-11 rounded-[var(--radius-md)] flex-shrink-0 flex items-center justify-center !text-white font-black text-lg ${theme.primaryBg} relative z-10 shadow-xs`}>
-            <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12.2857 1.33334H3.71429C2.21523 1.33334 1 2.52827 1 4.00001V20C1 21.4717 2.21523 22.6667 3.71429 22.6667H16.2857C17.7848 22.6667 19 21.4717 19 20V7.88236L12.2857 1.33334Z" fill="white" />
-            </svg>
+            <FileText className="w-6 h-6 text-white" />
           </div>
 
           <div className="relative z-10 flex flex-col flex-1">
@@ -128,23 +123,16 @@ export default function DocumentCard({
           {/* Stats */}
           <div className="flex items-center justify-between text-xs font-semibold text-[#8a8a8a] mb-5 px-1">
             <div className="flex items-center gap-1.5">
-              <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.71429 1H2.57143C1.70357 1 1 1.70357 1 2.57143V11.4286C1 12.2964 1.70357 13 2.57143 13H9.42857C10.2964 13 11 12.2964 11 11.4286V4.28571L7.71429 1Z" fill="#C4C4C4" />
-              </svg>
+              <FileText className="w-3.5 h-3.5 text-[#C4C4C4]" />
               <span>{pages} trang</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 11L1 7H3.5V1H6.5V7H9L5 11Z" fill="#C4C4C4" />
-              </svg>
+              <Download className="w-3.5 h-3.5 text-[#C4C4C4]" />
               <span>{downloads.toLocaleString("vi-VN")}</span>
             </div>
             {createdAt && (
               <div className="flex items-center gap-1.5">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C4C4C4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
+                <Clock className="w-3.5 h-3.5 text-[#C4C4C4]" />
                 <span>{new Date(createdAt).toLocaleDateString("vi-VN")}</span>
               </div>
             )}

@@ -1,105 +1,51 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import AssistantStudentDetailPopup from '../../components/assistant/student/AssistantStudentDetailPopup';
+import { useListLearnersQuery } from '../../hooks/queries/useSystemLearners';
+import type { LearnerSummaryResponse } from '../../types/api/system.api';
 
-import { DEMO_STUDENTS_ASST } from '../../types/mockData';
-import type { AssistantStudent } from '../../types/assistant';
+// ── Status helpers ────────────────────────────────────────────────────────────
 
-// ── 3-dot action menu per student row ────────────────────────────────────────
+const STATUS_LABEL: Record<string, string> = {
+  ACTIVE: 'Hoạt động',
+  INACTIVE: 'Tạm khóa',
+  BANNED: 'Bị cấm',
+};
 
-interface StudentActionMenuProps {
-  student: AssistantStudent;
-  onViewDetail: () => void;
-}
-
-function StudentActionMenu({ student: _student, onViewDetail }: StudentActionMenuProps) {
-  const [open, setOpen] = useState(false);
-  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
-  const btnRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  const handleToggle = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!open && btnRef.current) {
-      const rect = btnRef.current.getBoundingClientRect();
-      setMenuPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
-    }
-    setOpen(prev => !prev);
-  };
-
-  useEffect(() => {
-    if (!open) return;
-    const handleClose = (e: MouseEvent | KeyboardEvent) => {
-      if (e instanceof KeyboardEvent && e.key !== 'Escape') return;
-      if (e instanceof MouseEvent) {
-        if (btnRef.current?.contains(e.target as Node)) return;
-        if (menuRef.current?.contains(e.target as Node)) return;
-      }
-      setOpen(false);
-    };
-    document.addEventListener('mousedown', handleClose);
-    document.addEventListener('keydown', handleClose);
-    return () => {
-      document.removeEventListener('mousedown', handleClose);
-      document.removeEventListener('keydown', handleClose);
-    };
-  }, [open]);
-
-  return (
-    <>
-      <button
-        ref={btnRef}
-        onClick={handleToggle}
-        className="w-8 h-8 rounded-full border border-[var(--border-strong)] bg-white cursor-pointer inline-flex items-center justify-center hover:bg-[var(--surface-500)] transition-colors"
-        aria-label="Tùy chọn"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--neutral-500)">
-          <circle cx="12" cy="5" r="1.5" />
-          <circle cx="12" cy="12" r="1.5" />
-          <circle cx="12" cy="19" r="1.5" />
-        </svg>
-      </button>
-
-      {open && (
-        <div
-          ref={menuRef}
-          style={{
-            position: 'fixed',
-            top: menuPos.top,
-            right: menuPos.right,
-            zIndex: 9999,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.14)',
-          }}
-          className="bg-white rounded-[10px] border border-[var(--border-default)] py-1.5 min-w-[160px]"
-        >
-          {/* Xem chi tiết */}
-          <button
-            onClick={() => { setOpen(false); onViewDetail(); }}
-            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 bg-transparent border-none cursor-pointer font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] text-left transition-colors hover:bg-[var(--surface-500)]"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
-            </svg>
-            Xem chi tiết
-          </button>
-        </div>
-      )}
-    </>
-  );
-}
+const STATUS_STYLE: Record<string, { background: string; color: string }> = {
+  ACTIVE: { background: 'var(--brand-soft-500)', color: 'var(--brand-500)' },
+  INACTIVE: { background: 'var(--warning-50)', color: 'var(--warning-500)' },
+  BANNED: { background: '#FEF2F2', color: '#DC2626' },
+};
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 
-export default function AssistantStudents() {
-  const [students] = useState<AssistantStudent[]>(DEMO_STUDENTS_ASST);
-  const [search, setSearch] = useState('');
-  const [detailStudent, setDetailStudent] = useState<AssistantStudent | null>(null);
+const PAGE_SIZE = 15;
 
-  const filtered = useMemo(() => {
-    return students.filter(s =>
-      s.email.toLowerCase().includes(search.toLowerCase()) ||
-      s.course.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [search, students]);
+export default function AssistantStudents() {
+  const [searchInput, setSearchInput] = useState('');
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(0);
+  const [detailStudent, setDetailStudent] = useState<LearnerSummaryResponse | null>(null);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(0);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  const { data, isLoading, isError } = useListLearnersQuery({
+    search: search || undefined,
+    page,
+    size: PAGE_SIZE,
+  });
+
+  const students = data?.data ?? [];
+  const paging = data?.paging;
+  const totalPages = paging?.totalPages ?? 1;
+  const total = paging?.total ?? 0;
 
   return (
     <div className="w-full">
@@ -117,7 +63,7 @@ export default function AssistantStudents() {
             Danh sách học viên
           </div>
           <div className="font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-secondary)]">
-            {students.length} học viên
+            {isLoading ? 'Đang tải...' : `${total} học viên`}
           </div>
         </div>
       </div>
@@ -132,10 +78,10 @@ export default function AssistantStudents() {
           </svg>
           <input
             type="text"
-            placeholder="Tìm kiếm theo email hoặc khóa học..."
+            placeholder="Tìm kiếm theo email hoặc tên..."
             className="flex-1 bg-transparent outline-none border-none font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-primary)]"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
           />
         </div>
 
@@ -144,7 +90,7 @@ export default function AssistantStudents() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-[var(--surface-500)]">
-                {['EMAIL', 'KHÓA HỌC CHỦ YẾU', 'TIẾN ĐỘ', 'NGÀY THAM GIA', 'TRẠNG THÁI', ''].map((label) => (
+                {['EMAIL', 'TÊN', 'KHÓA HỌC CHỦ YẾU', 'TIẾN ĐỘ', 'ĐĂNG NHẬP GẦN NHẤT', 'TRẠNG THÁI', ''].map((label) => (
                   <th
                     key={label}
                     className="px-4 py-2.5 whitespace-nowrap font-[family-name:var(--font-heading)] text-[length:var(--text-caption)] font-bold text-[var(--text-secondary)] uppercase tracking-[0.4px]"
@@ -155,17 +101,36 @@ export default function AssistantStudents() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((s) => {
-                const isActive = s.status === 'Hoạt động';
+              {isLoading && (
+                <tr>
+                  <td colSpan={7} className="p-10 text-center font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-secondary)]">
+                    Đang tải danh sách học viên...
+                  </td>
+                </tr>
+              )}
+              {isError && (
+                <tr>
+                  <td colSpan={7} className="p-10 text-center font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[#DC2626]">
+                    Đã có lỗi xảy ra khi tải dữ liệu.
+                  </td>
+                </tr>
+              )}
+              {!isLoading && !isError && students.map((s) => {
+                const statusStyle = STATUS_STYLE[s.status] ?? STATUS_STYLE['INACTIVE'];
+                const statusLabel = STATUS_LABEL[s.status] ?? s.status;
                 return (
                   <tr key={s.id} className="border-t border-[var(--surface-500)] hover:bg-[var(--surface-400)] transition-colors">
                     {/* Email */}
                     <td className="px-4 py-3.5 font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-primary)]">
-                      {s.email}
+                      {s.gmail}
+                    </td>
+                    {/* Name */}
+                    <td className="px-4 py-3.5 font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-primary)]">
+                      {s.name || '—'}
                     </td>
                     {/* Course */}
                     <td className="px-4 py-3.5 font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--neutral-800)]">
-                      {s.course}
+                      {(!s.primaryCourse || s.primaryCourse === 'N/A') ? 'Chưa có' : s.primaryCourse}
                     </td>
                     {/* Progress */}
                     <td className="px-4 py-3.5 min-w-[120px]">
@@ -174,51 +139,79 @@ export default function AssistantStudents() {
                           <div
                             className="h-full rounded-full transition-all duration-300"
                             style={{
-                              width: `${s.progress}%`,
+                              width: `${s.progress ?? 0}%`,
                               background: s.progress === 100 ? 'var(--brand-700)' : 'var(--brand-400)',
                             }}
                           />
                         </div>
                         <span className="font-[family-name:var(--font-heading)] text-[length:var(--text-caption)] font-bold text-[var(--text-primary)] shrink-0">
-                          {s.progress}%
+                          {s.progress ?? 0}%
                         </span>
                       </div>
                     </td>
-                    {/* Joined */}
+                    {/* Last Login */}
                     <td className="px-4 py-3.5 font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-secondary)]">
-                      {s.joined}
+                      {s.lastLogin || '—'}
                     </td>
                     {/* Status */}
                     <td className="px-4 py-3.5">
                       <span
                         className="inline-block rounded-[var(--radius-pill)] px-2.5 py-1 font-[family-name:var(--font-heading)] text-[length:var(--text-caption)] font-bold"
-                        style={{
-                          background: isActive ? 'var(--brand-soft-500)' : 'var(--warning-50)',
-                          color: isActive ? 'var(--brand-500)' : 'var(--warning-500)',
-                        }}
+                        style={statusStyle}
                       >
-                        {s.status}
+                        {statusLabel}
                       </span>
                     </td>
-                    {/* 3-dot Action */}
+                    {/* Chi tiết */}
                     <td className="px-4 py-3.5 text-center">
-                      <StudentActionMenu
-                        student={s}
-                        onViewDetail={() => setDetailStudent(s)}
-                      />
+                      <button
+                        type="button"
+                        onClick={() => setDetailStudent(s)}
+                        className="px-2.5 py-1 rounded-[6px] border border-[var(--border-default)] bg-white font-[family-name:var(--font-heading)] font-semibold text-[11px] text-[var(--text-primary)] hover:bg-[var(--surface-500)] transition-colors cursor-pointer"
+                      >
+                        Chi tiết
+                      </button>
                     </td>
                   </tr>
                 );
               })}
+              {!isLoading && !isError && students.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="p-8 text-center font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-secondary)]">
+                    Không tìm thấy học viên nào.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
-          {filtered.length === 0 && (
-            <div className="p-8 text-center font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-secondary)]">
-              Không tìm thấy học viên nào.
-            </div>
-          )}
         </div>
+
+        {/* Pagination */}
+        {!isLoading && totalPages > 1 && (
+          <div className="flex items-center justify-between px-5 py-3.5 border-t border-[var(--surface-500)]">
+            <span className="font-[family-name:var(--font-body)] text-[length:var(--text-body-sm)] text-[var(--text-secondary)]">
+              Trang {page + 1} / {totalPages}
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage(p => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="px-3 py-1.5 rounded-[6px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] bg-white hover:bg-[var(--surface-500)] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+              >
+                ← Trước
+              </button>
+              <button
+                onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                disabled={page >= totalPages - 1}
+                className="px-3 py-1.5 rounded-[6px] border border-[var(--border-default)] font-[family-name:var(--font-heading)] font-semibold text-[13px] text-[var(--text-primary)] bg-white hover:bg-[var(--surface-500)] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+              >
+                Tiếp →
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
+

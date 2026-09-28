@@ -1,4 +1,4 @@
-type SysTab = "students" | "assistants" | "stats" | "vip-requests"
+type SysTab = "students" | "assistants" | "stats" | "vip-requests" | "quan-ly-vip"
 
 type Student = {
   id: number
@@ -57,36 +57,18 @@ type DayStats = {
 
 import type { CourseSummaryResponse } from './api/course.api'
 import type { BadgeResponse } from './api/badge.api'
+import type { TeacherProfileResponse } from './api/teacher.api'
+import type { LeaderboardResponse } from './api/leaderboard.api'
+import type { ReviewResponse } from './api/review.api'
 
 export type Course = CourseSummaryResponse
-
-type Instructor = {
-  id: number
-  name: string
-  bio: string
-  image?: string
-}
-
-type Achievement = {
-  id: number
-  name: string
-  exam: string
-  totalScore: string
-  subScores: string
-  image?: string
-}
-
-type Review = {
-  id: number
-  name: string
-  course: string
-  time: string
-  comment: string
-  image?: string
-}
+export type Instructor = TeacherProfileResponse
+export type Achievement = LeaderboardResponse
+export type Review = ReviewResponse
 
 type AsstActivity = {
   date: string
+  time?: string
   week: string
   month: string
   year: string
@@ -94,7 +76,7 @@ type AsstActivity = {
   asst: string
 }
 
-type WTab = "trang-chu" | "footer" | "goi-cuoc" | "courses" | "doc-types" | "instructors" | "achievements" | "reviews"
+type WTab = "trang-chu" | "vip-form" | "footer" | "goi-cuoc" | "courses" | "doc-types" | "instructors" | "achievements" | "reviews"
 
 type ModalKey =
   | "add-course"
@@ -116,9 +98,6 @@ export type {
   StatItem,
   ChartDataPoint,
   DayStats,
-  Instructor,
-  Achievement,
-  Review,
   AsstActivity,
   WTab,
   ModalKey,

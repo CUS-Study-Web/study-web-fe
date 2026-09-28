@@ -33,7 +33,9 @@ import LearnerSubjectDetailPage from "../pages/learner/LearnerSubjectDetailPage"
 import LearnerExamStartPage from "../pages/learner/LearnerExamStartPage";
 import LearnerTakeExamPage from "../pages/learner/LearnerTakeExamPage";
 import LearnerFlashcardTopicsPage from "../pages/learner/LearnerFlashcardTopicsPage";
+import LearnerFlashcardTopicDetailPage from "../pages/learner/LearnerFlashcardTopicDetailPage";
 import LearnerFlashcardStudyPage from "../pages/learner/LearnerFlashcardStudyPage";
+import LearnerVipRegisterPage from "../pages/learner/LearnerVipRegisterPage";
 
 // Assistant Components & Pages
 import AssistantLayout from "../components/assistant/AssistantLayout";
@@ -46,6 +48,7 @@ import AssistantEditExam from "../pages/assistant/AssistantEditExam";
 import AssistantCreateExercise from "../pages/assistant/AssistantCreateExercise";
 import AssistantEditExercise from "../pages/assistant/AssistantEditExercise";
 import AssistantMaterials from "../pages/assistant/AssistantMaterials";
+import AssistantOfflineExam from "../pages/assistant/AssistantOfflineExam";
 import AssistantStudents from "../pages/assistant/AssistantStudents";
 import AssistantFlashcards from "../pages/assistant/AssistantFlashcards";
 
@@ -60,8 +63,8 @@ function GuestRoute({ children }: { children?: React.ReactNode }) {
   const { isLoggedIn, role } = useAuth();
 
   if (isLoggedIn) {
-    if (role === "admin") return <Navigate to={ROUTES.ADMIN.WEBSITE} replace />;
-    if (role === "assistant") return <Navigate to={ROUTES.ASSISTANT.COURSES} replace />;
+    if (role === "admin") return <Navigate to={ROUTES.ADMIN.DASHBOARD} replace />;
+    if (role === "assistant") return <Navigate to={ROUTES.ASSISTANT.DASHBOARD} replace />;
     return <Navigate to={ROUTES.HOME} replace />;
   }
 
@@ -141,6 +144,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.LEARNER.SUBJECT_DETAIL()} element={<LearnerSubjectDetailPage />} />
         <Route path={ROUTES.LEARNER.EXAM_START()} element={<LearnerExamStartPage />} />
         <Route path={ROUTES.LEARNER.EXERCISE_START()} element={<LearnerExamStartPage />} />
+        <Route path={ROUTES.LEARNER.VIP_REGISTER} element={<LearnerVipRegisterPage />} />
       </Route>
 
       {/* Full-screen Learner Pages (No Footer) */}
@@ -154,6 +158,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.LEARNER.TAKE_EXAM()} element={<LearnerTakeExamPage />} />
         <Route path={ROUTES.LEARNER.TAKE_EXERCISE()} element={<LearnerTakeExamPage />} />
         <Route path={ROUTES.LEARNER.FLASHCARD_TOPICS} element={<LearnerFlashcardTopicsPage />} />
+        <Route path={ROUTES.LEARNER.FLASHCARD_TOPIC_DETAIL()} element={<LearnerFlashcardTopicDetailPage />} />
         <Route path={ROUTES.LEARNER.FLASHCARD_STUDY()} element={<LearnerFlashcardStudyPage />} />
       </Route>
 
@@ -185,7 +190,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route path={ROUTES.ASSISTANT.ROOT} element={<Navigate to={ROUTES.ASSISTANT.COURSES} replace />} />
+        <Route path={ROUTES.ASSISTANT.ROOT} element={<Navigate to={ROUTES.ASSISTANT.DASHBOARD} replace />} />
         <Route path={ROUTES.ASSISTANT.DASHBOARD} element={<AssistantDashboard />} />
         <Route path={ROUTES.ASSISTANT.COURSES} element={<AssistantCourses />} />
         <Route path={ROUTES.ASSISTANT.COURSE_DETAIL()} element={<AssistantCourseDetail />} />
@@ -195,6 +200,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.ASSISTANT.COURSE_EDIT_EXERCISE()} element={<AssistantEditExercise />} />
         <Route path={ROUTES.ASSISTANT.COURSE_SUBJECT_DETAIL()} element={<AssistantSubjectDetail />} />
         <Route path={ROUTES.ASSISTANT.MATERIALS} element={<AssistantMaterials />} />
+        <Route path={ROUTES.ASSISTANT.OFFLINE_EXAM} element={<AssistantOfflineExam />} />
         <Route path={ROUTES.ASSISTANT.STUDENTS} element={<AssistantStudents />} />
         <Route path={ROUTES.ASSISTANT.FLASHCARDS} element={<AssistantFlashcards />} />
       </Route>
@@ -207,7 +213,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route path={ROUTES.ADMIN.ROOT} element={<Navigate to={ROUTES.ADMIN.WEBSITE} replace />} />
+        <Route path={ROUTES.ADMIN.ROOT} element={<Navigate to={ROUTES.ADMIN.DASHBOARD} replace />} />
         <Route path={ROUTES.ADMIN.DASHBOARD} element={<AdminDashboard />} />
         <Route path={ROUTES.ADMIN.SYSTEM} element={<AdminSystem />} />
         <Route path={ROUTES.ADMIN.WEBSITE} element={<AdminWebsite />} />

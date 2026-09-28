@@ -6,7 +6,10 @@ export default function AssistantFeatureInDevPopup({ onClose }: AssistantFeature
   return (
     <div
       className="fixed inset-0 bg-black/45 z-[2000] flex items-center justify-center p-6"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => { 
+        e.stopPropagation();
+        if (e.target === e.currentTarget) onClose(); 
+      }}
     >
       <div className="bg-[var(--surface-card)] rounded-[var(--radius-xl)] py-7 px-7 w-full max-w-[400px] shadow-[0_8px_40px_rgba(0,0,0,0.18)] text-center flex flex-col items-center">
         <div className="w-16 h-16 rounded-full bg-[var(--brand-100)] text-[var(--brand-600)] flex items-center justify-center mb-4">
@@ -21,7 +24,10 @@ export default function AssistantFeatureInDevPopup({ onClose }: AssistantFeature
           Tính năng này đang trong quá trình hoàn thiện và sẽ sớm ra mắt trong các phiên bản tiếp theo.
         </div>
         <div
-          onClick={onClose}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
           className="w-full flex items-center justify-center py-3 rounded-[var(--radius-md)] bg-[var(--brand-500)] text-white font-[family-name:var(--font-heading)] font-bold text-[14px] cursor-pointer hover:bg-[var(--brand-600)] transition-colors"
         >
           Đã hiểu

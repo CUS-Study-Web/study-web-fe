@@ -1,4 +1,4 @@
-import type { SystemListParams } from '../../types/api/system.api';
+import type { ActivityLogsParams, DailyStatsParams, MonthlyStatsParams, SystemListParams } from '../../types/api/system.api';
 
 export const systemKeys = {
   all: ['system'] as const,
@@ -11,4 +11,8 @@ export const systemKeys = {
   vipRequests: () => [...systemKeys.all, 'vip-requests'] as const,
   vipRequestList: (params?: SystemListParams) => [...systemKeys.vipRequests(), 'list', params] as const,
   vipRequestCounts: (status?: string) => [...systemKeys.vipRequests(), 'counts', status] as const,
+  stats: () => [...systemKeys.all, 'stats'] as const,
+  dailyStats: (params?: DailyStatsParams) => [...systemKeys.stats(), 'daily', params] as const,
+  monthlyStats: (params?: MonthlyStatsParams) => [...systemKeys.stats(), 'monthly', params] as const,
+  activities: (params?: ActivityLogsParams) => [...systemKeys.all, 'activities', params] as const,
 };

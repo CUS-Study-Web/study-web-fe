@@ -1,55 +1,76 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { Upload, AlertTriangle } from 'lucide-react';
 import { useNotification } from '../../common/NotificationProvider';
-import { validateDocumentFile } from '../../../utils/fileUtils';
+import { parseFlashcardsFromExcel, type ParsedFlashcard } from '../../../utils/excelUtils';
 
 interface AssistantCreateTopicPopupProps {
   onClose: () => void;
-  onCreate: (name: string, fileName: string, status: 'published' | 'draft') => void;
+  onCreate: (name: string, fileName: string, status: 'PUBLISH' | 'DRAFT', parsedWords: ParsedFlashcard[]) => void;
+  isUploading?: boolean;
 }
 
-export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreateTopicPopupProps) {
+export function AssistantCreateTopicPopup({ onClose, onCreate, isUploading }: AssistantCreateTopicPopupProps) {
   const [topicName, setTopicName] = useState('');
   const [fileName, setFileName] = useState('');
-  const [status, setStatus] = useState<'published' | 'draft'>('published');
+  const [status, setStatus] = useState<'PUBLISH' | 'DRAFT'>('DRAFT');
   const [isDragOver, setIsDragOver] = useState(false);
+  const [parsedWords, setParsedWords] = useState<ParsedFlashcard[]>([]);
+  
   const { showError } = useNotification();
-
-  const handleFile = (file: File) => {
-    try {
-      validateDocumentFile(file);
-      setFileName(file.name);
-    } catch (err: any) {
-      showError(err.message);
-    }
-  };
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // ─── Drag & Drop handlers ───────────────────────────────────────────────────
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(true);
   };
+  
   const handleDragLeave = () => setIsDragOver(false);
+  
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFile(e.dataTransfer.files[0]);
+    }
   };
+  
   const handleDropzoneClick = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx,.xls,.csv';
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) handleFile(file);
-    };
-    input.click();
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      processFile(e.target.files[0]);
+    }
+    // reset input so the same file can be re-selected if needed
+    e.target.value = '';
+  };
+
+  const processFile = async (file: File) => {
+    setFileName(file.name);
+    try {
+      const words = await parseFlashcardsFromExcel(file);
+      if (words.length === 0) {
+        showError("File không có dữ liệu hoặc không đúng định dạng!");
+      } else {
+        setParsedWords(words);
+      }
+    } catch (error: any) {
+      showError(error.message || "Không thể đọc file Excel. Vui lòng kiểm tra định dạng.");
+    }
   };
 
   const handleCreate = () => {
-    if (!topicName.trim()) return;
-    onCreate(topicName.trim(), fileName, status);
-    onClose();
+    if (!topicName.trim()) {
+      showError("Vui lòng nhập tên chủ đề.");
+      return;
+    }
+    if (parsedWords.length === 0) {
+      showError("Vui lòng tải lên file Excel có dữ liệu từ vựng hợp lệ.");
+      return;
+    }
+    onCreate(topicName.trim(), fileName, status, parsedWords);
   };
 
   return (
@@ -93,7 +114,8 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
               value={topicName}
               onChange={e => setTopicName(e.target.value)}
               placeholder="VD: Từ vựng học thuật cốt lõi"
-              className="w-full px-3.5 py-[11px] rounded-[11px] border border-[var(--border-strong)] outline-none font-[family-name:var(--font-body)] text-[14px] text-[var(--text-primary)] focus:border-[var(--brand-500)] focus:bg-[var(--brand-soft-100)] transition-colors"
+              disabled={isUploading}
+              className="w-full px-3.5 py-[11px] rounded-[11px] border border-[var(--border-strong)] outline-none font-[family-name:var(--font-body)] text-[14px] text-[var(--text-primary)] focus:border-[var(--brand-500)] focus:bg-[var(--brand-soft-100)] transition-colors disabled:bg-gray-100 disabled:text-gray-400"
               style={{ boxSizing: 'border-box' }}
             />
           </div>
@@ -105,20 +127,20 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
             </div>
             <div className="flex w-[200px] rounded-[8px] overflow-hidden border border-[var(--border-default)]">
               <div
-                onClick={() => setStatus('published')}
-                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none ${status === 'published'
+                onClick={() => !isUploading && setStatus('PUBLISH')}
+                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] transition-colors select-none ${status === 'PUBLISH'
                   ? 'bg-[var(--brand-500)] text-white'
                   : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
-                  }`}
+                  } ${isUploading ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'}`}
               >
                 Xuất bản
               </div>
               <div
-                onClick={() => setStatus('draft')}
-                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer transition-colors select-none border-l border-[var(--border-default)] ${status === 'draft'
+                onClick={() => !isUploading && setStatus('DRAFT')}
+                className={`flex-1 py-1.5 text-center font-[family-name:var(--font-heading)] font-semibold text-[13px] transition-colors select-none border-l border-[var(--border-default)] ${status === 'DRAFT'
                   ? 'bg-amber-500 text-white'
                   : 'bg-white text-[var(--text-secondary)] hover:bg-[var(--surface-muted)]'
-                  }`}
+                  } ${isUploading ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'}`}
               >
                 Nháp
               </div>
@@ -131,38 +153,42 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
               Tải lên file Excel
             </div>
 
+            <input
+              type="file"
+              accept=".xlsx, .xls, .csv"
+              ref={fileInputRef}
+              className="hidden"
+              onChange={handleFileChange}
+              disabled={isUploading}
+            />
+
             {/* Dropzone */}
             <div
-              className="rounded-[14px] px-5 py-7 text-center cursor-pointer transition-all duration-[180ms]"
+              className={`rounded-[14px] px-5 py-7 text-center transition-all duration-[180ms] ${isUploading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
               style={{
                 border: isDragOver ? '2px dashed var(--brand-500)' : '2px dashed var(--border-strong)',
                 background: isDragOver ? 'var(--brand-soft-200)' : '#FAFCFA',
               }}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={handleDropzoneClick}
+              onDragOver={isUploading ? undefined : handleDragOver}
+              onDragLeave={isUploading ? undefined : handleDragLeave}
+              onDrop={isUploading ? undefined : handleDrop}
+              onClick={isUploading ? undefined : handleDropzoneClick}
             >
               {/* Upload icon */}
-              <svg
-                width="36"
-                height="36"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke={isDragOver ? 'var(--brand-500)' : 'var(--neutral-400)'}
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="block mx-auto mb-2.5"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
+              <Upload
+                className={`w-9 h-9 block mx-auto mb-2.5 transition-colors ${
+                  isDragOver ? 'text-[var(--brand-500)]' : 'text-[var(--neutral-400)]'
+                }`}
+              />
 
               {fileName ? (
-                <div className="font-[family-name:var(--font-heading)] font-bold text-[14px] text-[var(--brand-500)]">
-                  {fileName}
+                <div>
+                  <div className="font-[family-name:var(--font-heading)] font-bold text-[14px] text-[var(--brand-500)] mb-1">
+                    {fileName}
+                  </div>
+                  <div className="font-[family-name:var(--font-body)] text-[12px] text-[var(--text-secondary)]">
+                    Đã đọc được {parsedWords.length} từ vựng
+                  </div>
                 </div>
               ) : (
                 <>
@@ -184,13 +210,13 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
                 border: '1px solid var(--warning-100)',
               }}
             >
-              <span className="text-[14px] shrink-0">⚠️</span>
+              <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
               <div
                 className="font-[family-name:var(--font-body)] text-[12px] leading-[1.55]"
                 style={{ color: 'var(--warning-800)' }}
               >
                 <span className="font-bold">Lưu ý:</span> File Excel upload phải bao gồm các cột theo đúng thứ tự sau:{' '}
-                <span className="font-bold">Tiếng Anh · Phiên âm · Từ loại · Tiếng Việt</span>
+                <span className="font-bold">Tiếng Anh · Phiên âm · Từ loại · Tiếng Việt</span> (bỏ qua dòng tiêu đề).
               </div>
             </div>
           </div>
@@ -199,16 +225,18 @@ export function AssistantCreateTopicPopup({ onClose, onCreate }: AssistantCreate
         {/* Footer */}
         <div className="flex justify-end gap-2.5 px-7 pb-[22px] pt-3.5 border-t border-[var(--surface-500)]">
           <div
-            onClick={onClose}
-            className="px-[22px] py-2.5 rounded-[11px] border border-[var(--border-strong)] bg-white text-[var(--text-secondary)] font-[family-name:var(--font-heading)] font-semibold text-[13px] cursor-pointer hover:bg-[var(--surface-500)] transition-colors"
+            onClick={!isUploading ? onClose : undefined}
+            className={`px-[22px] py-2.5 rounded-[11px] border border-[var(--border-strong)] bg-white text-[var(--text-secondary)] font-[family-name:var(--font-heading)] font-semibold text-[13px] transition-colors ${isUploading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:bg-[var(--surface-500)]'}`}
           >
             Hủy
           </div>
           <div
-            onClick={handleCreate}
-            className="px-7 py-2.5 rounded-[11px] border-none bg-[var(--brand-500)] text-white font-[family-name:var(--font-heading)] font-bold text-[13px] cursor-pointer hover:bg-[var(--brand-600)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={!isUploading ? handleCreate : undefined}
+            className={`px-7 py-2.5 rounded-[11px] font-[family-name:var(--font-heading)] font-bold text-[13px] transition-colors ${!topicName.trim() || parsedWords.length === 0 || isUploading
+              ? 'bg-[var(--border-strong)] text-[var(--text-secondary)] cursor-not-allowed opacity-60'
+              : 'bg-[var(--brand-500)] text-white cursor-pointer hover:bg-[var(--brand-600)]'}`}
           >
-            Tạo
+            {isUploading ? 'Đang tạo...' : 'Tạo'}
           </div>
         </div>
       </div>

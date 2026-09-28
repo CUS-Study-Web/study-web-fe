@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Loader2 } from 'lucide-react'
 import { RectDropzone, ModalHeader, mLabel, mInput, mSubmitBtnClass } from './ModalHelpers'
 import { validateImageFile } from '../../../../utils/fileUtils'
 import { useNotification } from '../../../../components/common/NotificationProvider'
@@ -6,10 +7,7 @@ import { useCreateCourseMutation, useGetAdminCoursesQuery } from '../../../../ho
 import { ConfirmMiniModal } from './ConfirmMiniModal'
 
 const Spinner = () => (
-  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-  </svg>
+  <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" />
 )
 
 type AddCourseModalProps = {
@@ -21,6 +19,7 @@ export const AddCourseModal = ({ onClose }: AddCourseModalProps) => {
   const [subtitle, setSubtitle] = useState('')
   const [badgeTitle, setBadgeTitle] = useState('')
   const [status, setStatus] = useState<'DRAFT' | 'DEVELOPING' | 'PUBLISH'>('DRAFT')
+  const [maxScores, setMaxScores] = useState<number | ''>(100)
   const [description, setDescription] = useState('')
   const [previewImage, setPreviewImage] = useState<string | undefined>()
   const [thumbnailImage, setThumbnailImage] = useState<File | undefined>()
@@ -46,10 +45,15 @@ export const AddCourseModal = ({ onClose }: AddCourseModalProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     const isDuplicate = existingCourses.some(c => c.title.toLowerCase() === title.trim().toLowerCase())
     if (isDuplicate) {
       setShowDuplicateAlert(true)
+      return
+    }
+
+    if (maxScores === '' || maxScores === undefined || Number(maxScores) <= 0) {
+      showError('Vui lòng nhập điểm tối đa khóa học (> 0)!')
       return
     }
 
@@ -61,6 +65,7 @@ export const AddCourseModal = ({ onClose }: AddCourseModalProps) => {
     formData.append('subtitle', subtitle)
     formData.append('badgeTitle', badgeTitle)
     formData.append('status', status)
+    formData.append('maxScores', String(maxScores))
     formData.append('description', description)
     if (thumbnailImage) formData.append('thumbnailImage', thumbnailImage)
 
@@ -107,6 +112,20 @@ export const AddCourseModal = ({ onClose }: AddCourseModalProps) => {
               <option value="DEVELOPING">Đang cập nhật (DEVELOPING)</option>
               <option value="PUBLISH">Công khai (PUBLISH)</option>
             </select>
+          </div>
+
+          <div className="mb-3.5">
+            <label className={mLabel}>Điểm tối đa khóa học</label>
+            <input
+              type="number"
+              min="1"
+              step="1"
+              value={maxScores}
+              onChange={(e) => setMaxScores(e.target.value === '' ? '' : Math.max(1, parseInt(e.target.value, 10) || 1))}
+              className={mInput}
+              placeholder="VD: 100 hoặc 36"
+              required
+            />
           </div>
 
           <div className="mb-5">
