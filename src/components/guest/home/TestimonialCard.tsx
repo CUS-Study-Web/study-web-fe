@@ -46,7 +46,7 @@ export default function TestimonialCard({ avatar, name, course, review, isParent
       </div>
 
       {/* Review */}
-      <div className="text-sm text-[var(--text-secondary-500)] leading-relaxed italic mb-8 flex-grow">
+      <div className="text-sm text-[var(--text-secondary-500)] leading-relaxed italic mb-8 flex-grow break-words overflow-hidden">
         "{review}"
       </div>
 

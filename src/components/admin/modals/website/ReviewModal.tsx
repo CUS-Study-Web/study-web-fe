@@ -66,8 +66,8 @@ export const ReviewModal = ({ review, onSave, onClose }: ReviewModalProps) => {
       showError('Nội dung cảm nhận không được để trống')
       return
     }
-    if (comment.trim().length > 300) {
-      showError('Nội dung cảm nhận không được vượt quá 300 ký tự')
+    if (comment.trim().length > 500) {
+      showError('Nội dung cảm nhận không được vượt quá 500 ký tự')
       return
     }
 
@@ -177,12 +177,12 @@ export const ReviewModal = ({ review, onSave, onClose }: ReviewModalProps) => {
             <div className="flex justify-between items-center mb-1.5">
               <label className={`${mLabel} !mb-0`}>Nội dung cảm nhận</label>
               <span className="text-[11px] text-[var(--text-secondary-300)] font-medium">
-                {comment.length}/300
+                {comment.length}/500
               </span>
             </div>
             <textarea
               value={comment}
-              maxLength={300}
+              maxLength={500}
               onChange={(e) => setComment(e.target.value)}
               className={`${mInput} resize-y min-h-[80px]`}
               placeholder="Cảm nhận của học viên về khóa học..."
